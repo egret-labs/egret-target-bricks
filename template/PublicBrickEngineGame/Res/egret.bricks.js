@@ -16,9 +16,9 @@ var egret;
             if (bkNode === void 0) { bkNode = null; }
             var _this = _super.call(this) || this;
             _this._position = { x: 0.0, y: 0.0, z: 0.0 };
-            _this._scale = { x: 0.0, y: 0.0, z: 0.0 };
+            _this._scale = { x: 1.0, y: 1.0, z: 0.0 };
             _this._rotation = { x: 0.0, y: 0.0, z: 0.0 };
-            _this._color = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+            _this._color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             _this._bkNode = bkNode || new BK.Node();
             return _this;
         }
@@ -2367,6 +2367,12 @@ var egret;
             _this.stage.frameRate = _this._options.frameRate;
             _this.stage.orientation = _this._options.orientation;
             _this.stage.scaleMode = _this._options.scaleMode;
+            _this._mainTicker.add(function () {
+                _this._touchHandler();
+                egret.ticker.update();
+            }, _this);
+            _this.updateScreenSize();
+            _this.updateMaxTouches();
             //
             var entryClassName = _this._options.entryClassName;
             var rootClass;
@@ -2385,12 +2391,6 @@ var egret;
             else {
                 true && egret.$error(1001, entryClassName);
             }
-            _this._mainTicker.add(function () {
-                _this._touchHandler();
-                egret.ticker.update();
-            }, _this);
-            _this.updateScreenSize();
-            _this.updateMaxTouches();
             return _this;
         }
         BKPlayer.prototype._touchHandler = function () {

@@ -10,9 +10,9 @@ namespace egret {
          */
         public _bkNode: BK.Node;
         protected readonly _position: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
-        protected readonly _scale: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
+        protected readonly _scale: Vec3 = { x: 1.0, y: 1.0, z: 0.0 };
         protected readonly _rotation: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
-        protected readonly _color: Color = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+        protected readonly _color: Color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
 
         public constructor(bkNode: BK.Node | null = null) {
             super();
