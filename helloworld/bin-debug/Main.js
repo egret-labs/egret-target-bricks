@@ -150,7 +150,6 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
@@ -194,19 +193,14 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        var request = new egret.HttpRequest();
-        request.open("http://httpbin.org/get", egret.HttpMethod.GET);
-        request.send();
-        request.addEventListener(egret.Event.COMPLETE, function (e) {
-            console.log("收到http_get信息: ", request.response);
-        }, this);
+        var fun = function (a) {
+            debugger;
+            console.log("得到参数 a: ", a);
+        };
+        debugger;
+        egret.callLater(fun, this, 1);
         egret.setTimeout(function () {
-            var postRequest = new egret.HttpRequest();
-            postRequest.open("http://httpbin.org/post", egret.HttpMethod.POST);
-            postRequest.send("p1=postP1&p2=postP2");
-            postRequest.addEventListener(egret.Event.COMPLETE, function (e) {
-                console.log("收到http_post信息: ", postRequest.response);
-            }, _this);
+            textfield.x = 500;
         }, this, 3000);
     };
     /**
