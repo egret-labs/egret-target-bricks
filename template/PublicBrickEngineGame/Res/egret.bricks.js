@@ -1970,6 +1970,98 @@ var egret;
     __reflect(BKTextField.prototype, "egret.BKTextField");
     egret.TextField = BKTextField;
 })(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKSound = (function (_super) {
+        __extends(BKSound, _super);
+        function BKSound() {
+            var _this = _super.call(this) || this;
+            _this.type = egret.Sound.EFFECT;
+            return _this;
+        }
+        BKSound.prototype.load = function (url) {
+            this.url = url;
+        };
+        BKSound.prototype.play = function (startTime, loops) {
+            if (startTime === void 0) { startTime = 0; }
+            if (loops === void 0) { loops = 0; }
+            var channel = new egret.BKSoundChannel();
+            channel.$loops = loops;
+            channel.$startTime = startTime;
+            channel.$type = this.type;
+            channel.$url = this.url;
+            channel.$play();
+            return channel;
+        };
+        BKSound.prototype.close = function () {
+        };
+        /**
+         * Background music
+         * @default "music"
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 背景音乐
+         * @default "music"
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKSound.MUSIC = "music";
+        /**
+         * EFFECT
+         * @default "effect"
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 音效
+         * @default "effect"
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKSound.EFFECT = "effect";
+        return BKSound;
+    }(egret.EventDispatcher));
+    egret.BKSound = BKSound;
+    __reflect(BKSound.prototype, "egret.BKSound", ["egret.Sound"]);
+    egret.Sound = BKSound;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKSoundChannel = (function (_super) {
+        __extends(BKSoundChannel, _super);
+        function BKSoundChannel() {
+            return _super.call(this) || this;
+        }
+        BKSoundChannel.prototype.$play = function () {
+            var _type;
+            switch (this.$type) {
+                case egret.Sound.MUSIC:
+                    _type = 0;
+                    break;
+                case egret.Sound.EFFECT:
+                    _type = 1;
+                    break;
+            }
+            var loops = this.$loops === 0 ? -1 : this.$loops;
+            var musicPath = "GameRes://" + this.$url;
+            BK.Audio.switch = true;
+            this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
+            this._bkAudio.startMusic();
+        };
+        BKSoundChannel.prototype.stop = function () {
+            this._bkAudio.stopMusic();
+        };
+        return BKSoundChannel;
+    }(egret.EventDispatcher));
+    egret.BKSoundChannel = BKSoundChannel;
+    __reflect(BKSoundChannel.prototype, "egret.BKSoundChannel", ["egret.SoundChannel", "egret.IEventDispatcher"]);
+})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -2546,90 +2638,3 @@ var egret;
 })(egret || (egret = {}));
 if (true) {
 }
-// namespace egret {
-//     export class BKSound extends egret.EventDispatcher implements egret.Sound {
-//         type: string;
-//         length: number;
-//         private url: string;
-//         constructor() {
-//             super();
-//             this.type = egret.Sound.EFFECT;
-//         }
-//         /**
-//          * Background music
-//          * @default "music"
-//          * @version Egret 2.4
-//          * @platform Web,Native
-//          * @language en_US
-//          */
-//         /**
-//          * 背景音乐
-//          * @default "music"
-//          * @version Egret 2.4
-//          * @platform Web,Native
-//          * @language zh_CN
-//          */
-//         public static MUSIC: string = "music";
-//         /**
-//          * EFFECT
-//          * @default "effect"
-//          * @version Egret 2.4
-//          * @platform Web,Native
-//          * @language en_US
-//          */
-//         /**
-//          * 音效
-//          * @default "effect"
-//          * @version Egret 2.4
-//          * @platform Web,Native
-//          * @language zh_CN
-//          */
-//         public static EFFECT: string = "effect";
-//         load(url: string): void {
-//             this.url = url;
-//         }
-//         play(startTime: number = 0, loops: number = 0): egret.SoundChannel {
-//             let channel = new BKSoundChannel();
-//             channel.$loops = loops;
-//             channel.$startTime = startTime;
-//             channel.$type = this.type;
-//             channel.$url = this.url;
-//             channel.$play();
-//             return channel;
-//         }
-//         close(): void {
-//         }
-//     }
-//     egret.Sound = BKSound as any;
-// } 
-// namespace egret {
-//     export class BKSoundChannel extends egret.EventDispatcher implements egret.SoundChannel {
-//         public _bkAudio: BK.Audio;
-//         constructor() {
-//             super();
-//         }
-//         volume: number;
-//         position: number;
-//         $loops: number;
-//         $startTime: number;
-//         $type: string;
-//         $url: string;
-//         $play() {
-//             let _type: number;
-//             switch (this.$type) {
-//                 case egret.Sound.MUSIC:
-//                     _type = 0;
-//                     break;
-//                 case egret.Sound.EFFECT:
-//                     _type = 1;
-//                     break;
-//             }
-//             let loops = this.$loops === 0 ? -1 : this.$loops;
-//             this._bkAudio = new BK.Audio(_type, "Game://" + this.$url, loops, 0);
-//             this._bkAudio.startMusic();
-//         }
-//         stop(): void {
-//             this._bkAudio.stopMusic();
-//         }
-//     }
-// } 

@@ -172,8 +172,9 @@ declare namespace BK {
          * @param musicPath 音乐路径。
          * @param loop 重复次数，-1为循环播放
          */
-        constructor(type: number, musicPath: string, loop: number);
+        constructor(type: number, musicPath: string, loop: number,num:number);
 
+        static switch: boolean;
         /**
          * 开始播放
          */

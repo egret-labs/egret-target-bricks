@@ -16,6 +16,7 @@ interface QQAVRoomConfig {
   "accountType": number,
   "avRoomId": number,
   "gameRoomId": number,
+  "avKey" ?: string,
   "selfOpenId"?: string,
   "avRoleName"?: string
 }
@@ -72,11 +73,16 @@ class QAV {
 
   //是否已经初始化
   _hasInitFlag: boolean = false;
+  _initData : any;
   _hasSuccEnter: boolean = false;
+
+  //兼容ios下只能允许运行一次init的问题
+  _iosHasInitFlag : boolean = false;
 
   _callbackQueue: Array<(errCode) => void>;
 
   avRoomId: number;
+  avKey: string;
   gameRoomId: number;
   selfOpenId: string;
   avRoleName: string;
@@ -97,12 +103,14 @@ class QAV {
   }
 
   ///Public///
-  public setQAVCgf(cfg: any) {
+  public setQAVCfg(cfg: any) {
     this.qavCfg = cfg;
   }
 
   public setUpdateUserInfoCallback(callback: (errCode: number, cmd: string, data: any) => void) {
-    BK.MQQ.SsoRequest.addListener("cs.audioRoom_update_userinfo.local", this, callback);
+    let cmd = "cs.audioRoom_update_userinfo.local";
+    BK.MQQ.SsoRequest.removeListener(cmd,this);
+    BK.MQQ.SsoRequest.addListener(cmd, this, callback);
   }
 
   public setEventCallbackConfig(callbackCfg: QQAVCallbackConfig) {
@@ -110,7 +118,7 @@ class QAV {
   }
 
   public initQAV(cfg: QQAVConfig, callback: (errCode: number, cmd: string, data: any) => void) {
-    this.qavCfg = cfg;
+    this.setQAVCfg(cfg);
     this.__startQAVRoom(callback);
   }
 
@@ -121,6 +129,7 @@ class QAV {
           "switch": sw
         }
         var cmd = "cs.audioRoom_set_mic.local";
+        BK.MQQ.SsoRequest.removeListener(cmd,this);
         BK.MQQ.SsoRequest.addListener(cmd, this, callback);
         BK.MQQ.SsoRequest.send(data, cmd);
       } else {
@@ -136,6 +145,7 @@ class QAV {
           "switch": sw
         }
         var cmd = "cs.audioRoom_set_speaker.local";
+        BK.MQQ.SsoRequest.removeListener(cmd,this);
         BK.MQQ.SsoRequest.addListener(cmd, this, callback);
         BK.MQQ.SsoRequest.send(data, cmd);
       } else {
@@ -151,6 +161,7 @@ class QAV {
           "cameraPos": cameraPos
         }
         let cmd = "cs.audioRoom_camera_switch.local";
+        BK.MQQ.SsoRequest.removeListener(cmd,this);
         BK.MQQ.SsoRequest.addListener(cmd, this, function (errCode: number, cmd: string, data: any) {
           if (errCode == 0) {
             if (cameraPos == 0) {
@@ -177,6 +188,7 @@ class QAV {
         }
         let cmd = "cs.audioRoom_camera_enable.local";
         this._isFrontCamera = true;
+        BK.MQQ.SsoRequest.removeListener(cmd,this);
         BK.MQQ.SsoRequest.addListener(cmd, this, callback);
         BK.MQQ.SsoRequest.send(data, cmd);
       } else {
@@ -249,6 +261,7 @@ class QAV {
   }
 
   public exitRoom(callbck: (errCode: number, cmd: string, data: any) => void) {
+    this._hasInitFlag = false;
     this.__exitQAVRoom(function (errCode: number, cmd: string, data: any) {
       this.log("exit qav room errCode:" + errCode);
       callbck(errCode, cmd, data);
@@ -259,6 +272,7 @@ class QAV {
     var data = {};
     var cmd = "cs.audioRoom_get_endpointList.local";
     if (callback) {
+      BK.MQQ.SsoRequest.removeListener(cmd,this);
       BK.MQQ.SsoRequest.addListener(cmd, this, callback);
     }
     BK.MQQ.SsoRequest.send(data, cmd);
@@ -279,6 +293,7 @@ class QAV {
   public getFluidCtrlCfg(data: any, callback: (errCode: number, cmd: string, data: any) => void) {
     var cmd = "cs.audioRoom_get_fluid_ctrl_cfg.local"
     if (callback) {
+      BK.MQQ.SsoRequest.removeListener(cmd,this);
       BK.MQQ.SsoRequest.addListener(cmd, this, callback);
     }
     BK.MQQ.SsoRequest.send(data, cmd);
@@ -290,6 +305,7 @@ class QAV {
       category: category
     };
     if (callback) {
+      BK.MQQ.SsoRequest.removeListener(cmd,this);
       BK.MQQ.SsoRequest.addListener(cmd, this, callback);
     }
     BK.MQQ.SsoRequest.send(data, cmd);
@@ -301,6 +317,7 @@ class QAV {
       role: role
     }
     if (callback) {
+      BK.MQQ.SsoRequest.removeListener(cmd,this);
       BK.MQQ.SsoRequest.addListener(cmd, this, callback);
     }
     BK.MQQ.SsoRequest.send(data, cmd);
@@ -330,43 +347,69 @@ class QAV {
   }
 
   private __initQAVRoom(cfg: QQAVRoomConfig, callback: (errCode: number, cmd: string, data: any) => void) {
+    let cmd = "cs.audioRoom_init.local";
+
+    ////ios下只初始化一次
+    if (GameStatusInfo.platform == "ios" && this._iosHasInitFlag == true ) {
+      this.log("ios init once ");
+      callback(0, cmd, this._initData);
+      return ;
+    }
+    ////
     if (this._hasInitFlag == true) {
       this.log("AVRoom has been init .can't init Room twice !!");
       return;
     }
-    let cmd = "cs.audioRoom_init.local";
+    BK.MQQ.SsoRequest.removeListener(cmd,this);
     BK.MQQ.SsoRequest.addListener(cmd, this, function (errCode: number, cmd: string, data: any) {
       this.log("cmd:" + cmd + " errCode:" + errCode + " data:" + JSON.stringify(data));
       if (errCode == 0) {
         this._hasInitFlag = true;
+        this._initData = data;
+
+        if (GameStatusInfo.platform == "ios") {
+          this._iosHasInitFlag = true;
+          this.log("_iosHasInitFlag");
+        }
+
       }
       callback(errCode, cmd, data);
     }.bind(this));
     BK.MQQ.SsoRequest.send(cfg, cmd);
   }
 
-  private __enterQAVRoom(roomId: number, avRoomId: number, avRoleName: string, callback: (errCode: number, cmd: string, data: any) => void) {
+  private __enterQAVRoom(cfg: QQAVRoomConfig, callback: (errCode: number, cmd: string, data: any) => void) {
+     
+    var roomId: number = cfg.gameRoomId;
+    var avRoomId: number =  cfg.avRoomId
+    var avRoleName: string = cfg.avRoleName;
+    var avKey : string = cfg.avKey;
+
     var data = {
       "avRoomId": avRoomId,
       "gameRoomId": roomId,
-      "avRoleName": avRoleName
+      "avRoleName": avRoleName,
+      "avKey" : avKey
     }
     this.avRoomId = avRoomId;
     this.gameRoomId = roomId;
     this.avRoleName = avRoleName;
 
     let cmd = "cs.audioRoom_enter.local"
+    BK.MQQ.SsoRequest.removeListener(cmd,this);
     BK.MQQ.SsoRequest.addListener(cmd, this, function (errCode: number, cmd: string, data: any) {
       this.log("cmd:" + cmd + " errCode:" + errCode + " data:" + JSON.stringify(data));
       callback(errCode, cmd, data);
     }.bind(this));
     BK.MQQ.SsoRequest.send(data, cmd);
 
+    BK.MQQ.SsoRequest.removeListener("cs.close_room.local",this);
     BK.MQQ.SsoRequest.addListener("cs.close_room.local", this, function (errCode: number, cmd: string, data: any) {
       this.log("BK.QAVManager.closeGame!exitQAVRoom, avRoomId = " + this.avRoomId);
       this.__exitQAVRoom();
     }.bind(this));
 
+    BK.MQQ.SsoRequest.removeListener("cs.audioRoom_req_audio_session.local",this);
     BK.MQQ.SsoRequest.addListener("cs.audioRoom_req_audio_session.local", this, function (errCode, cmd, data) {
       this.log("BK.QAVManager.reqAudioSession!result = " + JSON.stringify(data));
     }.bind(this));
@@ -376,7 +419,9 @@ class QAV {
     var data = {
       "avRoomId": this.avRoomId
     }
-    let cmd = "cs.audioRoom_exit.local"
+    let cmd = "cs.audioRoom_exit.local";
+
+    BK.MQQ.SsoRequest.removeListener(cmd,this);
     BK.MQQ.SsoRequest.addListener(cmd, this, callback);
     BK.MQQ.SsoRequest.send(data, cmd);
   }
@@ -449,7 +494,6 @@ class QAV {
     }
     //2.开发环境
     else {
-
       var cfg: QQAVRoomConfig = {
         sdkAppId: 1400035750,
         accountType: 14181,
@@ -479,19 +523,23 @@ class QAV {
       this.log("initAndEnterRoom gameRoomId is null;");
       return;
     }
+    this.setQAVCfg(cfg);
     this.log("initAndEnterRoom step1 initRoom cfg:" + JSON.stringify(cfg));
     this.__initQAVRoom(cfg, function (initErrCode: number, initCmd: string, initData: any) {
       if (initErrCode == 0) {
         this.log("initAndEnterRoom step2 enterRoom");
-        this.__enterQAVRoom(cfg.gameRoomId, cfg.avRoomId, cfg.avRoleName, function (errCode: number, cmd: string, data: any) {
+        this.__enterQAVRoom(cfg, function (errCode: number, cmd: string, data: any) {
           if (errCode == 0) {
             this.log("initAndEnterRoom step2 enterRoom succ!");
             this._hasSuccEnter = true;
-            callback(errCode, cmd, data);
+          } else {
+            this._hasStartQAVRoomFlag = false;
           }
+          callback(errCode, cmd, data);
         }.bind(this));
       } else {
         this.log("initAndEnterRoom failed cmd:" + initCmd + " errCode:" + initErrCode + " data:" + JSON.stringify(initData));
+        this._hasStartQAVRoomFlag = false;
         callback(initErrCode, initCmd, initData);
       }
     }.bind(this));

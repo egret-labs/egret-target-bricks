@@ -143,6 +143,7 @@ CMSHOW_CS_CMD_GET_SRV_IP_PORT = "cs.get_server_ip_port.local"
 CMSHOW_CS_CMD_CHECK_PUBACCOUNT_STATE = "cs.check_pubAccount_state.local"
 CMSHOW_CS_CMD_ENTER_PUBACCOUNT_CARD = "cs.enter_pubAccount_card.local"
 CMSHOW_CS_CMD_SHARE_PIC = "cs.share_pic.local";
+CMSHOW_CS_CMD_SHARE_IN_ARK = "cs.share_game_in_ark.local"
 CMSHOW_AIO_PAUSE = "sc.aio_pause.local";
 CMSHOW_AIO_RESUME = "sc.aio_resume.local";
 
@@ -159,6 +160,7 @@ CMSHOW_CS_CMD_AUDIOROOM_INIT = "cs.audioRoom_init.local";
 CMSHOW_CS_CMD_AUDIOROOM_DISCONNECT = "cs.audioRoom_disconnect.local"
 CMSHOW_CS_CMD_AUDIOROOM_CAMERASWITCH = "cs.audioRoom_cameraswitch.local"
 CMSHOW_CS_CMD_AUDIOROOM_SET_BEAUTY = "cs.audioRoom_set_beauty.local"
+CMSHOW_CS_CMD_AUDIOROOM_REQ_AUDIO_SESSION = "cs.audioRoom_req_audio_session.local"
 /*
     BK.QQ.delegate.onStopGameEvent = 强制关闭游戏事件
     BK.QQ.delegate.onPushMsgEvent = 聊天消息通知事件
@@ -182,14 +184,13 @@ BK.QQ = (function () {
     return new function () {
         this.gameCfg = clone_(GameStatusInfo);
         this.gameCfg.gameId = parseInt(this.gameCfg.gameId);
-        this.roomVol = 4;
+
         this.arkData = {
-                "modeWording":"",          //等待加入时展示的wording, 如：计时模式，关卡-4等
-            }
+            "modeWording": "",          //等待加入时展示的wording, 如：计时模式，关卡-4等
+        }
 
 
-        this.setArkData = function (modeWording)
-        {
+        this.setArkData = function (modeWording) {
             this.arkData.modeWording = modeWording;          //等待加入时展示的wording, 如：计时模式，关卡-4等
         }
 
@@ -240,10 +241,46 @@ BK.QQ = (function () {
 
         });
 
+        //游戏内购
+        /**
+         * 
+         * @param {*} gameOrientation 1（默认，竖屏）2.横屏（home键在左边）3.横屏 （home键在右边）
+         * @param {*} transparent   是否透明
+         * @param {*} itemList 
+         */
+        this.qPayPurchase = function(gameOrientation,transparent,itemList,callback){
+            var cmd = "cs.openWebViewWithoutUrl.local";
+            var transparentNum = 1;
+            if(transparent == true){
+                transparentNum = 1;
+            }else{
+                transparentNum = 0;
+            }
+            var data =  {
+                "gameOrientation": gameOrientation,   //1（默认，竖屏）2.横屏（home键在左边）3.横屏 （home键在右边）
+                "openId": GameStatusInfo.openId,  //ios android都需要
+                "transparent":transparentNum,     //是否透明 默认为1(透明) 0为不透明 ios android  都需要
+                "businessType":1,       //业务类型 1 代表支付 ios android  都需要
+                "itemList": itemList     
+            }
+            if (callback) {
+                var cbCmd = "sc.apolloGameWebMessage.local";
+                BK.MQQ.SsoRequest.removeListener(cbCmd,this);
+                BK.MQQ.SsoRequest.addListener(cbCmd, this, function (errCode,cmd,data) {
+                    if (errCode == 0) {
+                        if (data.op && data.op == "apolloGamePlatform.buyProps") {
+                            callback(errCode,data.data);
+                        }
+                    }
+                }.bind(this));
+            }
+            BK.MQQ.SsoRequest.send(data, cmd);
+        }
+
         //分享游戏至手Q
         this.shareToMQQ = function (title, summary, detailUrl, picUrl) {
-        	var cmd = "cs.share_game_result.local";
-        	var data = {
+            var cmd = "cs.share_game_result.local";
+            var data = {
                 "cmd": cmd,
                 "from": GameStatusInfo.platform,
                 "gameId": GameStatusInfo.gameId,
@@ -251,16 +288,16 @@ BK.QQ = (function () {
                 "gameVersion": GameStatusInfo.gameVersion,
                 "roomId": GameStatusInfo.roomId,
                 "title": title,
-            	"summary": summary,
-            	"detailUrl": detailUrl,
-            	"picUrl": picUrl
+                "summary": summary,
+                "detailUrl": detailUrl,
+                "picUrl": picUrl
             };
 
             BK.MQQ.SsoRequest.send(data, cmd);
         }
 
         //成绩上报
-        this.scoreUpload = function (scoreData, callback) {
+        this.scoreUpload = function (scoreData,callback,arkData) {
             //请求数据
             var cmd = "apollo_aio_game.report_user_score_3rd";
 
@@ -271,8 +308,11 @@ BK.QQ = (function () {
                 "openId": GameStatusInfo.openId,
                 "version": GameStatusInfo.gameVersion,
                 "roomId": GameStatusInfo.roomId,
-                "gData": scoreData
+                "gData": scoreData,
             };
+            if (arkData) {
+                data["arkData"] = arkData;
+            }
             if (callback) {
                 BK.MQQ.SsoRequest.addListener(cmd, undefined, callback);
             }
@@ -283,10 +323,10 @@ BK.QQ = (function () {
         this.getRoomUserScoreInfo = function (roomId, callback) {
             var cmd = "apollo_aio_game.get_room_info_3rd";
             var data = {
-                "cmd" :cmd,
-                "from" : GameStatusInfo.platform, //描述请求来源或场景 h5.xxx.yyy/ios.xxx.yyy/android.xxx.yyy 用于后台统计
-                "gameId":GameStatusInfo.gameId,  //游戏ID
-                "version":GameStatusInfo.gameVersion,      //游戏版本
+                "cmd": cmd,
+                "from": GameStatusInfo.platform, //描述请求来源或场景 h5.xxx.yyy/ios.xxx.yyy/android.xxx.yyy 用于后台统计
+                "gameId": GameStatusInfo.gameId,  //游戏ID
+                "version": GameStatusInfo.gameVersion,      //游戏版本
                 "roomId": roomId,      //房间ID
             }
             if (callback) {
@@ -305,8 +345,8 @@ BK.QQ = (function () {
                 "openId": GameStatusInfo.openId,
                 "version": GameStatusInfo.gameVersion,
                 "roomId": GameStatusInfo.roomId,
-               	"toOpenId": openId,
-            	"cycleNum": cycleType
+                "toOpenId": openId,
+                "cycleNum": cycleType
             };
             if (callback) {
                 BK.MQQ.SsoRequest.addListener(cmd, undefined, callback);
@@ -348,9 +388,9 @@ BK.QQ = (function () {
         this.getGameItemList = function (callback) {
             var cmd = "apollo_aio_game.get_game_itemList";
             var data = {
-                    "cmd":cmd,
-                    "from": GameStatusInfo.platform,  //描述请求来源或场景 h5.xxx.yyy/ios.xxx.yyy/android.xxx.yyy 用于后台统计
-                    "gameId":GameStatusInfo.gameId
+                "cmd": cmd,
+                "from": GameStatusInfo.platform,  //描述请求来源或场景 h5.xxx.yyy/ios.xxx.yyy/android.xxx.yyy 用于后台统计
+                "gameId": GameStatusInfo.gameId
             }
             if (callback) {
                 BK.MQQ.SsoRequest.addListener(cmd, undefined, callback);
@@ -362,7 +402,7 @@ BK.QQ = (function () {
         this.getUserGameItems = function (callback) {
             var cmd = "apollo_aio_game.get_user_game_items";
             var data = {
-            	"cmd": cmd,
+                "cmd": cmd,
                 "from": GameStatusInfo.platform,
                 "gameId": GameStatusInfo.gameId,
                 "openId": GameStatusInfo.openId
@@ -374,14 +414,14 @@ BK.QQ = (function () {
         }
 
         //购买道具
-        this.buyGameItems = function (currencyType, items,callback) {
+        this.buyGameItems = function (currencyType, items, callback) {
             var cmd = "apollo_aio_game.buy_game_items";
             var data = {
                 "cmd": cmd,
                 "from": GameStatusInfo.platform,
                 "gameId": GameStatusInfo.gameId,
-            	"curreType": currencyType, //3-游戏点券 4-二级货币（暂不能用）
-            	"itemIdList": items
+                "curreType": currencyType, //3-游戏点券 4-二级货币（暂不能用）
+                "itemIdList": items
             };
             if (callback) {
                 BK.MQQ.SsoRequest.addListener(cmd, undefined, callback);
@@ -533,12 +573,44 @@ BK.QQ = (function () {
             var cmd = "cs.on_get_open_key.local";
 
             var data = {
-                "gameId" : GameStatusInfo.gameId
+                "gameId": GameStatusInfo.gameId
             };
             if (callback) {
                 BK.MQQ.SsoRequest.addListener(cmd, this, callback);
             }
             BK.MQQ.SsoRequest.send(data, cmd);
+        }
+
+        //监听游戏退到后台事件
+        this.listenGameEventEnterBackground = function (obj, callback) {
+            var cmd = "sc.game_enter_background.local";
+            if (callback) {
+                BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
+            }
+        }
+
+        //监听游戏回到前台
+        this.listenGameEventEnterForeground = function (obj, callback) {
+            var cmd = "sc.game_enter_foreground.local";
+            if (callback) {
+                BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
+            }
+        }
+
+        //监听游戏界面最大化
+        this.listenGameEventMaximize = function (obj, callback) {
+            var cmd = "sc.game_maximize.local";
+            if (callback) {
+                BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
+            }
+        }
+
+        //监听游戏界面最小化
+        this.listenGameEventMinimize = function (obj, callback) {
+            var cmd = "sc.game_maximize.local";
+            if (callback) {
+                BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
+            }
         }
 
         this._event4GetVIPInfo = function (errCode, cmd, data) {
@@ -627,9 +699,9 @@ BK.QQ = (function () {
                         "sdkAppId": sdkAppId,
                         "accountType": accountType,
                         "isMine": isMine,
-                        "isDisableSendMsg" : this.isAutoSendJoinRoomNotify
+                        "isDisableSendMsg": (!this.isAutoSendJoinRoomNotify) ? 1:0
                     }
-                   BK.Script.log(0, 0, "BK.QQ.notifyJoinroom isDisableSendMsg: "+someOneJoinGame.isDisableSendMsg);
+                    BK.Script.log(0, 0, "BK.QQ.notifyJoinroom isDisableSendMsg: " + someOneJoinGame.isDisableSendMsg);
                     BK.MQQ.SsoRequest.send(someOneJoinGame, CMSHOW_CS_CMD_JOIN_ROOM);
                 }, this);
             } else {
@@ -637,15 +709,34 @@ BK.QQ = (function () {
             }
         }
 
-        this.SendGameMsg = function () {
-            var JoinGameMsg = {
-                "gameId": this.gameCfg.gameId,
-                "openId": BK.Room.mId,   // 当前加入房间的人
-                "roomId": this.gameCfg.roomId,
-                "gameMode": this.gameCfg.gameMode
+        this.sendGameMsg = function () {
+            if (this.gameCfg.roomId && this.gameCfg.roomId > 0) {
+                var JoinGameMsg = {
+                    "gameId": this.gameCfg.gameId,
+                    "openId": GameStatusInfo.openId,   // 当前加入房间的人
+                    "roomId": this.gameCfg.roomId,
+                    "gameMode": this.gameCfg.gameMode
+                }
+
+                BK.Script.log(0, 0, "SendGameMsg : gameId=" + JoinGameMsg.gameId + "  openId=" + JoinGameMsg.openId + " roomId=" + JoinGameMsg.roomId + "  gameMode=" + JoinGameMsg.gameMode);
+                BK.MQQ.SsoRequest.send(JoinGameMsg, CMSHOW_CS_CMD_SEND_GAME_MSG);
+
             }
-            BK.Script.log(1, 1, "SendGameMsg : gameId="+ JoinGameMsg.gameId+"  openId="+JoinGameMsg.openId+ " roomId="+JoinGameMsg.roomId+"  gameMode="+JoinGameMsg.gameMode);
-            BK.MQQ.SsoRequest.send(JoinGameMsg, CMSHOW_CS_CMD_SEND_GAME_MSG);
+        }
+//         注意summary 字段字符长度不超过20个字符，终端限制
+         this.shareToArk = function(roomId,summary,picUrl,isSelectFriend,extendInfo)
+         {
+             var data = {
+             "summary": summary,
+             "picUrl": picUrl,
+             "gameId": this.gameCfg.gameId,
+             "roomId": roomId,
+             "gameMode":this.gameCfg.gameMode,
+             "isSelectFriend":isSelectFriend,
+             "extendInfo":extendInfo
+            }
+            BK.Script.log(0, 0, "ShareToArk summary="+data.summary+ " roomId="+data.roomId+"  gameMode="+data.gameMode+"picUrl="+data.picUrl+"  gameId="+data.gameId);
+            BK.MQQ.SsoRequest.send(data, CMSHOW_CS_CMD_SHARE_IN_ARK);
         }
 
         this._event4QuitGame = function (errCode, cmd, data) {
@@ -746,9 +837,9 @@ BK.QQ = (function () {
                 data["gameId"] = this.gameCfg.gameId;
                 data["gameRoomId"] = this.gameCfg.roomId;
                 data["avRoomId"] = data.data.avRoomId ? data.data.avRoomId : 0,
-                data["sdkAppId"] = data.data.sdkAppId ? data.data.sdkAppId : 0,
-                data["accountType"] = data.data.accountType ? data.data.accountType : 0,
-                this.ssoJoinRoomCallbackPublic(errCode, cmd, data);
+                    data["sdkAppId"] = data.data.sdkAppId ? data.data.sdkAppId : 0,
+                    data["accountType"] = data.data.accountType ? data.data.accountType : 0,
+                    this.ssoJoinRoomCallbackPublic(errCode, cmd, data);
             }
         }
 
@@ -765,9 +856,9 @@ BK.QQ = (function () {
                 "gameMode": this.gameCfg.gameMode,
                 // "shadow":1,          // 1-和影子PK，0，实时PK
                 // "toUin":123455656,   // 用于和官方小人的PK，官方小人加入房间时用,
-                "roomVol" : this.roomVol,
+                "roomVol": this.roomVol,
 
-                "arkData" : this.arkData
+                "arkData": this.arkData
             };
 
 
@@ -836,16 +927,18 @@ BK.QQ = (function () {
             }
         }
 
-        this._closeRoom = function () {
-            if (!this.hasStartGameSucc) {
-                if (this.gameCfg.roomId && this.gameCfg.roomId != 0) {
-                    if (this.gameCfg.isCreator) {
-                        this.notifyCancelGameSrv();
-                    } else {
-                        this.notifyQuitGameSrv();
+        this._closeRoom = function (needSSOServer) {
+            BK.QQ.isNeedSSOServer = (needSSOServer != undefined && needSSOServer != null) ? needSSOServer : true;
+            if (Boolean(BK.QQ.isNeedSSOServer) == true) {
+                if (!this.hasStartGameSucc) {
+                    if (this.gameCfg.roomId && this.gameCfg.roomId != 0) {
+                        if (this.gameCfg.isCreator) {
+                            this.notifyCancelGameSrv();
+                        } else {
+                            this.notifyQuitGameSrv();
+                        }
                     }
                 }
-
             }
         }
 
@@ -901,15 +994,14 @@ BK.Room = function () {
     this.netTimeOutTs = 0;
     this.options = null;
 
-    this.setArkData = function (modeWording)
-    {
+    this.setArkData = function (modeWording) {
         BK.QQ.setArkData(modeWording);
     }
-    this.setRoomVol = function(roomVol) {
+    this.setRoomVol = function (roomVol) {
         BK.QQ.roomVol = roomVol;
     }
 
-	this.read32BytesToString = function (buff) {
+    this.read32BytesToString = function (buff) {
         var str = ""
         for (var i = 0; i < 32; i++) {
             var ch = buff.readUint8Buffer();
@@ -1163,10 +1255,11 @@ BK.Room = function () {
         BK.Script.log(0, 0, "queryRoom push");
     }
 
-    this.joinRoom = function (src, callback, notify) {
+    this.joinRoom = function (src, callback, notify, needSSOServer) {
         this.joinRoomCallBack = callback;
-        BK.QQ.isAutoSendJoinRoomNotify = (notify?notify:1);
-        BK.Script.log(0, 0, "BK.QQ.notifyJoinroom isDisableSendMsg   isAuto: "+notify + "           isAutoSendJoin:  "+BK.QQ.isAutoSendJoinRoomNotify);
+        BK.QQ.isNeedSSOServer = (needSSOServer != undefined && needSSOServer != null) ? needSSOServer : true;
+        BK.QQ.isAutoSendJoinRoomNotify = (notify != undefined && notify != null) ? notify : true;
+        BK.Script.log(0, 0, "BK.QQ.notifyJoinroom isDisableSendMsg   isAuto: " + notify + ",isAutoSendJoin:  " + BK.QQ.isAutoSendJoinRoomNotify);
         var funObj = new Object();
         funObj.cmd = 0x2;
         funObj.arg0 = src;
@@ -1301,10 +1394,10 @@ BK.Room = function () {
         this.reqArray.push(funObj);
     }
 
-	this.requestsendBroadcastData = function (buf) {
-		var bufLen = buf.capacity ? buf.capacity : buf.bufferLength();
-		var body = new BK.Buffer(fixedHeaderLen + bufLen, 1);
-		this.addFixedHeader(body, 0x1, this.gameId, this.roomId, this.mId);
+    this.requestsendBroadcastData = function (buf) {
+        var bufLen = buf.capacity ? buf.capacity : buf.bufferLength();
+        var body = new BK.Buffer(fixedHeaderLen + bufLen, 1);
+        this.addFixedHeader(body, 0x1, this.gameId, this.roomId, this.mId);
         body.writeBuffer(buf);
         var st = BK.Security.getST();
         BK.Security.encrypt(body);
@@ -1329,10 +1422,10 @@ BK.Room = function () {
 
     }
 
-	this.requestSetUserData = function (buf) {
-		var bufLen = buf.capacity ? buf.capacity : buf.bufferLength();
-		var body = new BK.Buffer(fixedHeaderLen + bufLen, 1);
-		this.addFixedHeader(body, 0x20, this.gameId, this.roomId, this.mId);
+    this.requestSetUserData = function (buf) {
+        var bufLen = buf.capacity ? buf.capacity : buf.bufferLength();
+        var body = new BK.Buffer(fixedHeaderLen + bufLen, 1);
+        this.addFixedHeader(body, 0x20, this.gameId, this.roomId, this.mId);
         body.writeBuffer(buf);
         var st = BK.Security.getST();
         BK.Security.encrypt(body);
@@ -1469,50 +1562,46 @@ BK.Room = function () {
         return buff;
     }
 
-    this.sendControlCommand = function(subcmd, data, openKey) {
-		var funObj = new Object();
-		funObj.cmd = 0x30;
-		funObj.arg0 = subcmd;
-		funObj.arg1 = data;
-		funObj.arg2 = openKey;
-		this.reqArray.push(funObj);
-	}
+    this.sendControlCommand = function (subcmd, data, openKey, callback) {
+        var funObj = new Object();
+        funObj.cmd = 0x30;
+        funObj.arg0 = subcmd;
+        funObj.arg1 = data;
+        funObj.arg2 = openKey;
+        this.reqArray.push(funObj);
+        this.controlCommandCallback = callback;
+    }
 
-	this.requestControlCommand = function(subcmd, data, openkey) {
+    this.requestControlCommand = function (subcmd, data, openkey) {
 		/*
 			subcmd: 对应对外映射的命令码
 			data: 用户上行请求参数
 		*/
-		BK.Script.log(1, 0, "catchToy!requestControlCommand");
-		var tlv = new BK.TLV(14 + data.bufferLength() + openkey.bufferLength()); // 4 + datalen + 4 + subcmd + 4 + openkey
-		tlv.bkJSTLVWriteBuffer(data, TLVType.Byte, 201);
-		tlv.bkJSTLVWriteUInt16(subcmd,TLVType.Uint16, 202);
-		tlv.bkJSTLVWriteBuffer(openkey, TLVType.Byte, 203);
-		BK.Script.log(1, 0, "catchToy!fixedlen = " + fixedHeaderLen);
-		BK.Script.log(1, 0, "catchToy!bodylen = " + tlv.bkJSTLVGetLength());
-		var body = new BK.Buffer(fixedHeaderLen + tlv.bkJSTLVGetLength(), 1);
-		this.addFixedHeader(body, 0x30, this.gameId, this.roomId, this.mId);
-		body.writeBuffer(tlv.bkJSTLVGetBuffer());
+        var tlv = new BK.TLV(14 + data.bufferLength() + openkey.bufferLength()); // 4 + datalen + 4 + subcmd + 4 + openkey
+        tlv.bkJSTLVWriteBuffer(data, TLVType.Byte, 201);
+        tlv.bkJSTLVWriteUInt16(subcmd, TLVType.Uint16, 202);
+        tlv.bkJSTLVWriteBuffer(openkey, TLVType.Byte, 203);
+        var body = new BK.Buffer(fixedHeaderLen + tlv.bkJSTLVGetLength(), 1);
+        this.addFixedHeader(body, 0x30, this.gameId, this.roomId, this.mId);
+        body.writeBuffer(tlv.bkJSTLVGetBuffer());
 
-		BK.Security.encrypt(body);
+        BK.Security.encrypt(body);
 
-		var st = BK.Security.getST();
-		var stlen = st.bufferLength();
-		var buffer = new BK.Buffer(HeaderLen + body.bufferLength() + stlen, 1);
-		this.addHeader(buffer, body.bufferLength(), stlen);
-		buffer.writeBuffer(st);
-		buffer.writeBuffer(body);
-		BK.Script.log(1, 0, "catchToy!headerlen = " + HeaderLen);
-		BK.Script.log(1, 0, "catchToy!enbodylen = " + body.bufferLength());
-		return buffer;
-	}
+        var st = BK.Security.getST();
+        var stlen = st.bufferLength();
+        var buffer = new BK.Buffer(HeaderLen + body.bufferLength() + stlen, 1);
+        this.addHeader(buffer, body.bufferLength(), stlen);
+        buffer.writeBuffer(st);
+        buffer.writeBuffer(body);
+        return buffer;
+    }
 
 
     this.sendKeepAlive = function () {
         var funObj = new Object();
         funObj.cmd = 0xc;
         this.reqArray.push(funObj);
-		if (this.netTimeOutTs != 0) {
+        if (this.netTimeOutTs != 0) {
             var now = BK.Time.timestamp;
             var netCost = now - this.netTimeOutTs;
 
@@ -1811,8 +1900,8 @@ BK.Room = function () {
         var res = tlv.bkJSParseTLV();
         if (!res) {
             BK.Script.log(0, 0, "recvQueryFrameSync empty.");
-            this.queryFrameDataCallBack(undefined);
-            return ;
+            this.queryFrameDataCallBack(0, undefined);
+            return;
         }
         var frameData = res.tag201;
         var frameDataArr = new Array();
@@ -1849,35 +1938,36 @@ BK.Room = function () {
         }
         BK.Script.log(0, 0, "query end");
 
-        this.queryFrameDataCallBack(frameDataArr);
+        this.queryFrameDataCallBack(0, frameDataArr);
     }
 
-    this.recvControlCommand = function(buffer, bodylen) {
-		var body = buffer.readBuffer(bodylen);
-		var tlv = new BK.TLV(body);
-		var res = tlv.bkJSParseTLV();
-		BK.Script.log(1, 0, 'catchToy!recvControlCommand!res = ' + res);
-		if (res.tag201) {
-			var respBuf = res.tag201.bkJSTLVGetBuffer();
-			var respData = respBuf.readAsString();
-			BK.Script.log(1, 0, 'catchToy!recvControlCommand!res = ' + respData);
-		}
-	}
+    this.recvControlCommand = function (buffer, bodylen) {
+        var body = buffer.readBuffer(bodylen);
+        var tlv = new BK.TLV(body);
+        var res = tlv.bkJSParseTLV();
+        var resp = {};
+        if (res.tag201) {
+            resp = JSON.parse(res.tag201.readAsString());
+        }
+        if (this.controlCommandCallback) {
+            this.controlCommandCallback(0, resp);
+        }
+    }
 
-	this.recvSSOJoinRoom = function (errCode, cmd, data) {
-		BK.Script.log(1, 1, "recvSSOJoinRoom = true data=" + JSON.stringify(data));
-		if (errCode == 0) {
-			var avRoomId = data.data.avRoomId;
-			var appId = data.data.sdkAppId;
-			var accountType = data.data.accountType;
-			GameStatusInfo.avAppId = appId;
-			GameStatusInfo.avAccountType = accountType;
-			GameStatusInfo.avRoomId = avRoomId;
-			GameStatusInfo.roomId = this.roomId;
-		}
-	}
+    this.recvSSOJoinRoom = function (errCode, cmd, data) {
+        BK.Script.log(1, 1, "recvSSOJoinRoom = true data=" + JSON.stringify(data));
+        if (errCode == 0) {
+            var avRoomId = data.data.avRoomId;
+            var appId = data.data.sdkAppId;
+            var accountType = data.data.accountType;
+            GameStatusInfo.avAppId = appId;
+            GameStatusInfo.avAccountType = accountType;
+            GameStatusInfo.avRoomId = avRoomId;
+            GameStatusInfo.roomId = this.roomId;
+        }
+    }
 
-	this.handleServerError = function (fixedHeader) {
+    this.handleServerError = function (fixedHeader) {
         BK.Script.log(0, 1, "handleServerError!cmd = " + fixedHeader.cmd + ", errCode = " + fixedHeader.ret);
 
 
@@ -1914,6 +2004,7 @@ BK.Room = function () {
             case 0x10:
                 break;
             case 0x13:
+                this.queryFrameDataCallBack(fixedHeader.ret, null);
                 break;
             case 0x25:
                 this.matchGameCallBack(fixedHeader.ret);
@@ -1925,13 +2016,13 @@ BK.Room = function () {
                 this.quitMatchGameCallBack(fixedHeader.ret);
                 break;
             case 0x31: {
-				BK.Script.log(1, 0, "catchToy!0x31 error = " + fixedHeader.ret);
-				break;
-			}
+                this.controlCommandCallback && this.controlCommandCallback(fixedHeader.ret, {});
+                break;
+            }
         }
     }
 
-	this.handleRecv = function (buff) {
+    this.handleRecv = function (buff) {
 
         var header = this.getHeader(buff);
         if (header.stlen != 0) {
@@ -1973,14 +2064,17 @@ BK.Room = function () {
                 //1.callback
                 this.joinRoomCallBack(fixedHeader.ret, this);
 
-                //2.notify cmshow server
-                for (var i = 0; i < this.newJoinPlayers.length; i++) {
-                    if (this.newJoinPlayers[i].openId == currentPlayerOpenId) {
-						BK.QQ.ssoJoinRoomCallback = this.recvSSOJoinRoom.bind(this);
-						BK.QQ.notifyNewOrJoinRoomSrv(this.newJoinPlayers, this.roomId, this.ownerId == GameStatusInfo.openId ? 1 : 2);
-                        return;
+                if (Boolean(BK.QQ.isNeedSSOServer) == true) {
+                    //2.notify cmshow server
+                    for (var i = 0; i < this.newJoinPlayers.length; i++) {
+                        if (this.newJoinPlayers[i].openId == currentPlayerOpenId) {
+                            BK.QQ.ssoJoinRoomCallback = this.recvSSOJoinRoom.bind(this);
+                            BK.QQ.notifyNewOrJoinRoomSrv(this.newJoinPlayers, this.roomId, this.ownerId == GameStatusInfo.openId ? 1 : 2);
+                            return;
+                        }
                     }
                 }
+
                 //3.notify mqq some one join room
                 BK.QQ.notifyJoinRoom(this.newJoinPlayers, {}, fixedHeader.ret);
                 break;
@@ -1993,7 +2087,9 @@ BK.Room = function () {
             case 0x9:
                 this.recvStartGame(body, body.bufferLength() - fixedHeaderLen);
                 this.startGameCallBack(fixedHeader.ret);
-                BK.QQ.notifyStartGameSrv();
+                if (Boolean(BK.QQ.isNeedSSOServer) == true) {
+                    BK.QQ.notifyStartGameSrv();
+                }
                 break;
             case 0x1:
                 var buf = body.readBuffer(body.bufferLength() - fixedHeaderLen);
@@ -2030,9 +2126,9 @@ BK.Room = function () {
                 this.quitMatchGameCallBack(fixedHeader.ret);
                 break;
             case 0x31: {
-				this.recvControlCommand(body, body.bufferLength() - fixedHeaderLen);
-				break;
-			}
+                this.recvControlCommand(body, body.bufferLength() - fixedHeaderLen);
+                break;
+            }
         }
     }
 
@@ -2088,15 +2184,13 @@ BK.Room = function () {
                 }
                 break;
             case 0x30: {
-				var data = new BK.Buffer();
-				var openkey = new BK.Buffer();
-				data.writeAsString(funObj.arg1);
-				openkey.writeAsString(funObj.arg2);
-				BK.Script.log(1, 0, "catchToy!data = " + funObj.arg1);
-				BK.Script.log(1, 0, "catchToy!openkey = " + funObj.arg2);
-				buff = this.requestControlCommand(funObj.arg0, data, openkey);
-				break;
-			}
+                var data = new BK.Buffer();
+                var openkey = new BK.Buffer();
+                data.writeAsString(funObj.arg1);
+                openkey.writeAsString(funObj.arg2);
+                buff = this.requestControlCommand(funObj.arg0, data, openkey);
+                break;
+            }
         }
         if (buff != undefined) {
             BK.Script.log(0, 0, "requestSocket = " + funObj.cmd);
@@ -2282,7 +2376,7 @@ BK.Room = function () {
         return update;
     }
     //创建并加入房间
-    this.createAndJoinRoom = function (gameId, masterOpenId, callback,isSendMsg) {
+    this.createAndJoinRoom = function (gameId, masterOpenId, callback, isSendMsg, needSSOServer) {
 
         this.createRoom(gameId, masterOpenId, function (createStatusCode, netAddr, roomId) {
             if (createStatusCode == 0) {
@@ -2302,7 +2396,7 @@ BK.Room = function () {
                     BK.Script.log(0, 0, "加入房间 statusCode:" + statusCode + " roomid is " + room.roomId);
 
                     callback(statusCode, this);
-                },isSendMsg);
+                }, isSendMsg, needSSOServer);
             } else {
                 callback(createStatusCode, this);
             }
@@ -2311,7 +2405,7 @@ BK.Room = function () {
 
 
     //查询并且加房间
-    this.queryAndJoinRoom = function (gameId, roomId, joinerOpenId, callback,isSendMsg) {
+    this.queryAndJoinRoom = function (gameId, roomId, joinerOpenId, callback, isSendMsg, needSSOServer) {
 
         if (this.serverConnected != 1) {
             this.socket.close();
@@ -2334,7 +2428,7 @@ BK.Room = function () {
                     BK.Script.log(0, 0, "加入房间 statusCode:" + statusCode + " roomid is " + room.roomId);
 
                     callback(statusCode, this);
-                },isSendMsg);
+                }, isSendMsg, needSSOServer);
 
             } else {
                 callback(queryStatusCode, undefined);
@@ -2396,7 +2490,7 @@ BK.Room = function () {
             BK.Script.log(0, 0, "create Fixed Room ");
         }
         //使用固定房间号创建并加入房间
-        this.createAndJoinFixedRoom = function (gameId, masterOpenId, roomId, callback,isSendMsg) {
+        this.createAndJoinFixedRoom = function (gameId, masterOpenId, roomId, callback, isSendMsg) {
             this.createFixedRoom(gameId, masterOpenId, roomId, function (createStatusCode, netAddr, roomId) {
                 if (createStatusCode == 0) {
 
@@ -2415,7 +2509,7 @@ BK.Room = function () {
                         BK.Script.log(0, 0, "加入房间 statusCode:" + statusCode + " roomid is " + room.roomId);
 
                         callback(statusCode, this);
-                    },isSendMsg);
+                    }, isSendMsg);
                 } else {
                     callback(createStatusCode, this);
                 }

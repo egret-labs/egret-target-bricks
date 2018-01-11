@@ -25,10 +25,6 @@ class BKRoomManager
 {
   openId:string;
   room:BK.Room;
-  //心跳相关
-  heartbeatInterval : number  = 0;
-  hasStartHearbeat : boolean = false;
-  lastHeartBeatTs : number = -1;
 
   options:BKRoomManagerOption;
 
@@ -48,17 +44,7 @@ class BKRoomManager
 
   log(str)
   {
-      BK.Script.log(1,1,"BKRoomManager:"+str);
-  }
-
-  debugLog(str)
-  {
       BK.Script.log(0,0,"BKRoomManager:"+str);
-  }
-
-  errorLog(str)
-  {
-      BK.Script.log(1,1,"BKRoomManager:"+str);
   }
 
   masterCreateAndJoinRoomWithFixRoomId(fixRoomId:number)
@@ -102,28 +88,6 @@ class BKRoomManager
 
   startGame(callback:(retCode:RoomErrorCode)=>void){
       this.room.startGame(callback);
-  }
-
-  startHeartbeat(interval:number)
-  {
-      this.heartbeatInterval = interval;
-      if (this.hasStartHearbeat == false) {
-        BK.Director.ticker.add(function(ts,duration){
-            //ts
-            if(this.lastHeartBeatTs < 0){
-                this.lastHeartBeatTs = ts;
-            }else{
-                if ((ts - this.lastHeartBeatTs)>this.heartbeatInterval) {
-                    this.lastHeartBeatTs = ts;
-                    this.room.sendKeepAlive();
-                    this.log("startHeartbeat sendKeepAlive");
-                }
-            }
-        }.bind(this));
-        this.hasStartHearbeat = true;
-      }else{
-          this.log("startHeartbeat twice. new interval is :"+this.heartbeatInterval);
-      }
   }
 
   ///callback functions

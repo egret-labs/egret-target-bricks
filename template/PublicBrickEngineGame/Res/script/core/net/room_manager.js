@@ -1,9 +1,5 @@
 var BKRoomManager = (function () {
     function BKRoomManager(option) {
-        //心跳相关
-        this.heartbeatInterval = 0;
-        this.hasStartHearbeat = false;
-        this.lastHeartBeatTs = -1;
         this.options = option;
         this.room = new BK.Room({
             qavCfg: option.qavCfg
@@ -16,13 +12,7 @@ var BKRoomManager = (function () {
         }
     }
     BKRoomManager.prototype.log = function (str) {
-        BK.Script.log(1, 1, "BKRoomManager:" + str);
-    };
-    BKRoomManager.prototype.debugLog = function (str) {
         BK.Script.log(0, 0, "BKRoomManager:" + str);
-    };
-    BKRoomManager.prototype.errorLog = function (str) {
-        BK.Script.log(1, 1, "BKRoomManager:" + str);
     };
     BKRoomManager.prototype.masterCreateAndJoinRoomWithFixRoomId = function (fixRoomId) {
         if (this.options.environment && this.options.environment == 2 /* DEMO_DEV */) {
@@ -55,28 +45,6 @@ var BKRoomManager = (function () {
     };
     BKRoomManager.prototype.startGame = function (callback) {
         this.room.startGame(callback);
-    };
-    BKRoomManager.prototype.startHeartbeat = function (interval) {
-        this.heartbeatInterval = interval;
-        if (this.hasStartHearbeat == false) {
-            BK.Director.ticker.add(function (ts, duration) {
-                //ts
-                if (this.lastHeartBeatTs < 0) {
-                    this.lastHeartBeatTs = ts;
-                }
-                else {
-                    if ((ts - this.lastHeartBeatTs) > this.heartbeatInterval) {
-                        this.lastHeartBeatTs = ts;
-                        this.room.sendKeepAlive();
-                        this.log("startHeartbeat sendKeepAlive");
-                    }
-                }
-            }.bind(this));
-            this.hasStartHearbeat = true;
-        }
-        else {
-            this.log("startHeartbeat twice. new interval is :" + this.heartbeatInterval);
-        }
     };
     ///callback functions
     BKRoomManager.prototype._startGameCallback = function (retCode) {

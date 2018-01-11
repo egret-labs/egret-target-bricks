@@ -1,8 +1,0 @@
-{
-    "compilerOptions": {
-        "noImplicitAny": true,
-        "removeComments": true,
-        "target": "es5"
-    },
-    "files": ["ticker.ts"]
-}
