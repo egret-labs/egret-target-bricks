@@ -193,15 +193,6 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        var fun = function (a) {
-            debugger;
-            console.log("得到参数 a: ", a);
-        };
-        debugger;
-        egret.callLater(fun, this, 1);
-        egret.setTimeout(function () {
-            textfield.x = 500;
-        }, this, 3000);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。

@@ -136,6 +136,8 @@ this.navigator = { userAgent: "BK" };
             BK.Script.loadlib(jsLib);
         }
     }
+    //
+    BK.Script.loadlib('GameRes://egret.bricks.js');
 
     if (manifest.game && manifest.game instanceof Array) {
         for (var i = 0, l = manifest.game.length; i < l; ++i) {

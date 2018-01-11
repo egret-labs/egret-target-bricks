@@ -26,16 +26,18 @@
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+//
+console.log = function (...others: any[]): void {
+    let str = "";
+    if (others)
+        for (let other of others)
+            str += other;
+    BK.Script.log(0, 0, str);
+};
+//
+this.setTimeout = this.setTimeout || function () { };
 
 namespace egret {
-    console.log = function (...others: any[]): void {
-        let str = "";
-        if (others)
-            for (let other of others)
-                str += other;
-        BK.Script.log(0, 0, str);
-    };
-
     egret.getTimer = function getTimer(): number {
         return Math.round(BK.Time.timestamp * 1000);
     };
