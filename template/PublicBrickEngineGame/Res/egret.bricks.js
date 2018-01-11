@@ -2370,6 +2370,7 @@ var egret;
             _this._mainTicker.add(function () {
                 _this._touchHandler();
                 egret.ticker.update();
+                egret.ticker['callLaters'].call(egret.ticker);
             }, _this);
             _this.updateScreenSize();
             _this.updateMaxTouches();
