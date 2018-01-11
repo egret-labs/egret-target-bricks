@@ -33,7 +33,7 @@ namespace egret {
                 this._bkSprite.size = this._size;
                 this._bkSprite.adjustTexturePosition(
                     this._texture.$bitmapX,
-                    this._texture.$bitmapY,
+                    this._texture.$sourceHeight - (this._texture.$bitmapY + this._texture.$bitmapHeight),
                     this._texture.$bitmapWidth,
                     this._texture.$bitmapHeight,
                     this._texture.$rotated

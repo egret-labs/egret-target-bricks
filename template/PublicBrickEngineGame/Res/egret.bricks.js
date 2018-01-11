@@ -1465,7 +1465,7 @@ var egret;
                     this._size.width = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
                     this._size.height = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
                     this._bkSprite.size = this._size;
-                    this._bkSprite.adjustTexturePosition(this._texture.$bitmapX, this._texture.$bitmapY, this._texture.$bitmapWidth, this._texture.$bitmapHeight, this._texture.$rotated);
+                    this._bkSprite.adjustTexturePosition(this._texture.$bitmapX, this._texture.$sourceHeight - (this._texture.$bitmapY + this._texture.$bitmapHeight), this._texture.$bitmapWidth, this._texture.$bitmapHeight, this._texture.$rotated);
                 }
                 else {
                     this._bkSprite.setTexture({});
@@ -2370,7 +2370,6 @@ var egret;
             _this._mainTicker.add(function () {
                 _this._touchHandler();
                 egret.ticker.update();
-                egret.ticker['callLaters'].call(egret.ticker);
             }, _this);
             _this.updateScreenSize();
             _this.updateMaxTouches();
