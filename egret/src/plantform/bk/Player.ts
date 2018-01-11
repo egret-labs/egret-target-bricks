@@ -45,6 +45,7 @@ namespace egret {
             lifecycle.stage = this.stage;
             // lifecycle.addLifecycleListener(WebLifeCycleHandler); ?
 
+            sys.$TempStage = this.stage;
             this.stage.$screen = this;
             this.stage.maxTouches = 10;
             this.stage.frameRate = this._options.frameRate;
