@@ -1,0 +1,1114 @@
+{
+    "action":
+        [
+            {"type":"Purse","distance":"10","y":290,"purseType":2},
+            {"type":"Purse","distance":"10","y":260,"purseType":2},
+            {"type":"Purse","distance":"10","y":230,"purseType":2},
+            {"type":"Purse","distance":"40","y":290,"purseType":2},
+            {"type":"Purse","distance":"40","y":260,"purseType":2},
+            {"type":"Purse","distance":"40","y":230,"purseType":2},
+            {"type":"Purse","distance":"70","y":290,"purseType":2},
+            {"type":"Purse","distance":"70","y":260,"purseType":2},
+            {"type":"Purse","distance":"70","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"300","y":270,"purseType":2},
+            {"type":"Purse","distance":"300","y":240,"purseType":2},
+            {"type":"Purse","distance":"300","y":210,"purseType":2},
+            {"type":"Purse","distance":"350","y":190,"purseType":1},
+            {"type":"Purse","distance":"350","y":220,"purseType":2},
+            {"type":"Purse","distance":"350","y":250,"purseType":2},
+            {"type":"Purse","distance":"400","y":270,"purseType":2},
+            {"type":"Purse","distance":"400","y":240,"purseType":2},
+            {"type":"Purse","distance":"400","y":210,"purseType":2},
+
+            {"type":"FireRing","distance":"600"},    
+        
+            {"type":"Purse","distance":"750","y":270,"purseType":2},
+            {"type":"Purse","distance":"750","y":240,"purseType":2},
+            {"type":"Purse","distance":"750","y":210,"purseType":2},
+            {"type":"Purse","distance":"780","y":230,"purseType":2},
+            {"type":"Purse","distance":"780","y":200,"purseType":2},
+            {"type":"Purse","distance":"810","y":190,"purseType":1},
+            {"type":"Purse","distance":"840","y":230,"purseType":2},
+            {"type":"Purse","distance":"840","y":200,"purseType":2},
+            {"type":"Purse","distance":"870","y":270,"purseType":2},
+            {"type":"Purse","distance":"870","y":240,"purseType":2},
+            {"type":"Purse","distance":"870","y":210,"purseType":2},
+
+            {"type":"Pen","distance":"1000"},
+            {"type":"Purse","distance":"1100","y":240,"purseType":2},
+            {"type":"Purse","distance":"1100","y":210,"purseType":2},
+            {"type":"Purse","distance":"1130","y":210,"purseType":2},
+            {"type":"Purse","distance":"1130","y":180,"purseType":1},
+            {"type":"Purse","distance":"1160","y":240,"purseType":2},
+            {"type":"Purse","distance":"1160","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"1350","y":270,"purseType":2},
+            {"type":"Purse","distance":"1350","y":240,"purseType":2},
+            {"type":"Purse","distance":"1350","y":210,"purseType":2},
+            {"type":"Purse","distance":"1400","y":190,"purseType":1},
+            {"type":"Purse","distance":"1400","y":220,"purseType":2},
+            {"type":"FireRing","distance":"1400"},
+            {"type":"Purse","distance":"1450","y":270,"purseType":2},
+            {"type":"Purse","distance":"1450","y":240,"purseType":2},
+            {"type":"Purse","distance":"1450","y":210,"purseType":2},
+            {"type":"Purse","distance":"1550","y":190,"purseType":1},
+            {"type":"Purse","distance":"1550","y":220,"purseType":2},
+            {"type":"Purse","distance":"1550","y":250,"purseType":2},
+            {"type":"Purse","distance":"1580","y":190,"purseType":1},
+            {"type":"Purse","distance":"1580","y":220,"purseType":2},
+            {"type":"Purse","distance":"1580","y":250,"purseType":2},
+            {"type":"Purse","distance":"1605","y":190,"purseType":1},
+            {"type":"Purse","distance":"1605","y":220,"purseType":2},
+            {"type":"Purse","distance":"1605","y":250,"purseType":2},
+            {"type":"Purse","distance":"1625","y":190,"purseType":1},
+            {"type":"Purse","distance":"1625","y":220,"purseType":2},
+            {"type":"Purse","distance":"1625","y":250,"purseType":2},
+
+
+            {"type":"Purse","distance":"1650","y":270,"purseType":2},
+            {"type":"Purse","distance":"1650","y":240,"purseType":2},
+            {"type":"Purse","distance":"1650","y":210,"purseType":2},
+            {"type":"Purse","distance":"1700","y":190,"purseType":1},
+            {"type":"Purse","distance":"1700","y":200,"purseType":1},
+            {"type":"FireRing","distance":"1700"},
+            {"type":"Purse","distance":"1750","y":210,"purseType":2},
+            {"type":"Purse","distance":"1750","y":240,"purseType":2},  
+            {"type":"Purse","distance":"1800","y":270,"purseType":2},
+            {"type":"Purse","distance":"1800","y":240,"purseType":2},
+            {"type":"Purse","distance":"1800","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2050","y":270,"purseType":2},
+            {"type":"Purse","distance":"2050","y":240,"purseType":2},
+            {"type":"Purse","distance":"2050","y":210,"purseType":2},
+            {"type":"Purse","distance":"2080","y":270,"purseType":2},
+            {"type":"Purse","distance":"2080","y":240,"purseType":2},
+            {"type":"Purse","distance":"2080","y":210,"purseType":2},
+            {"type":"Purse","distance":"2110","y":270,"purseType":2},
+            {"type":"Purse","distance":"2110","y":240,"purseType":2},
+            {"type":"Purse","distance":"2110","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2140","y":270,"purseType":2},
+            {"type":"Purse","distance":"2140","y":240,"purseType":2},
+            {"type":"Purse","distance":"2140","y":210,"purseType":2},
+            {"type":"Purse","distance":"2140","y":180,"purseType":1},
+
+            {"type":"Purse","distance":"2170","y":270,"purseType":2},
+            {"type":"Purse","distance":"2170","y":250,"purseType":2},
+            {"type":"Purse","distance":"2170","y":220,"purseType":1},
+
+            {"type":"Purse","distance":"2200","y":270,"purseType":2},
+            {"type":"Purse","distance":"2200","y":240,"purseType":1},
+            
+
+            {"type":"Purse","distance":"2230","y":270,"purseType":1},
+
+
+
+            {"type":"Purse","distance":"2260","y":240,"purseType":2},
+            {"type":"Purse","distance":"2260","y":210,"purseType":2},
+            
+
+            {"type":"Purse","distance":"2290","y":260,"purseType":2},
+            {"type":"Purse","distance":"2290","y":230,"purseType":2},
+            {"type":"Purse","distance":"2290","y":200,"purseType":2},
+
+            {"type":"Purse","distance":"2320","y":280,"purseType":1},
+            {"type":"Purse","distance":"2320","y":250,"purseType":1},
+            {"type":"Purse","distance":"2320","y":220,"purseType":1},
+            {"type":"Purse","distance":"2320","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"2350","y":260,"purseType":2},
+            {"type":"Purse","distance":"2350","y":230,"purseType":2},
+            {"type":"Purse","distance":"2350","y":200,"purseType":2},
+           
+
+            {"type":"Purse","distance":"2380","y":240,"purseType":2},
+            {"type":"Purse","distance":"2380","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2410","y":240,"purseType":2},
+            {"type":"Purse","distance":"2410","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2440","y":260,"purseType":2},
+            {"type":"Purse","distance":"2440","y":230,"purseType":2},
+            {"type":"Purse","distance":"2440","y":200,"purseType":2},
+
+            {"type":"Purse","distance":"2470","y":280,"purseType":1},
+            {"type":"Purse","distance":"2470","y":250,"purseType":1},
+            {"type":"Purse","distance":"2470","y":220,"purseType":1},
+            {"type":"Purse","distance":"2470","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"2500","y":260,"purseType":2},
+            {"type":"Purse","distance":"2500","y":230,"purseType":2},
+            {"type":"Purse","distance":"2500","y":200,"purseType":2},
+
+            {"type":"Purse","distance":"2530","y":240,"purseType":2},
+            {"type":"Purse","distance":"2530","y":210,"purseType":2},
+
+
+            {"type":"FireRing","distance":"2600"}, 
+            {"type":"Purse","distance":"2600","y":190,"purseType":2},
+            {"type":"Purse","distance":"2600","y":220,"purseType":2},
+
+            {"type":"Purse","distance":"2800","y":180,"purseType":2},
+            {"type":"Purse","distance":"2800","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2890","y":270,"purseType":2},
+            {"type":"Purse","distance":"2890","y":240,"purseType":2},
+            {"type":"Purse","distance":"2890","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"2950","y":240,"purseType":2}, 
+            {"type":"Purse","distance":"2950","y":210,"purseType":2}, 
+            {"type":"Purse","distance":"3000","y":190,"purseType":1},
+            {"type":"FireRing","distance":"3000"},
+            {"type":"Purse","distance":"3050","y":240,"purseType":2},
+            {"type":"Purse","distance":"3050","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"3100","y":270,"purseType":2},
+            {"type":"Purse","distance":"3100","y":240,"purseType":2},
+            {"type":"Purse","distance":"3100","y":210,"purseType":2},
+            {"type":"Pen","distance":"3200"},
+
+            {"type":"Purse","distance":"3320","y":290,"purseType":2},
+            {"type":"Purse","distance":"3320","y":265,"purseType":2},
+            {"type":"Purse","distance":"3320","y":240,"purseType":2},
+            {"type":"Purse","distance":"3320","y":215,"purseType":2},
+            {"type":"Purse","distance":"3320","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3350","y":290,"purseType":2},
+            {"type":"Purse","distance":"3350","y":265,"purseType":2},
+            {"type":"Purse","distance":"3350","y":240,"purseType":2},
+            {"type":"Purse","distance":"3350","y":215,"purseType":2},
+            {"type":"Purse","distance":"3350","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3380","y":290,"purseType":2},
+            {"type":"Purse","distance":"3380","y":265,"purseType":2},
+            {"type":"Purse","distance":"3380","y":240,"purseType":2},
+            {"type":"Purse","distance":"3380","y":215,"purseType":2},
+            {"type":"Purse","distance":"3380","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3410","y":290,"purseType":2},
+            {"type":"Purse","distance":"3410","y":265,"purseType":2},
+            {"type":"Purse","distance":"3410","y":240,"purseType":2},
+            {"type":"Purse","distance":"3410","y":215,"purseType":2},
+            {"type":"Purse","distance":"3410","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3440","y":290,"purseType":2},
+            {"type":"Purse","distance":"3440","y":265,"purseType":2},
+            {"type":"Purse","distance":"3440","y":240,"purseType":2},
+            {"type":"Purse","distance":"3440","y":215,"purseType":2},
+            {"type":"Purse","distance":"3440","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3470","y":190,"purseType":2},
+            {"type":"Purse","distance":"3500","y":230,"purseType":2},
+            {"type":"Pen","distance":"3550"},
+
+            {"type":"Purse","distance":"3630","y":290,"purseType":2},
+            {"type":"Purse","distance":"3630","y":265,"purseType":2},
+            {"type":"Purse","distance":"3630","y":240,"purseType":2},
+            {"type":"Purse","distance":"3630","y":215,"purseType":2},
+            {"type":"Purse","distance":"3630","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3650","y":290,"purseType":2},
+            {"type":"Purse","distance":"3650","y":265,"purseType":2},
+            {"type":"Purse","distance":"3650","y":240,"purseType":2},
+            {"type":"Purse","distance":"3650","y":215,"purseType":2},
+            {"type":"Purse","distance":"3650","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3730","y":290,"purseType":2},
+            {"type":"Purse","distance":"3730","y":265,"purseType":2},
+            {"type":"Purse","distance":"3730","y":240,"purseType":2},
+            {"type":"Purse","distance":"3730","y":215,"purseType":2},
+            {"type":"Purse","distance":"3730","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"3750","y":210,"purseType":2},
+            {"type":"Purse","distance":"3750","y":185,"purseType":2},
+
+            {"type":"Purse","distance":"3780","y":170,"purseType":1},
+            {"type":"Purse","distance":"3780","y":195,"purseType":1},
+
+            {"type":"Purse","distance":"3810","y":210,"purseType":2},
+            {"type":"Purse","distance":"3810","y":235,"purseType":2},
+
+            {"type":"Purse","distance":"3840","y":215,"purseType":2},
+            {"type":"Purse","distance":"3840","y":230,"purseType":2},
+            {"type":"Purse","distance":"3840","y":180,"purseType":2},
+
+            {"type":"Purse","distance":"3870","y":190,"purseType":2},
+            {"type":"Purse","distance":"3870","y":215,"purseType":2},
+
+            {"type":"Purse","distance":"3900","y":290,"purseType":2},
+            {"type":"Purse","distance":"3900","y":265,"purseType":2},
+            {"type":"Purse","distance":"3900","y":240,"purseType":2},
+            {"type":"Purse","distance":"3900","y":215,"purseType":2},
+            {"type":"Purse","distance":"3900","y":190,"purseType":2},
+
+            {"type":"Pen","distance":"4060"},
+
+            {"type":"Purse","distance":"4120","y":240,"purseType":2},
+            {"type":"Purse","distance":"4120","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"4140","y":260,"purseType":2},
+            {"type":"Purse","distance":"4140","y":230,"purseType":2},
+            {"type":"Purse","distance":"4140","y":200,"purseType":2},
+
+            {"type":"Purse","distance":"4160","y":280,"purseType":1},
+            {"type":"Purse","distance":"4160","y":250,"purseType":1},
+            {"type":"Purse","distance":"4160","y":220,"purseType":1},
+            {"type":"Purse","distance":"4160","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"4180","y":200,"purseType":2},
+            {"type":"Purse","distance":"4180","y":230,"purseType":2},
+            {"type":"Purse","distance":"4180","y":260,"purseType":2},
+
+            {"type":"Purse","distance":"4200","y":240,"purseType":2},
+            {"type":"Purse","distance":"4200","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"4220","y":290,"purseType":2},
+            {"type":"Purse","distance":"4220","y":265,"purseType":2},
+            {"type":"Purse","distance":"4220","y":240,"purseType":2},
+            {"type":"Purse","distance":"4220","y":215,"purseType":2},
+            {"type":"Purse","distance":"4220","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4240","y":290,"purseType":2},
+            {"type":"Purse","distance":"4240","y":265,"purseType":2},
+            {"type":"Purse","distance":"4240","y":240,"purseType":2},
+            {"type":"Purse","distance":"4240","y":215,"purseType":2},
+            {"type":"Purse","distance":"4240","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4260","y":290,"purseType":2},
+            {"type":"Purse","distance":"4260","y":265,"purseType":2},
+            {"type":"Purse","distance":"4260","y":240,"purseType":2},
+            {"type":"Purse","distance":"4260","y":215,"purseType":2},
+            {"type":"Purse","distance":"4260","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4280","y":290,"purseType":2},
+            {"type":"Purse","distance":"4280","y":265,"purseType":2},
+            {"type":"Purse","distance":"4280","y":240,"purseType":2},
+            {"type":"Purse","distance":"4280","y":215,"purseType":2},
+            {"type":"Purse","distance":"4280","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4300","y":290,"purseType":2},
+            {"type":"Purse","distance":"4300","y":265,"purseType":2},
+            {"type":"Purse","distance":"4300","y":240,"purseType":2},
+            {"type":"Purse","distance":"4300","y":215,"purseType":2},
+            {"type":"Purse","distance":"4300","y":190,"purseType":2},
+
+
+            {"type":"Purse","distance":"4350","y":290,"purseType":2},
+            {"type":"Purse","distance":"4350","y":265,"purseType":2},
+            {"type":"Purse","distance":"4350","y":240,"purseType":2},
+            {"type":"Purse","distance":"4350","y":215,"purseType":2},
+            {"type":"Purse","distance":"4350","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4400","y":290,"purseType":2},
+            {"type":"Purse","distance":"4400","y":265,"purseType":2},
+            {"type":"Purse","distance":"4400","y":240,"purseType":2},
+            {"type":"Purse","distance":"4400","y":215,"purseType":2},
+            {"type":"Purse","distance":"4400","y":190,"purseType":2},
+
+            {"type":"Pen","distance":"4600"},
+            {"type":"Purse","distance":"4450","y":290,"purseType":2},
+            {"type":"Purse","distance":"4450","y":265,"purseType":2},
+            {"type":"Purse","distance":"4450","y":240,"purseType":2},
+            {"type":"Purse","distance":"4450","y":215,"purseType":2},
+            {"type":"Purse","distance":"4450","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4520","y":190,"purseType":2},
+            {"type":"FireRing","distance":"4520"},
+
+            {"type":"Purse","distance":"4650","y":230,"purseType":2},
+            {"type":"Purse","distance":"4650","y":210,"purseType":2},
+            {"type":"Purse","distance":"4650","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4700","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"4750","y":190,"purseType":2},
+            {"type":"Purse","distance":"4750","y":210,"purseType":2},
+            {"type":"Purse","distance":"4750","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"4800","y":230,"purseType":2},
+            {"type":"Purse","distance":"4800","y":210,"purseType":2},
+            {"type":"Purse","distance":"4800","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"4850","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"4900"},
+            {"type":"Purse","distance":"4900","y":190,"purseType":2},
+            {"type":"Purse","distance":"4900","y":210,"purseType":2},
+            {"type":"Purse","distance":"4900","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"4950","y":290,"purseType":2},
+            {"type":"Purse","distance":"4950","y":265,"purseType":2},
+            {"type":"Purse","distance":"4950","y":240,"purseType":2},
+            {"type":"Purse","distance":"4950","y":215,"purseType":2},
+            {"type":"Purse","distance":"4950","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"5000","y":290,"purseType":2},
+            {"type":"Purse","distance":"5000","y":265,"purseType":2},
+            {"type":"Purse","distance":"5000","y":240,"purseType":2},
+            {"type":"Purse","distance":"5000","y":215,"purseType":2},
+            {"type":"Purse","distance":"5000","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"5050","y":290,"purseType":2},
+            {"type":"Purse","distance":"5050","y":265,"purseType":2},
+            {"type":"Purse","distance":"5050","y":240,"purseType":2},
+            {"type":"Purse","distance":"5050","y":215,"purseType":2},
+            {"type":"Purse","distance":"5050","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"5100","y":290,"purseType":2},
+            {"type":"Purse","distance":"5100","y":265,"purseType":2},
+            {"type":"Purse","distance":"5100","y":240,"purseType":2},
+            {"type":"Purse","distance":"5100","y":215,"purseType":2},
+            {"type":"Purse","distance":"5100","y":190,"purseType":1},
+
+            {"type":"Purse","distance":"5120","y":190,"purseType":1},
+            {"type":"FireRing","distance":"5120"},
+
+            {"type":"Purse","distance":"5200","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"5230","y":290,"purseType":2},
+            {"type":"Purse","distance":"5260","y":290,"purseType":2},
+            {"type":"Purse","distance":"5320","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"5300"},
+            {"type":"Purse","distance":"5320","y":290,"purseType":2},
+            {"type":"Purse","distance":"5350","y":190,"purseType":2},
+            {"type":"Purse","distance":"5380","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"5420","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"5450","y":280,"purseType":2},
+            {"type":"Purse","distance":"5480","y":270,"purseType":2},
+            {"type":"Purse","distance":"5510","y":260,"purseType":2},
+            {"type":"Purse","distance":"5540","y":230,"purseType":2},
+            {"type":"Purse","distance":"5570","y":190,"purseType":2},
+            {"type":"Purse","distance":"5600","y":230,"purseType":2},
+
+            {"type":"BaseSpeed","distance":"5600","value":"4.5"},
+
+            {"type":"Purse","distance":"5650","y":230,"purseType":2},
+            {"type":"FireRing","distance":"5700"},
+            {"type":"Purse","distance":"5700","y":190,"purseType":2},
+            {"type":"Purse","distance":"5750","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"5800","y":270,"purseType":2},
+            {"type":"Purse","distance":"5850","y":230,"purseType":2},
+            {"type":"FireRing","distance":"5900"},
+            {"type":"Purse","distance":"5900","y":190,"purseType":2},
+            {"type":"Purse","distance":"5950","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"6000","y":270,"purseType":2},
+            {"type":"Purse","distance":"6050","y":230,"purseType":2},
+            {"type":"FireRing","distance":"6100"},
+            {"type":"Purse","distance":"6100","y":190,"purseType":2},
+            {"type":"Purse","distance":"6150","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"6200","y":270,"purseType":2},
+            {"type":"Purse","distance":"6250","y":230,"purseType":2},
+            {"type":"FireRing","distance":"6300"},
+            {"type":"Purse","distance":"6300","y":190,"purseType":2},
+            {"type":"Purse","distance":"6350","y":230,"purseType":2},
+            {"type":"Pen","distance":"6380"},
+            {"type":"Purse","distance":"6400","y":270,"purseType":2},
+            {"type":"Purse","distance":"6450","y":230,"purseType":2},
+            {"type":"FireRing","distance":"6500"},
+            {"type":"Purse","distance":"6500","y":190,"purseType":2},
+            {"type":"Purse","distance":"6550","y":230,"purseType":2},
+            
+            {"type":"BaseSpeed","distance":"6550","value":"3.5"},
+
+            {"type":"Purse","distance":"6570","y":230,"purseType":2},
+            {"type":"Purse","distance":"6600","y":190,"purseType":2},
+            {"type":"Purse","distance":"6630","y":230,"purseType":2},
+            {"type":"Purse","distance":"6660","y":270,"purseType":2},
+            {"type":"Purse","distance":"6690","y":270,"purseType":2},
+            {"type":"Purse","distance":"6720","y":230,"purseType":2},
+            {"type":"FireRing","distance":"6750"}, 
+            {"type":"Purse","distance":"6750","y":190,"purseType":2}, 
+            {"type":"Purse","distance":"6780","y":190,"purseType":2},
+            {"type":"Purse","distance":"6810","y":230,"purseType":2},
+            {"type":"Purse","distance":"6840","y":270,"purseType":2},
+            {"type":"Pen","distance":"6850"}, 
+            {"type":"Purse","distance":"6870","y":270,"purseType":2},
+            {"type":"Purse","distance":"6900","y":270,"purseType":2},
+            {"type":"Purse","distance":"6930","y":230,"purseType":2},
+            {"type":"Purse","distance":"6960","y":190,"purseType":2},
+
+            {"type":"Purse","distance":"6990","y":230,"purseType":2},
+            {"type":"Purse","distance":"7020","y":270,"purseType":2},
+
+
+
+
+
+
+
+
+            {"type":"Purse","distance":"7050","y":270,"purseType":2},
+            {"type":"Purse","distance":"7080","y":230,"purseType":2},
+            {"type":"Purse","distance":"7110","y":190,"purseType":2},
+            {"type":"Purse","distance":"7140","y":230,"purseType":2},
+            {"type":"Purse","distance":"7170","y":270,"purseType":2},
+            {"type":"Purse","distance":"7200","y":270,"purseType":2},
+            {"type":"Purse","distance":"7230","y":230,"purseType":2},
+            {"type":"FireRing","distance":"7260"}, 
+            {"type":"Purse","distance":"7260","y":190,"purseType":2},
+            {"type":"Purse","distance":"7290","y":230,"purseType":2},
+            {"type":"Purse","distance":"7320","y":270,"purseType":2},
+            {"type":"Pen","distance":"7320"}, 
+            {"type":"Purse","distance":"7350","y":270,"purseType":2},
+            {"type":"Purse","distance":"7380","y":270,"purseType":2},
+            {"type":"Purse","distance":"7410","y":230,"purseType":2},
+            {"type":"Purse","distance":"7440","y":190,"purseType":2},
+            {"type":"Purse","distance":"7470","y":230,"purseType":2},
+            {"type":"Purse","distance":"7500","y":270,"purseType":2},
+
+            
+            {"type":"Purse","distance":"7600","y":190,"purseType":1},
+
+
+            {"type":"Purse","distance":"7800","y":180,"purseType":2},
+
+            {"type":"Purse","distance":"7890","y":270,"purseType":2},
+            {"type":"Purse","distance":"7950","y":240,"purseType":2}, 
+            {"type":"Purse","distance":"8000","y":190,"purseType":2},
+            {"type":"FireRing","distance":"8000"},
+            {"type":"Purse","distance":"8050","y":240,"purseType":2}, 
+            {"type":"Pen","distance":"8050"}, 
+            {"type":"Purse","distance":"8100","y":270,"purseType":2},
+
+
+            {"type":"Purse","distance":"8320","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"8350","y":280,"purseType":2},
+            {"type":"Purse","distance":"8380","y":270,"purseType":2},
+            {"type":"Purse","distance":"8410","y":260,"purseType":2},
+            {"type":"Purse","distance":"8440","y":230,"purseType":2},
+            {"type":"FireRingSmall","distance":"8470"},
+            {"type":"Purse","distance":"8470","y":190,"purseType":1},
+            {"type":"Purse","distance":"8500","y":230,"purseType":2},
+
+            {"type":"Pen","distance":"8500"}, 
+            {"type":"Purse","distance":"8530","y":270,"purseType":2},
+
+            {"type":"Purse","distance":"8650","y":270,"purseType":2},
+            {"type":"Purse","distance":"8700","y":240,"purseType":2},
+            {"type":"Purse","distance":"8750","y":210,"purseType":2},
+            {"type":"Purse","distance":"8800","y":180,"purseType":2},
+
+            {"type":"Purse","distance":"8850","y":210,"purseType":2},
+            {"type":"Purse","distance":"8900","y":240,"purseType":2},
+            {"type":"Purse","distance":"8950","y":190,"purseType":2},
+            {"type":"Purse","distance":"8950","y":280,"purseType":1},
+
+            {"type":"Purse","distance":"9100","y":180,"purseType":2},
+            {"type":"FireRingSmall","distance":"9100"},
+
+            {"type":"Purse","distance":"9100","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"9130","y":280,"purseType":2},
+            {"type":"Purse","distance":"9160","y":270,"purseType":2},
+            {"type":"Purse","distance":"9190","y":260,"purseType":2},
+            {"type":"Purse","distance":"9220","y":230,"purseType":2},
+            {"type":"Purse","distance":"9250","y":190,"purseType":2},
+            {"type":"Purse","distance":"9280","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"9350","y":290,"purseType":2},
+            {"type":"Purse","distance":"9400","y":290,"purseType":2},
+            {"type":"Purse","distance":"9450","y":290,"purseType":2},
+            {"type":"Purse","distance":"9500","y":290,"purseType":2},
+            {"type":"Purse","distance":"9520","y":190,"purseType":2},
+            {"type":"FireRing","distance":"9520"},
+
+            {"type":"Purse","distance":"9650","y":210,"purseType":2},
+            {"type":"Purse","distance":"9700","y":190,"purseType":1},
+            {"type":"Purse","distance":"9750","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"9800","y":210,"purseType":2},
+         
+            {"type":"Purse","distance":"9850","y":190,"purseType":2},
+            {"type":"Purse","distance":"9900","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"9950","y":290,"purseType":2},
+            {"type":"Purse","distance":"10000","y":290,"purseType":2},
+            {"type":"Pen","distance":"10000"},
+            {"type":"Purse","distance":"10050","y":290,"purseType":2},
+            {"type":"Purse","distance":"10100","y":290,"purseType":2},
+            {"type":"Purse","distance":"10120","y":190,"purseType":2},
+            {"type":"FireRing","distance":"10120"},
+
+            {"type":"Purse","distance":"10200","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"10230","y":280,"purseType":2},
+            {"type":"Purse","distance":"10260","y":270,"purseType":2},
+            {"type":"Purse","distance":"10290","y":260,"purseType":2},
+            {"type":"Purse","distance":"10320","y":230,"purseType":2},
+       
+            {"type":"Purse","distance":"10350","y":190,"purseType":1},
+            {"type":"Purse","distance":"10380","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"10420","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"10450","y":280,"purseType":2},
+            {"type":"Purse","distance":"10480","y":270,"purseType":2},
+            {"type":"Purse","distance":"10510","y":260,"purseType":2},
+            {"type":"Purse","distance":"10540","y":230,"purseType":2},
+            {"type":"Purse","distance":"10570","y":190,"purseType":2},
+            {"type":"Purse","distance":"10600","y":230,"purseType":2},
+
+            
+
+            {"type":"Purse","distance":"10650","y":230,"purseType":2},
+            {"type":"FireRing","distance":"10700"},
+            {"type":"Purse","distance":"10700","y":190,"purseType":2},
+            {"type":"Purse","distance":"10750","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"10800","y":270,"purseType":2},
+            {"type":"Purse","distance":"10850","y":230,"purseType":2},
+            {"type":"FireRing","distance":"10900"},
+            {"type":"Purse","distance":"10900","y":190,"purseType":2},
+            {"type":"Purse","distance":"10950","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"11000","y":270,"purseType":2},
+            {"type":"Purse","distance":"11050","y":230,"purseType":2},
+      
+            {"type":"Purse","distance":"11100","y":190,"purseType":2},
+            {"type":"Purse","distance":"11150","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"11200","y":270,"purseType":2},
+            {"type":"Purse","distance":"11250","y":230,"purseType":2},
+            {"type":"FireRing","distance":"11300"},
+            {"type":"Purse","distance":"11300","y":190,"purseType":2},
+            {"type":"Purse","distance":"11350","y":230,"purseType":2},
+            {"type":"Pen","distance":"11380"},
+            {"type":"Purse","distance":"11400","y":270,"purseType":2},
+            {"type":"Purse","distance":"11450","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"11500","y":190,"purseType":2},
+            {"type":"Purse","distance":"11550","y":230,"purseType":2},
+            
+            
+
+            {"type":"Purse","distance":"11570","y":230,"purseType":2},
+            {"type":"Purse","distance":"11600","y":190,"purseType":2},
+            {"type":"Purse","distance":"11630","y":230,"purseType":2},
+            {"type":"Purse","distance":"11660","y":270,"purseType":2},
+            {"type":"Purse","distance":"11690","y":270,"purseType":2},
+            {"type":"Purse","distance":"11720","y":230,"purseType":2},
+            {"type":"FireRing","distance":"11750"}, 
+            {"type":"Purse","distance":"11750","y":190,"purseType":2}, 
+            {"type":"Purse","distance":"11780","y":190,"purseType":2},
+            {"type":"Purse","distance":"11810","y":230,"purseType":2},
+            {"type":"Purse","distance":"11840","y":270,"purseType":2},
+            {"type":"Pen","distance":"11850"}, 
+            {"type":"Purse","distance":"11870","y":270,"purseType":2},
+            {"type":"Purse","distance":"11900","y":270,"purseType":2},
+            {"type":"Purse","distance":"11930","y":230,"purseType":2},
+            {"type":"Purse","distance":"11960","y":190,"purseType":2},
+            {"type":"FireRing","distance":"11960"},  
+            {"type":"Purse","distance":"11990","y":230,"purseType":2},
+            {"type":"Purse","distance":"12020","y":270,"purseType":2},
+            
+
+
+
+
+
+
+
+
+            {"type":"Purse","distance":"12050","y":270,"purseType":2},
+            {"type":"Purse","distance":"12080","y":230,"purseType":2},
+            {"type":"Purse","distance":"12110","y":190,"purseType":2},
+            {"type":"Purse","distance":"12140","y":230,"purseType":2},
+            {"type":"Purse","distance":"12170","y":270,"purseType":2},
+            {"type":"Purse","distance":"12200","y":270,"purseType":2},
+            {"type":"Purse","distance":"12230","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"12260","y":190,"purseType":2},
+            {"type":"Purse","distance":"12290","y":230,"purseType":2},
+            {"type":"Purse","distance":"12320","y":270,"purseType":2},
+            {"type":"Pen","distance":"12320"}, 
+            {"type":"Purse","distance":"12350","y":270,"purseType":2},
+            {"type":"Purse","distance":"12380","y":270,"purseType":2},
+            {"type":"Purse","distance":"12410","y":230,"purseType":2},
+            {"type":"Purse","distance":"12440","y":190,"purseType":2},
+            {"type":"Purse","distance":"12470","y":230,"purseType":2},
+            {"type":"Purse","distance":"12500","y":270,"purseType":2},
+
+            {"type":"FireRingSmall","distance":"12600"},
+            {"type":"Purse","distance":"12600","y":190,"purseType":1},
+
+        
+            {"type":"Purse","distance":"12800","y":180,"purseType":2},
+
+            {"type":"Purse","distance":"12890","y":270,"purseType":2},
+            {"type":"Purse","distance":"12950","y":240,"purseType":2}, 
+            {"type":"Purse","distance":"13000","y":190,"purseType":2},
+            {"type":"FireRing","distance":"13000"},
+            {"type":"Purse","distance":"13050","y":240,"purseType":2}, 
+            {"type":"Pen","distance":"13050"}, 
+            {"type":"Purse","distance":"13100","y":270,"purseType":2},
+
+
+            {"type":"Purse","distance":"13320","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"13350","y":280,"purseType":2},
+            {"type":"Purse","distance":"13380","y":270,"purseType":2},
+            {"type":"Purse","distance":"13410","y":260,"purseType":2},
+            {"type":"Purse","distance":"13440","y":230,"purseType":2},
+            {"type":"FireRingSmall","distance":"13470"},
+            {"type":"Purse","distance":"13470","y":190,"purseType":1},
+            {"type":"Purse","distance":"13500","y":230,"purseType":2},
+
+            {"type":"Pen","distance":"13500"}, 
+            {"type":"Purse","distance":"13530","y":270,"purseType":2},
+
+            {"type":"Purse","distance":"13650","y":270,"purseType":2},
+            {"type":"Purse","distance":"13700","y":240,"purseType":2},
+            {"type":"Purse","distance":"13750","y":210,"purseType":2},
+            {"type":"Purse","distance":"13800","y":180,"purseType":2},
+         
+            {"type":"Purse","distance":"13850","y":210,"purseType":2},
+            {"type":"Purse","distance":"13900","y":240,"purseType":2},
+            {"type":"Purse","distance":"13950","y":190,"purseType":1},
+            
+            
+
+            {"type":"Purse","distance":"14100","y":180,"purseType":2},
+            {"type":"FireRingSmall","distance":"14100"},
+
+            {"type":"Purse","distance":"14100","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"14130","y":280,"purseType":2},
+            {"type":"Purse","distance":"14160","y":270,"purseType":2},
+            {"type":"Purse","distance":"14190","y":260,"purseType":2},
+            {"type":"Purse","distance":"14220","y":230,"purseType":2},
+          
+            {"type":"Purse","distance":"14250","y":190,"purseType":1},
+            {"type":"Purse","distance":"14280","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"14350","y":290,"purseType":2},
+            {"type":"Purse","distance":"14400","y":290,"purseType":2},
+            {"type":"Pen","distance":"14400"},
+            {"type":"Purse","distance":"14450","y":290,"purseType":2},
+            {"type":"Purse","distance":"14500","y":290,"purseType":2},
+            {"type":"Purse","distance":"14520","y":190,"purseType":2},
+            
+
+            {"type":"Purse","distance":"14650","y":210,"purseType":2},
+            
+            {"type":"Purse","distance":"14700","y":190,"purseType":1},
+            {"type":"Purse","distance":"14750","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"14800","y":210,"purseType":2},
+            {"type":"FireRingSmall","distance":"14850"},
+            {"type":"Purse","distance":"14850","y":190,"purseType":2},
+            {"type":"Purse","distance":"14900","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"14950","y":290,"purseType":2},
+            {"type":"Purse","distance":"15000","y":290,"purseType":2},
+            {"type":"Pen","distance":"15000"},
+            {"type":"Purse","distance":"15050","y":290,"purseType":2},
+            {"type":"Purse","distance":"15100","y":290,"purseType":2},
+            {"type":"Purse","distance":"15120","y":190,"purseType":2},
+            {"type":"FireRing","distance":"15120"},
+
+            {"type":"Purse","distance":"15200","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"15230","y":280,"purseType":2},
+            {"type":"Purse","distance":"15260","y":270,"purseType":2},
+            {"type":"Purse","distance":"15290","y":260,"purseType":2},
+            {"type":"Purse","distance":"15320","y":230,"purseType":2},
+        
+            {"type":"Purse","distance":"15350","y":190,"purseType":1},
+            {"type":"Purse","distance":"15380","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"15420","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"15450","y":280,"purseType":2},
+            {"type":"Purse","distance":"15480","y":270,"purseType":2},
+            {"type":"Purse","distance":"15510","y":260,"purseType":2},
+            {"type":"Purse","distance":"15540","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"15570","y":190,"purseType":2},
+            {"type":"Purse","distance":"15600","y":230,"purseType":2},
+
+            
+
+            {"type":"Purse","distance":"15650","y":230,"purseType":2},
+         
+            {"type":"Purse","distance":"15700","y":190,"purseType":2},
+            {"type":"Purse","distance":"15750","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"15800","y":270,"purseType":2},
+            {"type":"Purse","distance":"15850","y":230,"purseType":2},
+            {"type":"FireRing","distance":"15900"},
+            {"type":"Purse","distance":"15900","y":190,"purseType":2},
+            {"type":"Purse","distance":"15950","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"16000","y":270,"purseType":2},
+            {"type":"Purse","distance":"16050","y":230,"purseType":2},
+          
+            {"type":"Purse","distance":"16100","y":190,"purseType":2},
+            {"type":"Purse","distance":"16150","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"16200","y":270,"purseType":2},
+            {"type":"Purse","distance":"16250","y":230,"purseType":2},
+            {"type":"FireRing","distance":"16300"},
+            {"type":"Purse","distance":"16300","y":190,"purseType":2},
+            {"type":"Purse","distance":"16350","y":230,"purseType":2},
+            {"type":"Pen","distance":"16380"},
+            {"type":"Purse","distance":"16400","y":270,"purseType":2},
+            {"type":"Purse","distance":"16450","y":230,"purseType":2},
+         
+            {"type":"Purse","distance":"16500","y":190,"purseType":2},
+            {"type":"Purse","distance":"16550","y":230,"purseType":2},
+            
+            
+
+            {"type":"Purse","distance":"16570","y":230,"purseType":2},
+            {"type":"Purse","distance":"16600","y":190,"purseType":2},
+            {"type":"Purse","distance":"16630","y":230,"purseType":2},
+            {"type":"Purse","distance":"16660","y":270,"purseType":2},
+            {"type":"Purse","distance":"16690","y":270,"purseType":2},
+            {"type":"Purse","distance":"16720","y":230,"purseType":2},
+            {"type":"FireRing","distance":"16750"}, 
+            {"type":"Purse","distance":"16750","y":190,"purseType":2}, 
+            {"type":"Purse","distance":"16780","y":190,"purseType":2},
+            {"type":"Purse","distance":"16810","y":230,"purseType":2},
+            {"type":"Purse","distance":"16840","y":270,"purseType":2},
+            {"type":"Pen","distance":"16850"}, 
+            {"type":"Purse","distance":"16870","y":270,"purseType":2},
+            {"type":"Purse","distance":"16900","y":270,"purseType":2},
+            {"type":"Purse","distance":"16930","y":230,"purseType":2},
+            {"type":"Purse","distance":"16960","y":190,"purseType":2},
+            {"type":"FireRing","distance":"16960"},  
+            {"type":"Purse","distance":"16990","y":230,"purseType":2},
+            {"type":"Purse","distance":"17020","y":270,"purseType":2},
+            
+
+
+
+
+
+
+            {"type":"Purse","distance":"17050","y":270,"purseType":2},
+            {"type":"Purse","distance":"17080","y":230,"purseType":2},
+            {"type":"Purse","distance":"17110","y":190,"purseType":2},
+            {"type":"Purse","distance":"17140","y":230,"purseType":2},
+            {"type":"Purse","distance":"17170","y":270,"purseType":2},
+            {"type":"Purse","distance":"17200","y":270,"purseType":2},
+            {"type":"Purse","distance":"17230","y":230,"purseType":2},
+            {"type":"FireRing","distance":"17260"}, 
+            {"type":"Purse","distance":"17260","y":190,"purseType":2},
+            {"type":"Purse","distance":"17290","y":230,"purseType":2},
+            {"type":"Purse","distance":"17320","y":270,"purseType":2},
+            {"type":"Pen","distance":"17320"}, 
+            {"type":"Purse","distance":"17350","y":270,"purseType":2},
+            {"type":"Purse","distance":"17380","y":270,"purseType":2},
+            {"type":"Purse","distance":"17410","y":230,"purseType":2},
+            {"type":"Purse","distance":"17440","y":190,"purseType":2},
+            {"type":"Purse","distance":"17470","y":230,"purseType":2},
+            {"type":"Purse","distance":"17500","y":270,"purseType":2},
+
+           
+            {"type":"Purse","distance":"17600","y":190,"purseType":1},
+
+            {"type":"FireRingSmall","distance":"17800"}, 
+            {"type":"Purse","distance":"17800","y":180,"purseType":2},
+
+            {"type":"Purse","distance":"17890","y":270,"purseType":2},
+            {"type":"Purse","distance":"17950","y":240,"purseType":2}, 
+            {"type":"Purse","distance":"18000","y":190,"purseType":2},
+        
+            {"type":"Purse","distance":"18050","y":240,"purseType":2}, 
+            {"type":"Pen","distance":"18050"}, 
+            {"type":"Purse","distance":"18100","y":270,"purseType":2},
+
+
+            {"type":"Purse","distance":"18320","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"18350","y":280,"purseType":2},
+            {"type":"Purse","distance":"18380","y":270,"purseType":2},
+            {"type":"Purse","distance":"18410","y":260,"purseType":2},
+            {"type":"Purse","distance":"18440","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"18470","y":190,"purseType":1},
+            {"type":"Purse","distance":"18500","y":230,"purseType":2},
+
+            {"type":"Pen","distance":"18500"}, 
+            {"type":"Purse","distance":"18530","y":270,"purseType":2},
+
+            {"type":"Purse","distance":"18650","y":270,"purseType":2},
+            {"type":"Purse","distance":"18700","y":240,"purseType":2},
+            {"type":"Purse","distance":"18750","y":210,"purseType":2},
+            {"type":"Purse","distance":"18800","y":180,"purseType":2},
+            {"type":"FireRing","distance":"18800"},
+            {"type":"Purse","distance":"18850","y":210,"purseType":2},
+            {"type":"Purse","distance":"18900","y":240,"purseType":2},
+            {"type":"Purse","distance":"18950","y":190,"purseType":2},
+            
+            {"type":"Purse","distance":"18950","y":280,"purseType":2},
+
+            {"type":"Purse","distance":"19100","y":180,"purseType":1},
+            {"type":"FireRingSmall","distance":"19100"},
+
+            {"type":"Purse","distance":"19130","y":280,"purseType":2},
+            {"type":"Purse","distance":"19160","y":270,"purseType":2},
+            {"type":"Purse","distance":"19190","y":260,"purseType":2},
+            {"type":"Purse","distance":"19220","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"19250","y":190,"purseType":1},
+            {"type":"Purse","distance":"19280","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"19350","y":290,"purseType":2},
+            {"type":"Purse","distance":"19400","y":290,"purseType":2},
+            {"type":"Pen","distance":"19400"},
+            {"type":"Purse","distance":"19450","y":290,"purseType":2},
+            {"type":"Purse","distance":"19500","y":290,"purseType":2},
+            {"type":"Purse","distance":"19520","y":190,"purseType":2},
+            {"type":"FireRing","distance":"19520"},
+
+            {"type":"Purse","distance":"19650","y":210,"purseType":2},
+            
+            {"type":"Purse","distance":"19700","y":190,"purseType":2},
+            {"type":"Purse","distance":"19750","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"19800","y":210,"purseType":2},
+            
+            {"type":"Purse","distance":"19850","y":190,"purseType":1},
+            {"type":"Purse","distance":"19900","y":210,"purseType":2},
+
+            {"type":"Purse","distance":"19950","y":290,"purseType":2},
+            {"type":"Purse","distance":"20000","y":290,"purseType":2},
+            {"type":"Pen","distance":"20000"},
+            {"type":"Purse","distance":"20050","y":290,"purseType":2},
+            {"type":"Purse","distance":"20100","y":290,"purseType":2},
+            {"type":"Purse","distance":"20120","y":190,"purseType":2},
+            {"type":"FireRing","distance":"20120"},
+
+            {"type":"Purse","distance":"20200","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"20230","y":280,"purseType":2},
+            {"type":"Purse","distance":"20260","y":270,"purseType":2},
+            {"type":"Purse","distance":"20290","y":260,"purseType":2},
+            {"type":"Purse","distance":"20320","y":230,"purseType":2},
+            {"type":"FireRing","distance":"20350"},
+            {"type":"Purse","distance":"20350","y":190,"purseType":2},
+            {"type":"Purse","distance":"20380","y":230,"purseType":2},
+
+
+            {"type":"Purse","distance":"20420","y":290,"purseType":2}, 
+            {"type":"Purse","distance":"20450","y":280,"purseType":2},
+            {"type":"Purse","distance":"20480","y":270,"purseType":2},
+            {"type":"Purse","distance":"20510","y":260,"purseType":2},
+            {"type":"Purse","distance":"20540","y":230,"purseType":2},
+           
+            {"type":"Purse","distance":"20570","y":190,"purseType":1},
+            {"type":"Purse","distance":"20600","y":230,"purseType":2},
+
+            
+
+            {"type":"Purse","distance":"20650","y":230,"purseType":2},
+            {"type":"FireRing","distance":"20700"},
+            {"type":"Purse","distance":"20700","y":190,"purseType":2},
+            {"type":"Purse","distance":"20750","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"20800","y":270,"purseType":2},
+            {"type":"Purse","distance":"20850","y":230,"purseType":2},
+           
+            {"type":"Purse","distance":"20900","y":190,"purseType":2},
+            {"type":"Purse","distance":"20950","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"21000","y":270,"purseType":2},
+            {"type":"Purse","distance":"21050","y":230,"purseType":2},
+            {"type":"FireRing","distance":"21100"},
+            {"type":"Purse","distance":"21100","y":190,"purseType":2},
+            {"type":"Purse","distance":"21150","y":230,"purseType":2},
+
+            {"type":"Purse","distance":"21200","y":270,"purseType":2},
+            {"type":"Purse","distance":"21250","y":230,"purseType":2},
+            
+            {"type":"Purse","distance":"21300","y":190,"purseType":2},
+            {"type":"Purse","distance":"21350","y":230,"purseType":2},
+            {"type":"Pen","distance":"21380"},
+            {"type":"Purse","distance":"21400","y":270,"purseType":2},
+            {"type":"Purse","distance":"21450","y":230,"purseType":2},
+            {"type":"FireRing","distance":"21500"},
+            {"type":"Purse","distance":"21500","y":190,"purseType":2},
+            {"type":"Purse","distance":"21550","y":230,"purseType":2},
+            
+            
+
+            {"type":"Purse","distance":"21570","y":230,"purseType":2},
+            {"type":"Purse","distance":"21600","y":190,"purseType":2},
+            {"type":"Purse","distance":"21630","y":230,"purseType":2},
+            {"type":"Purse","distance":"21660","y":270,"purseType":2},
+            {"type":"Purse","distance":"21690","y":270,"purseType":2},
+            {"type":"Purse","distance":"21720","y":230,"purseType":2},
+            {"type":"FireRing","distance":"21750"}, 
+            {"type":"Purse","distance":"21750","y":190,"purseType":2}, 
+            {"type":"Purse","distance":"21780","y":190,"purseType":2},
+            {"type":"Purse","distance":"21810","y":230,"purseType":2},
+            {"type":"Purse","distance":"21840","y":270,"purseType":2},
+            {"type":"Pen","distance":"21850"}, 
+            {"type":"Purse","distance":"21870","y":270,"purseType":2},
+            {"type":"Purse","distance":"21900","y":270,"purseType":2},
+            {"type":"Purse","distance":"21930","y":230,"purseType":2},
+            {"type":"Purse","distance":"21960","y":190,"purseType":2},
+            {"type":"FireRing","distance":"21960"},  
+            {"type":"Purse","distance":"21990","y":230,"purseType":2},
+            {"type":"Purse","distance":"22020","y":270,"purseType":2}
+            
+        ],
+    "random":[
+        [
+            {"type":"Pen","distance":"100"},
+
+            {"type":"Purse","distance":"200","y":270,"purseType":2},
+            {"type":"Purse","distance":"250","y":230,"purseType":2},
+            {"type":"Purse","distance":"300","y":190,"purseType":2},
+            {"type":"Purse","distance":"350","y":230,"purseType":2},
+            {"type":"Purse","distance":"450","y":270,"purseType":2},
+            {"type":"Purse","distance":"500","y":270,"purseType":2},
+            {"type":"Purse","distance":"550","y":230,"purseType":2},
+            {"type":"Purse","distance":"600","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"600"},
+            {"type":"Purse","distance":"650","y":230,"purseType":2},
+            {"type":"Purse","distance":"700","y":270,"purseType":2},
+            {"type":"Purse","distance":"750","y":290,"purseType":2},
+            {"type":"Purse","distance":"800","y":270,"purseType":2},
+            {"type":"Purse","distance":"850","y":230,"purseType":2},
+            {"type":"Purse","distance":"900","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"900"},
+            {"type":"Purse","distance":"950","y":230,"purseType":2},
+            {"type":"Purse","distance":"1000","y":270,"purseType":2},
+            {"type":"Purse","distance":"1050","y":290,"purseType":2},
+            {"type":"Purse","distance":"1100","y":270,"purseType":2},
+            {"type":"Purse","distance":"1150","y":230,"purseType":2},
+            {"type":"Purse","distance":"1200","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"1200"},
+            {"type":"Purse","distance":"1250","y":230,"purseType":2},
+            {"type":"Purse","distance":"1300","y":270,"purseType":2},
+            {"type":"Purse","distance":"1350","y":290,"purseType":2}
+        ],
+        [
+            {"type":"Pen","distance":"100"},
+            {"type":"FireRing","distance":"220"},
+
+            {"type":"Purse","distance":"350","y":290,"purseType":2},
+            {"type":"Purse","distance":"380","y":270,"purseType":2},
+            {"type":"Purse","distance":"410","y":250,"purseType":2},
+            {"type":"Purse","distance":"440","y":230,"purseType":2},
+            {"type":"Purse","distance":"470","y":210,"purseType":2},
+            {"type":"Purse","distance":"500","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"500"},
+
+            {"type":"Purse","distance":"650","y":290,"purseType":2},
+            {"type":"Purse","distance":"680","y":270,"purseType":2},
+            {"type":"Purse","distance":"710","y":250,"purseType":2},
+            {"type":"Purse","distance":"740","y":230,"purseType":2},
+            {"type":"Purse","distance":"770","y":210,"purseType":2},
+            {"type":"Purse","distance":"800","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"800"},
+
+            {"type":"Purse","distance":"950","y":290,"purseType":2},
+            {"type":"Purse","distance":"980","y":290,"purseType":2},
+            {"type":"Purse","distance":"1010","y":290,"purseType":2},
+            {"type":"Purse","distance":"1040","y":290,"purseType":2},
+            {"type":"Purse","distance":"1070","y":290,"purseType":2},
+            
+            {"type":"FireRingSmall","distance":"1100"},
+            {"type":"Purse","distance":"1100","y":190,"purseType":1},
+            {"type":"Purse","distance":"1130","y":210,"purseType":2},
+            {"type":"Purse","distance":"1170","y":230,"purseType":2},
+            {"type":"Purse","distance":"1200","y":250,"purseType":2},
+            {"type":"Purse","distance":"1230","y":270,"purseType":2},
+            {"type":"Purse","distance":"1260","y":290,"purseType":2},
+            
+            {"type":"FireRingSmall","distance":"1400"},
+            {"type":"Purse","distance":"1400","y":190,"purseType":1},
+            {"type":"Purse","distance":"1430","y":210,"purseType":2},
+            {"type":"Purse","distance":"1470","y":230,"purseType":2},
+            {"type":"Purse","distance":"1500","y":250,"purseType":2},
+            {"type":"Purse","distance":"1530","y":270,"purseType":2},
+            {"type":"Purse","distance":"1560","y":290,"purseType":2},
+
+            {"type":"Purse","distance":"1600","y":290,"purseType":2},
+            {"type":"Purse","distance":"1630","y":290,"purseType":2},
+            {"type":"Purse","distance":"1660","y":290,"purseType":2},
+            {"type":"Purse","distance":"1690","y":290,"purseType":2},
+            {"type":"Purse","distance":"1720","y":290,"purseType":2}
+        ],
+        [
+            {"type":"Pen","distance":"100"},
+            
+
+            {"type":"Purse","distance":"200","y":270,"purseType":2},
+            {"type":"Purse","distance":"250","y":230,"purseType":2},
+            {"type":"Purse","distance":"300","y":190,"purseType":2},
+            {"type":"Purse","distance":"350","y":230,"purseType":2},
+            {"type":"Purse","distance":"450","y":270,"purseType":2},
+            {"type":"Purse","distance":"500","y":270,"purseType":2},
+            {"type":"Purse","distance":"550","y":230,"purseType":2},
+            {"type":"Purse","distance":"600","y":190,"purseType":2},
+            {"type":"FireRing","distance":"600"},
+            {"type":"Purse","distance":"650","y":230,"purseType":2},
+            {"type":"Purse","distance":"700","y":270,"purseType":2},
+            {"type":"Purse","distance":"750","y":290,"purseType":2},
+            {"type":"Purse","distance":"800","y":270,"purseType":2},
+            {"type":"Purse","distance":"850","y":230,"purseType":2},
+            {"type":"Purse","distance":"900","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"900"},
+            {"type":"Purse","distance":"950","y":230,"purseType":2},
+            {"type":"Purse","distance":"1000","y":270,"purseType":2},
+            {"type":"Purse","distance":"1050","y":290,"purseType":2},
+            {"type":"Purse","distance":"1100","y":270,"purseType":2},
+            {"type":"Purse","distance":"1150","y":230,"purseType":2},
+            {"type":"Purse","distance":"1200","y":190,"purseType":2},
+            {"type":"FireRing","distance":"1200"},
+            {"type":"Purse","distance":"1250","y":230,"purseType":2},
+            {"type":"Purse","distance":"1300","y":270,"purseType":2},
+            {"type":"Purse","distance":"1350","y":290,"purseType":2},
+
+            {"type":"Purse","distance":"1400","y":290,"purseType":2},
+            {"type":"Purse","distance":"1430","y":290,"purseType":2},
+            {"type":"Purse","distance":"1460","y":290,"purseType":2},
+            {"type":"Purse","distance":"1490","y":290,"purseType":2},
+            {"type":"Purse","distance":"1520","y":290,"purseType":2},
+
+            {"type":"Purse","distance":"1550","y":290,"purseType":2},
+            {"type":"Purse","distance":"1580","y":270,"purseType":2},
+            {"type":"Purse","distance":"1610","y":250,"purseType":2},
+            {"type":"Purse","distance":"1640","y":230,"purseType":2},
+            {"type":"Purse","distance":"1670","y":210,"purseType":2},
+            {"type":"Purse","distance":"1700","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"1700"},
+
+            {"type":"Purse","distance":"1750","y":290,"purseType":2},
+            {"type":"Purse","distance":"1780","y":270,"purseType":2},
+            {"type":"Purse","distance":"1810","y":250,"purseType":2},
+            {"type":"Purse","distance":"1840","y":230,"purseType":2},
+            {"type":"Purse","distance":"1870","y":210,"purseType":2},
+            {"type":"Purse","distance":"1900","y":190,"purseType":1},
+            {"type":"FireRingSmall","distance":"1900"},
+
+            {"type":"Purse","distance":"2000","y":290,"purseType":2},
+            {"type":"Purse","distance":"2030","y":290,"purseType":2},
+            {"type":"Purse","distance":"2060","y":290,"purseType":2},
+            {"type":"Purse","distance":"2090","y":290,"purseType":2},
+            {"type":"Purse","distance":"2120","y":290,"purseType":2}
+        ]
+    ],
+    "properties":{
+        "MAX_MILEAGE":500,
+        "CAN_DEATH":1,
+        "SCORE_PURSE_SMALL":50,
+        "SCORE_PURSE_BIG":9
+    },
+    "rank":[
+         "穷鬼",
+        "要钱不要命",
+        "见钱眼开",
+        "穷疯了",
+        "财迷",
+        "致富小能手",
+        "土豪"
+    ]
+}

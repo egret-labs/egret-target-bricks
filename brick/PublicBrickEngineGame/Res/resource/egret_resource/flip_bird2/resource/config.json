@@ -1,0 +1,125 @@
+{
+    "elements":[
+
+
+        { "type": "wall", "distance": 300, "y": 800 },
+        
+        { "type": "egg" , "distance": 700, "y": 500},
+
+
+        { "type": "wall", "distance": 1000, "y": 1200 },
+
+        { "type": "egg" , "distance": 1300, "y": 100},
+
+        { "type": "wall", "distance": 1500, "y": 900 },
+        { "type": "wall", "distance": 2000, "y": 700 },
+        { "type": "egg" , "distance": 2500, "y": 900},
+        { "type": "wall", "distance": 2700, "y": 1100 },
+        { "type": "wall", "distance": 3000, "y": 1000 },
+        { "type": "enemy" , "distance": 3500, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 4000, "y": 1200 },
+        { "type": "wall", "distance": 4500, "y": 1300 },
+        { "type": "wall", "distance": 5000, "y": 800 },
+
+        { "type": "wall", "distance": 5300, "y": 800 },
+        
+        { "type": "egg" , "distance": 5700, "y": 500},
+
+
+        { "type": "wall", "distance": 6000, "y": 1200 },
+
+        { "type": "egg" , "distance": 6300, "y": 100},
+
+        { "type": "wall", "distance": 6500, "y": 900 },
+        { "type": "wall", "distance": 7000, "y": 700 },
+        { "type": "egg" , "distance": 7500, "y": 900},
+        { "type": "wall", "distance": 7700, "y": 1100 },
+        { "type": "wall", "distance": 8000, "y": 1000 },
+        { "type": "enemy" , "distance": 8500, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 9000, "y": 1200 },
+        { "type": "wall", "distance": 9500, "y": 1300 },
+        { "type": "wall", "distance": 10000, "y": 800 },
+        { "type": "wall", "distance": 10300, "y": 800 },
+        
+        { "type": "egg" , "distance": 10700, "y": 500},
+
+
+        { "type": "wall", "distance": 11000, "y": 1200 },
+
+        { "type": "egg" , "distance": 11300, "y": 100},
+
+        { "type": "wall", "distance": 11500, "y": 900 },
+        { "type": "wall", "distance": 12000, "y": 700 },
+        { "type": "egg" , "distance": 12500, "y": 900},
+        { "type": "wall", "distance": 12700, "y": 1100 },
+        { "type": "wall", "distance": 13000, "y": 1000 },
+        { "type": "enemy" , "distance": 13500, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 14000, "y": 1200 },
+        { "type": "wall", "distance": 14500, "y": 1300 },
+        { "type": "wall", "distance": 15000, "y": 800 },
+        { "type": "wall", "distance": 15300, "y": 800 },
+        
+        { "type": "egg" , "distance": 15700, "y": 500},
+
+
+        { "type": "wall", "distance": 16000, "y": 1200 },
+
+        { "type": "egg" , "distance": 16300, "y": 100},
+
+        { "type": "wall", "distance": 16500, "y": 900 },
+        { "type": "wall", "distance": 17000, "y": 700 },
+        { "type": "enemy" , "distance": 17500, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 17700, "y": 1100 },
+        { "type": "wall", "distance": 18000, "y": 1000 },
+        { "type": "wall", "distance": 18500, "y": 600 },
+        { "type": "wall", "distance": 19000, "y": 1200 },
+        { "type": "wall", "distance": 19500, "y": 1300 },
+        { "type": "wall", "distance": 20000, "y": 800 },
+        { "type": "wall", "distance": 20300, "y": 800 },
+        
+        { "type": "egg" , "distance": 20700, "y": 500},
+
+
+        { "type": "wall", "distance": 21000, "y": 1200 },
+
+        { "type": "egg" , "distance": 21300, "y": 100},
+
+        { "type": "wall", "distance": 21500, "y": 900 },
+        { "type": "wall", "distance": 22000, "y": 700 },
+        { "type": "egg" , "distance": 22500, "y": 900},
+        { "type": "wall", "distance": 22700, "y": 1100 },
+        { "type": "enemy" , "distance": 23000, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 23500, "y": 600 },
+        { "type": "wall", "distance": 24000, "y": 1200 },
+        { "type": "wall", "distance": 24500, "y": 1300 },
+        { "type": "wall", "distance": 25000, "y": 800 },
+        
+        { "type": "wall", "distance": 25300, "y": 800 },
+        
+        { "type": "egg" , "distance": 25700, "y": 500},
+
+
+        { "type": "wall", "distance": 26000, "y": 1200 },
+
+        { "type": "egg" , "distance": 26300, "y": 100},
+
+        { "type": "wall", "distance": 26500, "y": 900 },
+        { "type": "wall", "distance": 27000, "y": 700 },
+        { "type": "egg" , "distance": 27500, "y": 900},
+        { "type": "wall", "distance": 27700, "y": 1100 },
+        { "type": "enemy" , "distance":28000, "y": 500,"offsetY":300},
+        { "type": "wall", "distance": 28500, "y": 600 },
+        { "type": "wall", "distance": 29000, "y": 1200 },
+        { "type": "wall", "distance": 29500, "y": 1300 },
+        { "type": "wall", "distance": 30000, "y": 800 }
+        
+    ],
+    "properties":{
+        "speed":6,
+        "gravity":0.5,
+        "jumpSpeed":15,
+        "barrierWidth":500,
+        "enemyRadius":87,
+        "playerRadius":87
+    }
+}

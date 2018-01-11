@@ -1,0 +1,22 @@
+{
+  "name": "@egret/limixiu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "engine": "tsc -p egret && node ./scripts/build.js",
+    "demo-helloworld": "tsc -p demo/HelloWorld && node ./scripts/demo.js",
+    "demo-maxituan": "tsc -p demo/demo_maxituan && node ./scripts/demo.js",
+    "demo-xiaochu": "tsc -p demo/demo_xiaochu && node ./scripts/demo.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/QuietRain/limixiu.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "copy": "0.3.1",
+    "typescript": "2.4.2"
+  }
+}

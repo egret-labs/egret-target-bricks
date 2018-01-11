@@ -1,0 +1,11 @@
+{"file":"eggCount.png","frames":{
+"1":{"x":1,"y":138,"w":67,"h":132,"offX":8,"offY":0,"sourceW":99,"sourceH":135},
+"2":{"x":102,"y":137,"w":93,"h":132,"offX":2,"offY":0,"sourceW":99,"sourceH":135},
+"3":{"x":197,"y":137,"w":89,"h":134,"offX":6,"offY":0,"sourceW":99,"sourceH":135},
+"4":{"x":300,"y":1,"w":99,"h":131,"offX":0,"offY":1,"sourceW":99,"sourceH":135},
+"5":{"x":398,"y":137,"w":88,"h":133,"offX":7,"offY":1,"sourceW":99,"sourceH":135},
+"6":{"x":102,"y":1,"w":97,"h":134,"offX":2,"offY":0,"sourceW":99,"sourceH":135},
+"7":{"x":300,"y":134,"w":96,"h":131,"offX":2,"offY":1,"sourceW":99,"sourceH":135},
+"8":{"x":201,"y":1,"w":97,"h":134,"offX":1,"offY":0,"sourceW":99,"sourceH":135},
+"9":{"x":401,"y":1,"w":96,"h":134,"offX":1,"offY":0,"sourceW":99,"sourceH":135},
+"0":{"x":1,"y":1,"w":99,"h":135,"offX":0,"offY":0,"sourceW":99,"sourceH":135}}}

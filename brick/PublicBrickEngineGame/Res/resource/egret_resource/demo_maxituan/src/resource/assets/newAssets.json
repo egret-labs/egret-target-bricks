@@ -1,0 +1,21 @@
+{
+"file": "newAssets.png"
+,
+"frames": {
+	"1ci": {"x":249, "y":397, "w":64, "h":28, "offX":1,"offY":2,"sourceW":67,"sourceH":31},
+	"2ci": {"x":249, "y":368, "w":65, "h":28, "offX":0,"offY":2,"sourceW":67,"sourceH":31},
+	"3ci": {"x":249, "y":426, "w":64, "h":28, "offX":1,"offY":2,"sourceW":67,"sourceH":31},
+	"btn01": {"x":0, "y":259, "w":128, "h":51, "offX":0,"offY":0,"sourceW":128,"sourceH":51},
+	"btn02": {"x":0, "y":311, "w":128, "h":51, "offX":0,"offY":0,"sourceW":128,"sourceH":51},
+	"btn03": {"x":0, "y":415, "w":108, "h":51, "offX":0,"offY":0,"sourceW":108,"sourceH":51},
+	"btn04": {"x":0, "y":363, "w":108, "h":51, "offX":0,"offY":0,"sourceW":108,"sourceH":51},
+	"fou": {"x":278, "y":455, "w":27, "h":26, "offX":0,"offY":2,"sourceW":29,"sourceH":29},
+	"frame01": {"x":0, "y":0, "w":370, "h":258, "offX":0,"offY":0,"sourceW":370,"sourceH":258},
+	"frame02": {"x":129, "y":259, "w":119, "h":226, "offX":0,"offY":0,"sourceW":119,"sourceH":226},
+	"item-mask": {"x":249, "y":259, "w":80, "h":80, "offX":0,"offY":0,"sourceW":80,"sourceH":80},
+	"light": {"x":330, "y":259, "w":42, "h":114, "offX":0,"offY":0,"sourceW":42,"sourceH":114},
+	"shi": {"x":249, "y":455, "w":28, "h":26, "offX":0,"offY":2,"sourceW":30,"sourceH":29},
+	"whiteBg": {"x":314, "y":397, "w":50, "h":50, "offX":0,"offY":0,"sourceW":50,"sourceH":50},
+	"wudi": {"x":249, "y":340, "w":67, "h":27, "offX":0,"offY":2,"sourceW":69,"sourceH":30}
+
+}}
