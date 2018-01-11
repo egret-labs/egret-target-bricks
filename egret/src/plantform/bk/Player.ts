@@ -52,6 +52,14 @@ namespace egret {
             this.stage.orientation = this._options.orientation;
             this.stage.scaleMode = this._options.scaleMode;
 
+            this._mainTicker.add(() => {
+                this._touchHandler();
+                ticker.update();
+            }, this);
+
+            this.updateScreenSize();
+            this.updateMaxTouches();
+
             //
             let entryClassName = this._options.entryClassName;
             let rootClass: any;
@@ -70,15 +78,6 @@ namespace egret {
             else {
                 DEBUG && $error(1001, entryClassName);
             }
-
-            this._mainTicker.add(() => {
-                this._touchHandler();
-                ticker.update();
-                ticker['callLaters'].call(ticker);
-            }, this);
-
-            this.updateScreenSize();
-            this.updateMaxTouches();
         }
 
         private _touchHandler(): void {

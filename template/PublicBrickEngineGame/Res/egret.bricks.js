@@ -16,9 +16,9 @@ var egret;
             if (bkNode === void 0) { bkNode = null; }
             var _this = _super.call(this) || this;
             _this._position = { x: 0.0, y: 0.0, z: 0.0 };
-            _this._scale = { x: 0.0, y: 0.0, z: 0.0 };
+            _this._scale = { x: 1.0, y: 1.0, z: 0.0 };
             _this._rotation = { x: 0.0, y: 0.0, z: 0.0 };
-            _this._color = { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+            _this._color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             _this._bkNode = bkNode || new BK.Node();
             return _this;
         }
@@ -1465,7 +1465,7 @@ var egret;
                     this._size.width = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
                     this._size.height = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
                     this._bkSprite.size = this._size;
-                    this._bkSprite.adjustTexturePosition(this._texture.$bitmapX, this._texture.$bitmapY, this._texture.$bitmapWidth, this._texture.$bitmapHeight, this._texture.$rotated);
+                    this._bkSprite.adjustTexturePosition(this._texture.$bitmapX, this._texture.$sourceHeight - (this._texture.$bitmapY + this._texture.$bitmapHeight), this._texture.$bitmapWidth, this._texture.$bitmapHeight, this._texture.$rotated);
                 }
                 else {
                     this._bkSprite.setTexture({});
@@ -2050,7 +2050,7 @@ var egret;
             }
             var loops = this.$loops === 0 ? -1 : this.$loops;
             var musicPath = "GameRes://" + this.$url;
-            BK.Audio.switch = true;
+            // BK.Audio.switch = true;
             this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             this._bkAudio.startMusic();
         };
@@ -2459,6 +2459,12 @@ var egret;
             _this.stage.frameRate = _this._options.frameRate;
             _this.stage.orientation = _this._options.orientation;
             _this.stage.scaleMode = _this._options.scaleMode;
+            _this._mainTicker.add(function () {
+                _this._touchHandler();
+                egret.ticker.update();
+            }, _this);
+            _this.updateScreenSize();
+            _this.updateMaxTouches();
             //
             var entryClassName = _this._options.entryClassName;
             var rootClass;
@@ -2477,13 +2483,6 @@ var egret;
             else {
                 true && egret.$error(1001, entryClassName);
             }
-            _this._mainTicker.add(function () {
-                _this._touchHandler();
-                egret.ticker.update();
-                egret.ticker['callLaters'].call(egret.ticker);
-            }, _this);
-            _this.updateScreenSize();
-            _this.updateMaxTouches();
             return _this;
         }
         BKPlayer.prototype._touchHandler = function () {
