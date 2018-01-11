@@ -1,0 +1,34 @@
+
+Decelerator.png
+size: 512,512
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+SteamedRice_Expression01
+  rotate: true
+  xy: 341, 59
+  size: 200, 141
+  orig: 200, 141
+  offset: 0, 0
+  index: -1
+SteamedRice_Expression02
+  rotate: false
+  xy: 307, 261
+  size: 181, 166
+  orig: 181, 166
+  offset: 0, 0
+  index: -1
+SteamedRice_Tear
+  rotate: false
+  xy: 2, 2
+  size: 337, 157
+  orig: 337, 157
+  offset: 0, 0
+  index: -1
+SteamedRice_body
+  rotate: false
+  xy: 2, 161
+  size: 303, 266
+  orig: 303, 266
+  offset: 0, 0
+  index: -1

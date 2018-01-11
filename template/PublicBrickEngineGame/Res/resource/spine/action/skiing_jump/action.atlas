@@ -1,0 +1,33 @@
+action.png
+size: 357, 127
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Eye_Skiing_01
+  rotate: true
+  xy: 322, 39
+  size: 75, 35
+  orig: 75, 35
+  offset: 0, 0
+  index: 3
+Mouth_Expression/Mouth_Laugh_H_00
+  rotate: true
+  xy: 321, 0
+  size: 39, 18
+  orig: 39, 18
+  offset: 0, 0
+  index: 2
+Snowboard_Left
+  rotate: false
+  xy: 0, 0
+  size: 321, 64
+  orig: 321, 64
+  offset: 0, 0
+  index: 0
+Snowboard_Right
+  rotate: false
+  xy: 0, 64
+  size: 322, 63
+  orig: 322, 63
+  offset: 0, 0
+  index: 1

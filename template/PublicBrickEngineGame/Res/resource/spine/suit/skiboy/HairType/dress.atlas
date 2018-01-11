@@ -1,0 +1,26 @@
+dress.png
+size: 371, 167
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Fringe_Back
+  rotate: false
+  xy: 254, 0
+  size: 117, 125
+  orig: 117, 125
+  offset: 0, 0
+  index: 2
+Fringe_Front
+  rotate: true
+  xy: 176, 0
+  size: 105, 78
+  orig: 105, 78
+  offset: 0, 0
+  index: 1
+Hair_Back
+  rotate: false
+  xy: 0, 0
+  size: 176, 167
+  orig: 176, 167
+  offset: 0, 0
+  index: 0

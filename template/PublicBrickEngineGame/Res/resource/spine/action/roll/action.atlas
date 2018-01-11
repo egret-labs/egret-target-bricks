@@ -1,0 +1,26 @@
+action.png
+size: 71, 58
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Eye_curlup_00
+  rotate: false
+  xy: 0, 0
+  size: 67, 31
+  orig: 67, 31
+  offset: 0, 0
+  index: 0
+Eyes_Expression/Eye_Close_00
+  rotate: false
+  xy: 0, 31
+  size: 67, 27
+  orig: 67, 27
+  offset: 0, 0
+  index: 1
+Mouth_Expression/Mouth_Angry_04
+  rotate: true
+  xy: 67, 0
+  size: 32, 4
+  orig: 32, 4
+  offset: 0, 0
+  index: 2

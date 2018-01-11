@@ -1,0 +1,12 @@
+dress.png
+size: 118, 81
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Head_Dress
+  rotate: false
+  xy: 0, 0
+  size: 118, 81
+  orig: 118, 81
+  offset: 0, 0
+  index: 0

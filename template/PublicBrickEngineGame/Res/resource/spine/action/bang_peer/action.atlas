@@ -1,0 +1,159 @@
+action.png
+size: 1879, 94
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Amazed
+  rotate: true
+  xy: 885, 0
+  size: 44, 42
+  orig: 44, 42
+  offset: 0, 0
+  index: 12
+Amazed01
+  rotate: true
+  xy: 848, 0
+  size: 41, 37
+  orig: 41, 37
+  offset: 0, 0
+  index: 11
+Bang00
+  rotate: true
+  xy: 927, 0
+  size: 53, 71
+  orig: 53, 71
+  offset: 0, 0
+  index: 13
+Bang01
+  rotate: false
+  xy: 1406, 0
+  size: 82, 37
+  orig: 82, 37
+  offset: 0, 0
+  index: 17
+Bang02
+  rotate: false
+  xy: 1299, 0
+  size: 107, 46
+  orig: 107, 46
+  offset: 0, 0
+  index: 16
+Eye_Bangbangbang_01
+  rotate: false
+  xy: 341, 0
+  size: 97, 65
+  orig: 97, 65
+  offset: 0, 0
+  index: 1
+Eye_Bangbangbang_02
+  rotate: false
+  xy: 438, 0
+  size: 97, 65
+  orig: 97, 65
+  offset: 0, 0
+  index: 2
+Eye_Bangbangbang_03
+  rotate: false
+  xy: 535, 0
+  size: 97, 65
+  orig: 97, 65
+  offset: 0, 0
+  index: 3
+Eye_Bangbangbang_04
+  rotate: false
+  xy: 632, 0
+  size: 97, 65
+  orig: 97, 65
+  offset: 0, 0
+  index: 4
+Eye_Bangbangbang_05
+  rotate: false
+  xy: 1677, 0
+  size: 101, 94
+  orig: 101, 94
+  offset: 0, 0
+  index: 20
+Eye_Bangbangbang_06
+  rotate: false
+  xy: 1778, 0
+  size: 101, 94
+  orig: 101, 94
+  offset: 0, 0
+  index: 21
+Eyes_Expression/Eye_Close_00
+  rotate: true
+  xy: 752, 0
+  size: 67, 27
+  orig: 67, 27
+  offset: 0, 0
+  index: 6
+Eyes_Expression/Eye_Frighten_00
+  rotate: true
+  xy: 779, 0
+  size: 68, 35
+  orig: 68, 35
+  offset: 0, 0
+  index: 7
+Eyes_Expression/Eye_Surprise_02
+  rotate: false
+  xy: 998, 0
+  size: 92, 56
+  orig: 92, 56
+  offset: 0, 0
+  index: 14
+Mouth_Expression/Mouth_Cry_03
+  rotate: false
+  xy: 814, 32
+  size: 34, 35
+  orig: 34, 35
+  offset: 0, 0
+  index: 10
+Mouth_Expression/Mouth_Scare_10
+  rotate: false
+  xy: 814, 0
+  size: 26, 32
+  orig: 26, 32
+  offset: 0, 0
+  index: 9
+eyeball
+  rotate: true
+  xy: 729, 0
+  size: 44, 23
+  orig: 44, 23
+  offset: 0, 0
+  index: 5
+gun03
+  rotate: false
+  xy: 0, 0
+  size: 341, 66
+  orig: 341, 66
+  offset: 0, 0
+  index: 0
+line
+  rotate: false
+  xy: 341, 65
+  size: 141, 4
+  orig: 141, 4
+  offset: 0, 0
+  index: 8
+somke
+  rotate: true
+  xy: 1090, 0
+  size: 61, 209
+  orig: 61, 209
+  offset: 0, 0
+  index: 15
+somke01
+  rotate: false
+  xy: 1488, 0
+  size: 116, 43
+  orig: 116, 43
+  offset: 0, 0
+  index: 18
+star
+  rotate: false
+  xy: 1604, 0
+  size: 73, 73
+  orig: 73, 73
+  offset: 0, 0
+  index: 19

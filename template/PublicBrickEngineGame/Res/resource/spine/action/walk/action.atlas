@@ -1,0 +1,5 @@
+action.png
+size: 1, 1
+format: RGBA4444
+filter: Linear,Linear
+repeat: none

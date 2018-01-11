@@ -1,0 +1,75 @@
+action.png
+size: 399, 56
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Eyes_Expression/Eye_Beaten_00
+  rotate: false
+  xy: 101, 0
+  size: 78, 54
+  orig: 78, 54
+  offset: 0, 0
+  index: 2
+Eyes_Expression/Eye_Beaten_01
+  rotate: false
+  xy: 179, 0
+  size: 79, 54
+  orig: 79, 54
+  offset: 0, 0
+  index: 3
+Eyes_Expression/Eye_Close_00
+  rotate: false
+  xy: 324, 0
+  size: 67, 27
+  orig: 67, 27
+  offset: 0, 0
+  index: 8
+Eyes_Expression/Eye_Despise_03
+  rotate: false
+  xy: 324, 27
+  size: 75, 25
+  orig: 75, 25
+  offset: 0, 0
+  index: 9
+Eyes_Expression/Eye_Surprise_00
+  rotate: false
+  xy: 0, 0
+  size: 97, 56
+  orig: 97, 56
+  offset: 0, 0
+  index: 0
+Mouth_Expression/Mouth_Angry_04
+  rotate: true
+  xy: 97, 0
+  size: 32, 4
+  orig: 32, 4
+  offset: 0, 0
+  index: 1
+Mouth_Expression/Mouth_Angry_05
+  rotate: true
+  xy: 258, 0
+  size: 38, 12
+  orig: 38, 12
+  offset: 0, 0
+  index: 4
+Mouth_Expression/Mouth_Scare_01
+  rotate: true
+  xy: 289, 0
+  size: 41, 35
+  orig: 41, 35
+  offset: 0, 0
+  index: 7
+Mouth_Expression/Mouth_Scare_04
+  rotate: true
+  xy: 258, 38
+  size: 18, 27
+  orig: 18, 27
+  offset: 0, 0
+  index: 5
+Mouth_Expression/Mouth_Scare_11
+  rotate: false
+  xy: 270, 0
+  size: 19, 33
+  orig: 19, 33
+  offset: 0, 0
+  index: 6

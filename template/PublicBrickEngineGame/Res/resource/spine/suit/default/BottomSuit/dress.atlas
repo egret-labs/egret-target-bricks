@@ -1,0 +1,40 @@
+dress.png
+size: 177, 142
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Pants_Left
+  rotate: true
+  xy: 0, 76
+  size: 33, 143
+  orig: 33, 143
+  offset: 0, 0
+  index: 2
+Pants_Right
+  rotate: true
+  xy: 0, 109
+  size: 33, 143
+  orig: 33, 143
+  offset: 0, 0
+  index: 3
+Skirt_Front
+  rotate: false
+  xy: 0, 0
+  size: 99, 76
+  orig: 99, 76
+  offset: 0, 0
+  index: 0
+Skirt_Left
+  rotate: false
+  xy: 136, 0
+  size: 41, 55
+  orig: 41, 55
+  offset: 0, 0
+  index: 4
+Skirt_Right
+  rotate: false
+  xy: 99, 0
+  size: 37, 55
+  orig: 37, 55
+  offset: 0, 0
+  index: 1

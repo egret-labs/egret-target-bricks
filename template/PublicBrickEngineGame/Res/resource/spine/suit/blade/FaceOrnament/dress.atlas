@@ -1,0 +1,12 @@
+dress.png
+size: 93, 24
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Face_Omament
+  rotate: false
+  xy: 0, 0
+  size: 93, 24
+  orig: 93, 24
+  offset: 0, 0
+  index: 0

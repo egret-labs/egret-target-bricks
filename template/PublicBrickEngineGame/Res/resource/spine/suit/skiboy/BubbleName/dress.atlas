@@ -1,0 +1,19 @@
+dress.png
+size: 381, 86
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Bubble_Name_Word
+  rotate: false
+  xy: 206, 0
+  size: 175, 75
+  orig: 175, 75
+  offset: 0, 0
+  index: 1
+Bubble_Name
+  rotate: false
+  xy: 0, 0
+  size: 206, 86
+  orig: 206, 86
+  offset: 0, 0
+  index: 0

@@ -1,0 +1,47 @@
+dress.png
+size: 803, 186
+format: RGBA4444
+filter: Linear,Linear
+repeat: none
+Bubble_Large
+  rotate: false
+  xy: 0, 0
+  size: 238, 167
+  orig: 238, 167
+  offset: 0, 0
+  index: 0
+Bubble_Large_Word
+  rotate: true
+  xy: 481, 0
+  size: 186, 115
+  orig: 186, 115
+  offset: 0, 0
+  index: 4
+Bubble_Middle
+  rotate: false
+  xy: 596, 0
+  size: 207, 137
+  orig: 207, 137
+  offset: 0, 0
+  index: 5
+Bubble_Middle_Word
+  rotate: true
+  xy: 406, 0
+  size: 175, 75
+  orig: 175, 75
+  offset: 0, 0
+  index: 3
+Bubble_Small
+  rotate: true
+  xy: 238, 0
+  size: 151, 110
+  orig: 151, 110
+  offset: 0, 0
+  index: 1
+Bubble_Small_Word
+  rotate: true
+  xy: 348, 0
+  size: 122, 58
+  orig: 122, 58
+  offset: 0, 0
+  index: 2
