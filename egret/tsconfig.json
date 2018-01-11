@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "outDir": "bin-debug",
-        "outFile": "./out/brick.js",
+        "outFile": "../template/PublicBrickEngineGame/Res/egret.bricks.js",
         "experimentalDecorators": true,
         "lib": [
             "es5",
