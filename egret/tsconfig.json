@@ -19,7 +19,6 @@
         "./libs/BK.d.ts",
         "./libs/BK_1.d.ts",
         "./libs/egret.d.ts",
-        
         "./src/plantform/bk/net/BKHttpRequest.ts",
         "./src/plantform/bk/net/BKImageLoader.ts",
         "./src/plantform/bk/BitmapData.ts",
@@ -30,6 +29,8 @@
         "./src/plantform/bk/Shape.ts",
         "./src/plantform/bk/Sprite.ts",
         "./src/plantform/bk/TextField.ts",
+        "./src/plantform/bk/Sound.ts",
+        "./src/plantform/bk/SoundChannel.ts",
         "./src/plantform/bk/Stage.ts",
         "./src/plantform/bk/Player.ts",
         "./src/plantform/bk/EgretBK.ts"

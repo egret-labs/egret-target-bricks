@@ -142,6 +142,12 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+
+        debugger;
+        let sound = new egret.Sound();
+        sound.load("resource/assets/race_background.mp3");
+        sound.play();
+
     }
 
     /**
