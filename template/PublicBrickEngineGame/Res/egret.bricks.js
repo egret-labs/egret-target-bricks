@@ -22,18 +22,6 @@ var egret;
             _this._bkNode = bkNode || new BK.Node();
             return _this;
         }
-        BKDisplayObject.prototype._refreshNodePropertices = function () {
-            this._bkNode.position = this._position;
-            this._bkNode.scale = this._scale;
-            this._bkNode.rotation = this._rotation;
-            this._bkNode.vertexColor = this._color;
-        };
-        // protected _replaceNode(node: BK.Node): void {
-        //     this._bkNode.parent.addChild(node, this._bkNode.children.indexOf(this._bkNode));
-        //     for (let i = 0, l = this.$children.length; i < l; i++) {
-        //         (this.$children[i] as BKDisplayObject)._bkNode.zOrder = -i;
-        //     }
-        // }
         /**
          * @private
          */
@@ -2462,6 +2450,7 @@ var egret;
             _this._mainTicker.add(function () {
                 _this._touchHandler();
                 egret.ticker.update();
+                egret.ticker["callLaters"]();
             }, _this);
             _this.updateScreenSize();
             _this.updateMaxTouches();
