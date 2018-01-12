@@ -93,61 +93,91 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene() {
-        let sky = this.createBitmapByName("bg_jpg");
-        this.addChild(sky);
-        let stageW = this.stage.stageWidth;
-        let stageH = this.stage.stageHeight;
-        sky.width = stageW;
-        sky.height = stageH;
+        // let sky = this.createBitmapByName("bg_jpg");
+        // this.addChild(sky);
+        // let stageW = this.stage.stageWidth;
+        // let stageH = this.stage.stageHeight;
+        // sky.width = stageW;
+        // sky.height = stageH;
 
-        let topMask = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, 172);
-        topMask.graphics.endFill();
-        topMask.y = 33;
-        this.addChild(topMask);
+        // let topMask = new egret.Shape();
+        // topMask.graphics.beginFill(0x000000, 0.5);
+        // topMask.graphics.drawRect(0, 0, stageW, 172);
+        // topMask.graphics.endFill();
+        // topMask.y = 33;
+        // this.addChild(topMask);
 
-        let icon = this.createBitmapByName("egret_icon_png");
-        this.addChild(icon);
-        icon.x = 26;
-        icon.y = 33;
+        // let icon = this.createBitmapByName("egret_icon_png");
+        // this.addChild(icon);
+        // icon.x = 26;
+        // icon.y = 33;
 
-        let line = new egret.Shape();
-        line.graphics.lineStyle(2, 0xffffff);
-        line.graphics.moveTo(0, 0);
-        line.graphics.lineTo(0, 117);
-        line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
-        this.addChild(line);
+        // let line = new egret.Shape();
+        // line.graphics.lineStyle(2, 0xffffff);
+        // line.graphics.moveTo(0, 0);
+        // line.graphics.lineTo(0, 117);
+        // line.graphics.endFill();
+        // line.x = 172;
+        // line.y = 61;
+        // this.addChild(line);
 
 
-        let colorLabel = new egret.TextField();
-        colorLabel.textColor = 0xffffff;
-        colorLabel.width = stageW - 172;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 24;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
-        this.addChild(colorLabel);
+        // let colorLabel = new egret.TextField();
+        // colorLabel.textColor = 0xffffff;
+        // colorLabel.width = stageW - 172;
+        // colorLabel.textAlign = "center";
+        // colorLabel.text = "Hello Egret";
+        // colorLabel.size = 24;
+        // colorLabel.x = 172;
+        // colorLabel.y = 80;
+        // this.addChild(colorLabel);
 
-        let textfield = new egret.TextField();
-        this.addChild(textfield);
-        textfield.alpha = 0;
-        textfield.width = stageW - 172;
-        textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
-        textfield.textColor = 0xffffff;
-        textfield.x = 172;
-        textfield.y = 135;
-        this.textfield = textfield;
+        // let textfield = new egret.TextField();
+        // this.addChild(textfield);
+        // textfield.alpha = 0;
+        // textfield.width = stageW - 172;
+        // textfield.textAlign = egret.HorizontalAlign.CENTER;
+        // textfield.size = 24;
+        // textfield.textColor = 0xffffff;
+        // textfield.x = 172;
+        // textfield.y = 135;
+        // this.textfield = textfield;
 
-        debugger;
-        let sound = new egret.Sound();
-        sound.load("resource/assets/race_background.mp3");
-        sound.play();
+        // let shp: egret.Shape = new egret.Shape();
+        // shp.graphics.beginFill(0xff0000, 1);
+        // shp.graphics.drawRect(0, 0, 100, 200);
+        // shp.graphics.endFill();
+        // this.addChild(shp);
 
+        // let httpRequest = new egret.HttpRequest();
+        // var httpVariable = new egret.URLVariables("name=1");
+        // httpVariable.
+        // httpRequest.open("http://10.0.9.44:3000/", egret.HttpMethod.POST);
+        // httpRequest.send();
+        // httpRequest.addEventListener(egret.Event.COMPLETE, () => {
+        //     debugger
+        //     console.log("1111")
+        // }, this);
+
+        debugger
+        let urlreq: egret.URLRequest = new egret.URLRequest();
+        urlreq.method = egret.URLRequestMethod.POST;
+        urlreq.url = "http://10.0.9.44:3000/";
+        // urlreq.url = "http://httpbin.org/post";
+        let req = JSON.stringify({ name: "111", url: "http://10.0.9.44:3000/" });
+        urlreq.data = req;
+        urlreq.requestHeaders = [
+            new egret.URLRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+        ]
+        console.log(req);
+        let urlloader = new egret.URLLoader();
+        urlloader.addEventListener(egret.Event.COMPLETE, () => {
+            debugger
+            console.log("req", req);
+            urlloader.data;
+            console.log("req", urlloader.data);
+        }, this);
+        urlloader.load(urlreq);
     }
 
     /**

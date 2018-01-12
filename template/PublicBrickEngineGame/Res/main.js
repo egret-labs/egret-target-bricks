@@ -120,7 +120,7 @@ this.navigator = { userAgent: "BK" };
 // Egret
 (function () {
     BK.Script.loadlib('GameRes://script/core/ui/text.js');
-
+    BK.Script.loadlib('GameRes://script/core/render/canvas.js');
     // debugger;
     var manifestURL = "GameRes://manifest.json";
     if (!BK.FileUtil.isFileExist(manifestURL)) {
