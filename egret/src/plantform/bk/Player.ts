@@ -55,6 +55,7 @@ namespace egret {
             this._mainTicker.add(() => {
                 this._touchHandler();
                 ticker.update();
+                ticker["callLaters"]();
             }, this);
 
             this.updateScreenSize();

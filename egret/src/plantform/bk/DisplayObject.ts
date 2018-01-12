@@ -20,20 +20,6 @@ namespace egret {
             this._bkNode = bkNode || new BK.Node();
         }
 
-        protected _refreshNodePropertices(): void {
-            this._bkNode.position = this._position;
-            this._bkNode.scale = this._scale;
-            this._bkNode.rotation = this._rotation;
-            this._bkNode.vertexColor = this._color;
-        }
-
-        // protected _replaceNode(node: BK.Node): void {
-        //     this._bkNode.parent.addChild(node, this._bkNode.children.indexOf(this._bkNode));
-        //     for (let i = 0, l = this.$children.length; i < l; i++) {
-        //         (this.$children[i] as BKDisplayObject)._bkNode.zOrder = -i;
-        //     }
-        // }
-
         /**
          * @private
          */
