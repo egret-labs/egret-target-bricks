@@ -6,13 +6,20 @@ namespace egret {
     export class BKDisplayObject extends egret.DisplayObject {
         /**
          * @internal
-         * @private
          */
-        public _bkNode: BK.Node;
+        public _positionDirty: boolean = false;
+        /**
+         * @internal
+         */
+        public _transformDirty: boolean = false;
         protected readonly _position: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
         protected readonly _scale: Vec3 = { x: 1.0, y: 1.0, z: 0.0 };
         protected readonly _rotation: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
         protected readonly _color: Color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
+        /**
+         * @internal
+         */
+        public _bkNode: BK.Node;
 
         public constructor(bkNode: BK.Node | null = null) {
             super();
@@ -109,6 +116,10 @@ namespace egret {
             //
             this._color.a = value;
             this._bkNode.vertexColor = this._color;
+        }
+
+        $getRenderNode(): sys.RenderNode {
+            return this._bkNode as any || null;
         }
     }
 

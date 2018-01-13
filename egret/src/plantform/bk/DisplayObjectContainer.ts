@@ -194,6 +194,12 @@ namespace egret {
                         childAddToStage.dispatchEventWith(Event.ADDED_TO_STAGE);
                     }
                 }
+
+                // MD
+                const index = BKPlayer.instance._displayList.indexOf(child);
+                if (index < 0) {
+                    BKPlayer.instance._displayList.push(child);
+                }
             }
             // MD
             this._bkNode.addChild((child as BKDisplayObject)._bkNode, index);
@@ -408,6 +414,12 @@ namespace egret {
                     }
                     childAddToStage.$hasAddToStage = false;
                     childAddToStage.$stage = null;
+                }
+
+                // MD
+                const index = BKPlayer.instance._displayList.indexOf(child);
+                if (index < 0) {
+                    BKPlayer.instance._displayList.splice(index, 1);
                 }
             }
             let displayList = this.$displayList || this.$parentDisplayList;

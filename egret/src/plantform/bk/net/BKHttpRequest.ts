@@ -41,6 +41,8 @@ namespace egret {
          */
         public send(data?: any): void {
             let self = this;
+            console.log(self._url);
+            
             if (self.isNetUrl(self._url)) {
                 this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
                 this._bkHttpRequest.setHttpMethod(this._method);
@@ -56,7 +58,7 @@ namespace egret {
                         }
 
                         self._response = result;
-                        $callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
+                        $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
                     }
                     else {
                         $warn(1019, code);
@@ -73,15 +75,17 @@ namespace egret {
                 // promise.onResponseHeaderFunc = this.onResponseHeader;
                 // promise.onResponseHeaderThisObject = this;
                 // egret_native.download(self._url, self._url, promise);
+                $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
             }
             else {
                 if (self._responseType === HttpResponseType.ARRAY_BUFFER) {
                     // egret_native.readFileAsync(self._url, promise, "ArrayBuffer"); // TODO
+                    $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
                 }
                 else {
                     const bkBuffer = BK.FileUtil.readFile(self._url);
                     self._response = bkBuffer.readAsString();
-                    $callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
+                    $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
                 }
             }
         }

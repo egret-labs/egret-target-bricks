@@ -107,6 +107,10 @@
 //输入框
 // BK.Script.loadlib("GameRes://script/demo/ui/editor_demo.js");
 
+//
+var window = this;
+this.navigator = { userAgent: "BK" };
+this.setTimeout = this.setTimeout || function () { };
 var __extends = function (t, e) {
     function r() {
         this.constructor = t;
@@ -114,35 +118,41 @@ var __extends = function (t, e) {
     for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
     r.prototype = e.prototype, t.prototype = new r();
 };
-
-var window = this;
-this.navigator = { userAgent: "BK" };
 // Egret
 (function () {
     BK.Script.loadlib('GameRes://script/core/ui/text.js');
 
     // debugger;
     var manifestURL = "GameRes://manifest.json";
+    var bricksJSURL = "GameRes://egret.bricks.js";
+    var isLoadBricks = false;
+
     if (!BK.FileUtil.isFileExist(manifestURL)) {
         BK.Script.log(0, 0, "Load egret manifest error.");
         return;
     }
 
     var manifest = JSON.parse(BK.FileUtil.readFile(manifestURL).readAsString());
-
     if (manifest.initial && manifest.initial instanceof Array) {
         for (var i = 0, l = manifest.initial.length; i < l; ++i) {
             var jsLib = manifest.initial[i];
             BK.Script.loadlib(jsLib);
-        }
-    }
-    //
-    BK.Script.loadlib('GameRes://egret.bricks.js');
 
-    if (manifest.game && manifest.game instanceof Array) {
-        for (var i = 0, l = manifest.game.length; i < l; ++i) {
-            var jsLib = manifest.game[i];
-            BK.Script.loadlib(jsLib);
+            if (!isLoadBricks && (jsLib.indexOf("egret.js") >= 0 || jsLib.indexOf("egret.min.js") >= 0)) {
+                isLoadBricks = true;
+                BK.Script.loadlib(bricksJSURL);
+            }
+        }
+
+        if (!isLoadBricks) {
+            BK.Script.loadlib(bricksJSURL);
+        }
+
+        if (manifest.game && manifest.game instanceof Array) {
+            for (var i = 0, l = manifest.game.length; i < l; ++i) {
+                var jsLib = manifest.game[i];
+                BK.Script.loadlib(jsLib);
+            }
         }
 
         debugger;

@@ -27,15 +27,15 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 //
-console.log = function (...others: any[]): void {
+console = console || {} as any;
+console.warn = console.log = function (...others: any[]): void {
     let str = "";
     if (others)
         for (let other of others)
             str += other;
     BK.Script.log(0, 0, str);
 };
-//
-this.setTimeout = this.setTimeout || function () { };
+console.assert = console.log; // TODO
 
 namespace egret {
     egret.getTimer = function getTimer(): number {
@@ -70,6 +70,8 @@ namespace egret {
         }
         isRunning = true;
 
+        modifyEgret();
+
         if (!options) {
             options = {};
         }
@@ -81,7 +83,47 @@ namespace egret {
             egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
         }
 
+        sys.systemRenderer = new BKSystemRenderer();
+        sys.canvasRenderer = new BKSystemRenderer();
+
         player = new BKPlayer(options);
+    }
+
+    function modifyEgret(): void {
+        if (eui) {
+            type BKImageType = BKBitmap & eui.Image;
+            interface BKImage extends BKImageType {
+            };
+
+            eui.Image.prototype.$getRenderNode = function (this: BKImage): any {
+                let image = this.$bitmapData;
+                if (!image) {
+                    return null;
+                }
+                let uiValues = this.$UIComponent;
+                let width = uiValues[eui.sys.UIKeys.width];
+                let height = uiValues[eui.sys.UIKeys.height];
+                if (width === 0 || height === 0) {
+                    return null;
+                }
+
+                let scale9Grid = this.scale9Grid || (this as any).$texture["scale9Grid"];
+                if (scale9Grid) {
+                    // if (this.$renderNode instanceof egret.sys.NormalBitmapNode) {
+                    // } TODO
+                    (this as any)._size.width = this.$getWidth();
+                    (this as any)._size.height = this.$getHeight();
+                    (this as any)._bkSprite.size = (this as any)._size;
+                }
+                else {
+                    (this as any)._size.width = this.$getWidth();
+                    (this as any)._size.height = this.$getHeight();
+                    (this as any)._bkSprite.size = (this as any)._size;
+                }
+
+                return null;
+            };
+        }
     }
 
     egret.runEgret = runEgret;

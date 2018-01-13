@@ -29,15 +29,22 @@
 
 namespace egret {
     export class BKPlayer extends HashObject implements egret.sys.Screen {
+        public static instance: BKPlayer;
         public readonly stage: Stage = new egret.Stage();
 
         private readonly _mainTicker: BK.MainTicker = BK.Director.ticker;
         private readonly _viewRect: Rectangle = new egret.Rectangle();
         private readonly _touch: sys.TouchHandler = new sys.TouchHandler(this.stage);
+        /**
+         * @internal
+         */
+        public readonly _displayList: DisplayObject[] = [];
         private _options: runEgretOptions;
 
         public constructor(options: runEgretOptions) {
             super();
+
+            BKPlayer.instance = this;
 
             this._options = options;
 
@@ -56,6 +63,10 @@ namespace egret {
                 this._touchHandler();
                 ticker.update();
                 ticker["callLaters"]();
+                //
+                for (const displayObject of this._displayList) {
+                    displayObject.$getRenderNode();
+                }
             }, this);
 
             this.updateScreenSize();

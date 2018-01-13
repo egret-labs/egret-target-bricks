@@ -19,19 +19,15 @@ namespace egret {
         }
 
         public load(url: string): void {
-            this.data = new egret.BitmapData(url);
-            $callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+            console.log(url);
+            if (BK.FileUtil.isFileExist(url)) {
+                this.data = new egret.BitmapData(url);
+                $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+            }
+            else {
+                $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+            }
         }
-
-        // private dispatchIOError(url: string): void {
-        //     let self = this;
-        //     window.setTimeout(function (): void {
-        //         if (DEBUG && !self.hasEventListener(IOErrorEvent.IO_ERROR)) {
-        //             $error(1011, url);
-        //         }
-        //         self.dispatchEventWith(IOErrorEvent.IO_ERROR);
-        //     }, 0);
-        // }
     }
 
     ImageLoader = BKImageLoader;

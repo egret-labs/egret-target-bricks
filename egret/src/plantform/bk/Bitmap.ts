@@ -5,8 +5,15 @@ namespace egret {
 
         protected readonly _size: Size = { width: 0.0, height: 0.0 };
         private readonly _bkSprite: BK.Sprite;
-        private _texture: egret.Texture | null;
-        private _bitmapData: BitmapData = null;
+        /**
+         * @internal
+         */
+        public $bitmapData: egret.BKBitmapData | null = null;
+        protected $texture: egret.Texture | null = null;
+        /**
+         * @internal
+         */
+        public $scale9Grid: egret.Rectangle | null = null;
 
         public constructor(value: Texture | null = null) {
             super(new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1));
@@ -17,34 +24,53 @@ namespace egret {
         }
 
         public get texture(): Texture | null {
-            return this._texture;
+            return this.$texture;
         }
 
         public set texture(value: Texture | null) {
-            if (this._texture === value) {
+            this.$setTexture(value);
+        }
+
+        public $setTexture(value: Texture | null): void {
+            if (this.$texture === value) {
                 return;
             }
-            this._texture = value;
+            this.$texture = value;
 
-            if (this._texture) {
-                this._bkSprite.setTexture((<any>value as BKTexture)._bkTexture);
-                this._size.width = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
-                this._size.height = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
-                this._bkSprite.size = this._size;
-                this._bkSprite.adjustTexturePosition(
-                    this._texture.$bitmapX,
-                    this._texture.$sourceHeight - (this._texture.$bitmapY + this._texture.$bitmapHeight),
-                    this._texture.$bitmapWidth,
-                    this._texture.$bitmapHeight,
-                    this._texture.$rotated
-                );
+            if (this.$texture) {
+                this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
+                if (this.$bitmapData.bkTexture) {
+                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
+                    this._size.width = this.$getWidth();
+                    this._size.height = this.$getHeight();
+                    this._bkSprite.size = this._size;
+                    this._bkSprite.adjustTexturePosition(
+                        this.$texture.$bitmapX,
+                        this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight),
+                        this.$texture.$bitmapWidth,
+                        this.$texture.$bitmapHeight,
+                        this.$texture.$rotated
+                    );
+                }
+                else {
+                    this.$bitmapData = null;
+                    this._bkSprite.setTexture({} as any);
+                }
             }
             else {
+                this.$bitmapData = null;
                 this._bkSprite.setTexture({} as any);
             }
         }
+        public get scale9Grid(): egret.Rectangle {
+            return this.$scale9Grid;
+        }
 
-
+        public set scale9Grid(value: egret.Rectangle) {
+            let self = this;
+            (self as any).$scale9Grid = value;
+            self.$renderDirty = true;
+        }
         /**
          * @private
          *
@@ -103,9 +129,9 @@ namespace egret {
          * @private
          */
         $measureContentBounds(bounds: Rectangle): void {
-            if (this._texture) {
-                let w: number = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
-                let h: number = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
+            if (this.$texture) {
+                let w: number = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this.$texture.$getTextureWidth();
+                let h: number = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this.$texture.$getTextureHeight();
                 bounds.setTo(0, 0, w, h);
             }
             else {
@@ -127,6 +153,7 @@ namespace egret {
             let anchorY = 1.0 - value / this._size.height;
             this._bkSprite.anchor = { x: this._bkSprite.anchor.x, y: anchorY };
         }
+
     }
 
     egret.Bitmap = BKBitmap as any;
