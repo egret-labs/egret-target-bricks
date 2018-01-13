@@ -265,9 +265,11 @@ namespace egret {
             if (thickness <= 0) {
                 this.isStrokePath = false;
                 this.lineWidth = 0;
+                this.setStrokeWidth(0);
             } else {
                 color = +color || 0;
                 alpha = +alpha || 0;
+                this.setStrokeWidth(thickness);
                 this.lineWidth = thickness;
                 this._BKCanvas.lineWidth = thickness;
                 this.isStrokePath = true;
@@ -300,8 +302,8 @@ namespace egret {
          * @language zh_CN
          */
         public drawRect(x: number, y: number, width: number, height: number): void {
-            x = +x + this.offsetX || 0;
-            y = - y + this.offsetY || 0;
+            let _x = +x + this.offsetX || 0;
+            let _y = - y + this.offsetY || 0;
             width = +width || 0;
             height = +height || 0;
             // let fillPath = this.fillPath;
@@ -309,14 +311,14 @@ namespace egret {
             // fillPath && fillPath.drawRect(x, y, width, height);
             // strokePath && strokePath.drawRect(x, y, width, height);
             this.extendBoundsByPoint(x + width, y + height);
-            // this.updatePosition(x, y);
+            this.updatePosition(x, y);
             // this.$renderNode.dirtyRender = true;
             if (this.isFillPath) {
-                this._BKCanvas.fillRect(x, y - height, width, height);
+                this._BKCanvas.fillRect(_x, _y - height, width, height);
             }
 
             if (this.isStrokePath) {
-                this._BKCanvas.strokeRect(x, y - height, width, height);
+                this._BKCanvas.strokeRect(_x, _y - height, width, height);
             }
         }
 
@@ -360,11 +362,11 @@ namespace egret {
 
             // let radiusX = (ellipseWidth * 0.5) | 0;
             // let radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
-            let right = x + width;
-            let bottom = y + height;
+            // let right = x + width;
+            // let bottom = y + height;
             // let ybw = bottom - radiusY;
-            this.extendBoundsByPoint(x, y);
-            this.extendBoundsByPoint(right, bottom);
+            // this.extendBoundsByPoint(x, y);
+            // this.extendBoundsByPoint(right, bottom);
             // this.updatePosition(right, ybw);
             // this.$renderNode.dirtyRender = true;
         }
@@ -388,13 +390,13 @@ namespace egret {
          * @language zh_CN
          */
         public drawCircle(x: number, y: number, radius: number): void {
-            x = +x + this.offsetX || 0;
-            y = - y + this.offsetY || 0;
+            let _x = +x + this.offsetX || 0;
+            let _y = - y + this.offsetY || 0;
             radius = +radius || 0;
-            this._BKCanvas.drawCircle(x, y, radius);
+            this._BKCanvas.drawCircle(_x, _y, radius);
             if (this.isStrokePath && this.isFillPath) {
                 this._BKCanvas.fill();
-                this._BKCanvas.drawCircle(x, y, radius);
+                this._BKCanvas.drawCircle(_x, _y, radius);
                 this._BKCanvas.stroke();
             }
 
@@ -405,7 +407,7 @@ namespace egret {
             // //-1 +2 解决WebGL裁切问题
             this.extendBoundsByPoint(x - radius - 1, y - radius - 1);
             this.extendBoundsByPoint(x + radius + 2, y + radius + 2);
-            // this.updatePosition(x + radius, y);
+            this.updatePosition(x + radius, y);
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -431,15 +433,15 @@ namespace egret {
          * @language zh_CN
          */
         public drawEllipse(x: number, y: number, width: number, height: number): void {
-            x = +x + this.offsetX || 0;
-            y = - y + this.offsetY || 0;
+            let _x = +x + this.offsetX || 0;
+            let _y = - y + this.offsetY || 0;
             width = +width || 0;
             height = +height || 0;
-            this._BKCanvas.drawEllipse(x, y, width, height);
+            this._BKCanvas.drawEllipse(_x, _y, width, height);
 
             if (this.isStrokePath && this.isFillPath) {
                 this._BKCanvas.fill();
-                this._BKCanvas.drawEllipse(x, y, width, height);
+                this._BKCanvas.drawEllipse(_x, _y, width, height);
                 this._BKCanvas.stroke();
             }
             // let fillPath = this.fillPath;
@@ -449,7 +451,7 @@ namespace egret {
             // //-1 +2 解决WebGL裁切问题
             this.extendBoundsByPoint(x - 1, y - 1);
             this.extendBoundsByPoint(x + width + 2, y + height + 2);
-            // this.updatePosition(x + width, y + height * 0.5);
+            this.updatePosition(x + width, y + height * 0.5);
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -470,9 +472,9 @@ namespace egret {
          * @language zh_CN
          */
         public moveTo(x: number, y: number): void {
-            x = x + this.offsetX || 0;
-            y = - y + this.offsetY || 0;
-            this._BKCanvas.moveTo(x, y);
+            let _x = x + this.offsetX || 0;
+            let _y = - y + this.offsetY || 0;
+            this._BKCanvas.moveTo(_x, _y);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.moveTo(x, y);
@@ -500,14 +502,14 @@ namespace egret {
          * @language zh_CN
          */
         public lineTo(x: number, y: number): void {
-            x = x + this.offsetX || 0;
-            y = - y + this.offsetY || 0;
-            this._BKCanvas.lineTo(x, y);
+            let _x = x + this.offsetX || 0;
+            let _y = - y + this.offsetY || 0;
+            this._BKCanvas.lineTo(_x, _y);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.lineTo(x, y);
             // strokePath && strokePath.lineTo(x, y);
-            // this.updatePosition(x, y);
+            this.updatePosition(x, y);
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -536,18 +538,18 @@ namespace egret {
          * @language zh_CN
          */
         public curveTo(controlX: number, controlY: number, anchorX: number, anchorY: number): void {
-            controlX = this.offsetX + controlX || 0;
-            controlY = this.offsetY - controlY || 0;
-            anchorX = this.offsetX + anchorX || 0;
-            anchorY = this.offsetY - anchorY || 0;
-            this._BKCanvas.quadraticCurveTo(controlX, controlY, anchorX, anchorY)
+            let _controlX = this.offsetX + controlX || 0;
+            let _controlY = this.offsetY - controlY || 0;
+            let _anchorX = this.offsetX + anchorX || 0;
+            let _anchorY = this.offsetY - anchorY || 0;
+            this._BKCanvas.quadraticCurveTo(_controlX, _controlY, _anchorX, _anchorY)
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.curveTo(controlX, controlY, anchorX, anchorY);
             // strokePath && strokePath.curveTo(controlX, controlY, anchorX, anchorY);
             this.extendBoundsByPoint(controlX, controlY);
             this.extendBoundsByPoint(anchorX, anchorY);
-            // this.updatePosition(anchorX, anchorY);
+            this.updatePosition(anchorX, anchorY);
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -577,13 +579,13 @@ namespace egret {
          */
         public cubicCurveTo(controlX1: number, controlY1: number, controlX2: number,
             controlY2: number, anchorX: number, anchorY: number): void {
-            controlX1 = this.offsetX + controlX1 || 0;
-            controlY1 = this.offsetY - controlY1 || 0;
-            controlX2 = this.offsetX + controlX2 || 0;
-            controlY2 = this.offsetY - controlY2 || 0;
-            anchorX = this.offsetX + anchorX || 0;
-            anchorY = this.offsetY - anchorY || 0;
-            this._BKCanvas.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            let _controlX1 = this.offsetX + controlX1 || 0;
+            let _controlY1 = this.offsetY - controlY1 || 0;
+            let _controlX2 = this.offsetX + controlX2 || 0;
+            let _controlY2 = this.offsetY - controlY2 || 0;
+            let _anchorX = this.offsetX + anchorX || 0;
+            let _anchorY = this.offsetY - anchorY || 0;
+            this._BKCanvas.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _anchorX, _anchorY);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
@@ -591,7 +593,7 @@ namespace egret {
             this.extendBoundsByPoint(controlX1, controlY1);
             this.extendBoundsByPoint(controlX2, controlY2);
             this.extendBoundsByPoint(anchorX, anchorY);
-            // this.updatePosition(anchorX, anchorY);
+            this.updatePosition(anchorX, anchorY);
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -668,8 +670,8 @@ namespace egret {
 
             // let PI = Math.PI;
             // if (Math.abs(startAngle - endAngle) < 0.01) {
-            this.extendBoundsByPoint(x - radius, y - radius);
-            this.extendBoundsByPoint(x + radius, y + radius);
+            // this.extendBoundsByPoint(x - radius, y - radius);
+            // this.extendBoundsByPoint(x + radius, y + radius);
             //     return;
             // }
             // if (startAngle > endAngle) {
@@ -725,7 +727,7 @@ namespace egret {
          */
         public clear(): void {
             // this.$renderNode.clear();
-            // this.updatePosition(0, 0);
+            this.updatePosition(0, 0);
             this.minX = Infinity;
             this.minY = Infinity;
             this.maxX = -Infinity;
@@ -827,31 +829,9 @@ namespace egret {
          *
          */
         $hitTest(stageX: number, stageY: number): DisplayObject {
-            // let target = this.targetDisplay;
-            // let m = target.$getInvertedConcatenatedMatrix();
-            // let localX = m.a * stageX + m.c * stageY + m.tx;
-            // let localY = m.b * stageX + m.d * stageY + m.ty;
-            // let buffer = sys.canvasHitTestBuffer;
-            // buffer.resize(3, 3);
-            // let node = this.$renderNode;
-            // let matrix = Matrix.create();
-            // matrix.identity();
-            // matrix.translate(1 - localX, 1 - localY);
-            // sys.canvasRenderer.drawNodeToBuffer(node, buffer, matrix, true);
-            // Matrix.release(matrix);
-
-            // try {
-            //     let data = buffer.getPixels(1, 1);
-            //     if (data[3] === 0) {
-            //         return null;
-            //     }
-            // }
-            // catch (e) {
-            //     throw new Error(sys.tr(1039));
-            // }
-            // return target;
-
-
+            if (this._BKCanvas.hittest({ x: stageX, y: stageY })) {
+                return this.targetDisplay;
+            }
             return null;
         }
 

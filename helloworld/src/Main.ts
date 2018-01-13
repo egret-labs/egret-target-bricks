@@ -99,9 +99,7 @@ class Main extends egret.DisplayObjectContainer {
         let stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-
-        debugger;
-
+        
         let topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
@@ -122,7 +120,6 @@ class Main extends egret.DisplayObjectContainer {
         line.x = 172;
         line.y = 61;
         this.addChild(line);
-
 
         let colorLabel = new egret.TextField();
         colorLabel.textColor = 0xffffff;
