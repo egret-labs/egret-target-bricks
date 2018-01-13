@@ -731,7 +731,7 @@ namespace egret {
             this.maxX = -Infinity;
             this.maxY = -Infinity;
 
-            this._BKCanvas.clearRect(0, 0, this.stageW, this.stageH);
+            this._BKCanvas.clearRect(0, 0, 2 * this.stageW, 2 * this.stageH);
             this.isFillPath = false;
             this.isStrokePath = false;
         }
