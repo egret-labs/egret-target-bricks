@@ -121,7 +121,7 @@ var __extends = function (t, e) {
 // Egret
 (function () {
     BK.Script.loadlib('GameRes://script/core/ui/text.js');
-
+    BK.Script.loadlib('GameRes://script/core/render/canvas.js');
     // debugger;
     var manifestURL = "GameRes://manifest.json";
     var bricksJSURL = "GameRes://egret.bricks.js";

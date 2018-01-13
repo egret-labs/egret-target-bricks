@@ -41,11 +41,19 @@ namespace egret {
          */
         public send(data?: any): void {
             let self = this;
-            console.log(self._url);
             
             if (self.isNetUrl(self._url)) {
                 this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
-                this._bkHttpRequest.setHttpMethod(this._method);
+                let method: string;
+                if (this._method === egret.HttpMethod.GET) {
+                    method = "get";
+                } else if (this._method === egret.HttpMethod.POST) {
+                    method = "post";
+                }
+                this._bkHttpRequest.setHttpMethod(method);
+                if (this._method === egret.HttpMethod.POST) {
+                    this._bkHttpRequest.setHttpPostData(data);
+                }
                 this._bkHttpRequest.setHttpCookie(data); // 如何传 head
                 this._bkHttpRequest.requestAsync((res, code) => { // 不知道 code 给的什么
                     if (Number(code) === 200) {

@@ -90,7 +90,7 @@ namespace egret {
     }
 
     function modifyEgret(): void {
-        if (eui) {
+        if (typeof eui !== "undefined") {
             type BKImageType = BKBitmap & eui.Image;
             interface BKImage extends BKImageType {
             };

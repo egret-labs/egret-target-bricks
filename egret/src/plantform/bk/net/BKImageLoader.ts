@@ -19,7 +19,6 @@ namespace egret {
         }
 
         public load(url: string): void {
-            console.log(url);
             if (BK.FileUtil.isFileExist(url)) {
                 this.data = new egret.BitmapData(url);
                 $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);

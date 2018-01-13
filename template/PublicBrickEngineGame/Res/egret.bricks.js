@@ -102,9 +102,6 @@ var egret;
             this._color.a = value;
             this._bkNode.vertexColor = this._color;
         };
-        BKDisplayObject.prototype.$getRenderNode = function () {
-            return this._bkNode || null;
-        };
         return BKDisplayObject;
     }(egret.DisplayObject));
     egret.BKDisplayObject = BKDisplayObject;
@@ -295,11 +292,6 @@ var egret;
                     if (childAddToStage.$stage && notifyListeners) {
                         childAddToStage.dispatchEventWith(egret.Event.ADDED_TO_STAGE);
                     }
-                }
-                // MD
-                var index_1 = egret.BKPlayer.instance._displayList.indexOf(child);
-                if (index_1 < 0) {
-                    egret.BKPlayer.instance._displayList.push(child);
                 }
             }
             // MD
@@ -508,11 +500,6 @@ var egret;
                     }
                     childAddToStage.$hasAddToStage = false;
                     childAddToStage.$stage = null;
-                }
-                // MD
-                var index_2 = egret.BKPlayer.instance._displayList.indexOf(child);
-                if (index_2 < 0) {
-                    egret.BKPlayer.instance._displayList.splice(index_2, 1);
                 }
             }
             var displayList = this.$displayList || this.$parentDisplayList;
@@ -892,634 +879,6 @@ var egret;
 var egret;
 (function (egret) {
     /**
-     * This class is used to create lightweight shapes using the drawing application program interface (API). The Shape
-     * class includes a graphics property, which lets you access methods from the Graphics class.
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language en_US
-     */
-    /**
-     * 此类用于使用绘图应用程序编程接口 (API) 创建简单形状。Shape 类含有 graphics 属性，通过该属性您可以访问各种矢量绘图方法。
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language zh_CN
-     */
-    var BKShape = (function (_super) {
-        __extends(BKShape, _super);
-        /**
-         * Creates a new Shape object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 Shape 对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function BKShape() {
-            var _this = _super.call(this) || this;
-            _this.$graphics = new egret.Graphics();
-            _this.$graphics.$setTarget(_this);
-            return _this;
-        }
-        Object.defineProperty(BKShape.prototype, "graphics", {
-            /**
-             * Specifies the Graphics object belonging to this Shape object, where vector drawing commands can occur.
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 获取 Shape 中的 Graphics 对象。可通过此对象执行矢量绘图命令。
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$graphics;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKShape.prototype.$measureContentBounds = function (bounds) {
-            this.$graphics.$measureContentBounds(bounds);
-        };
-        BKShape.prototype.$hitTest = function (stageX, stageY) {
-            var target = _super.prototype.$hitTest.call(this, stageX, stageY);
-            if (target == this) {
-                // target = this.$graphics.$hitTest(stageX, stageY);
-                target = null; // TODO
-            }
-            return target;
-        };
-        /**
-         * @private
-         */
-        BKShape.prototype.$onRemoveFromStage = function () {
-            _super.prototype.$onRemoveFromStage.call(this);
-            if (this.$graphics) {
-                this.$graphics.$onRemoveFromStage();
-            }
-        };
-        return BKShape;
-    }(egret.BKDisplayObject));
-    egret.BKShape = BKShape;
-    __reflect(BKShape.prototype, "egret.BKShape");
-    egret.Shape = BKShape;
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    var BKSystemRenderer = (function () {
-        function BKSystemRenderer() {
-        }
-        BKSystemRenderer.prototype.render = function (displayObject, buffer, matrix, forRenderTexture) {
-            return 0;
-        };
-        BKSystemRenderer.prototype.drawNodeToBuffer = function (node, buffer, matrix, forHitTest) {
-        };
-        return BKSystemRenderer;
-    }());
-    egret.BKSystemRenderer = BKSystemRenderer;
-    __reflect(BKSystemRenderer.prototype, "egret.BKSystemRenderer", ["egret.sys.SystemRenderer"]);
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
-    var BKBitmapData = (function (_super) {
-        __extends(BKBitmapData, _super);
-        function BKBitmapData(source) {
-            var _this = _super.call(this) || this;
-            _this.width = 0;
-            _this.height = 0;
-            _this.source = ""; // url 或 render node
-            _this.bkTexture = null;
-            _this.source = source;
-            if (typeof _this.source === "string") {
-                _this.bkTexture = new BK.Texture(_this.source);
-                _this.width = _this.bkTexture.size.width;
-                _this.height = _this.bkTexture.size.height;
-            }
-            else {
-                // TODO
-            }
-            return _this;
-        }
-        BKBitmapData.$invalidate = function () {
-        };
-        return BKBitmapData;
-    }(egret.HashObject));
-    egret.BKBitmapData = BKBitmapData;
-    __reflect(BKBitmapData.prototype, "egret.BKBitmapData");
-    egret.BitmapData = BKBitmapData;
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
-    var BKHttpRequest = (function (_super) {
-        __extends(BKHttpRequest, _super);
-        function BKHttpRequest() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this._url = "";
-            _this._method = "";
-            /**
-             * @private
-             */
-            _this.urlData = {};
-            _this.responseHeader = "";
-            return _this;
-        }
-        Object.defineProperty(BKHttpRequest.prototype, "responseType", {
-            get: function () {
-                return this._responseType;
-            },
-            set: function (value) {
-                this._responseType = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKHttpRequest.prototype, "response", {
-            get: function () {
-                return this._response;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKHttpRequest.prototype, "withCredentials", {
-            get: function () {
-                return this._withCredentials;
-            },
-            set: function (value) {
-                this._withCredentials = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKHttpRequest.prototype.open = function (url, method) {
-            if (method === void 0) { method = "GET"; }
-            this._url = url;
-            this._method = method;
-        };
-        /**
-         * @private
-         * 发送请求.
-         * @param data 需要发送的数据
-         */
-        BKHttpRequest.prototype.send = function (data) {
-            var self = this;
-            console.log(self._url);
-            if (self.isNetUrl(self._url)) {
-                this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
-                this._bkHttpRequest.setHttpMethod(this._method);
-                this._bkHttpRequest.setHttpCookie(data); // 如何传 head
-                this._bkHttpRequest.requestAsync(function (res, code) {
-                    if (Number(code) === 200) {
-                        var result = void 0;
-                        if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
-                            // TODO
-                        }
-                        else {
-                            result = res.readAsString() || "";
-                        }
-                        self._response = result;
-                        egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
-                    }
-                    else {
-                        egret.$warn(1019, code);
-                        egret.Event.dispatchEvent(self, egret.IOErrorEvent.IO_ERROR);
-                    }
-                });
-            }
-            else if (!BK.FileUtil.isFileExist(self._url)) {
-                // let promise = PromiseObject.create(); // TODO
-                // promise.onSuccessFunc = readFileAsync;
-                // promise.onErrorFunc = function () {
-                //     Event.dispatchEvent(self, IOErrorEvent.IO_ERROR);
-                // };
-                // promise.onResponseHeaderFunc = this.onResponseHeader;
-                // promise.onResponseHeaderThisObject = this;
-                // egret_native.download(self._url, self._url, promise);
-                egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
-            }
-            else {
-                if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
-                    // egret_native.readFileAsync(self._url, promise, "ArrayBuffer"); // TODO
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
-                }
-                else {
-                    var bkBuffer = BK.FileUtil.readFile(self._url);
-                    self._response = bkBuffer.readAsString();
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
-                }
-            }
-        };
-        /**
-         * 是否是网络地址
-         * @param url
-         * @returns {boolean}
-         */
-        BKHttpRequest.prototype.isNetUrl = function (url) {
-            return url.indexOf("http://") != -1 || url.indexOf("HTTP://") != -1 || url.indexOf("https://") != -1 || url.indexOf("HTTPS://") != -1;
-        };
-        /**
-         * @private
-         * 如果请求已经被发送,则立刻中止请求.
-         */
-        BKHttpRequest.prototype.abort = function () {
-        };
-        BKHttpRequest.prototype.onResponseHeader = function (headers) {
-            this.responseHeader = "";
-            var obj = JSON.parse(headers);
-            for (var key in obj) {
-                this.responseHeader += key + ": " + obj[key] + "\r\n";
-            }
-        };
-        /**
-         * @private
-         * 返回所有响应头信息(响应头名和值), 如果响应头还没接受,则返回"".
-         */
-        BKHttpRequest.prototype.getAllResponseHeaders = function () {
-            return this.responseHeader;
-        };
-        /**
-         * @private
-         * 给指定的HTTP请求头赋值.在这之前,您必须确认已经调用 open() 方法打开了一个url.
-         * @param header 将要被赋值的请求头名称.
-         * @param value 给指定的请求头赋的值.
-         */
-        BKHttpRequest.prototype.setRequestHeader = function (header, value) {
-            if (!this.headerObj) {
-                this.headerObj = {};
-            }
-            this.headerObj[header] = value;
-        };
-        /**
-         * @private
-         * 返回指定的响应头的值, 如果响应头还没被接受,或该响应头不存在,则返回"".
-         * @param header 要返回的响应头名称
-         */
-        BKHttpRequest.prototype.getResponseHeader = function (header) {
-            return "";
-        };
-        return BKHttpRequest;
-    }(egret.EventDispatcher));
-    egret.BKHttpRequest = BKHttpRequest;
-    __reflect(BKHttpRequest.prototype, "egret.BKHttpRequest", ["egret.HttpRequest"]);
-    egret.HttpRequest = BKHttpRequest;
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    var BKRenderBuffer = (function () {
-        function BKRenderBuffer(width, height) {
-            this.surface = {};
-            this.context = {};
-            //保证rootCanvas是第一个创建的canvas
-        }
-        Object.defineProperty(BKRenderBuffer.prototype, "width", {
-            /**
-             * 渲染缓冲的宽度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKRenderBuffer.prototype, "height", {
-            /**
-             * 渲染缓冲的高度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 改变渲染缓冲的大小并清空缓冲区
-         * @param width 改变后的宽
-         * @param height 改变后的高
-         * @param useMaxSize 若传入true，则将改变后的尺寸与已有尺寸对比，保留较大的尺寸。
-         */
-        BKRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
-        };
-        /**
-         * 获取指定区域的像素
-         */
-        BKRenderBuffer.prototype.getPixels = function (x, y, width, height) {
-            if (width === void 0) { width = 1; }
-            if (height === void 0) { height = 1; }
-            return [];
-        };
-        /**
-         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
-         * @param type 转换的类型，如: "image/png","image/jpeg"
-         */
-        BKRenderBuffer.prototype.toDataURL = function (type, encoderOptions) {
-            return "";
-        };
-        /**
-         * 清空缓冲区数据
-         */
-        BKRenderBuffer.prototype.clear = function () {
-        };
-        /**
-         * 销毁绘制对象
-         */
-        BKRenderBuffer.prototype.destroy = function () {
-        };
-        return BKRenderBuffer;
-    }());
-    egret.BKRenderBuffer = BKRenderBuffer;
-    __reflect(BKRenderBuffer.prototype, "egret.BKRenderBuffer", ["egret.sys.RenderBuffer"]);
-    egret.sys.RenderBuffer = BKRenderBuffer;
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
-    var BKBitmap = (function (_super) {
-        __extends(BKBitmap, _super);
-        function BKBitmap(value) {
-            if (value === void 0) { value = null; }
-            var _this = _super.call(this, new BK.Sprite(0, 0, {}, 0, 1, 1, 1)) || this;
-            _this.$explicitBitmapWidth = NaN;
-            _this.$explicitBitmapHeight = NaN;
-            _this._size = { width: 0.0, height: 0.0 };
-            /**
-             * @internal
-             */
-            _this.$bitmapData = null;
-            _this.$texture = null;
-            /**
-             * @internal
-             */
-            _this.$scale9Grid = null;
-            _this._bkSprite = _this._bkNode;
-            _this._bkSprite.anchor = { x: 0.0, y: 1.0 };
-            _this.texture = value;
-            return _this;
-        }
-        Object.defineProperty(BKBitmap.prototype, "texture", {
-            get: function () {
-                return this.$texture;
-            },
-            set: function (value) {
-                this.$setTexture(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKBitmap.prototype.$setTexture = function (value) {
-            if (this.$texture === value) {
-                return;
-            }
-            this.$texture = value;
-            if (this.$texture) {
-                this.$bitmapData = this.$texture.bitmapData;
-                if (this.$bitmapData.bkTexture) {
-                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    this._size.width = this.$getWidth();
-                    this._size.height = this.$getHeight();
-                    this._bkSprite.size = this._size;
-                    this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
-                }
-                else {
-                    this.$bitmapData = null;
-                    this._bkSprite.setTexture({});
-                }
-            }
-            else {
-                this.$bitmapData = null;
-                this._bkSprite.setTexture({});
-            }
-        };
-        Object.defineProperty(BKBitmap.prototype, "scale9Grid", {
-            get: function () {
-                return this.$scale9Grid;
-            },
-            set: function (value) {
-                var self = this;
-                self.$scale9Grid = value;
-                self.$renderDirty = true;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKBitmap.prototype.$setWidth = function (value) {
-            var self = this;
-            if (value < 0 || value == self.$explicitBitmapWidth) {
-                return false;
-            }
-            self.$explicitBitmapWidth = value;
-            // MD
-            this._size.width = value;
-            this._bkSprite.size = this._size;
-            return true;
-        };
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKBitmap.prototype.$setHeight = function (value) {
-            var self = this;
-            if (value < 0 || value == self.$explicitBitmapHeight) {
-                return false;
-            }
-            self.$explicitBitmapHeight = value;
-            // MD
-            this._size.height = value;
-            this._bkSprite.size = this._size;
-            return true;
-        };
-        /**
-         * @private
-         * 获取显示宽度
-         */
-        BKBitmap.prototype.$getWidth = function () {
-            return isNaN(this.$explicitBitmapWidth) ? this.$getContentBounds().width : this.$explicitBitmapWidth;
-        };
-        /**
-         * @private
-         * 获取显示宽度
-         */
-        BKBitmap.prototype.$getHeight = function () {
-            return isNaN(this.$explicitBitmapHeight) ? this.$getContentBounds().height : this.$explicitBitmapHeight;
-        };
-        /**
-         * @private
-         */
-        BKBitmap.prototype.$measureContentBounds = function (bounds) {
-            if (this.$texture) {
-                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this.$texture.$getTextureWidth();
-                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this.$texture.$getTextureHeight();
-                bounds.setTo(0, 0, w, h);
-            }
-            else {
-                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : 0;
-                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : 0;
-                bounds.setTo(0, 0, w, h);
-            }
-        };
-        BKBitmap.prototype.$setAnchorOffsetX = function (value) {
-            _super.prototype.$setAnchorOffsetX.call(this, value);
-            var anchorX = value / this._size.width;
-            this._bkSprite.anchor = { x: anchorX, y: this._bkSprite.anchor.y };
-        };
-        BKBitmap.prototype.$setAnchorOffsetY = function (value) {
-            _super.prototype.$setAnchorOffsetY.call(this, value);
-            var anchorY = 1.0 - value / this._size.height;
-            this._bkSprite.anchor = { x: this._bkSprite.anchor.x, y: anchorY };
-        };
-        return BKBitmap;
-    }(egret.BKDisplayObject));
-    egret.BKBitmap = BKBitmap;
-    __reflect(BKBitmap.prototype, "egret.BKBitmap");
-    egret.Bitmap = BKBitmap;
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
-    var BKImageLoader = (function (_super) {
-        __extends(BKImageLoader, _super);
-        function BKImageLoader() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            /**
-             * @private
-             * 使用 load() 方法加载成功的 BitmapData 图像数据。
-             */
-            _this.data = null;
-            _this._crossOrigin = null;
-            _this._hasCrossOriginSet = false;
-            return _this;
-        }
-        Object.defineProperty(BKImageLoader.prototype, "crossOrigin", {
-            get: function () {
-                return this._crossOrigin;
-            },
-            set: function (value) {
-                this._hasCrossOriginSet = true;
-                this._crossOrigin = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKImageLoader.prototype.load = function (url) {
-            console.log(url);
-            if (BK.FileUtil.isFileExist(url)) {
-                this.data = new egret.BitmapData(url);
-                egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
-            }
-            else {
-                egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
-            }
-        };
-        BKImageLoader.crossOrigin = null;
-        return BKImageLoader;
-    }(egret.EventDispatcher));
-    egret.BKImageLoader = BKImageLoader;
-    __reflect(BKImageLoader.prototype, "egret.BKImageLoader", ["egret.ImageLoader"]);
-    egret.ImageLoader = BKImageLoader;
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
      * The Sprite class is a basic display list building block: a display list node that can contain children.
      * @version Egret 2.4
      * @platform Web,Native
@@ -1641,6 +1000,592 @@ var egret;
     __reflect(BKSprite.prototype, "egret.BKSprite");
     egret.Sprite = BKSprite;
 })(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKTexture = (function (_super) {
+        __extends(BKTexture, _super);
+        function BKTexture() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            /**
+             * @internal
+             * @private
+             */
+            _this._bkTexture = null;
+            /**
+             * Whether to destroy the corresponding BitmapData when the texture is destroyed
+             * @version Egret 5.0.8
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 销毁纹理时是否销毁对应BitmapData
+             * @version Egret 5.0.8
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            _this.disposeBitmapData = true;
+            /**
+             * @private
+             * 表示这个纹理在 bitmapData 上的 x 起始位置
+             */
+            _this.$bitmapX = 0;
+            /**
+             * @private
+             * 表示这个纹理在 bitmapData 上的 y 起始位置
+             */
+            _this.$bitmapY = 0;
+            /**
+             * @private
+             * 表示这个纹理在 bitmapData 上的宽度
+             */
+            _this.$bitmapWidth = 0;
+            /**
+             * @private
+             * 表示这个纹理在 bitmapData 上的高度
+             */
+            _this.$bitmapHeight = 0;
+            /**
+             * @private
+             * 表示这个纹理显示了之后在 x 方向的渲染偏移量
+             */
+            _this.$offsetX = 0;
+            /**
+             * @private
+             * 表示这个纹理显示了之后在 y 方向的渲染偏移量
+             */
+            _this.$offsetY = 0;
+            /**
+             * @private
+             * 纹理宽度
+             */
+            _this.$textureWidth = 0;
+            /**
+             * @private
+             * 纹理高度
+             */
+            _this.$textureHeight = 0;
+            /**
+             * @private
+             * 表示bitmapData.width
+             */
+            _this.$sourceWidth = 0;
+            /**
+             * @private
+             * 表示bitmapData.height
+             */
+            _this.$sourceHeight = 0;
+            /**
+             * @private
+             */
+            _this.$bitmapData = null;
+            /**
+             * @private
+             */
+            _this.$rotated = false;
+            return _this;
+        }
+        Object.defineProperty(BKTexture.prototype, "textureWidth", {
+            /**
+             * Texture width, read only
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 纹理宽度，只读属性，不可以设置
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$getTextureWidth();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKTexture.prototype.$getTextureWidth = function () {
+            return this.$textureWidth;
+        };
+        Object.defineProperty(BKTexture.prototype, "textureHeight", {
+            /**
+             * Texture height, read only
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 纹理高度，只读属性，不可以设置
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$getTextureHeight();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKTexture.prototype.$getTextureHeight = function () {
+            return this.$textureHeight;
+        };
+        BKTexture.prototype.$getScaleBitmapWidth = function () {
+            return this.$bitmapWidth * egret.$TextureScaleFactor;
+        };
+        BKTexture.prototype.$getScaleBitmapHeight = function () {
+            return this.$bitmapHeight * egret.$TextureScaleFactor;
+        };
+        Object.defineProperty(BKTexture.prototype, "bitmapData", {
+            /**
+             * The BitmapData object being referenced.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 被引用的 BitmapData 对象。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$bitmapData;
+            },
+            set: function (value) {
+                this._setBitmapData(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+        * Set the BitmapData object.
+        * @version Egret 3.2.1
+        * @platform Web,Native
+        * @language en_US
+        */
+        /**
+         * 设置 BitmapData 对象。
+         * @version Egret 3.2.1
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKTexture.prototype._setBitmapData = function (value) {
+            this.$bitmapData = value;
+            var scale = egret.$TextureScaleFactor;
+            var w = value.width * scale;
+            var h = value.height * scale;
+            this.$initData(0, 0, w, h, 0, 0, w, h, value.width, value.height);
+        };
+        /**
+         * @private
+         * 设置Texture数据
+         * @param bitmapX
+         * @param bitmapY
+         * @param bitmapWidth
+         * @param bitmapHeight
+         * @param offsetX
+         * @param offsetY
+         * @param textureWidth
+         * @param textureHeight
+         * @param sourceWidth
+         * @param sourceHeight
+         */
+        BKTexture.prototype.$initData = function (bitmapX, bitmapY, bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, sourceWidth, sourceHeight, rotated) {
+            if (rotated === void 0) { rotated = false; }
+            var scale = egret.$TextureScaleFactor;
+            this.$bitmapX = bitmapX / scale;
+            this.$bitmapY = bitmapY / scale;
+            this.$bitmapWidth = bitmapWidth / scale;
+            this.$bitmapHeight = bitmapHeight / scale;
+            this.$offsetX = offsetX;
+            this.$offsetY = offsetY;
+            this.$textureWidth = textureWidth;
+            this.$textureHeight = textureHeight;
+            this.$sourceWidth = sourceWidth;
+            this.$sourceHeight = sourceHeight;
+            this.$rotated = rotated;
+            this._bkTexture = new BK.Texture(this.bitmapData.source); // MD
+        };
+        /**
+         * @deprecated
+         */
+        BKTexture.prototype.getPixel32 = function (x, y) {
+            throw new Error();
+        };
+        /**
+         * Obtain the color value for the specified pixel region
+         * @param x  The x coordinate of the pixel region
+         * @param y  The y coordinate of the pixel region
+         * @param width  The width of the pixel region
+         * @param height  The height of the pixel region
+         * @returns  Specifies the color value for the pixel region
+         * @version Egret 3.2.1
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 获取指定像素区域的颜色值
+         * @param x  像素区域的X轴坐标
+         * @param y  像素区域的Y轴坐标
+         * @param width  像素点的Y轴坐标
+         * @param height  像素点的Y轴坐标
+         * @returns  指定像素区域的颜色值
+         * @version Egret 3.2.1
+         * @platform Web
+         * @language zh_CN
+         */
+        BKTexture.prototype.getPixels = function (x, y, width, height) {
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            throw new Error();
+        };
+        /**
+         * Convert base64 string, if the picture (or pictures included) cross-border or null
+         * @param type Type conversions, such as "image / png"
+         * @param rect The need to convert the area
+         * @param smoothing Whether to convert data to the smoothing process
+         * @returns {any} base64 string
+         * @version Egret 2.4
+         * @language en_US
+         */
+        /**
+         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
+         * @param type 转换的类型，如  "image/png"
+         * @param rect 需要转换的区域
+         * @param {any} encoderOptions 编码用的参数
+         * @returns {any} base64字符串
+         * @version Egret 2.4
+         * @language zh_CN
+         */
+        BKTexture.prototype.toDataURL = function (type, rect, encoderOptions) {
+            throw new Error();
+        };
+        /**
+         * Crop designated area and save it as image.
+         * native support only "image / png" and "image / jpeg"; Web browser because of the various implementations are not the same, it is recommended to use only these two kinds.
+         * @param type Type conversions, such as "image / png"
+         * @param filePath The path name of the image (the home directory for the game's private space, the path can not have "../",Web supports only pass names.)
+         * @param rect The need to convert the area
+         * @version Egret 2.4
+         * @platform Native
+         * @language en_US
+         */
+        /**
+         * 裁剪指定区域并保存成图片。
+         * native只支持 "image/png" 和 "image/jpeg"；Web中由于各个浏览器的实现不一样，因此建议也只用这2种。
+         * @param type 转换的类型，如  "image/png"
+         * @param filePath 图片的名称的路径（主目录为游戏的私有空间，路径中不能有 "../"，Web只支持传名称。）
+         * @param rect 需要转换的区域
+         * @version Egret 2.4
+         * @platform Native
+         * @language zh_CN
+         */
+        BKTexture.prototype.saveToFile = function (type, filePath, rect) {
+            throw new Error();
+        };
+        return BKTexture;
+    }(egret.HashObject));
+    egret.BKTexture = BKTexture;
+    __reflect(BKTexture.prototype, "egret.BKTexture");
+    egret.Texture = BKTexture;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKHttpRequest = (function (_super) {
+        __extends(BKHttpRequest, _super);
+        function BKHttpRequest() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._url = "";
+            _this._method = "";
+            /**
+             * @private
+             */
+            _this.urlData = {};
+            _this.responseHeader = "";
+            return _this;
+        }
+        Object.defineProperty(BKHttpRequest.prototype, "responseType", {
+            get: function () {
+                return this._responseType;
+            },
+            set: function (value) {
+                this._responseType = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKHttpRequest.prototype, "response", {
+            get: function () {
+                return this._response;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKHttpRequest.prototype, "withCredentials", {
+            get: function () {
+                return this._withCredentials;
+            },
+            set: function (value) {
+                this._withCredentials = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKHttpRequest.prototype.open = function (url, method) {
+            if (method === void 0) { method = "GET"; }
+            this._url = url;
+            this._method = method;
+        };
+        /**
+         * @private
+         * 发送请求.
+         * @param data 需要发送的数据
+         */
+        BKHttpRequest.prototype.send = function (data) {
+            var self = this;
+            if (self.isNetUrl(self._url)) {
+                this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
+                var method = void 0;
+                if (this._method === egret.HttpMethod.GET) {
+                    method = "get";
+                }
+                else if (this._method === egret.HttpMethod.POST) {
+                    method = "post";
+                }
+                this._bkHttpRequest.setHttpMethod(method);
+                if (this._method === egret.HttpMethod.POST) {
+                    this._bkHttpRequest.setHttpPostData(data);
+                }
+                this._bkHttpRequest.setHttpCookie(data); // 如何传 head
+                this._bkHttpRequest.requestAsync(function (res, code) {
+                    if (Number(code) === 200) {
+                        var result = void 0;
+                        if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
+                            // TODO
+                        }
+                        else {
+                            result = res.readAsString() || "";
+                        }
+                        self._response = result;
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
+                    }
+                    else {
+                        egret.$warn(1019, code);
+                        egret.Event.dispatchEvent(self, egret.IOErrorEvent.IO_ERROR);
+                    }
+                });
+            }
+            else if (!BK.FileUtil.isFileExist(self._url)) {
+                // let promise = PromiseObject.create(); // TODO
+                // promise.onSuccessFunc = readFileAsync;
+                // promise.onErrorFunc = function () {
+                //     Event.dispatchEvent(self, IOErrorEvent.IO_ERROR);
+                // };
+                // promise.onResponseHeaderFunc = this.onResponseHeader;
+                // promise.onResponseHeaderThisObject = this;
+                // egret_native.download(self._url, self._url, promise);
+            }
+            else {
+                if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
+                    // egret_native.readFileAsync(self._url, promise, "ArrayBuffer"); // TODO
+                }
+                else {
+                    var bkBuffer = BK.FileUtil.readFile(self._url);
+                    self._response = bkBuffer.readAsString();
+                    egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
+                }
+            }
+        };
+        /**
+         * 是否是网络地址
+         * @param url
+         * @returns {boolean}
+         */
+        BKHttpRequest.prototype.isNetUrl = function (url) {
+            return url.indexOf("http://") != -1 || url.indexOf("HTTP://") != -1 || url.indexOf("https://") != -1 || url.indexOf("HTTPS://") != -1;
+        };
+        /**
+         * @private
+         * 如果请求已经被发送,则立刻中止请求.
+         */
+        BKHttpRequest.prototype.abort = function () {
+        };
+        BKHttpRequest.prototype.onResponseHeader = function (headers) {
+            this.responseHeader = "";
+            var obj = JSON.parse(headers);
+            for (var key in obj) {
+                this.responseHeader += key + ": " + obj[key] + "\r\n";
+            }
+        };
+        /**
+         * @private
+         * 返回所有响应头信息(响应头名和值), 如果响应头还没接受,则返回"".
+         */
+        BKHttpRequest.prototype.getAllResponseHeaders = function () {
+            return this.responseHeader;
+        };
+        /**
+         * @private
+         * 给指定的HTTP请求头赋值.在这之前,您必须确认已经调用 open() 方法打开了一个url.
+         * @param header 将要被赋值的请求头名称.
+         * @param value 给指定的请求头赋的值.
+         */
+        BKHttpRequest.prototype.setRequestHeader = function (header, value) {
+            if (!this.headerObj) {
+                this.headerObj = {};
+            }
+            this.headerObj[header] = value;
+        };
+        /**
+         * @private
+         * 返回指定的响应头的值, 如果响应头还没被接受,或该响应头不存在,则返回"".
+         * @param header 要返回的响应头名称
+         */
+        BKHttpRequest.prototype.getResponseHeader = function (header) {
+            return "";
+        };
+        return BKHttpRequest;
+    }(egret.EventDispatcher));
+    egret.BKHttpRequest = BKHttpRequest;
+    __reflect(BKHttpRequest.prototype, "egret.BKHttpRequest", ["egret.HttpRequest"]);
+    egret.HttpRequest = BKHttpRequest;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKBitmapData = (function (_super) {
+        __extends(BKBitmapData, _super);
+        function BKBitmapData(source) {
+            var _this = _super.call(this) || this;
+            _this.width = 0;
+            _this.height = 0;
+            _this.source = "";
+            var bkTexture = new BK.Texture(source);
+            _this.width = bkTexture.size.width;
+            _this.height = bkTexture.size.height;
+            _this.source = source;
+            return _this;
+        }
+        return BKBitmapData;
+    }(egret.HashObject));
+    egret.BKBitmapData = BKBitmapData;
+    __reflect(BKBitmapData.prototype, "egret.BKBitmapData");
+    egret.BitmapData = BKBitmapData;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKBitmap = (function (_super) {
+        __extends(BKBitmap, _super);
+        function BKBitmap(value) {
+            if (value === void 0) { value = null; }
+            var _this = _super.call(this, new BK.Sprite(0, 0, {}, 0, 1, 1, 1)) || this;
+            _this.$explicitBitmapWidth = NaN;
+            _this.$explicitBitmapHeight = NaN;
+            _this._size = { width: 0.0, height: 0.0 };
+            _this._bitmapData = null;
+            _this._bkSprite = _this._bkNode;
+            _this._bkSprite.anchor = { x: 0.0, y: 1.0 };
+            _this.texture = value;
+            return _this;
+        }
+        Object.defineProperty(BKBitmap.prototype, "texture", {
+            get: function () {
+                return this._texture;
+            },
+            set: function (value) {
+                if (this._texture === value) {
+                    return;
+                }
+                this._texture = value;
+                if (this._texture) {
+                    this._bkSprite.setTexture(value._bkTexture);
+                    this._size.width = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
+                    this._size.height = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
+                    this._bkSprite.size = this._size;
+                    this._bkSprite.adjustTexturePosition(this._texture.$bitmapX, this._texture.$sourceHeight - (this._texture.$bitmapY + this._texture.$bitmapHeight), this._texture.$bitmapWidth, this._texture.$bitmapHeight, this._texture.$rotated);
+                }
+                else {
+                    this._bkSprite.setTexture({});
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         *
+         * @param value
+         */
+        BKBitmap.prototype.$setWidth = function (value) {
+            var self = this;
+            if (value < 0 || value == self.$explicitBitmapWidth) {
+                return false;
+            }
+            self.$explicitBitmapWidth = value;
+            // MD
+            this._size.width = value;
+            this._bkSprite.size = this._size;
+            return true;
+        };
+        /**
+         * @private
+         *
+         * @param value
+         */
+        BKBitmap.prototype.$setHeight = function (value) {
+            var self = this;
+            if (value < 0 || value == self.$explicitBitmapHeight) {
+                return false;
+            }
+            self.$explicitBitmapHeight = value;
+            // MD
+            this._size.height = value;
+            this._bkSprite.size = this._size;
+            return true;
+        };
+        /**
+         * @private
+         * 获取显示宽度
+         */
+        BKBitmap.prototype.$getWidth = function () {
+            return isNaN(this.$explicitBitmapWidth) ? this.$getContentBounds().width : this.$explicitBitmapWidth;
+        };
+        /**
+         * @private
+         * 获取显示宽度
+         */
+        BKBitmap.prototype.$getHeight = function () {
+            return isNaN(this.$explicitBitmapHeight) ? this.$getContentBounds().height : this.$explicitBitmapHeight;
+        };
+        /**
+         * @private
+         */
+        BKBitmap.prototype.$measureContentBounds = function (bounds) {
+            if (this._texture) {
+                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this._texture.$getTextureWidth();
+                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this._texture.$getTextureHeight();
+                bounds.setTo(0, 0, w, h);
+            }
+            else {
+                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : 0;
+                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : 0;
+                bounds.setTo(0, 0, w, h);
+            }
+        };
+        BKBitmap.prototype.$setAnchorOffsetX = function (value) {
+            _super.prototype.$setAnchorOffsetX.call(this, value);
+            var anchorX = value / this._size.width;
+            this._bkSprite.anchor = { x: anchorX, y: this._bkSprite.anchor.y };
+        };
+        BKBitmap.prototype.$setAnchorOffsetY = function (value) {
+            _super.prototype.$setAnchorOffsetY.call(this, value);
+            var anchorY = 1.0 - value / this._size.height;
+            this._bkSprite.anchor = { x: this._bkSprite.anchor.x, y: anchorY };
+        };
+        return BKBitmap;
+    }(egret.BKDisplayObject));
+    egret.BKBitmap = BKBitmap;
+    __reflect(BKBitmap.prototype, "egret.BKBitmap");
+    egret.Bitmap = BKBitmap;
+})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -1671,1908 +1616,156 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    var SplitRegex = new RegExp("(?=[\\u00BF-\\u1FFF\\u2C00-\\uD7FF]|\\b|\\s)(?![。，！、》…）)}”】\\.\\,\\!\\?\\]\\:])");
     /**
-     * @private
-     * 根据样式测量文本宽度
-     */
-    function measureTextWidth(text, values, style) {
-        style = style || {};
-        var italic = style.italic == null ? values[16 /* italic */] : style.italic;
-        var bold = style.bold == null ? values[15 /* bold */] : style.bold;
-        var size = style.size == null ? values[0 /* fontSize */] : style.size;
-        var fontFamily = style.fontFamily || values[8 /* fontFamily */] || egret.TextField.default_fontFamily;
-        return egret.sys.measureText(text, fontFamily, size, bold, italic);
-    }
-    /**
-     * TextField is the text rendering class of egret. It conducts rendering by using the browser / device API. Due to different ways of font rendering in different browsers / devices, there may be differences in the rendering
-     * If developers expect  no differences among all platforms, please use BitmapText
-     * @see http://edn.egret.com/cn/docs/page/141 Create Text
-     *
-     * @event egret.Event.CHANGE Dispatched when entering text user input。
-     * @event egret.FocusEvent.FOCUS_IN Dispatched after the focus to enter text.
-     * @event egret.FocusEvent.FOCUS_OUT Enter the text loses focus after dispatch.
+     * This class is used to create lightweight shapes using the drawing application program interface (API). The Shape
+     * class includes a graphics property, which lets you access methods from the Graphics class.
+     * @see egret.Graphics
      * @version Egret 2.4
      * @platform Web,Native
-     * @includeExample egret/text/TextField.ts
+     * @includeExample egret/display/Shape.ts
      * @language en_US
      */
     /**
-     * TextField是egret的文本渲染类，采用浏览器/设备的API进行渲染，在不同的浏览器/设备中由于字体渲染方式不一，可能会有渲染差异
-     * 如果开发者希望所有平台完全无差异，请使用BitmapText
-     * @see http://edn.egret.com/cn/docs/page/141 创建文本
-     *
-     * @event egret.Event.CHANGE 输入文本有用户输入时调度。
-     * @event egret.FocusEvent.FOCUS_IN 聚焦输入文本后调度。
-     * @event egret.FocusEvent.FOCUS_OUT 输入文本失去焦点后调度。
+     * 此类用于使用绘图应用程序编程接口 (API) 创建简单形状。Shape 类含有 graphics 属性，通过该属性您可以访问各种矢量绘图方法。
+     * @see egret.Graphics
      * @version Egret 2.4
      * @platform Web,Native
-     * @includeExample egret/text/TextField.ts
+     * @includeExample egret/display/Shape.ts
      * @language zh_CN
      */
-    var BKTextField = (function (_super) {
-        __extends(BKTextField, _super);
+    var BKShape = (function (_super) {
+        __extends(BKShape, _super);
         /**
+         * Creates a new Shape object.
          * @version Egret 2.4
-         * @platform Web,Native
-         */
-        function BKTextField() {
-            var _this = 
-            // MD
-            _super.call(this, new BK.Text(undefined, "")) || this;
-            _this.$inputEnabled = false;
-            /**
-             * @private
-             */
-            _this.inputUtils = null;
-            /**
-             * @private
-             */
-            _this.graphicsNode = null;
-            /**
-             * @private
-             */
-            _this.isFlow = false;
-            /**
-             * @private
-             */
-            _this.textArr = [];
-            /**
-             * @private
-             */
-            _this.linesArr = [];
-            /**
-             * @private
-             */
-            _this.$isTyping = false;
-            _this._bkText = _this._bkNode;
-            // super();
-            // let textNode = new sys.TextNode();
-            // textNode.fontFamily = TextField.default_fontFamily;
-            // this.textNode = textNode;
-            // this.$renderNode = textNode;
-            _this.$TextField = {
-                0: egret.TextField.default_size,
-                1: 0,
-                2: egret.TextField.default_textColor,
-                3: NaN,
-                4: NaN,
-                5: 0,
-                6: 0,
-                7: 0,
-                8: egret.TextField.default_fontFamily,
-                9: "left",
-                10: "top",
-                11: "#ffffff",
-                12: "",
-                13: "",
-                14: [],
-                15: false,
-                16: false,
-                17: true,
-                18: false,
-                19: false,
-                20: false,
-                21: 0,
-                22: 0,
-                23: 0,
-                24: egret.TextFieldType.DYNAMIC,
-                25: 0x000000,
-                26: "#000000",
-                27: 0,
-                28: -1,
-                29: 0,
-                30: false,
-                31: false,
-                32: 0x000000,
-                33: false,
-                34: 0xffffff,
-                35: null,
-                36: null,
-                37: egret.TextFieldInputType.TEXT //inputType
-            };
-            // MD
-            // Set default values.
-            _this._bkText.fontSize = _this.$TextField[0 /* fontSize */];
-            var defaultFontColor = 0xFFFFFFFF; // ???!!!
-            _this._bkText.fontColor = defaultFontColor;
-            // textAlign
-            // verticalAlign
-            _this._bkText.bold = _this.$TextField[15 /* bold */];
-            _this._bkText.italic = _this.$TextField[16 /* italic */];
-            // this._bkText.strokeColor = this.$TextField[sys.TextKeys.strokeColor];
-            _this._bkText.strokeSize = _this.$TextField[27 /* stroke */];
-            // BK values.
-            // this._bkText["style"].width = 2048;
-            // this._bkText["style"].height = 2048;
-            _this._bkText.maxSize = { width: 2048, height: 2048 };
-            var defaultShadowColor = 0x00000000; // ???!!!
-            _this._bkText.shadowColor = defaultShadowColor;
-            _this._bkText.shadowOffset = { x: 0, y: 0 };
-            _this._bkText.shadowRadius = 0;
-            _this._bkText.anchor = { x: 0.0, y: 1.0 };
-            return _this;
-        }
-        /**
-         * @private
-         */
-        BKTextField.prototype.isInput = function () {
-            return this.$TextField[24 /* type */] == egret.TextFieldType.INPUT;
-        };
-        BKTextField.prototype.$setTouchEnabled = function (value) {
-            _super.prototype.$setTouchEnabled.call(this, value);
-            if (this.isInput()) {
-                this.$inputEnabled = true;
-            }
-        };
-        Object.defineProperty(BKTextField.prototype, "fontFamily", {
-            /**
-             * The name of the font to use, or a comma-separated list of font names.
-             * @default "Arial"
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 要使用的字体的名称或用逗号分隔的字体名称列表。
-             * @default "Arial"
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[8 /* fontFamily */];
-            },
-            set: function (value) {
-                this.$setFontFamily(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setFontFamily = function (value) {
-            var values = this.$TextField;
-            if (values[8 /* fontFamily */] == value) {
-                return false;
-            }
-            values[8 /* fontFamily */] = value;
-            this.invalidateFontString();
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "size", {
-            /**
-             * The size in pixels of text
-             * @default 30
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 文本的字号大小。
-             * @default 30
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[0 /* fontSize */];
-            },
-            set: function (value) {
-                this.$setSize(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setSize = function (value) {
-            value = +value || 0;
-            var values = this.$TextField;
-            if (values[0 /* fontSize */] == value) {
-                return false;
-            }
-            values[0 /* fontSize */] = value;
-            this.invalidateFontString();
-            // MD
-            this._bkText.fontSize = value;
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "bold", {
-            /**
-             * Specifies whether the text is boldface.
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 是否显示为粗体。
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[15 /* bold */];
-            },
-            set: function (value) {
-                this.$setBold(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setBold = function (value) {
-            value = !!value;
-            var values = this.$TextField;
-            if (value == values[15 /* bold */]) {
-                return false;
-            }
-            values[15 /* bold */] = value;
-            this.invalidateFontString();
-            // MD
-            this._bkText.bold = value ? 1 : 0;
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "italic", {
-            /**
-             * Determines whether the text is italic font.
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 是否显示为斜体。
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[16 /* italic */];
-            },
-            set: function (value) {
-                this.$setItalic(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setItalic = function (value) {
-            value = !!value;
-            var values = this.$TextField;
-            if (value == values[16 /* italic */]) {
-                return false;
-            }
-            values[16 /* italic */] = value;
-            this.invalidateFontString();
-            // MD
-            this._bkText.italic = value;
-            return true;
-        };
-        /**
-         * @private
-         *
-         */
-        BKTextField.prototype.invalidateFontString = function () {
-            this.$TextField[17 /* fontStringChanged */] = true;
-            this.$invalidateTextField();
-        };
-        Object.defineProperty(BKTextField.prototype, "textAlign", {
-            /**
-             * Horizontal alignment of text.
-             * @default：egret.HorizontalAlign.LEFT
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 文本的水平对齐方式。
-             * @default：egret.HorizontalAlign.LEFT
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[9 /* textAlign */];
-            },
-            set: function (value) {
-                this.$setTextAlign(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setTextAlign = function (value) {
-            var values = this.$TextField;
-            if (values[9 /* textAlign */] == value) {
-                return false;
-            }
-            values[9 /* textAlign */] = value;
-            this.$invalidateTextField();
-            // MD
-            switch (value) {
-                case egret.HorizontalAlign.LEFT:
-                    this._bkText.horizontalAlign = 0;
-                    break;
-                case egret.HorizontalAlign.CENTER:
-                    this._bkText.horizontalAlign = 1;
-                    break;
-                case egret.HorizontalAlign.RIGHT:
-                    this._bkText.horizontalAlign = 2;
-                    break;
-            }
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "verticalAlign", {
-            /**
-             * Vertical alignment of text.
-             * @default：egret.VerticalAlign.TOP
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 文字的垂直对齐方式。
-             * @default：egret.VerticalAlign.TOP
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[10 /* verticalAlign */];
-            },
-            set: function (value) {
-                this.$setVerticalAlign(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setVerticalAlign = function (value) {
-            var values = this.$TextField;
-            if (values[10 /* verticalAlign */] == value) {
-                return false;
-            }
-            values[10 /* verticalAlign */] = value;
-            this.$invalidateTextField();
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "lineSpacing", {
-            /**
-             * An integer representing the amount of vertical space between lines.
-             * @default 0
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 一个整数，表示行与行之间的垂直间距量
-             * @default 0
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[1 /* lineSpacing */];
-            },
-            set: function (value) {
-                this.$setLineSpacing(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setLineSpacing = function (value) {
-            value = +value || 0;
-            var values = this.$TextField;
-            if (values[1 /* lineSpacing */] == value)
-                return false;
-            values[1 /* lineSpacing */] = value;
-            this.$invalidateTextField();
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "textColor", {
-            /**
-             * Color of the text.
-             * @default 0x000000
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 文本颜色
-             * @default 0x000000
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[2 /* textColor */];
-            },
-            set: function (value) {
-                this.$setTextColor(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setTextColor = function (value) {
-            value = +value | 0;
-            var values = this.$TextField;
-            if (values[2 /* textColor */] == value) {
-                return false;
-            }
-            values[2 /* textColor */] = value;
-            if (this.inputUtils) {
-                this.inputUtils._setColor(this.$TextField[2 /* textColor */]);
-            }
-            this.$invalidateTextField();
-            // MD
-            var rgb_str = this._refitString(value, 6); //六位rgb格式
-            var old_argb_str = this._refitString(this._bkText.fontColor, 8);
-            var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
-            var argb_num = parseInt(new_argb_str, 16);
-            this._bkText.fontColor = argb_num;
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "wordWrap", {
-            /**
-             * A Boolean value that indicates whether the text field word wrap. If the value is true, then the text field by word wrap;
-             * if the value is false, the text field by newline characters.
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 一个布尔值，表示文本字段是否按单词换行。如果值为 true，则该文本字段按单词换行；
-             * 如果值为 false，则该文本字段按字符换行。
-             * @default false
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[19 /* wordWrap */];
-            },
-            set: function (value) {
-                this.$setWordWrap(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKTextField.prototype.$setWordWrap = function (value) {
-            value = !!value;
-            var values = this.$TextField;
-            if (value == values[19 /* wordWrap */]) {
-                return;
-            }
-            if (values[20 /* displayAsPassword */]) {
-                return;
-            }
-            values[19 /* wordWrap */] = value;
-            this.$invalidateTextField();
-        };
-        Object.defineProperty(BKTextField.prototype, "type", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[24 /* type */];
-            },
-            /**
-             * Type of the text field.
-             * Any one of the following TextFieldType constants: TextFieldType.DYNAMIC (specifies the dynamic text field that users can not edit), or TextFieldType.INPUT (specifies the dynamic text field that users can edit).
-             * @default egret.TextFieldType.DYNAMIC
-             * @language en_US
-             */
-            /**
-             * 文本字段的类型。
-             * 以下 TextFieldType 常量中的任一个：TextFieldType.DYNAMIC（指定用户无法编辑的动态文本字段），或 TextFieldType.INPUT（指定用户可以编辑的输入文本字段）。
-             * @default egret.TextFieldType.DYNAMIC
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setType(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setType = function (value) {
-            var values = this.$TextField;
-            if (values[24 /* type */] != value) {
-                values[24 /* type */] = value;
-                if (value == egret.TextFieldType.INPUT) {
-                    if (isNaN(values[3 /* textFieldWidth */])) {
-                        this.$setWidth(100);
-                    }
-                    if (isNaN(values[4 /* textFieldHeight */])) {
-                        this.$setHeight(30);
-                    }
-                    this.$setTouchEnabled(true);
-                    //创建stageText
-                    if (this.inputUtils == null) {
-                        this.inputUtils = new egret.InputController();
-                    }
-                    this.inputUtils.init(this);
-                    this.$invalidateTextField();
-                    if (this.$stage) {
-                        this.inputUtils._addStageText();
-                    }
-                }
-                else {
-                    if (this.inputUtils) {
-                        this.inputUtils._removeStageText();
-                        this.inputUtils = null;
-                    }
-                    this.$setTouchEnabled(false);
-                }
-                return true;
-            }
-            return false;
-        };
-        Object.defineProperty(BKTextField.prototype, "inputType", {
-            /**
-             * @version Egret 3.1.2
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[37 /* inputType */];
-            },
-            /**
-             * Pop-up keyboard type.
-             * Any of a TextFieldInputType constants.
-             * @language en_US
-             */
-            /**
-             * 弹出键盘的类型。
-             * TextFieldInputType 常量中的任一个。
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$TextField[37 /* inputType */] = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "text", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$getText();
-            },
-            /**
-             * Serve as a string of the current text field in the text
-             * @language en_US
-             */
-            /**
-             * 作为文本字段中当前文本的字符串
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setText(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @returns
-         */
-        BKTextField.prototype.$getText = function () {
-            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                return this.inputUtils._getText();
-            }
-            return this.$TextField[13 /* text */];
-        };
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setBaseText = function (value) {
-            if (value == null) {
-                value = "";
-            }
-            value = value.toString();
-            this.isFlow = false;
-            var values = this.$TextField;
-            if (values[13 /* text */] != value) {
-                this.$invalidateTextField();
-                values[13 /* text */] = value;
-                var text = "";
-                if (values[20 /* displayAsPassword */]) {
-                    text = this.changeToPassText(value);
-                }
-                else {
-                    text = value;
-                }
-                this.setMiddleStyle([{ text: text }]);
-                // MD
-                this._bkText.content = text;
-                return true;
-            }
-            return false;
-        };
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setText = function (value) {
-            if (value == null) {
-                value = "";
-            }
-            var result = this.$setBaseText(value);
-            if (this.inputUtils) {
-                this.inputUtils._setText(this.$TextField[13 /* text */]);
-            }
-            return result;
-        };
-        Object.defineProperty(BKTextField.prototype, "displayAsPassword", {
-            /**
-             * Specify whether the text field is a password text field.
-             * If the value of this property is true, the text field is treated as a password text field and hides the input characters using asterisks instead of the actual characters. If false, the text field is not treated as a password text field.
-             * @default false
-             * @language en_US
-             */
-            /**
-             * 指定文本字段是否是密码文本字段。
-             * 如果此属性的值为 true，则文本字段被视为密码文本字段，并使用星号而不是实际字符来隐藏输入的字符。如果为 false，则不会将文本字段视为密码文本字段。
-             * @default false
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[20 /* displayAsPassword */];
-            },
-            set: function (value) {
-                this.$setDisplayAsPassword(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setDisplayAsPassword = function (value) {
-            var values = this.$TextField;
-            if (values[20 /* displayAsPassword */] != value) {
-                values[20 /* displayAsPassword */] = value;
-                this.$invalidateTextField();
-                var text = "";
-                if (value) {
-                    text = this.changeToPassText(values[13 /* text */]);
-                }
-                else {
-                    text = values[13 /* text */];
-                }
-                this.setMiddleStyle([{ text: text }]);
-                return true;
-            }
-            return false;
-        };
-        Object.defineProperty(BKTextField.prototype, "strokeColor", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[25 /* strokeColor */];
-            },
-            /**
-             * Represent the stroke color of the text.
-             * Contain three 8-bit numbers with RGB color components; for example, 0xFF0000 is red, 0x00FF00 is green.
-             * @default 0x000000
-             * @language en_US
-             */
-            /**
-             * 表示文本的描边颜色。
-             * 包含三个 8 位 RGB 颜色成分的数字；例如，0xFF0000 为红色，0x00FF00 为绿色。
-             * @default 0x000000
-             * @language zh_CN
-             */
-            set: function (value) {
-                value = +value || 0;
-                this.$setStrokeColor(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setStrokeColor = function (value) {
-            var values = this.$TextField;
-            if (values[25 /* strokeColor */] != value) {
-                this.$invalidateTextField();
-                values[25 /* strokeColor */] = value;
-                values[26 /* strokeColorString */] = egret.toColorString(value);
-                // MD
-                var rgb_str = this._refitString(value, 6); //六位rgb格式
-                var old_argb_str = this._refitString(this._bkText.strokeColor, 8);
-                var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
-                var argb_num = parseInt(new_argb_str, 16);
-                this._bkText.fontColor = argb_num;
-                return true;
-            }
-            return false;
-        };
-        Object.defineProperty(BKTextField.prototype, "stroke", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[27 /* stroke */];
-            },
-            /**
-             * Indicate the stroke width.
-             * 0 means no stroke.
-             * @default 0
-             * @language en_US
-             */
-            /**
-             * 表示描边宽度。
-             * 0为没有描边。
-             * @default 0
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setStroke(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setStroke = function (value) {
-            if (this.$TextField[27 /* stroke */] != value) {
-                this.$invalidateTextField();
-                this.$TextField[27 /* stroke */] = value;
-                // MD
-                this._bkText.strokeSize = value;
-                return true;
-            }
-            return false;
-        };
-        Object.defineProperty(BKTextField.prototype, "maxChars", {
-            /**
-             * The maximum number of characters that the text field can contain, as entered by a user. \n A script can insert more text than maxChars allows; the maxChars property indicates only how much text a user can enter. If the value of this property is 0, a user can enter an unlimited amount of text.
-             * The default value is 0.
-             * @default 0
-             * @language en_US
-             */
-            /**
-             * 文本字段中最多可包含的字符数（即用户输入的字符数）。
-             * 脚本可以插入比 maxChars 允许的字符数更多的文本；maxChars 属性仅表示用户可以输入多少文本。如果此属性的值为 0，则用户可以输入无限数量的文本。
-             * @default 0
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$TextField[21 /* maxChars */];
-            },
-            set: function (value) {
-                this.$setMaxChars(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setMaxChars = function (value) {
-            if (this.$TextField[21 /* maxChars */] != value) {
-                this.$TextField[21 /* maxChars */] = value;
-                return true;
-            }
-            return false;
-        };
-        Object.defineProperty(BKTextField.prototype, "scrollV", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return Math.min(Math.max(this.$TextField[28 /* scrollV */], 1), this.maxScrollV);
-            },
-            /**
-             * Vertical position of text in a text field. scrollV property helps users locate specific passages in a long article, and create scrolling text fields.
-             * Vertically scrolling units are lines, and horizontal scrolling unit is pixels.
-             * If the first displayed line is the first line in the text field, scrollV is set to 1 (instead of 0).
-             * @language en_US
-             */
-            /**
-             * 文本在文本字段中的垂直位置。scrollV 属性可帮助用户定位到长篇文章的特定段落，还可用于创建滚动文本字段。
-             * 垂直滚动的单位是行，而水平滚动的单位是像素。
-             * 如果显示的第一行是文本字段中的第一行，则 scrollV 设置为 1（而非 0）。
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$TextField[28 /* scrollV */] = Math.max(value, 1);
-                this.$invalidateTextField();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "maxScrollV", {
-            /**
-             * The maximum value of scrollV
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * scrollV 的最大值
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                this.$getLinesArr();
-                return Math.max(this.$TextField[29 /* numLines */] - egret.TextFieldUtils.$getScrollNum(this) + 1, 1);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "selectionBeginIndex", {
-            /**
-             * @private
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "selectionEndIndex", {
-            /**
-             * @private
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "caretIndex", {
-            /**
-             * @private
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param beginIndex
-         * @param endIndex
-         */
-        BKTextField.prototype.$setSelection = function (beginIndex, endIndex) {
-            return false;
-        };
-        /**
-         * @private
-         *
-         * @returns
-         */
-        BKTextField.prototype.$getLineHeight = function () {
-            return this.$TextField[1 /* lineSpacing */] + this.$TextField[0 /* fontSize */];
-        };
-        Object.defineProperty(BKTextField.prototype, "numLines", {
-            /**
-             * Number of lines of text.
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 文本行数。
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                this.$getLinesArr();
-                return this.$TextField[29 /* numLines */];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "multiline", {
-            get: function () {
-                return this.$TextField[30 /* multiline */];
-            },
-            /**
-             * Indicate whether field is a multiline text field. Note that this property is valid only when the type is TextFieldType.INPUT.
-             * If the value is true, the text field is multiline; if the value is false, the text field is a single-line text field. In a field of type TextFieldType.INPUT, the multiline value determines whether the Enter key creates a new line (a value of false, and the Enter key is ignored).
-             * @default false
-             * @language en_US
-             */
-            /**
-             * 表示字段是否为多行文本字段。注意，此属性仅在type为TextFieldType.INPUT时才有效。
-             * 如果值为 true，则文本字段为多行文本字段；如果值为 false，则文本字段为单行文本字段。在类型为 TextFieldType.INPUT 的字段中，multiline 值将确定 Enter 键是否创建新行（如果值为 false，则将忽略 Enter 键）。
-             * @default false
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setMultiline(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setMultiline = function (value) {
-            this.$TextField[30 /* multiline */] = value;
-            this.$invalidateTextField();
-            return true;
-        };
-        Object.defineProperty(BKTextField.prototype, "restrict", {
-            get: function () {
-                var values = this.$TextField;
-                var str = null;
-                if (values[35 /* restrictAnd */] != null) {
-                    str = values[35 /* restrictAnd */];
-                }
-                if (values[36 /* restrictNot */] != null) {
-                    if (str == null) {
-                        str = "";
-                    }
-                    str += "^" + values[36 /* restrictNot */];
-                }
-                return str;
-            },
-            /**
-             * Indicates a user can enter into the text field character set. If you restrict property is null, you can enter any character. If you restrict property is an empty string, you can not enter any character. If you restrict property is a string of characters, you can enter only characters in the string in the text field. The string is scanned from left to right. You can use a hyphen (-) to specify a range. Only restricts user interaction; a script may put any text into the text field. <br/>
-                      * If the string of characters caret (^) at the beginning, all characters are initially accepted, then the string are excluded from receiving ^ character. If the string does not begin with a caret (^) to, any characters are initially accepted and then a string of characters included in the set of accepted characters. <br/>
-                      * The following example allows only uppercase characters, spaces, and numbers in the text field: <br/>
-                      * My_txt.restrict = "A-Z 0-9"; <br/>
-                      * The following example includes all characters except lowercase letters: <br/>
-                      * My_txt.restrict = "^ a-z"; <br/>
-                      * If you need to enter characters \ ^, use two backslash "\\ -" "\\ ^": <br/>
-                      * Can be used anywhere in the string ^ to rule out including characters and switch between characters, but can only be used to exclude a ^. The following code includes only uppercase letters except uppercase Q: <br/>
-                      * My_txt.restrict = "A-Z ^ Q"; <br/>
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @default null
-             * @language en_US
-             */
-            /**
-             * 表示用户可输入到文本字段中的字符集。如果 restrict 属性的值为 null，则可以输入任何字符。如果 restrict 属性的值为空字符串，则不能输入任何字符。如果 restrict 属性的值为一串字符，则只能在文本字段中输入该字符串中的字符。从左向右扫描该字符串。可以使用连字符 (-) 指定一个范围。只限制用户交互；脚本可将任何文本放入文本字段中。<br/>
-             * 如果字符串以尖号 (^) 开头，则先接受所有字符，然后从接受字符集中排除字符串中 ^ 之后的字符。如果字符串不以尖号 (^) 开头，则最初不接受任何字符，然后将字符串中的字符包括在接受字符集中。<br/>
-             * 下例仅允许在文本字段中输入大写字符、空格和数字：<br/>
-             * my_txt.restrict = "A-Z 0-9";<br/>
-             * 下例包含除小写字母之外的所有字符：<br/>
-             * my_txt.restrict = "^a-z";<br/>
-             * 如果需要输入字符 \ ^，请使用2个反斜杠 "\\-" "\\^" ：<br/>
-             * 可在字符串中的任何位置使用 ^，以在包含字符与排除字符之间进行切换，但是最多只能有一个 ^ 用来排除。下面的代码只包含除大写字母 Q 之外的大写字母：<br/>
-             * my_txt.restrict = "A-Z^Q";<br/>
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @default null
-             * @language zh_CN
-             */
-            set: function (value) {
-                var values = this.$TextField;
-                if (value == null) {
-                    values[35 /* restrictAnd */] = null;
-                    values[36 /* restrictNot */] = null;
-                }
-                else {
-                    var index = -1;
-                    while (index < value.length) {
-                        index = value.indexOf("^", index);
-                        if (index == 0) {
-                            break;
-                        }
-                        else if (index > 0) {
-                            if (value.charAt(index - 1) != "\\") {
-                                break;
-                            }
-                            index++;
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                    if (index == 0) {
-                        values[35 /* restrictAnd */] = null;
-                        values[36 /* restrictNot */] = value.substring(index + 1);
-                    }
-                    else if (index > 0) {
-                        values[35 /* restrictAnd */] = value.substring(0, index);
-                        values[36 /* restrictNot */] = value.substring(index + 1);
-                    }
-                    else {
-                        values[35 /* restrictAnd */] = value;
-                        values[36 /* restrictNot */] = null;
-                    }
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setWidth = function (value) {
-            var values = this.$TextField;
-            if (isNaN(value)) {
-                if (isNaN(values[3 /* textFieldWidth */])) {
-                    return false;
-                }
-                values[3 /* textFieldWidth */] = NaN;
-            }
-            else {
-                if (values[3 /* textFieldWidth */] == value) {
-                    return false;
-                }
-                values[3 /* textFieldWidth */] = value;
-            }
-            value = +value;
-            if (value < 0) {
-                return false;
-            }
-            this.$invalidateTextField();
-            this._bkText["style"].width = values[3 /* textFieldWidth */];
-            return true;
-        };
-        /**
-         * @private
-         *
-         * @param value
-         */
-        BKTextField.prototype.$setHeight = function (value) {
-            var values = this.$TextField;
-            if (isNaN(value)) {
-                if (isNaN(values[4 /* textFieldHeight */])) {
-                    return false;
-                }
-                values[4 /* textFieldHeight */] = NaN;
-            }
-            else {
-                if (values[4 /* textFieldHeight */] == value) {
-                    return false;
-                }
-                values[4 /* textFieldHeight */] = value;
-            }
-            value = +value;
-            if (value < 0) {
-                return false;
-            }
-            this.$invalidateTextField();
-            // MD
-            this._bkText["style"].height = values[4 /* textFieldHeight */];
-            return true;
-        };
-        /**
-         * @private
-         * 获取显示宽度
-         */
-        BKTextField.prototype.$getWidth = function () {
-            var values = this.$TextField;
-            return isNaN(values[3 /* textFieldWidth */]) ? this.$getContentBounds().width : values[3 /* textFieldWidth */];
-        };
-        /**
-         * @private
-         * 获取显示宽度
-         */
-        BKTextField.prototype.$getHeight = function () {
-            var values = this.$TextField;
-            return isNaN(values[4 /* textFieldHeight */]) ? this.$getContentBounds().height : values[4 /* textFieldHeight */];
-        };
-        Object.defineProperty(BKTextField.prototype, "border", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[31 /* border */];
-            },
-            /**
-             * Specifies whether the text field has a border.
-             * If true, the text field has a border. If false, the text field has no border.
-             * Use borderColor property to set the border color.
-             * @default false
-             * @language en_US
-             */
-            /**
-             * 指定文本字段是否具有边框。
-             * 如果为 true，则文本字段具有边框。如果为 false，则文本字段没有边框。
-             * 使用 borderColor 属性来设置边框颜色。
-             * @default false
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setBorder(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKTextField.prototype.$setBorder = function (value) {
-            this.$TextField[31 /* border */] = !!value;
-        };
-        Object.defineProperty(BKTextField.prototype, "borderColor", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[32 /* borderColor */];
-            },
-            /**
-             * The color of the text field border.
-             * Even currently is no border can be retrieved or set this property, but only if the text field has the border property is set to true, the color is visible.
-             * @default 0x000000
-             * @language en_US
-             */
-            /**
-             * 文本字段边框的颜色。
-             * 即使当前没有边框，也可检索或设置此属性，但只有当文本字段已将 border 属性设置为 true 时，才可以看到颜色。
-             * @default 0x000000
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setBorderColor(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKTextField.prototype.$setBorderColor = function (value) {
-            this.$TextField[32 /* borderColor */] = +value || 0;
-        };
-        Object.defineProperty(BKTextField.prototype, "background", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[33 /* background */];
-            },
-            /**
-             * Specifies whether the text field has a background fill.
-             * If true, the text field has a background fill. If false, the text field has no background fill.
-             * Use the backgroundColor property to set the background color of the text field.
-             * @default false
-             * @language en_US
-             */
-            /**
-             * 指定文本字段是否具有背景填充。
-             * 如果为 true，则文本字段具有背景填充。如果为 false，则文本字段没有背景填充。
-             * 使用 backgroundColor 属性来设置文本字段的背景颜色。
-             * @default false
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setBackground(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKTextField.prototype.$setBackground = function (value) {
-            this.$TextField[33 /* background */] = value;
-        };
-        Object.defineProperty(BKTextField.prototype, "backgroundColor", {
-            /**
-             * @version Egret 2.4
-             * @platform Web,Native
-             */
-            get: function () {
-                return this.$TextField[34 /* backgroundColor */];
-            },
-            /**
-             * Color of the text field background.
-             * Even currently is no background, can be retrieved or set this property, but only if the text field has the background property set to true, the color is visible.
-             * @default 0xFFFFFF
-             * @language en_US
-             */
-            /**
-             * 文本字段背景的颜色。
-             * 即使当前没有背景，也可检索或设置此属性，但只有当文本字段已将 background 属性设置为 true 时，才可以看到颜色。
-             * @default 0xFFFFFF
-             * @language zh_CN
-             */
-            set: function (value) {
-                this.$setBackgroundColor(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKTextField.prototype.$setBackgroundColor = function (value) {
-            this.$TextField[34 /* backgroundColor */] = value;
-        };
-        /**
-         * @private
-         *
-         */
-        BKTextField.prototype.fillBackground = function (lines) {
-            var graphics = this.graphicsNode;
-            if (graphics) {
-                graphics.clear();
-            }
-            var values = this.$TextField;
-            if (values[33 /* background */] || values[31 /* border */] || (lines && lines.length > 0)) {
-                if (!graphics) {
-                    graphics = this.graphicsNode = new egret.sys.GraphicsNode();
-                    var groupNode = new egret.sys.GroupNode();
-                    groupNode.addNode(graphics);
-                    groupNode.addNode(this.textNode);
-                    this.$renderNode = groupNode;
-                }
-                var fillPath = void 0;
-                var strokePath = void 0;
-                //渲染背景
-                if (values[33 /* background */]) {
-                    fillPath = graphics.beginFill(values[34 /* backgroundColor */]);
-                    fillPath.drawRect(0, 0, this.$getWidth(), this.$getHeight());
-                }
-                //渲染边框
-                if (values[31 /* border */]) {
-                    strokePath = graphics.lineStyle(1, values[32 /* borderColor */]);
-                    //1像素和3像素线条宽度的情况，会向右下角偏移0.5像素绘制。少画一像素宽度，正好能不超出文本测量边界。
-                    strokePath.drawRect(0, 0, this.$getWidth() - 1, this.$getHeight() - 1);
-                }
-                //渲染下划线
-                if (lines && lines.length > 0) {
-                    var textColor = values[2 /* textColor */];
-                    var lastColor = -1;
-                    var length_1 = lines.length;
-                    for (var i = 0; i < length_1; i += 4) {
-                        var x = lines[i];
-                        var y = lines[i + 1];
-                        var w = lines[i + 2];
-                        var color = lines[i + 3] || textColor;
-                        if (lastColor < 0 || lastColor != color) {
-                            lastColor = color;
-                            strokePath = graphics.lineStyle(2, color, 1, egret.CapsStyle.NONE);
-                        }
-                        strokePath.moveTo(x, y);
-                        strokePath.lineTo(x + w, y);
-                    }
-                }
-            }
-            if (graphics) {
-                var bounds = this.$getRenderBounds();
-                graphics.x = bounds.x;
-                graphics.y = bounds.y;
-                graphics.width = bounds.width;
-                graphics.height = bounds.height;
-                egret.Rectangle.release(bounds);
-            }
-        };
-        /**
-         * Enter the text automatically entered into the input state, the input type is text only and may only be invoked in the user interaction.
-         * @version Egret 3.0.8
          * @platform Web,Native
          * @language en_US
          */
         /**
-         * 输入文本自动进入到输入状态，仅在类型是输入文本并且是在用户交互下才可以调用。
-         * @version Egret 3.0.8
+         * 创建一个 Shape 对象
+         * @version Egret 2.4
          * @platform Web,Native
          * @language zh_CN
          */
-        BKTextField.prototype.setFocus = function () {
-            if (this.type == egret.TextFieldType.INPUT && this.$stage) {
-                this.inputUtils.$onFocus();
+        function BKShape() {
+            var _this = _super.call(this) || this;
+            _this.$graphics = new egret.Graphics();
+            _this.$graphics.$setTarget(_this);
+            return _this;
+        }
+        Object.defineProperty(BKShape.prototype, "graphics", {
+            /**
+             * Specifies the Graphics object belonging to this Shape object, where vector drawing commands can occur.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 获取 Shape 中的 Graphics 对象。可通过此对象执行矢量绘图命令。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this.$graphics;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         */
+        BKShape.prototype.$measureContentBounds = function (bounds) {
+            this.$graphics.$measureContentBounds(bounds);
+        };
+        BKShape.prototype.$hitTest = function (stageX, stageY) {
+            var target = _super.prototype.$hitTest.call(this, stageX, stageY);
+            if (target == this) {
+                // target = this.$graphics.$hitTest(stageX, stageY);
+                target = null; // TODO
             }
+            return target;
         };
         /**
          * @private
-         *
          */
-        BKTextField.prototype.$onRemoveFromStage = function () {
+        BKShape.prototype.$onRemoveFromStage = function () {
             _super.prototype.$onRemoveFromStage.call(this);
-            this.removeEvent();
-            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                this.inputUtils._removeStageText();
-            }
-            if (this.textNode) {
-                this.textNode.clean();
+            if (this.$graphics) {
+                this.$graphics.$onRemoveFromStage();
             }
         };
-        /**
-         * @private
-         *
-         * @param stage
-         * @param nestLevel
-         */
-        BKTextField.prototype.$onAddToStage = function (stage, nestLevel) {
-            _super.prototype.$onAddToStage.call(this, stage, nestLevel);
-            this.addEvent();
-            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                this.inputUtils._addStageText();
-            }
-        };
-        BKTextField.prototype.$invalidateTextField = function () {
-            var self = this;
-            self.$renderDirty = true;
-            self.$TextField[18 /* textLinesChanged */] = true;
-            // MD
-            // let p = self.$parent;
-            // if (p && !p.$cacheDirty) {
-            //     p.$cacheDirty = true;
-            //     p.$cacheDirtyUp();
-            // }
-            // let maskedObject = self.$maskedObject;
-            // if (maskedObject && !maskedObject.$cacheDirty) {
-            //     maskedObject.$cacheDirty = true;
-            //     maskedObject.$cacheDirtyUp();
-            // }
-        };
-        BKTextField.prototype.$getRenderBounds = function () {
-            var bounds = this.$getContentBounds();
-            var tmpBounds = egret.Rectangle.create();
-            tmpBounds.copyFrom(bounds);
-            if (this.$TextField[31 /* border */]) {
-                tmpBounds.width += 2;
-                tmpBounds.height += 2;
-            }
-            var _strokeDouble = this.$TextField[27 /* stroke */] * 2;
-            if (_strokeDouble > 0) {
-                tmpBounds.width += _strokeDouble * 2;
-                tmpBounds.height += _strokeDouble * 2;
-            }
-            tmpBounds.x -= _strokeDouble + 2; //+2和+4 是为了webgl纹理太小导致裁切问题
-            tmpBounds.y -= _strokeDouble + 2;
-            tmpBounds.width = Math.ceil(tmpBounds.width) + 4;
-            tmpBounds.height = Math.ceil(tmpBounds.height) + 4;
-            return tmpBounds;
-        };
-        /**
-         * @private
-         */
-        BKTextField.prototype.$measureContentBounds = function (bounds) {
-            this.$getLinesArr();
-            var w = !isNaN(this.$TextField[3 /* textFieldWidth */]) ? this.$TextField[3 /* textFieldWidth */] : this.$TextField[5 /* textWidth */];
-            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this);
-            // MD
-            var h = !isNaN(this.$TextField[4 /* textFieldHeight */]) ? this.$TextField[4 /* textFieldHeight */] : this.$TextField[6 /* textHeight */];
-            bounds.setTo(0, 0, w, h);
-        };
-        BKTextField.prototype.$updateRenderNode = function () {
-            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                this.inputUtils._updateProperties();
-                if (this.$isTyping) {
-                    this.fillBackground();
-                    return;
-                }
-            }
-            else if (this.$TextField[3 /* textFieldWidth */] == 0) {
-                var graphics = this.graphicsNode;
-                if (graphics) {
-                    graphics.clear();
-                }
-                return;
-            }
-            var underLines = this.drawText();
-            this.fillBackground(underLines);
-            //tudo 宽高很小的情况下webgl模式绘制异常
-            var bounds = this.$getRenderBounds();
-            var node = this.textNode;
-            node.x = bounds.x;
-            node.y = bounds.y;
-            node.width = Math.ceil(bounds.width);
-            node.height = Math.ceil(bounds.height);
-            egret.Rectangle.release(bounds);
-        };
-        Object.defineProperty(BKTextField.prototype, "textFlow", {
+        return BKShape;
+    }(egret.BKDisplayObject));
+    egret.BKShape = BKShape;
+    __reflect(BKShape.prototype, "egret.BKShape");
+    egret.Shape = BKShape;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKImageLoader = (function (_super) {
+        __extends(BKImageLoader, _super);
+        function BKImageLoader() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
             /**
-             * @version Egret 2.4
-             * @platform Web,Native
+             * @private
+             * 使用 load() 方法加载成功的 BitmapData 图像数据。
              */
+            _this.data = null;
+            _this._crossOrigin = null;
+            _this._hasCrossOriginSet = false;
+            return _this;
+            // private dispatchIOError(url: string): void {
+            //     let self = this;
+            //     window.setTimeout(function (): void {
+            //         if (DEBUG && !self.hasEventListener(IOErrorEvent.IO_ERROR)) {
+            //             $error(1011, url);
+            //         }
+            //         self.dispatchEventWith(IOErrorEvent.IO_ERROR);
+            //     }, 0);
+            // }
+        }
+        Object.defineProperty(BKImageLoader.prototype, "crossOrigin", {
             get: function () {
-                return this.textArr;
+                return this._crossOrigin;
             },
-            /**
-             * Set rich text
-             * @language en_US
-             */
-            /**
-             * 设置富文本
-             * @see http://edn.egret.com/cn/index.php/article/index/id/146
-             * @language zh_CN
-             */
-            set: function (textArr) {
-                this.isFlow = true;
-                var text = "";
-                if (textArr == null)
-                    textArr = [];
-                for (var i = 0; i < textArr.length; i++) {
-                    var element = textArr[i];
-                    text += element.text;
-                }
-                if (this.$TextField[20 /* displayAsPassword */]) {
-                    this.$setBaseText(text);
-                }
-                else {
-                    this.$TextField[13 /* text */] = text;
-                    this.setMiddleStyle(textArr);
-                }
+            set: function (value) {
+                this._hasCrossOriginSet = true;
+                this._crossOrigin = value;
             },
             enumerable: true,
             configurable: true
         });
-        /**
-         * @private
-         *
-         * @param text
-         * @returns
-         */
-        BKTextField.prototype.changeToPassText = function (text) {
-            if (this.$TextField[20 /* displayAsPassword */]) {
-                var passText = "";
-                for (var i = 0, num = text.length; i < num; i++) {
-                    switch (text.charAt(i)) {
-                        case '\n':
-                            passText += "\n";
-                            break;
-                        case '\r':
-                            break;
-                        default:
-                            passText += '*';
-                    }
-                }
-                return passText;
-            }
-            return text;
+        BKImageLoader.prototype.load = function (url) {
+            this.data = new egret.BitmapData(url);
+            egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
         };
-        /**
-         * @private
-         *
-         * @param textArr
-         */
-        BKTextField.prototype.setMiddleStyle = function (textArr) {
-            this.$TextField[18 /* textLinesChanged */] = true;
-            this.textArr = textArr;
-            this.$invalidateTextField();
-        };
-        Object.defineProperty(BKTextField.prototype, "textWidth", {
-            /**
-             * Get the text measured width
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 获取文本测量宽度
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                this.$getLinesArr();
-                return this.$TextField[5 /* textWidth */];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKTextField.prototype, "textHeight", {
-            /**
-             * Get Text measuring height
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 获取文本测量高度
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                this.$getLinesArr();
-                // return TextFieldUtils.$getTextHeight(this);
-                // MD
-                return this.$TextField[6 /* textHeight */];
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         * @param text
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        BKTextField.prototype.appendText = function (text) {
-            this.appendElement({ text: text });
-        };
-        /**
-         * @private
-         * @param element
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        BKTextField.prototype.appendElement = function (element) {
-            var text = this.$TextField[13 /* text */] + element.text;
-            if (this.$TextField[20 /* displayAsPassword */]) {
-                this.$setBaseText(text);
-            }
-            else {
-                this.$TextField[13 /* text */] = text;
-                this.textArr.push(element);
-                this.setMiddleStyle(this.textArr);
-            }
-        };
-        /**
-         * @private
-         *
-         * @returns
-         */
-        BKTextField.prototype.$getLinesArr = function () {
-            var values = this.$TextField;
-            if (!values[18 /* textLinesChanged */]) {
-                return this.linesArr;
-            }
-            values[18 /* textLinesChanged */] = false;
-            // MD
-            values[29 /* numLines */] = 1;
-            values[5 /* textWidth */] = this._bkText["width"];
-            values[6 /* textHeight */] = this._bkText["height"];
-            return this.linesArr;
-            // let text2Arr: Array<egret.ITextElement> = this.textArr;
-            // this.linesArr.length = 0;
-            // values[sys.TextKeys.textHeight] = 0;
-            // values[sys.TextKeys.textWidth] = 0;
-            // let textFieldWidth: number = values[sys.TextKeys.textFieldWidth];
-            // //宽度被设置为0
-            // if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
-            //     values[sys.TextKeys.numLines] = 0;
-            //     return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
-            // }
-            // let linesArr: Array<egret.ILineElement> = this.linesArr;
-            // let lineW: number = 0;
-            // let lineCharNum: number = 0;
-            // let lineH: number = 0;
-            // let lineCount: number = 0;
-            // let lineElement: egret.ILineElement;
-            // for (let i: number = 0, text2ArrLength: number = text2Arr.length; i < text2ArrLength; i++) {
-            //     let element: egret.ITextElement = text2Arr[i];
-            //     //可能设置为没有文本，忽略绘制
-            //     if (!element.text) {
-            //         if (lineElement) {
-            //             lineElement.width = lineW;
-            //             lineElement.height = lineH;
-            //             lineElement.charNum = lineCharNum;
-            //             values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //             values[sys.TextKeys.textHeight] += lineH;
-            //         }
-            //         continue;
-            //     }
-            //     element.style = element.style || <egret.ITextStyle>{};
-            //     let text: string = element.text.toString();
-            //     let textArr: string[] = text.split(/(?:\r\n|\r|\n)/);
-            //     for (let j: number = 0, textArrLength: number = textArr.length; j < textArrLength; j++) {
-            //         if (linesArr[lineCount] == null) {
-            //             lineElement = { width: 0, height: 0, elements: [], charNum: 0, hasNextLine: false };
-            //             linesArr[lineCount] = lineElement;
-            //             lineW = 0;
-            //             lineH = 0;
-            //             lineCharNum = 0;
-            //         }
-            //         if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT) {
-            //             lineH = values[sys.TextKeys.fontSize];
-            //         }
-            //         else {
-            //             lineH = Math.max(lineH, element.style.size || values[sys.TextKeys.fontSize]);
-            //         }
-            //         let isNextLine: boolean = true;
-            //         if (textArr[j] == "") {
-            //             if (j == textArrLength - 1) {
-            //                 isNextLine = false;
-            //             }
-            //         }
-            //         else {
-            //             let w: number = measureTextWidth(textArr[j], values, element.style);
-            //             if (isNaN(textFieldWidth)) {//没有设置过宽
-            //                 lineW += w;
-            //                 lineCharNum += textArr[j].length;
-            //                 lineElement.elements.push(<egret.IWTextElement>{
-            //                     width: w,
-            //                     text: textArr[j],
-            //                     style: element.style
-            //                 });
-            //                 if (j == textArrLength - 1) {
-            //                     isNextLine = false;
-            //                 }
-            //             }
-            //             else {
-            //                 if (lineW + w <= textFieldWidth) {//在设置范围内
-            //                     lineElement.elements.push(<egret.IWTextElement>{
-            //                         width: w,
-            //                         text: textArr[j],
-            //                         style: element.style
-            //                     });
-            //                     lineW += w;
-            //                     lineCharNum += textArr[j].length;
-            //                     if (j == textArrLength - 1) {
-            //                         isNextLine = false;
-            //                     }
-            //                 }
-            //                 else {
-            //                     let k: number = 0;
-            //                     let ww: number = 0;
-            //                     let word: string = textArr[j];
-            //                     let words: string[];
-            //                     if (values[sys.TextKeys.wordWrap]) {
-            //                         words = word.split(SplitRegex);
-            //                     }
-            //                     else {
-            //                         words = word.match(/./g);
-            //                     }
-            //                     let wl: number = words.length;
-            //                     let charNum = 0;
-            //                     for (; k < wl; k++) {
-            //                         // detect 4 bytes unicode, refer https://mths.be/punycode
-            //                         var codeLen = words[k].length;
-            //                         var has4BytesUnicode = false;
-            //                         if (codeLen == 1 && k < wl - 1) // when there is 2 bytes high surrogate
-            //                         {
-            //                             var charCodeHigh = words[k].charCodeAt(0);
-            //                             var charCodeLow = words[k + 1].charCodeAt(0);
-            //                             if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-            //                                 var realWord = words[k] + words[k + 1];
-            //                                 codeLen = 2;
-            //                                 has4BytesUnicode = true;
-            //                                 w = measureTextWidth(realWord, values, element.style);
-            //                             } else {
-            //                                 w = measureTextWidth(words[k], values, element.style);
-            //                             }
-            //                         } else {
-            //                             w = measureTextWidth(words[k], values, element.style);
-            //                         }
-            //                         // w = measureTextWidth(words[k], values, element.style);
-            //                         if (lineW != 0 && lineW + w > textFieldWidth && lineW + k != 0) {
-            //                             break;
-            //                         }
-            //                         if (ww + w > textFieldWidth) {//纯英文，一个词就超出宽度的情况
-            //                             var words2: Array<string> = words[k].match(/./g);
-            //                             for (var k2 = 0, wl2 = words2.length; k2 < wl2; k2++) {
-            //                                 // detect 4 bytes unicode, refer https://mths.be/punycode
-            //                                 var codeLen = words2[k2].length;
-            //                                 var has4BytesUnicode2 = false;
-            //                                 if (codeLen == 1 && k2 < wl2 - 1) // when there is 2 bytes high surrogate
-            //                                 {
-            //                                     var charCodeHigh = words2[k2].charCodeAt(0);
-            //                                     var charCodeLow = words2[k2 + 1].charCodeAt(0);
-            //                                     if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-            //                                         var realWord = words2[k2] + words2[k2 + 1];
-            //                                         codeLen = 2;
-            //                                         has4BytesUnicode2 = true;
-            //                                         w = measureTextWidth(realWord, values, element.style);
-            //                                     } else {
-            //                                         w = measureTextWidth(words2[k2], values, element.style);
-            //                                     }
-            //                                 } else {
-            //                                     w = measureTextWidth(words2[k2], values, element.style);
-            //                                 }
-            //                                 // w = measureTextWidth(words2[k2], values, element.style);
-            //                                 if (k2 > 0 && lineW + w > textFieldWidth) {
-            //                                     break;
-            //                                 }
-            //                                 // charNum += words2[k2].length;
-            //                                 charNum += codeLen;
-            //                                 ww += w;
-            //                                 lineW += w;
-            //                                 lineCharNum += charNum;
-            //                                 if (has4BytesUnicode2) {
-            //                                     k2++;
-            //                                 }
-            //                             }
-            //                         } else {
-            //                             // charNum += words[k].length;
-            //                             charNum += codeLen;
-            //                             ww += w;
-            //                             lineW += w;
-            //                             lineCharNum += charNum;
-            //                         }
-            //                         if (has4BytesUnicode) {
-            //                             k++;
-            //                         }
-            //                     }
-            //                     if (k > 0) {
-            //                         lineElement.elements.push(<egret.IWTextElement>{
-            //                             width: ww,
-            //                             text: word.substring(0, charNum),
-            //                             style: element.style
-            //                         });
-            //                         let leftWord: string = word.substring(charNum);
-            //                         let m: number;
-            //                         let lwleng = leftWord.length;
-            //                         for (m = 0; m < lwleng; m++) {
-            //                             if (leftWord.charAt(m) != " ") {
-            //                                 break;
-            //                             }
-            //                         }
-            //                         textArr[j] = leftWord.substring(m);
-            //                     }
-            //                     if (textArr[j] != "") {
-            //                         j--;
-            //                         isNextLine = false;
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //         if (isNextLine) {
-            //             lineCharNum++;
-            //             lineElement.hasNextLine = true;
-            //         }
-            //         if (j < textArr.length - 1) {//非最后一个
-            //             lineElement.width = lineW;
-            //             lineElement.height = lineH;
-            //             lineElement.charNum = lineCharNum;
-            //             values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //             values[sys.TextKeys.textHeight] += lineH;
-            //             //if (this._type == TextFieldType.INPUT && !this._multiline) {
-            //             //    this._numLines = linesArr.length;
-            //             //    return linesArr;
-            //             //}
-            //             lineCount++;
-            //         }
-            //     }
-            //     if (i == text2Arr.length - 1 && lineElement) {
-            //         lineElement.width = lineW;
-            //         lineElement.height = lineH;
-            //         lineElement.charNum = lineCharNum;
-            //         values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //         values[sys.TextKeys.textHeight] += lineH;
-            //     }
-            // }
-            // values[sys.TextKeys.numLines] = linesArr.length;
-            // return linesArr;
-        };
-        /**
-         * @private
-         * 返回要绘制的下划线列表
-         */
-        BKTextField.prototype.drawText = function () {
-            // let node = this.textNode;
-            // let values = this.$TextField;
-            // //更新文本样式
-            // node.bold = values[sys.TextKeys.bold];
-            // node.fontFamily = values[sys.TextKeys.fontFamily] || TextField.default_fontFamily;
-            // node.italic = values[sys.TextKeys.italic];
-            // node.size = values[sys.TextKeys.fontSize];
-            // node.stroke = values[sys.TextKeys.stroke];
-            // node.strokeColor = values[sys.TextKeys.strokeColor];
-            // node.textColor = values[sys.TextKeys.textColor];
-            // //先算出需要的数值
-            // let lines: Array<egret.ILineElement> = this.$getLinesArr();
-            // if (values[sys.TextKeys.textWidth] == 0) {
-            //     return [];
-            // }
-            // let maxWidth: number = !isNaN(values[sys.TextKeys.textFieldWidth]) ? values[sys.TextKeys.textFieldWidth] : values[sys.TextKeys.textWidth];
-            // let textHeight: number = TextFieldUtils.$getTextHeight(this);
-            // let drawY: number = 0;
-            // let startLine: number = TextFieldUtils.$getStartLine(this);
-            // let textFieldHeight: number = values[sys.TextKeys.textFieldHeight];
-            // if (!isNaN(textFieldHeight) && textFieldHeight > textHeight) {
-            //     let vAlign: number = TextFieldUtils.$getValign(this);
-            //     drawY += vAlign * (textFieldHeight - textHeight);
-            // }
-            // drawY = Math.round(drawY);
-            // let hAlign: number = TextFieldUtils.$getHalign(this);
-            // let drawX: number = 0;
-            // let underLineData: number[] = [];
-            // for (let i: number = startLine, numLinesLength: number = values[sys.TextKeys.numLines]; i < numLinesLength; i++) {
-            //     let line: egret.ILineElement = lines[i];
-            //     let h: number = line.height;
-            //     drawY += h / 2;
-            //     if (i != startLine) {
-            //         if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT && !values[sys.TextKeys.multiline]) {
-            //             break;
-            //         }
-            //         if (!isNaN(textFieldHeight) && drawY > textFieldHeight) {
-            //             break;
-            //         }
-            //     }
-            //     drawX = Math.round((maxWidth - line.width) * hAlign);
-            //     for (let j: number = 0, elementsLength: number = line.elements.length; j < elementsLength; j++) {
-            //         let element: egret.IWTextElement = line.elements[j];
-            //         let size: number = element.style.size || values[sys.TextKeys.fontSize];
-            //         node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
-            //         if (element.style.underline) {
-            //             underLineData.push(
-            //                 drawX,
-            //                 drawY + (h) / 2,
-            //                 element.width,
-            //                 element.style.textColor
-            //             );
-            //         }
-            //         drawX += element.width;
-            //     }
-            //     drawY += h / 2 + values[sys.TextKeys.lineSpacing];
-            // }
-            // return underLineData;
-            return []; // MD
-        };
-        //增加点击事件
-        BKTextField.prototype.addEvent = function () {
-            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
-        };
-        //释放点击事件
-        BKTextField.prototype.removeEvent = function () {
-            this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTapHandler, this);
-        };
-        //处理富文本中有href的
-        BKTextField.prototype.onTapHandler = function (e) {
-            // MD
-            // if (this.$TextField[sys.TextKeys.type] == egret.TextFieldType.INPUT) {
-            //     return;
-            // }
-            // let ele: ITextElement = TextFieldUtils.$getTextElement(this, e.localX, e.localY);
-            // if (ele == null) {
-            //     return;
-            // }
-            // let style: egret.ITextStyle = ele.style;
-            // if (style && style.href) {
-            //     if (style.href.match(/^event:/)) {
-            //         let type: string = style.href.match(/^event:/)[0];
-            //         egret.TextEvent.dispatchTextEvent(this, egret.TextEvent.LINK, style.href.substring(type.length));
-            //     }
-            //     else {
-            //         open(style.href, style.target || "_blank");
-            //     }
-            // }
-        };
+        BKImageLoader.crossOrigin = null;
+        return BKImageLoader;
+    }(egret.EventDispatcher));
+    egret.BKImageLoader = BKImageLoader;
+    __reflect(BKImageLoader.prototype, "egret.BKImageLoader", ["egret.ImageLoader"]);
+    egret.ImageLoader = BKImageLoader;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKTextField = (function (_super) {
+        __extends(BKTextField, _super);
+        function BKTextField() {
+            var _this = _super.call(this, new BK.Text(undefined, "")) || this;
+            _this._size = { width: 100.0, height: 200.0 };
+            _this._bkText = _this._bkNode;
+            _this._bkText.anchor = { x: 0.0, y: 1.0 };
+            _this._bkText.bold = 0;
+            _this._bkText.italic = false;
+            _this._bkText.maxSize = { width: 2048, height: 2048 };
+            _this._bkText.shadowColor = 0x00000000;
+            _this._bkText.shadowOffset = { x: 0, y: 0 };
+            _this._bkText.shadowRadius = 0;
+            _this._bkText.strokeColor = 0x00000000;
+            _this._bkText.strokeSize = 0;
+            return _this;
+        }
         /**
          * 为16进制数字补0，输出字符串
          */
@@ -3581,55 +1774,194 @@ var egret;
             var zero = "00000000";
             return zero.substr(0, length - str.length) + str;
         };
+        Object.defineProperty(BKTextField.prototype, "size", {
+            /**
+             * 文字字号大小
+             */
+            get: function () {
+                return this._bkText.fontSize;
+            },
+            set: function (value) {
+                this._bkText.fontSize = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "bold", {
+            /**
+             * 是否显示为粗体
+             */
+            get: function () {
+                return this._bkText.bold > 0;
+            },
+            set: function (bold) {
+                this._bkText.bold = bold ? 1 : 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "italic", {
+            /**
+             * 是否显示为斜体
+             */
+            get: function () {
+                return this._bkText.italic;
+            },
+            set: function (value) {
+                this._bkText.italic = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "textAlign", {
+            /**
+             * 文本的水平对齐方式
+             */
+            get: function () {
+                switch (this._bkText.horizontalAlign) {
+                    case 0:
+                        return egret.HorizontalAlign.LEFT;
+                    case 1:
+                        return egret.HorizontalAlign.CENTER;
+                    case 2:
+                        return egret.HorizontalAlign.RIGHT;
+                }
+            },
+            set: function (value) {
+                switch (value) {
+                    case egret.HorizontalAlign.LEFT:
+                        this._bkText.horizontalAlign = 0;
+                        break;
+                    case egret.HorizontalAlign.CENTER:
+                        this._bkText.horizontalAlign = 1;
+                        break;
+                    case egret.HorizontalAlign.RIGHT:
+                        this._bkText.horizontalAlign = 2;
+                        break;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "text", {
+            get: function () {
+                return this._bkText.content;
+            },
+            set: function (value) {
+                this._bkText.content = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "textColor", {
+            /**
+             * 字体颜色，格式为0x000000的RGB编码格式字符串
+             */
+            get: function () {
+                var argb_str = this._refitString(this._bkText.fontColor, 8); //00 ff ff 00八位argb格式
+                var rbg_str = argb_str.substring(2, 8);
+                return parseInt(rbg_str, 16);
+            },
+            set: function (value) {
+                var rgb_str = this._refitString(value, 6); //六位rgb格式
+                var old_argb_str = this._refitString(this._bkText.fontColor, 8);
+                var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
+                var argb_num = parseInt(new_argb_str, 16);
+                this._bkText.fontColor = argb_num;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "strokeColor", {
+            /**
+             * 描边颜色，格式为0x000000的RGB编码格式字符串
+             */
+            get: function () {
+                var argb_str = this._refitString(this._bkText.strokeColor, 8); //00 ff ff 00八位argb格式
+                var rbg_str = argb_str.substring(2, 8);
+                return parseInt(rbg_str);
+            },
+            set: function (strokeColor) {
+                var rgb_str = this._refitString(strokeColor, 6); //六位rgb格式
+                var old_argb_str = this._refitString(this._bkText.strokeColor, 8);
+                var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
+                var argb_num = parseInt(new_argb_str, 16);
+                this._bkText.fontColor = argb_num;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "stroke", {
+            /**
+             * 描边宽度
+             */
+            get: function () {
+                return this._bkText.strokeSize;
+            },
+            set: function (value) {
+                this._bkText.strokeSize = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKTextField.prototype.$setWidth = function (value) {
+            _super.prototype.$setWidth.call(this, value);
+            this._size.width = value;
+            this._bkText["style"].width = this._size.width;
+        };
+        BKTextField.prototype.$setHeight = function (value) {
+            _super.prototype.$setHeight.call(this, value);
+            this._size.height = value;
+            this._bkText["style"].height = this._size.height;
+        };
         BKTextField.prototype.$setAnchorOffsetX = function (value) {
             _super.prototype.$setAnchorOffsetX.call(this, value);
-            var anchorX = value / this.$TextField[3 /* textFieldWidth */];
+            var anchorX = value / this._size.width;
             this._bkText.anchor = { x: anchorX, y: this._bkText.anchor.y };
         };
         BKTextField.prototype.$setAnchorOffsetY = function (value) {
             _super.prototype.$setAnchorOffsetY.call(this, value);
-            var anchorY = 1.0 - value / this.$TextField[4 /* textFieldHeight */];
+            var anchorY = 1.0 - value / this._size.height;
             this._bkText.anchor = { x: this._bkText.anchor.x, y: anchorY };
         };
-        /**
-         * default fontFamily
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 默认文本字体
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        BKTextField.default_fontFamily = "Arial";
-        /**
-         * default size in pixels of text
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 默认文本字号大小
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        BKTextField.default_size = 30;
-        /**
-         * default color of the text.
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 默认文本颜色
-         * @version Egret 3.2.1
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        BKTextField.default_textColor = 0xffffff;
+        Object.defineProperty(BKTextField.prototype, "textWidth", {
+            /**
+              * Get the BitmapText measured width
+              * @version Egret 2.4
+              * @platform Web,Native
+              * @language en_US
+              */
+            /**
+             * 获取位图文本测量宽度
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._bkText['width'];
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKTextField.prototype, "textHeight", {
+            /**
+             * Get Text BitmapText height
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 获取位图文本测量高度
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
+            get: function () {
+                return this._bkText['height'];
+            },
+            enumerable: true,
+            configurable: true
+        });
         return BKTextField;
     }(egret.BKDisplayObject));
     egret.BKTextField = BKTextField;
@@ -3727,6 +2059,810 @@ var egret;
     }(egret.EventDispatcher));
     egret.BKSoundChannel = BKSoundChannel;
     __reflect(BKSoundChannel.prototype, "egret.BKSoundChannel", ["egret.SoundChannel", "egret.IEventDispatcher"]);
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKGraphics = (function () {
+        /**
+         * Initializes a Graphics object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 创建一个 Graphics 对象。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        function BKGraphics() {
+            /**
+             * 当前移动到的坐标X
+             */
+            this.lastX = 0;
+            /**
+             * 当前移动到的坐标Y
+             */
+            this.lastY = 0;
+            /**
+             * 线条的左上方宽度
+             */
+            this.topLeftStrokeWidth = 0;
+            /**
+             * 线条的右下方宽度
+             */
+            this.bottomRightStrokeWidth = 0;
+            /**
+             * 线条宽度
+             */
+            this.lineWidth = 0;
+            /**
+             * @private
+             */
+            this.minX = Infinity;
+            /**
+             * @private
+             */
+            this.minY = Infinity;
+            /**
+             * @private
+             */
+            this.maxX = -Infinity;
+            /**
+             * @private
+             */
+            this.maxY = -Infinity;
+            /**
+             * 是否已经包含上一次moveTo的坐标点
+             */
+            this.includeLastPosition = true;
+            var stage = egret.lifecycle.stage;
+            this.stageW = stage.stageWidth;
+            this.stageH = stage.stageHeight;
+            this._BKCanvas = new BK.Canvas(2 * this.stageW, 2 * this.stageH); //sys.GraphicsNode();
+            this._BKCanvas.position = { x: -this.stageW, y: -this.stageH };
+            this.offsetX = this.stageW;
+            this.offsetY = this.stageH;
+            this._BKCanvas.backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
+        }
+        /**
+         * @private
+         * 设置绑定到的目标显示对象
+         */
+        BKGraphics.prototype.$setTarget = function (target) {
+            if (this.targetDisplay) {
+                this.targetDisplay.$renderNode = null;
+            }
+            target._bkNode.addChild(this._BKCanvas);
+            // target._bkNode.addChild(this._BKCanvas);
+            this.targetDisplay = target;
+        };
+        /**
+         * 对1像素和3像素特殊处理，向右下角偏移0.5像素，以显示清晰锐利的线条。
+         */
+        BKGraphics.prototype.setStrokeWidth = function (width) {
+            switch (width) {
+                case 1:
+                    this.topLeftStrokeWidth = 0;
+                    this.bottomRightStrokeWidth = 1;
+                    break;
+                case 3:
+                    this.topLeftStrokeWidth = 1;
+                    this.bottomRightStrokeWidth = 2;
+                    break;
+                default:
+                    var half = Math.ceil(width * 0.5) | 0;
+                    this.topLeftStrokeWidth = half;
+                    this.bottomRightStrokeWidth = half;
+                    break;
+            }
+        };
+        /**
+         * Specify a simple single color fill that will be used for subsequent calls to other Graphics methods (for example, lineTo() and drawCircle()) when drawing.
+         * Calling the clear() method will clear the fill.
+         * @param color Filled color
+         * @param alpha Filled Alpha value
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 指定一种简单的单一颜色填充，在绘制时该填充将在随后对其他 Graphics 方法（如 lineTo() 或 drawCircle()）的调用中使用。
+         * 调用 clear() 方法会清除填充。
+         * @param color 填充的颜色
+         * @param alpha 填充的 Alpha 值
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.beginFill = function (color, alpha) {
+            if (alpha === void 0) { alpha = 1; }
+            color = +color || 0;
+            alpha = +alpha || 0;
+            // this.fillPath = this.$renderNode.beginFill(color, alpha, this.strokePath);
+            // if (this.$renderNode.drawData.length > 1) {
+            //     this.fillPath.moveTo(this.lastX, this.lastY);
+            // }
+            this.isFillPath = true;
+            var rgb_str = this._refitString(color, 6); //六位rgb格式
+            var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
+            var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
+            var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
+            this._BKCanvas.fillColor = { r: red, g: green, b: blue, a: alpha };
+        };
+        /**
+          * 为16进制数字补0，输出字符串
+          */
+        BKGraphics.prototype._refitString = function (num, length) {
+            var str = num.toString(16);
+            var zero = "00000000";
+            return zero.substr(0, length - str.length) + str;
+        };
+        /**
+         * Specifies a gradient fill used by subsequent calls to other Graphics methods (such as lineTo() or drawCircle()) for the object.
+         * Calling the clear() method clears the fill.
+         * @param type A value from the GradientType class that specifies which gradient type to use: GradientType.LINEAR or GradientType.RADIAL.
+         * @param colors An array of RGB hexadecimal color values used in the gradient; for example, red is 0xFF0000, blue is 0x0000FF, and so on. You can specify up to 15 colors. For each color, specify a corresponding value in the alphas and ratios parameters.
+         * @param alphas An array of alpha values for the corresponding colors in the colors array;
+         * @param ratios An array of color distribution ratios; valid values are 0-255.
+         * @param matrix A transformation matrix as defined by the egret.Matrix class. The egret.Matrix class includes a createGradientBox() method, which lets you conveniently set up the matrix for use with the beginGradientFill() method.
+         * @platform Web,Native
+         * @version Egret 2.4
+         * @language en_US
+         */
+        /**
+         * 指定一种渐变填充，用于随后调用对象的其他 Graphics 方法（如 lineTo() 或 drawCircle()）。
+         * 调用 clear() 方法会清除填充。
+         * @param type 用于指定要使用哪种渐变类型的 GradientType 类的值：GradientType.LINEAR 或 GradientType.RADIAL。
+         * @param colors 渐变中使用的 RGB 十六进制颜色值的数组（例如，红色为 0xFF0000，蓝色为 0x0000FF，等等）。对于每种颜色，请在 alphas 和 ratios 参数中指定对应值。
+         * @param alphas colors 数组中对应颜色的 alpha 值数组。
+         * @param ratios 颜色分布比率的数组。有效值为 0 到 255。
+         * @param matrix 一个由 egret.Matrix 类定义的转换矩阵。egret.Matrix 类包括 createGradientBox() 方法，通过该方法可以方便地设置矩阵，以便与 beginGradientFill() 方法一起使用
+         * @platform Web,Native
+         * @version Egret 2.4
+         * @language zh_CN
+         */
+        BKGraphics.prototype.beginGradientFill = function (type, colors, alphas, ratios, matrix) {
+            //暂不使用
+            if (matrix === void 0) { matrix = null; }
+            // this.fillPath = this.$renderNode.beginGradientFill(type, colors, alphas, ratios, matrix, this.strokePath);
+            // if (this.$renderNode.drawData.length > 1) {
+            //     this.fillPath.moveTo(this.lastX, this.lastY);
+            // }
+        };
+        /**
+         * Apply fill to the lines and curves added after the previous calling to the beginFill() method.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 对从上一次调用 beginFill()方法之后添加的直线和曲线应用填充。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.endFill = function () {
+            // this.fillPath = null;
+            if (this.isFillPath) {
+                this._BKCanvas.fill();
+                this.isFillPath = false;
+            }
+            if (this.isStrokePath) {
+                this._BKCanvas.stroke();
+                this._BKCanvas.closePath();
+                this.isStrokePath = false;
+            }
+        };
+        /**
+         * Specify a line style that will be used for subsequent calls to Graphics methods such as lineTo() and drawCircle().
+         * @param thickness An integer, indicating the thickness of the line in points. Valid values are 0 to 255. If a number is not specified, or if the parameter is undefined, a line is not drawn. If a value less than 0 is passed, the default value is 0. Value 0 indicates hairline thickness; the maximum thickness is 255. If a value greater than 255 is passed, the default value is 255.
+         * @param color A hexadecimal color value of the line (for example, red is 0xFF0000, and blue is 0x0000FF, etc.). If no value is specified, the default value is 0x000000 (black). Optional.
+         * @param alpha Indicates Alpha value of the line's color. Valid values are 0 to 1. If no value is specified, the default value is 1 (solid). If the value is less than 0, the default value is 0. If the value is greater than 1, the default value is 1.
+         * @param pixelHinting A boolean value that specifies whether to hint strokes to full pixels. This affects both the position of anchors of a curve and the line stroke size itself. With pixelHinting set to true, the line width is adjusted to full pixel width. With pixelHinting set to false, disjoints can appear for curves and straight lines.
+         * @param scaleMode Specifies the scale mode to be used
+         * @param caps Specifies the value of the CapsStyle class of the endpoint type at the end of the line. (default = CapsStyle.ROUND)
+         * @param joints Specifies the type of joint appearance of corner.  (default = JointStyle.ROUND)
+         * @param miterLimit Indicates the limit number of cut miter.
+         * @param lineDash set the line dash.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 指定一种线条样式以用于随后对 lineTo() 或 drawCircle() 等 Graphics 方法的调用。
+         * @param thickness 一个整数，以点为单位表示线条的粗细，有效值为 0 到 255。如果未指定数字，或者未定义该参数，则不绘制线条。如果传递的值小于 0，则默认值为 0。值 0 表示极细的粗细；最大粗细为 255。如果传递的值大于 255，则默认值为 255。
+         * @param color 线条的十六进制颜色值（例如，红色为 0xFF0000，蓝色为 0x0000FF 等）。如果未指明值，则默认值为 0x000000（黑色）。可选。
+         * @param alpha 表示线条颜色的 Alpha 值的数字；有效值为 0 到 1。如果未指明值，则默认值为 1（纯色）。如果值小于 0，则默认值为 0。如果值大于 1，则默认值为 1。
+         * @param pixelHinting 布尔型值，指定是否提示笔触采用完整像素。它同时影响曲线锚点的位置以及线条笔触大小本身。在 pixelHinting 设置为 true 的情况下，线条宽度会调整到完整像素宽度。在 pixelHinting 设置为 false 的情况下，对于曲线和直线可能会出现脱节。
+         * @param scaleMode 用于指定要使用的比例模式
+         * @param caps 用于指定线条末端处端点类型的 CapsStyle 类的值。默认值：CapsStyle.ROUND
+         * @param joints 指定用于拐角的连接外观的类型。默认值：JointStyle.ROUND
+         * @param miterLimit 用于表示剪切斜接的极限值的数字。
+         * @param lineDash 设置虚线样式。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        // public lineStyle(thickness: number = NaN, color: number = 0, alpha: number = 1.0, pixelHinting: boolean = false,
+        //     scaleMode: string = "normal", caps: string = null, joints: string = null, miterLimit: number = 3, lineDash?: number[]): void {
+        //     thickness = +thickness || 0;
+        //     if (thickness <= 0) {
+        //         this.strokePath = null;
+        //         this.setStrokeWidth(0);
+        //     }
+        //     else {
+        //         color = +color || 0;
+        //         alpha = +alpha || 0;
+        //         miterLimit = +miterLimit || 0;
+        //         this.setStrokeWidth(thickness);
+        //         this.strokePath = this.$renderNode.lineStyle(thickness, color, alpha, caps, joints, miterLimit);
+        //         if (lineDash) {
+        //             this.strokePath.setLineDash(lineDash);
+        //         }
+        //         if (this.$renderNode.drawData.length > 1) {
+        //             this.strokePath.moveTo(this.lastX, this.lastY);
+        //         }
+        //     }
+        // }
+        BKGraphics.prototype.lineStyle = function (thickness, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit, lineDash) {
+            if (thickness === void 0) { thickness = NaN; }
+            if (color === void 0) { color = 0; }
+            if (alpha === void 0) { alpha = 1.0; }
+            if (pixelHinting === void 0) { pixelHinting = false; }
+            if (scaleMode === void 0) { scaleMode = "normal"; }
+            if (caps === void 0) { caps = null; }
+            if (joints === void 0) { joints = null; }
+            if (miterLimit === void 0) { miterLimit = 3; }
+            if (thickness <= 0) {
+                this.isStrokePath = false;
+                this.lineWidth = 0;
+            }
+            else {
+                color = +color || 0;
+                alpha = +alpha || 0;
+                this.lineWidth = thickness;
+                this._BKCanvas.lineWidth = thickness;
+                this.isStrokePath = true;
+                var rgb_str = this._refitString(color, 6);
+                var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
+                var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
+                var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
+                this._BKCanvas.strokeColor = { r: red, g: green, b: blue, a: alpha };
+            }
+        };
+        /**
+         * Draw a rectangle
+         * @param x x position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param y y position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param width Width of the rectangle (in pixels).
+         * @param height Height of the rectangle (in pixels).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 绘制一个矩形
+         * @param x 圆心相对于父显示对象注册点的 x 位置（以像素为单位）。
+         * @param y 相对于父显示对象注册点的圆心的 y 位置（以像素为单位）。
+         * @param width 矩形的宽度（以像素为单位）。
+         * @param height 矩形的高度（以像素为单位）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.drawRect = function (x, y, width, height) {
+            x = +x + this.offsetX || 0;
+            y = -y + this.offsetY || 0;
+            width = +width || 0;
+            height = +height || 0;
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.drawRect(x, y, width, height);
+            // strokePath && strokePath.drawRect(x, y, width, height);
+            this.extendBoundsByPoint(x + width, y + height);
+            // this.updatePosition(x, y);
+            // this.$renderNode.dirtyRender = true;
+            if (this.isFillPath) {
+                this._BKCanvas.fillRect(x, y - height, width, height);
+            }
+            if (this.isStrokePath) {
+                this._BKCanvas.strokeRect(x, y - height, width, height);
+            }
+        };
+        /**
+         * Draw a rectangle with rounded corners.
+         * @param x x position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param y y position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param width Width of the rectangle (in pixels).
+         * @param height Height of the rectangle (in pixels).
+         * @param ellipseWidth Width used to draw an ellipse with rounded corners (in pixels).
+         * @param ellipseHeight Height used to draw an ellipse with rounded corners (in pixels). (Optional) If no value is specified, the default value matches the value of the ellipseWidth parameter.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 绘制一个圆角矩形。
+         * @param x 圆心相对于父显示对象注册点的 x 位置（以像素为单位）。
+         * @param y 相对于父显示对象注册点的圆心的 y 位置（以像素为单位）。
+         * @param width 矩形的宽度（以像素为单位）。
+         * @param height 矩形的高度（以像素为单位）。
+         * @param ellipseWidth 用于绘制圆角的椭圆的宽度（以像素为单位）。
+         * @param ellipseHeight 用于绘制圆角的椭圆的高度（以像素为单位）。 （可选）如果未指定值，则默认值与为 ellipseWidth 参数提供的值相匹配。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.drawRoundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
+            //暂不支持
+            // x = +x || 0;
+            // y = +y || 0;
+            // width = +width || 0;
+            // height = +height || 0;
+            // ellipseWidth = +ellipseWidth || 0;
+            // ellipseHeight = +ellipseHeight || 0;
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
+            // strokePath && strokePath.drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
+            // let radiusX = (ellipseWidth * 0.5) | 0;
+            // let radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
+            var right = x + width;
+            var bottom = y + height;
+            // let ybw = bottom - radiusY;
+            this.extendBoundsByPoint(x, y);
+            this.extendBoundsByPoint(right, bottom);
+            // this.updatePosition(right, ybw);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Draw a circle.
+         * @param x x position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param y y position of the center, relative to the registration point of the parent display object (in pixels).
+         * @param r Radius of the circle (in pixels).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 绘制一个圆。
+         * @param x 圆心相对于父显示对象注册点的 x 位置（以像素为单位）。
+         * @param y 相对于父显示对象注册点的圆心的 y 位置（以像素为单位）。
+         * @param radius 圆的半径（以像素为单位）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.drawCircle = function (x, y, radius) {
+            x = +x + this.offsetX || 0;
+            y = -y + this.offsetY || 0;
+            radius = +radius || 0;
+            this._BKCanvas.drawCircle(x, y, radius);
+            if (this.isStrokePath && this.isFillPath) {
+                this._BKCanvas.fill();
+                this._BKCanvas.drawCircle(x, y, radius);
+                this._BKCanvas.stroke();
+            }
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.drawCircle(x, y, radius);
+            // strokePath && strokePath.drawCircle(x, y, radius);
+            // //-1 +2 解决WebGL裁切问题
+            this.extendBoundsByPoint(x - radius - 1, y - radius - 1);
+            this.extendBoundsByPoint(x + radius + 2, y + radius + 2);
+            // this.updatePosition(x + radius, y);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Draw an ellipse.
+         * @param x A number indicating the horizontal position, relative to the registration point of the parent display object (in pixels).
+         * @param y A number indicating the vertical position, relative to the registration point of the parent display object (in pixels).
+         * @param width Width of the rectangle (in pixels).
+         * @param height Height of the rectangle (in pixels).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 绘制一个椭圆。
+         * @param x 一个表示相对于父显示对象注册点的水平位置的数字（以像素为单位）。
+         * @param y 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
+         * @param width 矩形的宽度（以像素为单位）。
+         * @param height 矩形的高度（以像素为单位）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.drawEllipse = function (x, y, width, height) {
+            x = +x + this.offsetX || 0;
+            y = -y + this.offsetY || 0;
+            width = +width || 0;
+            height = +height || 0;
+            this._BKCanvas.drawEllipse(x, y, width, height);
+            if (this.isStrokePath && this.isFillPath) {
+                this._BKCanvas.fill();
+                this._BKCanvas.drawEllipse(x, y, width, height);
+                this._BKCanvas.stroke();
+            }
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.drawEllipse(x, y, width, height);
+            // strokePath && strokePath.drawEllipse(x, y, width, height);
+            // //-1 +2 解决WebGL裁切问题
+            this.extendBoundsByPoint(x - 1, y - 1);
+            this.extendBoundsByPoint(x + width + 2, y + height + 2);
+            // this.updatePosition(x + width, y + height * 0.5);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Move the current drawing position to (x, y). If any of these parameters is missed, calling this method will fail and the current drawing position keeps unchanged.
+         * @param x A number indicating the horizontal position, relative to the registration point of the parent display object (in pixels).
+         * @param y A number indicating the vertical position, relative to the registration point of the parent display object (in pixels).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 将当前绘图位置移动到 (x, y)。如果缺少任何一个参数，则此方法将失败，并且当前绘图位置不改变。
+         * @param x 一个表示相对于父显示对象注册点的水平位置的数字（以像素为单位）。
+         * @param y 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.moveTo = function (x, y) {
+            x = x + this.offsetX || 0;
+            y = -y + this.offsetY || 0;
+            this._BKCanvas.moveTo(x, y);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.moveTo(x, y);
+            // strokePath && strokePath.moveTo(x, y);
+            // this.includeLastPosition = false;
+            // this.lastX = x;
+            // this.lastY = y;
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Draw a straight line from the current drawing position to (x, y) using the current line style; the current drawing position is then set to (x, y).
+         * @param x A number indicating the horizontal position, relative to the registration point of the parent display object (in pixels).
+         * @param y A number indicating the vertical position, relative to the registration point of the parent display object (in pixels).
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 使用当前线条样式绘制一条从当前绘图位置开始到 (x, y) 结束的直线；当前绘图位置随后会设置为 (x, y)。
+         * @param x 一个表示相对于父显示对象注册点的水平位置的数字（以像素为单位）。
+         * @param y 一个表示相对于父显示对象注册点的垂直位置的数字（以像素为单位）。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.lineTo = function (x, y) {
+            x = x + this.offsetX || 0;
+            y = -y + this.offsetY || 0;
+            this._BKCanvas.lineTo(x, y);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.lineTo(x, y);
+            // strokePath && strokePath.lineTo(x, y);
+            // this.updatePosition(x, y);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Draw a quadratic Bezier curve from the current drawing position to (anchorX, anchorY) using the current line style according to the control points specified by (controlX, controlY). The current drawing position is then set to (anchorX, anchorY).
+         * If the curveTo() method is called before the moveTo() method, the default value of the current drawing position is (0, 0). If any of these parameters is missed, calling this method will fail and the current drawing position keeps unchanged.
+         * The drawn curve is a quadratic Bezier curve. A quadratic Bezier curve contains two anchor points and one control point. The curve interpolates the two anchor points and bends to the control point.
+         * @param controlX A number indicating the horizontal position of the control point, relative to the registration point of the parent display object.
+         * @param controlY A number indicating the vertical position of the control point, relative to the registration point of the parent display object.
+         * @param anchorX A number indicating the horizontal position of the next anchor point, relative to the registration point of the parent display object.
+         * @param anchorY A number indicating the vertical position of the next anchor point, relative to the registration point of the parent display object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 使用当前线条样式和由 (controlX, controlY) 指定的控制点绘制一条从当前绘图位置开始到 (anchorX, anchorY) 结束的二次贝塞尔曲线。当前绘图位置随后设置为 (anchorX, anchorY)。
+         * 如果在调用 moveTo() 方法之前调用了 curveTo() 方法，则当前绘图位置的默认值为 (0, 0)。如果缺少任何一个参数，则此方法将失败，并且当前绘图位置不改变。
+         * 绘制的曲线是二次贝塞尔曲线。二次贝塞尔曲线包含两个锚点和一个控制点。该曲线内插这两个锚点，并向控制点弯曲。
+         * @param controlX 一个数字，指定控制点相对于父显示对象注册点的水平位置。
+         * @param controlY 一个数字，指定控制点相对于父显示对象注册点的垂直位置。
+         * @param anchorX 一个数字，指定下一个锚点相对于父显示对象注册点的水平位置。
+         * @param anchorY 一个数字，指定下一个锚点相对于父显示对象注册点的垂直位置。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.curveTo = function (controlX, controlY, anchorX, anchorY) {
+            controlX = this.offsetX + controlX || 0;
+            controlY = this.offsetY - controlY || 0;
+            anchorX = this.offsetX + anchorX || 0;
+            anchorY = this.offsetY - anchorY || 0;
+            this._BKCanvas.quadraticCurveTo(controlX, controlY, anchorX, anchorY);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.curveTo(controlX, controlY, anchorX, anchorY);
+            // strokePath && strokePath.curveTo(controlX, controlY, anchorX, anchorY);
+            this.extendBoundsByPoint(controlX, controlY);
+            this.extendBoundsByPoint(anchorX, anchorY);
+            // this.updatePosition(anchorX, anchorY);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * Draws a cubic Bezier curve from the current drawing position to the specified anchor. Cubic Bezier curves consist of two anchor points and two control points. The curve interpolates the two anchor points and two control points to the curve.
+         * @param controlX1 Specifies the first control point relative to the registration point of the parent display the horizontal position of the object.
+         * @param controlY1 Specifies the first control point relative to the registration point of the parent display the vertical position of the object.
+         * @param controlX2 Specify the second control point relative to the registration point of the parent display the horizontal position of the object.
+         * @param controlY2 Specify the second control point relative to the registration point of the parent display the vertical position of the object.
+         * @param anchorX Specifies the anchor point relative to the registration point of the parent display the horizontal position of the object.
+         * @param anchorY Specifies the anchor point relative to the registration point of the parent display the vertical position of the object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 从当前绘图位置到指定的锚点绘制一条三次贝塞尔曲线。三次贝塞尔曲线由两个锚点和两个控制点组成。该曲线内插这两个锚点，并向两个控制点弯曲。
+         * @param controlX1 指定首个控制点相对于父显示对象的注册点的水平位置。
+         * @param controlY1 指定首个控制点相对于父显示对象的注册点的垂直位置。
+         * @param controlX2 指定第二个控制点相对于父显示对象的注册点的水平位置。
+         * @param controlY2 指定第二个控制点相对于父显示对象的注册点的垂直位置。
+         * @param anchorX 指定锚点相对于父显示对象的注册点的水平位置。
+         * @param anchorY 指定锚点相对于父显示对象的注册点的垂直位置。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.cubicCurveTo = function (controlX1, controlY1, controlX2, controlY2, anchorX, anchorY) {
+            controlX1 = this.offsetX + controlX1 || 0;
+            controlY1 = this.offsetY - controlY1 || 0;
+            controlX2 = this.offsetX + controlX2 || 0;
+            controlY2 = this.offsetY - controlY2 || 0;
+            anchorX = this.offsetX + anchorX || 0;
+            anchorY = this.offsetY - anchorY || 0;
+            this._BKCanvas.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            // strokePath && strokePath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            this.extendBoundsByPoint(controlX1, controlY1);
+            this.extendBoundsByPoint(controlX2, controlY2);
+            this.extendBoundsByPoint(anchorX, anchorY);
+            // this.updatePosition(anchorX, anchorY);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * adds an arc to the path which is centered at (x, y) position with radius r starting at startAngle and ending
+         * at endAngle going in the given direction by anticlockwise (defaulting to clockwise).
+         * @param x The x coordinate of the arc's center.
+         * @param y The y coordinate of the arc's center.
+         * @param radius The arc's radius.
+         * @param startAngle The angle at which the arc starts, measured clockwise from the positive x axis and expressed in radians.
+         * @param endAngle The angle at which the arc ends, measured clockwise from the positive x axis and expressed in radians.
+         * @param anticlockwise if true, causes the arc to be drawn counter-clockwise between the two angles. By default it is drawn clockwise.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 绘制一段圆弧路径。圆弧路径的圆心在 (x, y) 位置，半径为 r ，根据anticlockwise （默认为顺时针）指定的方向从 startAngle 开始绘制，到 endAngle 结束。
+         * @param x 圆弧中心（圆心）的 x 轴坐标。
+         * @param y 圆弧中心（圆心）的 y 轴坐标。
+         * @param radius 圆弧的半径。
+         * @param startAngle 圆弧的起始点， x轴方向开始计算，单位以弧度表示。
+         * @param endAngle 圆弧的终点， 单位以弧度表示。
+         * @param anticlockwise 如果为 true，逆时针绘制圆弧，反之，顺时针绘制。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.drawArc = function (x, y, radius, startAngle, endAngle, anticlockwise) {
+            //暂不支持
+            // if (radius < 0 || startAngle === endAngle) {
+            //     return;
+            // }
+            // x = +x || 0;
+            // y = +y || 0;
+            // radius = +radius || 0;
+            // startAngle = +startAngle || 0;
+            // endAngle = +endAngle || 0;
+            // anticlockwise = !!anticlockwise;
+            // startAngle = clampAngle(startAngle);
+            // endAngle = clampAngle(endAngle);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // if (fillPath) {
+            //     fillPath.$lastX = this.lastX;
+            //     fillPath.$lastY = this.lastY;
+            //     fillPath.drawArc(x, y, radius, startAngle, endAngle, anticlockwise);
+            // }
+            // if (strokePath) {
+            //     strokePath.$lastX = this.lastX;
+            //     strokePath.$lastY = this.lastY;
+            //     strokePath.drawArc(x, y, radius, startAngle, endAngle, anticlockwise);
+            // }
+            // if (anticlockwise) {
+            //     this.arcBounds(x, y, radius, endAngle, startAngle);
+            // }
+            // else {
+            //     this.arcBounds(x, y, radius, startAngle, endAngle);
+            // }
+            // let endX = x + Math.cos(endAngle) * radius;
+            // let endY = y + Math.sin(endAngle) * radius;
+            // this.updatePosition(endX, endY);
+            // this.$renderNode.dirtyRender = true;
+        };
+        /**
+         * @private
+         * 测量圆弧的矩形大小
+         */
+        BKGraphics.prototype.arcBounds = function (x, y, radius, startAngle, endAngle) {
+            //赞不支持
+            // let PI = Math.PI;
+            // if (Math.abs(startAngle - endAngle) < 0.01) {
+            this.extendBoundsByPoint(x - radius, y - radius);
+            this.extendBoundsByPoint(x + radius, y + radius);
+            //     return;
+            // }
+            // if (startAngle > endAngle) {
+            //     endAngle += PI * 2;
+            // }
+            // let startX = Math.cos(startAngle) * radius;
+            // let endX = Math.cos(endAngle) * radius;
+            // let xMin = Math.min(startX, endX);
+            // let xMax = Math.max(startX, endX);
+            // let startY = Math.sin(startAngle) * radius;
+            // let endY = Math.sin(endAngle) * radius;
+            // let yMin = Math.min(startY, endY);
+            // let yMax = Math.max(startY, endY);
+            // let startRange = startAngle / (PI * 0.5);
+            // let endRange = endAngle / (PI * 0.5);
+            // for (let i = Math.ceil(startRange); i <= endRange; i++) {
+            //     switch (i % 4) {
+            //         case 0:
+            //             xMax = radius;
+            //             break;
+            //         case 1:
+            //             yMax = radius;
+            //             break;
+            //         case 2:
+            //             xMin = -radius;
+            //             break;
+            //         case 3:
+            //             yMin = -radius;
+            //             break;
+            //     }
+            // }
+            // xMin = Math.floor(xMin);
+            // yMin = Math.floor(yMin);
+            // xMax = Math.ceil(xMax);
+            // yMax = Math.ceil(yMax);
+            // this.extendBoundsByPoint(xMin + x, yMin + y);
+            // this.extendBoundsByPoint(xMax + x, yMax + y);
+        };
+        /**
+         * Clear graphics that are drawn to this Graphics object, and reset fill and line style settings.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 清除绘制到此 Graphics 对象的图形，并重置填充和线条样式设置。
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKGraphics.prototype.clear = function () {
+            // this.$renderNode.clear();
+            // this.updatePosition(0, 0);
+            this.minX = Infinity;
+            this.minY = Infinity;
+            this.maxX = -Infinity;
+            this.maxY = -Infinity;
+            this._BKCanvas.clearRect(0, 0, this.stageW, this.stageH);
+            this.isFillPath = false;
+            this.isStrokePath = false;
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.extendBoundsByPoint = function (x, y) {
+            this.extendBoundsByX(x);
+            this.extendBoundsByY(y);
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.extendBoundsByX = function (x) {
+            this.minX = Math.min(this.minX, x - this.topLeftStrokeWidth);
+            this.maxX = Math.max(this.maxX, x + this.bottomRightStrokeWidth);
+            this.updateNodeBounds();
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.extendBoundsByY = function (y) {
+            this.minY = Math.min(this.minY, y - this.topLeftStrokeWidth);
+            this.maxY = Math.max(this.maxY, y + this.bottomRightStrokeWidth);
+            this.updateNodeBounds();
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.updateNodeBounds = function () {
+            // let node = this.$renderNode;
+            // node.x = this.minX;
+            // node.y = this.minY;
+            // node.width = Math.ceil(this.maxX - this.minX);
+            // node.height = Math.ceil(this.maxY - this.minY);
+        };
+        /**
+         * 更新当前的lineX和lineY值，并标记尺寸失效。
+         * @private
+         */
+        BKGraphics.prototype.updatePosition = function (x, y) {
+            if (!this.includeLastPosition) {
+                this.extendBoundsByPoint(this.lastX, this.lastY);
+                this.includeLastPosition = true;
+            }
+            this.lastX = x;
+            this.lastY = y;
+            this.extendBoundsByPoint(x, y);
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.$measureContentBounds = function (bounds) {
+            if (this.minX === Infinity) {
+                bounds.setEmpty();
+            }
+            else {
+                bounds.setTo(this.minX, this.minY, this.maxX - this.minX, this.maxY - this.minY);
+            }
+        };
+        /**
+         * @private
+         *
+         */
+        BKGraphics.prototype.$hitTest = function (stageX, stageY) {
+            // let target = this.targetDisplay;
+            // let m = target.$getInvertedConcatenatedMatrix();
+            // let localX = m.a * stageX + m.c * stageY + m.tx;
+            // let localY = m.b * stageX + m.d * stageY + m.ty;
+            // let buffer = sys.canvasHitTestBuffer;
+            // buffer.resize(3, 3);
+            // let node = this.$renderNode;
+            // let matrix = Matrix.create();
+            // matrix.identity();
+            // matrix.translate(1 - localX, 1 - localY);
+            // sys.canvasRenderer.drawNodeToBuffer(node, buffer, matrix, true);
+            // Matrix.release(matrix);
+            // try {
+            //     let data = buffer.getPixels(1, 1);
+            //     if (data[3] === 0) {
+            //         return null;
+            //     }
+            // }
+            // catch (e) {
+            //     throw new Error(sys.tr(1039));
+            // }
+            // return target;
+            return null;
+        };
+        /**
+         * @private
+         */
+        BKGraphics.prototype.$onRemoveFromStage = function () {
+            // if (this.$renderNode) {
+            //     this.$renderNode.clean();
+            // }
+        };
+        return BKGraphics;
+    }());
+    egret.BKGraphics = BKGraphics;
+    __reflect(BKGraphics.prototype, "egret.BKGraphics");
+    egret.Graphics = BKGraphics;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -4115,11 +3251,6 @@ var egret;
             _this._mainTicker = BK.Director.ticker;
             _this._viewRect = new egret.Rectangle();
             _this._touch = new egret.sys.TouchHandler(_this.stage);
-            /**
-             * @internal
-             */
-            _this._displayList = [];
-            BKPlayer.instance = _this;
             _this._options = options;
             BK.Director.root.addChild(_this.stage._bkNode);
             egret.lifecycle.stage = _this.stage;
@@ -4134,11 +3265,6 @@ var egret;
                 _this._touchHandler();
                 egret.ticker.update();
                 egret.ticker["callLaters"]();
-                //
-                for (var _i = 0, _a = _this._displayList; _i < _a.length; _i++) {
-                    var displayObject = _a[_i];
-                    displayObject.$getRenderNode();
-                }
             }, _this);
             _this.updateScreenSize();
             _this.updateMaxTouches();
@@ -4250,8 +3376,7 @@ var egret;
 //
 //////////////////////////////////////////////////////////////////////////////////////
 //
-console = console || {};
-console.warn = console.log = function () {
+console.log = function () {
     var others = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         others[_i] = arguments[_i];
@@ -4264,7 +3389,8 @@ console.warn = console.log = function () {
         }
     BK.Script.log(0, 0, str);
 };
-console.assert = console.log; // TODO
+//
+this.setTimeout = this.setTimeout || function () { };
 var egret;
 (function (egret) {
     egret.getTimer = function getTimer() {
@@ -4299,7 +3425,6 @@ var egret;
             return;
         }
         isRunning = true;
-        modifyEgret();
         if (!options) {
             options = {};
         }
@@ -4309,40 +3434,7 @@ var egret;
         else if (!egret.sys.screenAdapter) {
             egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
         }
-        egret.sys.systemRenderer = new egret.BKSystemRenderer();
-        egret.sys.canvasRenderer = new egret.BKSystemRenderer();
         player = new egret.BKPlayer(options);
-    }
-    function modifyEgret() {
-        if (eui) {
-            ;
-            eui.Image.prototype.$getRenderNode = function () {
-                var image = this.$bitmapData;
-                if (!image) {
-                    return null;
-                }
-                var uiValues = this.$UIComponent;
-                var width = uiValues[10 /* width */];
-                var height = uiValues[11 /* height */];
-                if (width === 0 || height === 0) {
-                    return null;
-                }
-                var scale9Grid = this.scale9Grid || this.$texture["scale9Grid"];
-                if (scale9Grid) {
-                    // if (this.$renderNode instanceof egret.sys.NormalBitmapNode) {
-                    // } TODO
-                    this._size.width = this.$getWidth();
-                    this._size.height = this.$getHeight();
-                    this._bkSprite.size = this._size;
-                }
-                else {
-                    this._size.width = this.$getWidth();
-                    this._size.height = this.$getHeight();
-                    this._bkSprite.size = this._size;
-                }
-                return null;
-            };
-        }
     }
     egret.runEgret = runEgret;
 })(egret || (egret = {}));

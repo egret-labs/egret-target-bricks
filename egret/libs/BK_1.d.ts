@@ -164,6 +164,7 @@ declare namespace BK {
         setHttpMethod(mothod: string): void;
         setHttpCookie(data: any): void;
         requestAsync(callback: Function): void;
+        setHttpPostData(data: string);
     }
 
     export class Audio {
@@ -172,7 +173,7 @@ declare namespace BK {
          * @param musicPath 音乐路径。
          * @param loop 重复次数，-1为循环播放
          */
-        constructor(type: number, musicPath: string, loop: number,num:number);
+        constructor(type: number, musicPath: string, loop: number, num: number);
 
         static switch: boolean;
         /**
@@ -194,5 +195,165 @@ declare namespace BK {
          * 停止播放
          */
         stopMusic();
+    }
+
+    export class Canvas extends BK.Node {
+        /**
+         * @param width 宽
+         * @param height 高
+         */
+        constructor(width: number, height: number);
+
+        /**
+         * 背景颜色
+         */
+        backgroundColor: { r: number, g: number, b: number, a: number };
+
+        /**
+         * 使用h5坐标系(若不开启，默认使用左下角坐标系)
+         */
+        useH5Mode()
+        /**
+         * 设置canvas alpha
+         */
+        globalAlpha: number;
+
+        /**
+         * 设置绘制线条宽度
+         */
+        lineWidth: number;
+
+        lineJoin: number;
+
+        lineCap: number;
+
+        /**
+         * 指定颜色填充
+         */
+        fillColor: { r: number, g: number, b: number, a: number };
+
+        /**
+         * 绘制一个园
+         */
+        drawCircle(x: number, y: number, radius: number);
+
+        /**
+         * 结束图形绘制，对上一次调用绘制之后添加的图形进行应用
+         */
+        fill();
+        /**
+         * 指定描边颜色填充
+         */
+        strokeColor: { r: number, g: number, b: number, a: number };
+
+        /**
+         * 结束描边绘制，对上一次调用绘制之后添加的图形进行应用
+         */
+        stroke()
+        /**
+         * 绘制一个椭圆
+         */
+        drawEllipse(x: number, y: number, width: number, height: number);
+
+        /**
+         * 将当前绘图位置移动到(x,y);
+         */
+        moveTo(x: number, y: number);
+
+        /**
+         * 绘制一个矩形边框
+         */
+        strokeRect(x: number, y: number, width: number, height: number);
+
+        /**
+         * 绘制一个矩形边框
+         */
+        fillRect(x: number, y: number, width: number, height: number);
+
+        /**
+         * 绘制图片
+         * @param path 图片地址,形如:"GameRes://resource/texture/icon.png"
+         * @param stretchW 横向拉伸，不拉伸为0
+         * @param stretchH 纵向拉伸，不拉伸为0
+         * @param pixelW 图片取贴图的像素宽
+         * @param pixelH 图片取贴图的像素高
+         * @param x 水平位置
+         * @param y 垂直位置
+         * @param width 图片宽度
+         * @param height 图片高度
+         * param 
+         */
+        drawImage(path: string, stretchW: number, stretchH: number, pixelW: number, pixelH: number, x: number, y: number, width: number, height: number)
+
+
+        /**
+         * 开始绘制线
+         */
+        beginPath();
+
+        /**
+         * 使用当前线条从当前位置绘制到(x,y)
+         */
+        lineTo(x: number, y: number);
+
+        /**
+         * 结束当前线的绘制
+         */
+        closePath();
+
+        /**
+         * 使用当前线条样式和由 (controlX, controlY) 指定的控制点绘制一条从当前绘图位置开始到 (anchorX, anchorY) 结束的二次贝塞尔曲线。当前绘图位置随后设置为 (anchorX, anchorY)
+         * @param controlX 一个数字，指定控制点相对于父显示对象注册点的水平位置。
+         * @param controlY 一个数字，指定控制点相对于父显示对象注册点的垂直位置。
+         * @param anchorX 一个数字，指定下一个锚点相对于父显示对象注册点的水平位置。
+         * @param anchorY 一个数字，指定下一个锚点相对于父显示对象注册点的垂直位置。
+         */
+        quadraticCurveTo(controlX: number, controlY: number, anchorX: number, anchorY: number);
+
+        /**
+         * 从当前绘图位置到指定的锚点绘制一条三次贝塞尔曲线。三次贝塞尔曲线由两个锚点和两个控制点组成。该曲线内插这两个锚点，并向两个控制点弯曲
+         * @param controlX1 指定首个控制点相对于父显示对象的注册点的水平位置。
+         * @param controlY1 指定首个控制点相对于父显示对象的注册点的垂直位置。
+         * @param controlX2 指定第二个控制点相对于父显示对象的注册点的水平位置。
+         * @param controlY2 指定第二个控制点相对于父显示对象的注册点的垂直位置。
+         * @param anchorX 指定锚点相对于父显示对象的注册点的水平位置。
+         * @param anchorY 指定锚点相对于父显示对象的注册点的垂直位置。
+         */
+        bezierCurveTo(controlX1: number, controlY1: number, controlX2: number,
+            controlY2: number, anchorX: number, anchorY: number);
+
+        /**
+         * 字体
+         * 
+         */
+        font: any;
+        //字体的具体构成
+        // var style = {
+        //     "fontSize":20,
+        //     "textColor" : 0xFFFF0000,
+        //     "maxWidth" : 200,
+        //     "maxHeight": 400,
+        //     "width":100,
+        //     "height":200,
+        //     "textAlign":0,
+        //     "bold":1,
+        //     "italic":1,
+        //     "strokeColor":0xFF000000,
+        //     "strokeSize":5,
+        //     "shadowRadius":5,
+        //     "shadowDx":10,
+        //     "shadowDy":10,
+        //     "shadowColor":0xFFFF0000
+        // }
+
+        /**
+         * 绘制文字
+         */
+        fillText(content: string, x: number, y: number);
+
+        /**
+         * 清除绘制区域
+         */
+        clearRect(x: number, y: number, width: number, height: number);
     }
 }

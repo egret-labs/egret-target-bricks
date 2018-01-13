@@ -53,6 +53,8 @@ namespace egret {
          */
         static $EVENT_REMOVE_FROM_STAGE_LIST: DisplayObject[] = [];
 
+        protected _bkClipRectNode: any; // BK.ClipRectNode
+
         /**
          * Creates a new DisplayObjectContainer instance.
          * @version Egret 2.4
@@ -66,7 +68,9 @@ namespace egret {
          * @language zh_CN
          */
         public constructor() {
-            super();
+            super(new (BK as any).ClipRectNode(0, -2048, 2048, 2048));
+            this._bkClipRectNode = this._bkNode;
+            this._bkClipRectNode.enableClip = false;
             this.$children = [];
         }
 
@@ -773,6 +777,81 @@ namespace egret {
                 return this;
             }
             return super.$hitTest(stageX, stageY);
+        }
+
+        // MD
+        public set scrollRect(value: Rectangle) {
+            let self = this;
+            if (!value && !self.$scrollRect) {
+                return;
+            }
+
+            if (value) {
+                if (!self.$scrollRect) {
+                    self.$scrollRect = new egret.Rectangle();
+                    this._bkClipRectNode.enableClip = true;
+                }
+
+                self.$scrollRect.copyFrom(value);
+
+                this._bkClipRectNode.clipRegion = {
+                    x: self.$scrollRect.x,
+                    y: -self.$scrollRect.y - self.$scrollRect.height,
+                    width: self.$scrollRect.width,
+                    height: self.$scrollRect.height
+                };
+
+                this._position.x = this.$x - self.$scrollRect.x;
+                this._position.y = -(this.$y - self.$scrollRect.y);
+                this._bkNode.position = this._position;
+            }
+            else {
+                self.$scrollRect = null;
+                this._bkClipRectNode.enableClip = false;
+
+                this._position.x = this.$x;
+                this._position.y = -this.$y;
+                this._bkNode.position = this._position;
+            }
+        }
+
+        $setX(value: number): boolean {
+            let self = this;
+            if (self.$x == value) {
+                return false;
+            }
+            self.$x = value;
+
+            //
+            if (self.$scrollRect) {
+                this._position.x = value - self.$scrollRect.x;
+                self._bkNode.position = self._position;
+            }
+            else {
+                self._position.x = value;
+                self._bkNode.position = self._position;
+            }
+
+            return true;
+        }
+
+        $setY(value: number): boolean {
+            let self = this;
+            if (self.$y == value) {
+                return false;
+            }
+            self.$y = value;
+            //
+            if (self.$scrollRect) {
+                this._position.y = -(value - self.$scrollRect.y);
+                self._bkNode.position = self._position;
+            }
+            else {
+                self._position.y = -value;
+                self._bkNode.position = self._position;
+            }
+
+            return true;
         }
     }
     // MD

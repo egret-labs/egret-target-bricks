@@ -100,6 +100,8 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
+        debugger;
+
         let topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
@@ -142,12 +144,6 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-
-        debugger;
-        let sound = new egret.Sound();
-        sound.load("resource/assets/race_background.mp3");
-        sound.play();
-
     }
 
     /**
