@@ -500,12 +500,18 @@ BK.QQ = (function () {
         this.notifyGameTipsGameOver = function () {
             this.notifyGameTips("游戏已结束");
         }
-        this.inviteFriend = function (wording) {
+        this.inviteFriend = function (wording,roomId) {
             var cmd = "cs.invite_friends.local";
             var data = {
                 cmd: cmd,
                 wording: wording,
+                gameId: this.gameCfg.gameId,
+                gameMode : 8,
+                extendInfo : {}
             };
+            if (roomId) {
+                data.roomId = roomId;
+            }
             BK.MQQ.SsoRequest.send(data, cmd);
         }
 
