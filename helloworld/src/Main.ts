@@ -99,7 +99,7 @@ class Main extends egret.DisplayObjectContainer {
         let stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        
+
         let topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
@@ -141,6 +141,7 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+        senddata();
     }
 
     /**
@@ -183,4 +184,27 @@ class Main extends egret.DisplayObjectContainer {
 
         change();
     }
+}
+
+function senddata() {
+    let urlreq = new egret.URLRequest();
+    urlreq.method = egret.URLRequestMethod.POST;
+    urlreq.url = "http://10.0.11.39:3000";
+    let data = "name=master&url=123123123";
+    urlreq.data = data;
+    urlreq.requestHeaders = [
+        new egret.URLRequestHeader("Content-Type", "application/x-www-urlencoded")
+    ]
+
+    console.log(data)
+
+    let urlloader = new egret.URLLoader();
+    urlloader.addEventListener(egret.Event.COMPLETE, () => {
+        console.log("收到信息", urlreq.data);
+    }, this);
+
+    urlloader.addEventListener(egret.IOErrorEvent.IO_ERROR, () => {
+        console.log("出现错误")
+    }, this);
+    urlloader.load(urlreq);
 }

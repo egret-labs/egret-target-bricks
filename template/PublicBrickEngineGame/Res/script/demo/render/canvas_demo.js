@@ -6,7 +6,7 @@ var scale = BK.Director.screenPixelSize.width / 750;
 BK.Director.root.scale = {x:scale,y:scale};
 
 
-debugger;
+
 var canvas = new BK.Canvas(750,1334);
 canvas.backgroundColor = {r:1,g:0,b:0,a:0.2};
 BK.Director.root.addChild(canvas);
