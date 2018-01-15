@@ -33,6 +33,8 @@
 		6F53F4B01EA4A26400941825 /* bkGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bkGLView.h; sourceTree = "<group>"; };
 		6F53F7891EA4A2D600941825 /* Res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Res; sourceTree = "<group>"; };
 		6F9650531FCC04A900B51028 /* preload */ = {isa = PBXFileReference; lastKnownFileType = folder; path = preload; sourceTree = "<group>"; };
+		AABB7F071FA9CBDE001A95F5 /* ImageSelectPlatform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageSelectPlatform.h; sourceTree = "<group>"; };
+		AABB7F281FA9EEC4001A95F5 /* ImagePicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImagePicker.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,8 @@
 				6F9650531FCC04A900B51028 /* preload */,
 				6F53F7891EA4A2D600941825 /* Res */,
 				6F53F4B01EA4A26400941825 /* bkGLView.h */,
+				AABB7F281FA9EEC4001A95F5 /* ImagePicker.h */,
+				AABB7F071FA9CBDE001A95F5 /* ImageSelectPlatform.h */,
 				6F53F4AE1EA4A25100941825 /* libPublicBrick.a */,
 				6F53F49A1EA4A23B00941825 /* AppDelegate.h */,
 				6F53F49B1EA4A23B00941825 /* AppDelegate.m */,

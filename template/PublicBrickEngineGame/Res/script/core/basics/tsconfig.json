@@ -4,5 +4,5 @@
         "removeComments": true,
         "target": "es5"
     },
-    "files": ["av.ts", "ticker.ts"]
+    "files": ["ticker.ts"]
 }
