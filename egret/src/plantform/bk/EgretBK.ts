@@ -107,21 +107,38 @@ namespace egret {
                     return null;
                 }
 
-                let scale9Grid = this.scale9Grid || (this as any).$texture["scale9Grid"];
-                if (scale9Grid) {
-                    // if (this.$renderNode instanceof egret.sys.NormalBitmapNode) {
-                    // } TODO
-                    (this as any)._size.width = this.$getWidth();
-                    (this as any)._size.height = this.$getHeight();
-                    (this as any)._bkSprite.size = (this as any)._size;
-                }
-                else {
-                    (this as any)._size.width = this.$getWidth();
-                    (this as any)._size.height = this.$getHeight();
-                    (this as any)._bkSprite.size = (this as any)._size;
+                if (this._transformDirty || (this as any).$matrixDirty) {
+                    this._transformDirty = false;
+                    //
+                    let scale9Grid = this.scale9Grid || (this as any).$texture["scale9Grid"];
+                    if (scale9Grid) {
+                        // if (this.$renderNode instanceof egret.sys.NormalBitmapNode) {
+                        // } TODO
+                        (this as any)._size.width = this.$getWidth();
+                        (this as any)._size.height = this.$getHeight();
+                        (this as any)._bkSprite.size = (this as any)._size;
+                    }
+                    else {
+                        (this as any)._size.width = this.$getWidth();
+                        (this as any)._size.height = this.$getHeight();
+                        (this as any)._bkSprite.size = (this as any)._size;
+                    }
+                    //
+                    const matrix = this.$getMatrix();
+                    const bkMatrix = (this._bkNode.transform as any).matrix;
+                    let tx = matrix.tx;
+                    let ty = matrix.ty;
+                    const pivotX = this.$anchorOffsetX;
+                    const pivotY = this.$anchorOffsetY - (this as any)._size.height;
+                    if (pivotX !== 0.0 || pivotY !== 0.0) {
+                        tx -= matrix.a * pivotX + matrix.c * pivotY;
+                        ty -= matrix.b * pivotX + matrix.d * pivotY;
+                    }
+
+                    bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
                 }
 
-                return null;
+                return this._bkNode as any;
             };
         }
     }

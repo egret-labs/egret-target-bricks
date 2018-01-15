@@ -2,8 +2,7 @@ namespace egret {
     export class BKBitmap extends BKDisplayObject {
         protected $explicitBitmapWidth: number = NaN;
         protected $explicitBitmapHeight: number = NaN;
-
-        protected readonly _size: Size = { width: 0.0, height: 0.0 };
+        protected readonly _size: Size = { width: 0, height: 0 };
         private readonly _bkSprite: BK.Sprite;
         /**
          * @internal
@@ -19,7 +18,6 @@ namespace egret {
             super(new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1));
 
             this._bkSprite = this._bkNode as BK.Sprite;
-            this._bkSprite.anchor = { x: 0.0, y: 1.0 };
             this.texture = value;
         }
 
@@ -37,13 +35,12 @@ namespace egret {
             }
             this.$texture = value;
 
+            this._transformDirty = true;
+
             if (this.$texture) {
                 this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
                 if (this.$bitmapData.bkTexture) {
                     this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    this._size.width = this.$getWidth();
-                    this._size.height = this.$getHeight();
-                    this._bkSprite.size = this._size;
                     this._bkSprite.adjustTexturePosition(
                         this.$texture.$bitmapX,
                         this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight),
@@ -51,6 +48,9 @@ namespace egret {
                         this.$texture.$bitmapHeight,
                         this.$texture.$rotated
                     );
+                    this._size.width = this.$texture.$bitmapWidth;
+                    this._size.height = this.$texture.$bitmapHeight;
+                    this._bkSprite.size = this._size;
                 }
                 else {
                     this.$bitmapData = null;
@@ -84,6 +84,7 @@ namespace egret {
             self.$explicitBitmapWidth = value;
 
             // MD
+            this._transformDirty = true;
             this._size.width = value;
             this._bkSprite.size = this._size;
 
@@ -103,6 +104,7 @@ namespace egret {
             self.$explicitBitmapHeight = value;
 
             // MD
+            this._transformDirty = true;
             this._size.height = value;
             this._bkSprite.size = this._size;
 
@@ -142,18 +144,26 @@ namespace egret {
             }
         }
 
-        public $setAnchorOffsetX(value: number) {
-            super.$setAnchorOffsetX(value);
-            let anchorX = value / this._size.width;
-            this._bkSprite.anchor = { x: anchorX, y: this._bkSprite.anchor.y };
-        }
+        // MD
+        $getRenderNode(): sys.RenderNode {
+            if (this._transformDirty || (this as any).$matrixDirty) {
+                this._transformDirty = false;
+                const matrix = this.$getMatrix();
+                const bkMatrix = (this._bkNode.transform as any).matrix;
+                let tx = matrix.tx;
+                let ty = matrix.ty;
+                const pivotX = this.$anchorOffsetX;
+                const pivotY = this.$anchorOffsetY - this._size.height;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
 
-        public $setAnchorOffsetY(value: number) {
-            super.$setAnchorOffsetY(value);
-            let anchorY = 1.0 - value / this._size.height;
-            this._bkSprite.anchor = { x: this._bkSprite.anchor.x, y: anchorY };
-        }
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            }
 
+            return this._bkNode as any || null;
+        }
     }
 
     egret.Bitmap = BKBitmap as any;
