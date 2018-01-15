@@ -49,35 +49,34 @@ var SheetSprite = (function () {
             },
             set: function (obj) {
                 this.__nativeObj.size = obj;
-                this.updateSize(this.textureInfo)
+                this.displayFrame(this.currDisplayIdx);
             }
         });
     };
-    SheetSprite.prototype.updateSize = function (textureInfo) {
-        if (textureInfo.frameInfo.trimmed == true) {
-            var x = textureInfo.frameInfo.spriteSourceSize.x;
-            var y = textureInfo.frameInfo.spriteSourceSize.y;
-            var w = textureInfo.frameInfo.spriteSourceSize.w;
-            var h = textureInfo.frameInfo.spriteSourceSize.h;
-            var srcSize = textureInfo.frameInfo.sourceSize;
-            var currSize = this.__nativeObj.size;
-            x = currSize.width * x / srcSize.w;
-            y = currSize.height * y / srcSize.h;
-            w = currSize.width * w / srcSize.w;
-            h = currSize.height * h / srcSize.h;
-            this.contentSprite.position = { x: x, y: y };
-            this.contentSprite.size = { width: w, height: h };
-        }
-        else {
-            this.contentSprite.size = this.__nativeObj.size;
-        }
-    };
     SheetSprite.prototype.adjustWithTextureInfo = function (textureInfo) {
         if (textureInfo) {
-            this.textureInfo = textureInfo;
             var tex = textureInfo.texture;
             var frameInfo = textureInfo.frameInfo;
-            this.updateSize(textureInfo);
+            if (textureInfo.frameInfo.trimmed == true) {
+                var x = textureInfo.frameInfo.spriteSourceSize.x;
+                var y = textureInfo.frameInfo.spriteSourceSize.y;
+                var w = textureInfo.frameInfo.spriteSourceSize.w;
+                var h = textureInfo.frameInfo.spriteSourceSize.h;
+                var srcSize = textureInfo.frameInfo.sourceSize;
+                var currSize = this.__nativeObj.size;
+                x = currSize.width * x / srcSize.w;
+                y = currSize.height * y / srcSize.h;
+                w = currSize.width * w / srcSize.w;
+                h = currSize.height * h / srcSize.h;
+                this.contentSprite.position = { x: x, y: y };
+                this.contentSprite.size = { width: w, height: h };
+                BK.Script.log(0, 0, "textureInfo.frameInfo.trimmed == true");
+            }
+            else {
+                this.contentSprite.size = this.__nativeObj.size;
+                BK.Script.log(0, 0, "textureInfo.frameInfo.trimmed != true");
+            }
+            BK.Script.log(1, -1, "this.currTexture != tex");
             this.currTexturePath = textureInfo.texturePath;
             var tex = new BK.Texture(this.currTexturePath);
             this.contentSprite.setTexture(tex);
@@ -203,11 +202,10 @@ var SpriteSheetCache = (function () {
         var sheetJsonStr = buff.readAsString();
         if (sheetJsonStr) {
             var sheetObj = JSON.parse(sheetJsonStr);
-            if (texturePath === void 0) {texturePath = jsonPath.replace(/.json$/, ".png")}
             this.jsonConfigs[texturePath] = sheetObj;
-            if (format === void 0) { format = 4; }
+            if (format === void 0) {
                 format = 4;
-            
+            }
             if (minFilter === void 0) {
                 minFilter = 1;
             }
@@ -304,26 +302,6 @@ var SpriteSheetCache = (function () {
                 sprite.adjustTexturePosition(frameInfo.frame.x, frameInfo.frame.y, frameInfo.frame.w, frameInfo.frame.h, frameInfo.rotated);
                 return sprite;
             }
-        }
-        else {
-            return null;
-        }
-    };
-    SpriteSheetCache.prototype.createSheetSprite = function (filename, width, height) {
-        var textureInfo = this.getTextureFrameInfoByFileName(filename);
-        if (textureInfo) {
-            var frameInfo = textureInfo.frameInfo; //this.getFrameInfoByFilename(filename);
-            var texturePath = textureInfo.texturePath; //this.getTexturePathByFilename(filename);
-            var texture = new BK.Texture(texturePath);
-            if (!width) {
-                width = frameInfo.frame.w;
-            }
-            if (!height) {
-                height = frameInfo.frame.h;
-            }
-            BK.Script.log(0, 0, "SheetSprite  texture:" + texture + " width:" + width + " height:" + height);
-            var sprite = new BK.SheetSprite(textureInfo, width, height);
-            return sprite;
         }
         else {
             return null;
@@ -433,17 +411,15 @@ var Sprite9 = (function () {
         var names = Object.getOwnPropertyNames(this.__nativeObj);
         names.forEach(function (element) {
             var key = element;
-            if(key != 'size')
-            {
-              Object.defineProperty(this, key, {
+            // log("name:"+key);
+            Object.defineProperty(this, key, {
                 get: function () {
                     return this.__nativeObj[key];
                 },
                 set: function (obj) {
                     this.__nativeObj[key] = obj;
                 }
-              });
-            }
+            });
         }, this);
     };
     Object.defineProperty(Sprite9.prototype, "alpha", {

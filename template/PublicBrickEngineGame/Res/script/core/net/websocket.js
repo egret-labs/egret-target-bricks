@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,8 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-require("../../../BK");
+// import "../../../BK"
 BK.Script.loadlib("GameRes://script/core/net/dns.js");
 BK.Script.loadlib("GameRes://script/core/net/url.js");
 BK.Script.loadlib("GameRes://script/core/net/http_parser.js");
@@ -39,9 +37,9 @@ var SocketEventMgr = (function () {
             }
         });
     };
+    SocketEventMgr.Instance = new SocketEventMgr();
     return SocketEventMgr;
 }());
-SocketEventMgr.Instance = new SocketEventMgr();
 var KSocket = (function () {
     function KSocket(ip, port) {
         this.ip = ip;
@@ -1305,9 +1303,9 @@ var KWebSocket = (function (_super) {
         }
         return 0;
     };
+    KWebSocket.isLittleEndian = BK.Misc.isLittleEndian();
     return KWebSocket;
 }(KSocket));
-KWebSocket.isLittleEndian = BK.Misc.isLittleEndian();
 var TxData = (function () {
     function TxData(data, isBinary) {
         this.data = data;
