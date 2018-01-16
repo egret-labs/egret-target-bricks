@@ -1,4 +1,4 @@
-import "../../../BK"
+// import "../../../BK"
 BK.Script.loadlib("GameRes://script/core/net/dns.js");
 BK.Script.loadlib("GameRes://script/core/net/url.js");
 BK.Script.loadlib("GameRes://script/core/net/http_parser.js");

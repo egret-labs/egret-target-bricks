@@ -9,8 +9,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-require("../../../BK");
 BK.Script.loadlib("GameRes://script/core/net/dns.js");
 BK.Script.loadlib("GameRes://script/core/net/url.js");
 BK.Script.loadlib("GameRes://script/core/net/http_parser.js");
@@ -1159,7 +1157,7 @@ var KWebSocket = (function (_super) {
         if (4 /* ESTABLISHED */ != this.state)
             return false;
         var data = new BK.Buffer(128, true);
-        data.writeAsString(text, true);
+        data.writeAsString(text, false);
         data.rewind();
         return this.__sendBinaryFrame(data, 1 /* TEXT_FRAME */);
     };

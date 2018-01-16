@@ -46,7 +46,7 @@ var BKUIManager = (function () {
         var confirmRoom = new BK.Button(200, 100, "GameRes://resource/texture/start_normal.png", function () {
             selectCallback(this.roomId);
         }.bind(this));
-        confirmRoom.setPressTexturePath('GameRes://resource/texture/start_pressed.png');
+        confirmRoom.setPressTexturePath('GameRes://resource/texture/start_pressed.png.png');
         confirmRoom.position = { x: this.options.designWidth / 2.0, y: 0 };
         confirmRoom.anchor = { x: 0.5, y: 0.5 };
         this.roomIdSelectContainer.addChild(confirmRoom);

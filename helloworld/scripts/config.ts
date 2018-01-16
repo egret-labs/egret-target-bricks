@@ -5,6 +5,7 @@ import * as path from 'path';
 import { UglifyPlugin, IncrementCompilePlugin, CompilePlugin, ManifestPlugin, ExmlPlugin, EmitResConfigFilePlugin, TextureMergerPlugin } from 'built-in';
 import { WxgamePlugin } from './wxgame/wxgame';
 import { CustomPlugin } from './myplugin';
+import { BricksPlugin } from './bricks/bricks';
 
 const config: ResourceManagerConfig = {
 
@@ -24,7 +25,8 @@ const config: ResourceManagerConfig = {
                 outputDir,
                 commands: [
                     new CompilePlugin({ libraryType: "debug" }),
-                    new ManifestPlugin({ output: 'manifest.json' })
+                    new ManifestPlugin({ output: 'manifest.json' }),
+                    new BricksPlugin()
                 ]
             }
         }

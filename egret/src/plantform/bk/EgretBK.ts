@@ -141,6 +141,11 @@ namespace egret {
 
                 return this._bkNode as any;
             };
+
+        }
+        debugger
+        if (typeof WebSocket !== undefined) {
+            egret.ISocket = egret.BKSocket;
         }
     }
 

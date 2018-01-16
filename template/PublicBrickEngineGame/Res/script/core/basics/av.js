@@ -107,9 +107,9 @@ var QAVManager = (function () {
             }
         });
     };
+    QAVManager.Instance = new QAVManager;
     return QAVManager;
 }());
-QAVManager.Instance = new QAVManager;
 var QAVView = (function () {
     function QAVView(identifier, width, height, autoAddMgr, parent, position, zOrder) {
         if (autoAddMgr === void 0) { autoAddMgr = true; }
@@ -631,8 +631,8 @@ var QAVCamera = (function () {
         }
         return bmp;
     };
+    QAVCamera.Instance = new QAVCamera();
     return QAVCamera;
 }());
-QAVCamera.Instance = new QAVCamera();
 BK.AVView = QAVView;
 BK.AVCamera = QAVCamera.Instance;

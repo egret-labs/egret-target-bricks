@@ -122,50 +122,18 @@ var __extends = function (t, e) {
 (function () {
     BK.Script.loadlib('GameRes://script/core/ui/text.js');
     BK.Script.loadlib('GameRes://script/core/render/canvas.js');
-    // debugger;
-    var manifestURL = "GameRes://manifest.json";
-    var bricksJSURL = "GameRes://egret.bricks.js";
-    var isLoadBricks = false;
-
-    if (!BK.FileUtil.isFileExist(manifestURL)) {
-        BK.Script.log(0, 0, "Load egret manifest error.");
-        return;
-    }
-
-    var manifest = JSON.parse(BK.FileUtil.readFile(manifestURL).readAsString());
-    if (manifest.initial && manifest.initial instanceof Array) {
-        for (var i = 0, l = manifest.initial.length; i < l; ++i) {
-            var jsLib = manifest.initial[i];
-            BK.Script.loadlib(jsLib);
-
-            if (!isLoadBricks && (jsLib.indexOf("egret.js") >= 0 || jsLib.indexOf("egret.min.js") >= 0)) {
-                isLoadBricks = true;
-                BK.Script.loadlib(bricksJSURL);
-            }
+    BK.Script.loadlib("GameRes://script/core/net/websocket.js");
+    BK.Script.loadlib("GameRes://manifest.js");
+    debugger;
+    egret.runEgret(
+        {
+            frameRate: 30,
+            contentWidth: 640,
+            contentHeight: 1136,
+            entryClassName: "Main",
+            scaleMode: "showAll",
+            orientation: "auto"
         }
-
-        if (!isLoadBricks) {
-            BK.Script.loadlib(bricksJSURL);
-        }
-
-        if (manifest.game && manifest.game instanceof Array) {
-            for (var i = 0, l = manifest.game.length; i < l; ++i) {
-                var jsLib = manifest.game[i];
-                BK.Script.loadlib(jsLib);
-            }
-        }
-
-        debugger;
-        egret.runEgret(
-            {
-                frameRate: 30,
-                contentWidth: 640,
-                contentHeight: 1136,
-                entryClassName: "Main",
-                scaleMode: "showAll",
-                orientation: "auto"
-            }
-        );
-    }
+    );
 })();
 
