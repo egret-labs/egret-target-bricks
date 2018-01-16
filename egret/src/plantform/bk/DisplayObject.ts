@@ -7,14 +7,7 @@ namespace egret {
         /**
          * @internal
          */
-        public _positionDirty: boolean = false;
-        /**
-         * @internal
-         */
-        public _transformDirty: boolean = false;
-        protected readonly _position: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
-        protected readonly _scale: Vec3 = { x: 1.0, y: 1.0, z: 0.0 };
-        protected readonly _rotation: Vec3 = { x: 0.0, y: 0.0, z: 0.0 };
+        public _transformDirty: boolean = true;
         protected readonly _color: Color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
         /**
          * @internal
@@ -27,12 +20,53 @@ namespace egret {
             this._bkNode = bkNode || new BK.Node();
         }
 
+        $setVisible(value: boolean): void {
+            super.$setVisible(value);
+
+            // MD
+            this._bkNode.hidden = !value;
+        }
+
+        $setAlpha(value: number): void {
+            super.$setAlpha(value);
+
+            // MD
+            this._color.a = value;
+            this._bkNode.vertexColor = this._color;
+        }
+
+        $setX(value: number): boolean {
+            let self = this;
+            if (self.$x == value) {
+                return false;
+            }
+            self.$x = value;
+
+            // MD
+            this._transformDirty = true;
+
+            return true;
+        }
+
+        $setY(value: number): boolean {
+            let self = this;
+            if (self.$y == value) {
+                return false;
+            }
+            self.$y = value;
+
+            // MD
+            this._transformDirty = true;
+
+            return true;
+        }
+
         /**
          * @private
          */
         $hitTest(stageX: number, stageY: number): DisplayObject {
             let self = this;
-            if (!self.$visible) {
+            if (!self.$visible) { // MD
                 return null;
             }
             let m = self.$getInvertedConcatenatedMatrix();
@@ -44,7 +78,6 @@ namespace egret {
             let localY = m.b * stageX + m.d * stageY + m.ty;
             if (bounds.contains(localX, localY)) {
                 if (!self.$children) {//容器已经检查过scrollRect和mask，避免重复对遮罩进行碰撞。
-
                     let rect = self.$scrollRect ? self.$scrollRect : self.$maskRect;
                     if (rect && !rect.contains(localX, localY)) {
                         return null;
@@ -58,69 +91,60 @@ namespace egret {
             return null;
         }
 
-        $setX(value: number): boolean {
-            let self = this;
-            if (self.$x == value) {
-                return false;
-            }
-            self.$x = value;
-            //
-            self._position.x = value;
-            self._bkNode.position = self._position;
-
-            return true;
-        }
-
-        $setY(value: number): boolean {
-            let self = this;
-            if (self.$y == value) {
-                return false;
-            }
-            self.$y = value;
-            //
-            self._position.y = -value;
-            self._bkNode.position = self._position;
-
-            return true;
-        }
-
-        $setScaleX(value: number): void {
-            super.$setScaleX(value);
-            //
-            this._scale.x = value;
-            this._bkNode.scale = this._scale;
-        }
-
-        $setScaleY(value: number): void {
-            super.$setScaleY(value);
-            //
-            this._scale.y = value;
-            this._bkNode.scale = this._scale;
-        }
-
-        $setRotation(value: number): void {
-            super.$setRotation(value);
-            //
-            this._rotation.z = value;
-            this._bkNode.rotation = this._rotation;
-        }
-
-        $setVisible(value: boolean): void {
-            super.$setVisible(value);
-            //
-            this._bkNode.hidden = !value;
-        }
-
-        $setAlpha(value: number): void {
-            super.$setAlpha(value);
-            //
-            this._color.a = value;
-            this._bkNode.vertexColor = this._color;
-        }
-
+        // MD
         $getRenderNode(): sys.RenderNode {
-            return this._bkNode as any || null;
+            if (this._transformDirty || (this as any).$matrixDirty) {
+                this._transformDirty = false;
+                const matrix = this.$getMatrix();
+                const bkMatrix = (this._bkNode.transform as any).matrix;
+                let tx = matrix.tx;
+                let ty = matrix.ty;
+                const pivotX = this.$anchorOffsetX;
+                const pivotY = this.$anchorOffsetY;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
+
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            }
+
+            return this._bkNode as any;
         }
+
+        $onAddToStage(stage: Stage, nestLevel: number): void {
+            super.$onAddToStage(stage, nestLevel);
+
+            // MD
+            const index = BKPlayer.instance._displayList.indexOf(this);
+            if (index < 0) {
+                BKPlayer.instance._displayList.push(this);
+            }
+        }
+
+        $onRemoveFromStage(): void {
+            super.$onRemoveFromStage();
+
+            // MD
+            const index = BKPlayer.instance._displayList.indexOf(this);
+            if (index >= 0) {
+                BKPlayer.instance._displayList.splice(index, 1);
+            }
+        }
+
+        // // MD
+        // $getMatrix(): Matrix {
+        //     let self = this;
+        //     if ((self as any).$matrixDirty) {
+        //         (self as any).$matrixDirty = false;
+
+        //         (self as any).$matrix.$updateScaleAndRotation((self as any).$scaleX, (self as any).$scaleY, (self as any).$skewX, (self as any).$skewY);
+        //     }
+
+        //     (self as any).$matrix.tx = self.$x;
+        //     (self as any).$matrix.ty = self.$y;
+        //     return (self as any).$matrix;
+        // }
     }
 
     egret.DisplayObject = BKDisplayObject;

@@ -175,23 +175,25 @@ namespace egret {
             this._bkText.fontSize = this.$TextField[sys.TextKeys.fontSize];
             const defaultFontColor = 0xFFFFFFFF; // ???!!!
             this._bkText.fontColor = defaultFontColor;
-            
+
             // textAlign
             // verticalAlign
+            this._bkText.horizontalAlign = 0;
             this._bkText.bold = this.$TextField[sys.TextKeys.bold];
             this._bkText.italic = this.$TextField[sys.TextKeys.italic];
             // this._bkText.strokeColor = this.$TextField[sys.TextKeys.strokeColor];
             this._bkText.strokeSize = this.$TextField[sys.TextKeys.stroke];
 
             // BK values.
-            // this._bkText["style"].width = 2048;
-            // this._bkText["style"].height = 2048;
-            this._bkText.maxSize = { width: 2048, height: 2048 };
+            // const style = (this._bkText as any).style;
+            // style.width = 512;
+            // style.height = 64;
+            (this._bkText as any).style.width = 512;
+            (this._bkText as any).style.height = 64;
             const defaultShadowColor = 0x00000000; // ???!!!
             this._bkText.shadowColor = defaultShadowColor;
             this._bkText.shadowOffset = { x: 0, y: 0 };
             this._bkText.shadowRadius = 0;
-            this._bkText.anchor = { x: 0.0, y: 1.0 };
         }
 
         /**
@@ -282,6 +284,7 @@ namespace egret {
             this.invalidateFontString();
 
             // MD
+            this._transformDirty = true;
             this._bkText.fontSize = value;
 
             return true;
@@ -319,6 +322,7 @@ namespace egret {
             this.invalidateFontString();
 
             // MD
+            this._transformDirty = true;
             this._bkText.bold = value ? 1 : 0;
 
             return true;
@@ -356,6 +360,7 @@ namespace egret {
             this.invalidateFontString();
 
             // MD
+            this._transformDirty = true;
             this._bkText.italic = value;
 
             return true;
@@ -401,6 +406,8 @@ namespace egret {
             this.$invalidateTextField();
 
             // MD
+            this._transformDirty = true;
+
             switch (value) {
                 case egret.HorizontalAlign.LEFT:
                     this._bkText.horizontalAlign = 0;
@@ -445,6 +452,9 @@ namespace egret {
             }
             values[sys.TextKeys.verticalAlign] = value;
             this.$invalidateTextField();
+
+            // MD
+            this._transformDirty = true;
 
             return true;
         }
@@ -718,6 +728,7 @@ namespace egret {
                 this.setMiddleStyle([<egret.ITextElement>{ text: text }]);
 
                 // MD
+                this._transformDirty = true;
                 this._bkText.content = text;
 
                 return true;
@@ -873,6 +884,7 @@ namespace egret {
                 this.$TextField[sys.TextKeys.stroke] = value;
 
                 // MD
+                this._transformDirty = true;
                 this._bkText.strokeSize = value;
 
                 return true;
@@ -1168,7 +1180,9 @@ namespace egret {
             }
             this.$invalidateTextField();
 
-            this._bkText["style"].width = values[sys.TextKeys.textFieldWidth];
+            // MD
+            this._transformDirty = true;
+            (this._bkText as any).style.width = values[sys.TextKeys.textFieldWidth];
 
             return true;
         }
@@ -1202,7 +1216,8 @@ namespace egret {
             this.$invalidateTextField();
 
             // MD
-            this._bkText["style"].height = values[sys.TextKeys.textFieldHeight];
+            this._transformDirty = true;
+            (this._bkText as any).style.height = values[sys.TextKeys.textFieldHeight];
 
             return true;
         }
@@ -1720,8 +1735,14 @@ namespace egret {
 
             // MD
             values[sys.TextKeys.numLines] = 1;
-            values[sys.TextKeys.textWidth] = this._bkText["width"];
-            values[sys.TextKeys.textHeight] = this._bkText["height"];
+            if (this._bkText.content) {
+                values[sys.TextKeys.textWidth] = this._bkText["width"];
+                values[sys.TextKeys.textHeight] = this._bkText["height"];
+            }
+            else {
+                values[sys.TextKeys.textWidth] = 0;
+                values[sys.TextKeys.textHeight] = 0;
+            }
             return this.linesArr;
 
             // let text2Arr: Array<egret.ITextElement> = this.textArr;
@@ -2088,16 +2109,56 @@ namespace egret {
             return zero.substr(0, length - str.length) + str;
         }
 
-        public $setAnchorOffsetX(value: number) {
-            super.$setAnchorOffsetX(value);
-            let anchorX = value / this.$TextField[sys.TextKeys.textFieldWidth];
-            this._bkText.anchor = { x: anchorX, y: this._bkText.anchor.y };
-        }
+        // MD
+        $getRenderNode(): sys.RenderNode {
+            if (this._transformDirty || (this as any).$matrixDirty) { //TODO !!!???
+                this._transformDirty = false;
 
-        public $setAnchorOffsetY(value: number) {
-            super.$setAnchorOffsetY(value);
-            let anchorY = 1.0 - value / this.$TextField[sys.TextKeys.textFieldHeight];
-            this._bkText.anchor = { x: this._bkText.anchor.x, y: anchorY };
+                const text = this._bkText.content;
+                this._bkText.content = ""; // ????!!!! 不滞空就会各种诡异 bug
+                this._bkText.content = text;
+
+                const matrix = this.$getMatrix();
+                const bkMatrix = (this._bkNode.transform as any).matrix;
+                let tx = matrix.tx;
+                let ty = matrix.ty;
+                const pivotX = this.$anchorOffsetX;
+                const pivotY = this.$anchorOffsetY - (this._bkText as any).style.height;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
+
+                switch (this._bkText.horizontalAlign) {
+                    case 0:
+                        break;
+
+                    case 1:
+                        tx -= ((this._bkText as any).style.width - this.$getWidth()) * 0.5;
+                        break;
+
+                    case 2:
+                        tx -= (this._bkText as any).style.width - this.$getWidth();
+                        break;
+                }
+
+                switch (this.verticalAlign) {
+                    case egret.VerticalAlign.TOP:
+                        break;
+
+                    case egret.VerticalAlign.MIDDLE:
+                        ty -= ((this._bkText as any).style.height - this.$getHeight()) * 0.5;
+                        break;
+
+                    case egret.VerticalAlign.BOTTOM:
+                        ty -= (this._bkText as any).style.height - this.$getHeight();
+                        break;
+                }
+
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            }
+
+            return this._bkNode as any;
         }
     }
 

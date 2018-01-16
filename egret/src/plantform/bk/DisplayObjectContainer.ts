@@ -198,13 +198,8 @@ namespace egret {
                         childAddToStage.dispatchEventWith(Event.ADDED_TO_STAGE);
                     }
                 }
-
-                // MD
-                const index = BKPlayer.instance._displayList.indexOf(child);
-                if (index < 0) {
-                    BKPlayer.instance._displayList.push(child);
-                }
             }
+
             // MD
             this._bkNode.addChild((child as BKDisplayObject)._bkNode, index);
             for (let i = 0, l = this.$children.length; i < l; i++) {
@@ -418,12 +413,6 @@ namespace egret {
                     }
                     childAddToStage.$hasAddToStage = false;
                     childAddToStage.$stage = null;
-                }
-
-                // MD
-                const index = BKPlayer.instance._displayList.indexOf(child);
-                if (index < 0) {
-                    BKPlayer.instance._displayList.splice(index, 1);
                 }
             }
             let displayList = this.$displayList || this.$parentDisplayList;
@@ -786,6 +775,8 @@ namespace egret {
                 return;
             }
 
+            this._transformDirty = true;
+
             if (value) {
                 if (!self.$scrollRect) {
                     self.$scrollRect = new egret.Rectangle();
@@ -800,58 +791,37 @@ namespace egret {
                     width: self.$scrollRect.width,
                     height: self.$scrollRect.height
                 };
-
-                this._position.x = this.$x - self.$scrollRect.x;
-                this._position.y = -(this.$y - self.$scrollRect.y);
-                this._bkNode.position = this._position;
             }
             else {
                 self.$scrollRect = null;
                 this._bkClipRectNode.enableClip = false;
-
-                this._position.x = this.$x;
-                this._position.y = -this.$y;
-                this._bkNode.position = this._position;
             }
         }
 
-        $setX(value: number): boolean {
-            let self = this;
-            if (self.$x == value) {
-                return false;
-            }
-            self.$x = value;
+        // MD
+        $getRenderNode(): sys.RenderNode {
+            if (this._transformDirty || (this as any).$matrixDirty) {
+                this._transformDirty = false;
+                const matrix = this.$getMatrix();
+                const bkMatrix = (this._bkNode.transform as any).matrix;
+                let tx = matrix.tx;
+                let ty = matrix.ty;
+                const pivotX = this.$anchorOffsetX;
+                const pivotY = this.$anchorOffsetY;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
 
-            //
-            if (self.$scrollRect) {
-                this._position.x = value - self.$scrollRect.x;
-                self._bkNode.position = self._position;
-            }
-            else {
-                self._position.x = value;
-                self._bkNode.position = self._position;
-            }
+                if (this.$scrollRect) {
+                    tx -= this.$scrollRect.x;
+                    ty -= this.$scrollRect.y;
+                }
 
-            return true;
-        }
-
-        $setY(value: number): boolean {
-            let self = this;
-            if (self.$y == value) {
-                return false;
-            }
-            self.$y = value;
-            //
-            if (self.$scrollRect) {
-                this._position.y = -(value - self.$scrollRect.y);
-                self._bkNode.position = self._position;
-            }
-            else {
-                self._position.y = -value;
-                self._bkNode.position = self._position;
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
             }
 
-            return true;
+            return this._bkNode as any;
         }
     }
     // MD
