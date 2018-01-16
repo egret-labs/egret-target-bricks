@@ -1084,6 +1084,103 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
+    var BKRenderBuffer = (function () {
+        function BKRenderBuffer(width, height) {
+            this.surface = {};
+            this.context = {};
+            //保证rootCanvas是第一个创建的canvas
+        }
+        Object.defineProperty(BKRenderBuffer.prototype, "width", {
+            /**
+             * 渲染缓冲的宽度，以像素为单位。
+             * @readOnly
+             */
+            get: function () {
+                return 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKRenderBuffer.prototype, "height", {
+            /**
+             * 渲染缓冲的高度，以像素为单位。
+             * @readOnly
+             */
+            get: function () {
+                return 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 改变渲染缓冲的大小并清空缓冲区
+         * @param width 改变后的宽
+         * @param height 改变后的高
+         * @param useMaxSize 若传入true，则将改变后的尺寸与已有尺寸对比，保留较大的尺寸。
+         */
+        BKRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
+        };
+        /**
+         * 获取指定区域的像素
+         */
+        BKRenderBuffer.prototype.getPixels = function (x, y, width, height) {
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            return [];
+        };
+        /**
+         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
+         * @param type 转换的类型，如: "image/png","image/jpeg"
+         */
+        BKRenderBuffer.prototype.toDataURL = function (type, encoderOptions) {
+            return "";
+        };
+        /**
+         * 清空缓冲区数据
+         */
+        BKRenderBuffer.prototype.clear = function () {
+        };
+        /**
+         * 销毁绘制对象
+         */
+        BKRenderBuffer.prototype.destroy = function () {
+        };
+        return BKRenderBuffer;
+    }());
+    egret.BKRenderBuffer = BKRenderBuffer;
+    __reflect(BKRenderBuffer.prototype, "egret.BKRenderBuffer", ["egret.sys.RenderBuffer"]);
+    egret.sys.RenderBuffer = BKRenderBuffer;
+})(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
     var BKSystemRenderer = (function () {
         function BKSystemRenderer() {
         }
@@ -1289,102 +1386,103 @@ var egret;
     __reflect(BKHttpRequest.prototype, "egret.BKHttpRequest", ["egret.HttpRequest"]);
     egret.HttpRequest = BKHttpRequest;
 })(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    var BKRenderBuffer = (function () {
-        function BKRenderBuffer(width, height) {
-            this.surface = {};
-            this.context = {};
-            //保证rootCanvas是第一个创建的canvas
+    var BKSocket = (function () {
+        function BKSocket() {
         }
-        Object.defineProperty(BKRenderBuffer.prototype, "width", {
-            /**
-             * 渲染缓冲的宽度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKRenderBuffer.prototype, "height", {
-            /**
-             * 渲染缓冲的高度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * 改变渲染缓冲的大小并清空缓冲区
-         * @param width 改变后的宽
-         * @param height 改变后的高
-         * @param useMaxSize 若传入true，则将改变后的尺寸与已有尺寸对比，保留较大的尺寸。
-         */
-        BKRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
+        BKSocket.prototype.addCallBacks = function (onConnect, onClose, onSocketData, onError, thisObject) {
+            this.onConnect = onConnect;
+            this.onClose = onClose;
+            this.onSocketData = onSocketData;
+            this.onError = onError;
+            this.thisObject = thisObject;
         };
         /**
-         * 获取指定区域的像素
+         * 连接
          */
-        BKRenderBuffer.prototype.getPixels = function (x, y, width, height) {
-            if (width === void 0) { width = 1; }
-            if (height === void 0) { height = 1; }
-            return [];
+        BKSocket.prototype.connect = function (host, port) {
+            var url = host + ":" + port;
+            this.connectByUrl(url);
         };
         /**
-         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
-         * @param type 转换的类型，如: "image/png","image/jpeg"
+         * 连接
          */
-        BKRenderBuffer.prototype.toDataURL = function (type, encoderOptions) {
-            return "";
+        BKSocket.prototype.connectByUrl = function (url) {
+            this.$websocket = new BK.WebSocket(url);
+            this.$websocket.connect();
+            this._bindEvent();
         };
-        /**
-         * 清空缓冲区数据
-         */
-        BKRenderBuffer.prototype.clear = function () {
+        BKSocket.prototype._bindEvent = function () {
+            var that = this;
+            var ws = this.$websocket;
+            ws.onOpen = function (ws) {
+                if (that.onConnect) {
+                    that.onConnect.call(that.thisObject);
+                }
+            };
+            ws.onClose = function (ws) {
+                if (that.onClose) {
+                    that.onClose.call(that.thisObject);
+                }
+            };
+            ws.onError = function (ws) {
+                if (that.onError) {
+                    that.onError.call(that.thisObject);
+                }
+            };
+            ws.onMessage = function (ws, data) {
+                if (that.onSocketData) {
+                    var result = void 0;
+                    if (!data.isBinary) {
+                        result = data.data.readAsString();
+                    }
+                    else {
+                        var bkbuffer = data.data;
+                        var msg = bkbuffer.readAsString();
+                        var writeByte = new egret.ByteArray();
+                        writeByte.writeUTF(msg);
+                        result = writeByte.rawBuffer;
+                    }
+                    that.onSocketData.call(that.thisObject, result);
+                }
+            };
         };
-        /**
-         * 销毁绘制对象
-         */
-        BKRenderBuffer.prototype.destroy = function () {
+        BKSocket.prototype.send = function (message) {
+            if (message instanceof String) {
+                this.$websocket.send(message);
+            }
+            else if (message instanceof ArrayBuffer) {
+                var b = new egret.ByteArray(message);
+                var msg = b.readUTF();
+                var bkBuffer = new BK.Buffer(msg.length);
+                bkBuffer.writeAsString(msg);
+                this.$websocket.send(bkBuffer);
+            }
         };
-        return BKRenderBuffer;
+        BKSocket.prototype.resHandler = function (event) {
+            switch (event.type) {
+                case egret.Event.COMPLETE:
+                    var request = event.currentTarget;
+                    var ab = request.response;
+                    console.log();
+            }
+        };
+        BKSocket.prototype.close = function () {
+            this.$websocket.close();
+        };
+        BKSocket.prototype.disconnect = function () {
+            // if (this.$websocket.disconnect) {
+            //     this.$websocket.disconnect();
+            // }
+            //BK.IWebSocket 不支持disconnect
+            return;
+        };
+        return BKSocket;
     }());
-    egret.BKRenderBuffer = BKRenderBuffer;
-    __reflect(BKRenderBuffer.prototype, "egret.BKRenderBuffer", ["egret.sys.RenderBuffer"]);
-    egret.sys.RenderBuffer = BKRenderBuffer;
+    egret.BKSocket = BKSocket;
+    __reflect(BKSocket.prototype, "egret.BKSocket", ["egret.ISocket"]);
+    egret.ISocket = BKSocket;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
@@ -5215,6 +5313,10 @@ var egret;
                 }
                 return null;
             };
+        }
+        debugger;
+        if (typeof egret.WebSocket !== undefined) {
+            egret.ISocket = egret.BKSocket;
         }
     }
     egret.runEgret = runEgret;

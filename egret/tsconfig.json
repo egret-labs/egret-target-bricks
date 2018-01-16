@@ -20,9 +20,10 @@
         "./libs/BK_1.d.ts",
         "./libs/egret.d.ts",
         "./libs/eui.d.ts",
-        
+
         "./src/plantform/bk/net/BKHttpRequest.ts",
         "./src/plantform/bk/net/BKImageLoader.ts",
+        "./src/plantform/bk/net/BKSocket.ts",
         "./src/plantform/bk/RenderBuffer.ts",
         "./src/plantform/bk/SystemRender.ts",
         "./src/plantform/bk/BitmapData.ts",

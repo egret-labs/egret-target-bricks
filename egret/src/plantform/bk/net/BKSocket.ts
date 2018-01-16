@@ -1,28 +1,31 @@
 namespace egret {
     export class BKSocket implements ISocket {
 
-        $socket: BK.IWebSocket;
-        constructor(host: string, port: number) {
-            this.host = host;
-            this.port = port;
+        $websocket: BK.IWebSocket;
+        constructor() {
+
         }
 
         private host: string;
         private port: number;
 
+
+        private onConnect: Function;
+        private onClose: Function;
+        private onSocketData: Function;
+        private onError: Function;
+        private thisObject: any;
+
+        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void {
+            this.onConnect = onConnect;
+            this.onClose = onClose;
+            this.onSocketData = onSocketData;
+            this.onError = onError;
+            this.thisObject = thisObject;
+        }
+
         /**
          * 连接
-         * @method egret.ISocket#connect
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 连接
-         * @method egret.ISocket#connect
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
          */
         connect(host: string, port: number): void {
             let url = host + ":" + port
@@ -31,88 +34,82 @@ namespace egret {
 
         /**
          * 连接
-         * @method egret.ISocket#connect
          */
         connectByUrl(url: string): void {
-            this.$socket = new BK.WebSocket(url);
-            this.$socket.connect();
+            this.$websocket = new BK.WebSocket(url);
+            this.$websocket.connect();
+            this._bindEvent();
         }
 
-
-        /**
-         * 
-         * @param onConnect 
-         * @param onClose 
-         * @param onSocketData 
-         * @param onError 
-         * @param thisObject 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 
-         * @param onConnect 
-         * @param onClose 
-         * @param onSocketData 
-         * @param onError 
-         * @param thisObject 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void {
-
+        private _bindEvent() {
+            let that = this;
+            let ws = this.$websocket;
+            ws.onOpen = (ws) => {
+                if (that.onConnect) {
+                    that.onConnect.call(that.thisObject);
+                }
+            };
+            ws.onClose = (ws) => {
+                if (that.onClose) {
+                    that.onClose.call(that.thisObject);
+                }
+            };
+            ws.onError = (ws) => {
+                if (that.onError) {
+                    that.onError.call(that.thisObject);
+                }
+            };
+            ws.onMessage = (ws, data) => {
+                if (that.onSocketData) {
+                    let result: any;
+                    if (!data.isBinary) {
+                        result = data.data.readAsString();
+                    } else {
+                        let bkbuffer: BK.Buffer = data.data;
+                        let msg = bkbuffer.readAsString();
+                        let writeByte = new egret.ByteArray();
+                        writeByte.writeUTF(msg);
+                        result = writeByte.rawBuffer;
+                    }
+                    that.onSocketData.call(that.thisObject, result);
+                }
+            };
         }
 
-        /**
-         * 
-         * @param message 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 
-         * @param message 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
         send(message: any): void {
+            if (message instanceof String) {
+                this.$websocket.send(message);
+            } else if (message instanceof ArrayBuffer) {
+                let b = new egret.ByteArray(message);
+                let msg = b.readUTF();
+                let bkBuffer = new BK.Buffer(msg.length);
+                bkBuffer.writeAsString(msg);
+                this.$websocket.send(bkBuffer);
+            }
+        }
+
+        private resHandler(event: egret.Event) {
+            switch (event.type) {
+                case egret.Event.COMPLETE:
+                    let request: egret.HttpRequest = event.currentTarget;
+                    let ab = request.response;
+                    console.log()
+            }
 
         }
 
-        /**
-         * 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
         close(): void {
-
+            this.$websocket.close();
         }
-        /**
-         * 
-         * @version Egret 4.1.0
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 
-         * @version Egret 4.1.0
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        disconnect(): void {
 
+        disconnect(): void {
+            // if (this.$websocket.disconnect) {
+            //     this.$websocket.disconnect();
+            // }
+            //BK.IWebSocket 不支持disconnect
+            return;
         }
 
     }
+    egret.ISocket = BKSocket;
 }

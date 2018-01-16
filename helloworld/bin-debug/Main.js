@@ -121,21 +121,20 @@ var Main = (function (_super) {
     };
     Main.prototype.loadResource = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var e_1;
+            var loadingView, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        // const loadingView = new LoadingUI();
-                        // this.stage.addChild(loadingView);
+                        loadingView = new LoadingUI();
+                        this.stage.addChild(loadingView);
                         return [4 /*yield*/, RES.loadConfig("resource/default.res.json", "resource/")];
                     case 1:
-                        // const loadingView = new LoadingUI();
-                        // this.stage.addChild(loadingView);
                         _a.sent();
-                        return [4 /*yield*/, RES.loadGroup("preload", 0)];
+                        return [4 /*yield*/, RES.loadGroup("preload", 0, loadingView)];
                     case 2:
                         _a.sent();
+                        this.stage.removeChild(loadingView);
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
@@ -157,7 +156,6 @@ var Main = (function (_super) {
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        debugger;
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
@@ -195,42 +193,7 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // let shp: egret.Shape = new egret.Shape();
-        // shp.x = 50;
-        // shp.y = 50;
-        // shp.graphics.lineStyle(10, 0x00ff00);
-        // // shp.graphics.beginFill(0xff0000, 1);
-        // shp.graphics.drawRect(0, 0, 300, 300);
-        // shp.graphics.endFill();
-        // this.addChild(shp);
-        // let httpRequest = new egret.HttpRequest();
-        // var httpVariable = new egret.URLVariables("name=1");
-        // httpVariable.
-        // httpRequest.open("http://10.0.9.44:3000/", egret.HttpMethod.POST);
-        // httpRequest.send();
-        // httpRequest.addEventListener(egret.Event.COMPLETE, () => {
-        //     debugger
-        //     console.log("1111")
-        // }, this);
-        // debugger
-        // let urlreq: egret.URLRequest = new egret.URLRequest();
-        // urlreq.method = egret.URLRequestMethod.POST;
-        // urlreq.url = "http://10.0.9.44:3000/";
-        // // urlreq.url = "http://httpbin.org/post";
-        // let req = JSON.stringify({ name: "111", url: "http://10.0.9.44:3000/" });
-        // urlreq.data = req;
-        // urlreq.requestHeaders = [
-        //     new egret.URLRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-        // ]
-        // console.log(req);
-        // let urlloader = new egret.URLLoader();
-        // urlloader.addEventListener(egret.Event.COMPLETE, () => {
-        //     debugger
-        //     console.log("req", req);
-        //     urlloader.data;
-        //     console.log("req", urlloader.data);
-        // }, this);
-        // urlloader.load(urlreq);
+        // senddata();
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -272,3 +235,22 @@ var Main = (function (_super) {
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
+// function senddata() {
+//     let urlreq = new egret.URLRequest();
+//     urlreq.method = egret.URLRequestMethod.POST;
+//     urlreq.url = "http://10.0.11.39:3000";
+//     let data = "name=master&url=123123123";
+//     urlreq.data = data;
+//     urlreq.requestHeaders = [
+//         new egret.URLRequestHeader("Content-Type", "application/x-www-urlencoded")
+//     ]
+//     console.log(data)
+//     let urlloader = new egret.URLLoader();
+//     urlloader.addEventListener(egret.Event.COMPLETE, () => {
+//         console.log("收到信息", urlreq.data);
+//     }, this);
+//     urlloader.addEventListener(egret.IOErrorEvent.IO_ERROR, () => {
+//         console.log("出现错误")
+//     }, this);
+//     urlloader.load(urlreq);
+// } 

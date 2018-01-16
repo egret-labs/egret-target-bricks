@@ -123,6 +123,11 @@ namespace egret {
 
                 return null;
             };
+
+        }
+        debugger
+        if (typeof WebSocket !== undefined) {
+            egret.ISocket = egret.BKSocket;
         }
     }
 

@@ -18,7 +18,7 @@ ws.onOpen = function (ws) {
         name: "xc",
         age: 18
     }
-    var str = JSON.stringify(redata);
+    var str = JSON.stringify(data);
     ws.send(str);
 
 

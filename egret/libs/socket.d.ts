@@ -1,32 +1,117 @@
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-namespace egret {
+declare namespace egret {
+    /**
+     * @private
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @language en_US
+     */
+    /**
+     * @private
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @language zh_CN
+     */
+    interface ISocket {
+        /**
+         * 连接
+         * @method egret.ISocket#connect
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 连接
+         * @method egret.ISocket#connect
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        connect(host: string, port: number): void;
+        /**
+         * 连接
+         * @method egret.ISocket#connect
+         */
+        connectByUrl(url: string): void;
+        /**
+         *
+         * @param onConnect
+         * @param onClose
+         * @param onSocketData
+         * @param onError
+         * @param thisObject
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         *
+         * @param onConnect
+         * @param onClose
+         * @param onSocketData
+         * @param onError
+         * @param thisObject
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void;
+        /**
+         *
+         * @param message
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         *
+         * @param message
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        send(message: any): void;
+        /**
+         *
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         *
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        close(): void;
+        /**
+         *
+         * @version Egret 4.1.0
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         *
+         * @version Egret 4.1.0
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        disconnect(): void;
+    }
+    /**
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @language en_US
+     */
+    /**
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @language zh_CN
+     */
+    let ISocket: {
+        new (): ISocket;
+    };
+}
+declare namespace egret {
     /**
      * The egret.WebSocket class enables code to establish a TCP socket connection, for sending and receiving character string or binary data.
      * To use the methods of the egret.WebSocket class, first use the constructor function new egret.WebSocket to create an egret.WebSocket object.
@@ -55,7 +140,7 @@ namespace egret {
      * @includeExample extension/socket/WebSocket.ts
      * @language zh_CN
      */
-    export class WebSocket extends egret.EventDispatcher {
+    class WebSocket extends egret.EventDispatcher {
         /**
          * Send and receive data in character string format
          * @version Egret 2.4
@@ -68,7 +153,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static TYPE_STRING:string = "webSocketTypeString";
+        static TYPE_STRING: string;
         /**
          * Send and receive data in binary format
          * @version Egret 2.4
@@ -81,31 +166,27 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public static TYPE_BINARY:string = "webSocketTypeBinary";
-
+        static TYPE_BINARY: string;
         /**
          * @private
          */
-        private socket:egret.BKSocket;
-
+        private socket;
         /**
          * @private
          */
-        private _writeMessage:string = "";
+        private _writeMessage;
         /**
          * @private
          */
-        private _readMessage:string = "";
-
+        private _readMessage;
         /**
          * @private
          */
-        private _connected:boolean = false;
+        private _connected;
         /**
          * @private
          */
-        private _connecting:boolean = false;
-
+        private _connecting;
         /**
          * Create an egret.WebSocket object
          * This parameter is reserved for later versions. The connection address and port number are imported in the connect function
@@ -120,16 +201,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        constructor(host:string = "", port:number = 0) {
-            super();
-            this._connected = false;
-            this._writeMessage = "";
-            this._readMessage = "";
-
-            this.socket = new egret.BKSocket(host,port);
-            this.socket.addCallBacks(this.onConnect, this.onClose, this.onSocketData, this.onError, this);
-        }
-        
+        constructor(host?: string, port?: number);
         /**
          * Connect the socket to the specified host and port number
          * @param host Name or IP address of the host to be connected
@@ -146,24 +218,12 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public connect(host:string, port:number):void {
-            if(!this._connecting && !this._connected) {
-                this._connecting = true;
-                this.socket.connect(host, port);
-            }
-        }
-
+        connect(host: string, port: number): void;
         /**
          * 根据提供的url连接
          * @param url 全地址。如ws://echo.websocket.org:80
          */
-        public connectByUrl(url:string):void {
-            if(!this._connecting && !this._connected) {
-                this._connecting = true;
-                this.socket.connectByUrl(url);
-            }
-        }
-
+        connectByUrl(url: string): void;
         /**
          * Closesocket
          * @version Egret 2.4
@@ -176,57 +236,28 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public close():void {
-            if(this._connected) {
-                this.socket.close();
-            }
-        }
-
+        close(): void;
         /**
          * @private
-         * 
+         *
          */
-        private onConnect():void {
-            this._connected = true;
-            this._connecting = false;
-            this.dispatchEventWith(egret.Event.CONNECT);
-        }
-
+        private onConnect();
         /**
          * @private
-         * 
+         *
          */
-        private onClose():void {
-            this._connected = false;
-            this.dispatchEventWith(egret.Event.CLOSE);
-        }
-
+        private onClose();
         /**
          * @private
-         * 
+         *
          */
-        private onError():void {
-            if(this._connecting) {
-                this._connecting = false;
-            }
-            this.dispatchEventWith(egret.IOErrorEvent.IO_ERROR);
-        }
-
+        private onError();
         /**
          * @private
-         * 
-         * @param message 
+         *
+         * @param message
          */
-        private onSocketData(message:any):void {
-            if (typeof message == "string") {
-                this._readMessage += message;
-            }
-            else {
-                this._readByte._writeUint8Array(new Uint8Array(message));
-            }
-            egret.ProgressEvent.dispatchProgressEvent(this, egret.ProgressEvent.SOCKET_DATA);
-        }
-
+        private onSocketData(message);
         /**
          * Refresh all data accumulated in the output buffer area of the socket
          * @version Egret 2.4
@@ -239,28 +270,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public flush():void {
-            if (!this._connected) {
-                egret.$warn(3101);
-                return;
-            }
-            if (this._writeMessage) {
-                this.socket.send(this._writeMessage);
-                this._writeMessage = "";
-            }
-            if (this._bytesWrite) {
-                this.socket.send(this._writeByte.buffer);
-                this._bytesWrite = false;
-                this._writeByte.clear();
-            }
-            this._isReadySend = false;
-        }
-
+        flush(): void;
         /**
          * @private
          */
-        private _isReadySend:boolean = false;
-
+        private _isReadySend;
         /**
          * Write data in character string in the socket
          * @param message The character string to be written in the socket
@@ -275,28 +289,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public writeUTF(message:string):void {
-            if (!this._connected) {
-                egret.$warn(3101);
-                return;
-            }
-            if (this._type == WebSocket.TYPE_BINARY) {
-                this._bytesWrite = true;
-                this._writeByte.writeUTF(message);
-            }
-            else {
-                this._writeMessage += message;
-            }
-
-            this.flush();
-            // return;
-            // if (this._isReadySend) {
-            //     return;
-            // }
-            // this._isReadySend = true;
-            // egret.callLater(this.flush, this);
-        }
-
+        writeUTF(message: string): void;
         /**
          * Read a UTF-8 character string from the socket
          * @returns {string}
@@ -311,33 +304,19 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public readUTF():string {
-            let message:string;
-            if (this._type == WebSocket.TYPE_BINARY) {
-                this._readByte.position = 0;
-                message = this._readByte.readUTF();
-                this._readByte.clear();
-            }
-            else {
-                message = this._readMessage;
-                this._readMessage = "";
-            }
-            return message;
-        }
-
+        readUTF(): string;
         /**
          * @private
          */
-        private _readByte:ByteArray;
+        private _readByte;
         /**
          * @private
          */
-        private _writeByte:ByteArray;
+        private _writeByte;
         /**
          * @private
          */
-        private _bytesWrite:boolean = false;
-
+        private _bytesWrite;
         /**
          * Write a series of bytes from the specified byte array. The writing operation starts from the location expressed by offset.
          * If the length parameter is ignored, the default length 0 indicates that data is written from offset in the entire buffer area.
@@ -360,20 +339,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public writeBytes(bytes:ByteArray, offset:number = 0, length:number = 0):void {
-            if (!this._connected) {
-                egret.$warn(3101);
-                return;
-            }
-            if (!this._writeByte) {
-                egret.$warn(3102);
-                return;
-            }
-            this._bytesWrite = true;
-            this._writeByte.writeBytes(bytes, offset, length);
-            this.flush();
-        }
-
+        writeBytes(bytes: ByteArray, offset?: number, length?: number): void;
         /**
          * Read data byte number specified by the length parameter from the socket. Read these bytes into the specified byte array starting from the location expressed by offset.
          * @param bytes The ByteArray object that data is read into
@@ -392,16 +358,7 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public readBytes(bytes:ByteArray, offset:number = 0, length:number = 0):void {
-            if (!this._readByte) {
-                egret.$warn(3102);
-                return;
-            }
-            this._readByte.position = 0;
-            this._readByte.readBytes(bytes, offset, length);
-            this._readByte.clear();
-        }
-
+        readBytes(bytes: ByteArray, offset?: number, length?: number): void;
         /**
          * Indicates whether the Socket object is connected currently
          * @version Egret 2.4
@@ -414,15 +371,11 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get connected():boolean {
-            return this._connected;
-        }
-
+        readonly connected: boolean;
         /**
          * @private
          */
-        private _type:string = WebSocket.TYPE_STRING;
-
+        private _type;
         /**
          * Format for sending and receiving data. The default setting is the character string format
          * @version Egret 2.4
@@ -435,16 +388,52 @@ namespace egret {
          * @platform Web,Native
          * @language zh_CN
          */
-        public get type():string {
-            return this._type;
-        }
-
-        public set type(value:string) {
-            this._type = value;
-            if (value == WebSocket.TYPE_BINARY && !this._writeByte) {
-                this._readByte = new ByteArray();
-                this._writeByte = new ByteArray();
-            }
-        }
+        type: string;
+    }
+}
+declare namespace egret.native {
+    /**
+     * @private
+     */
+    class NativeSocket implements ISocket {
+        private socket;
+        constructor();
+        private onConnect;
+        private onClose;
+        private onSocketData;
+        private onError;
+        private thisObject;
+        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void;
+        private host;
+        private port;
+        connect(host: string, port: number): void;
+        connectByUrl(url: string): void;
+        private _bindEvent();
+        send(message: any): void;
+        close(): void;
+        disconnect(): void;
+    }
+}
+declare namespace egret.web {
+    /**
+     * @private
+     */
+    class HTML5WebSocket implements ISocket {
+        private socket;
+        constructor();
+        private onConnect;
+        private onClose;
+        private onSocketData;
+        private onError;
+        private thisObject;
+        addCallBacks(onConnect: Function, onClose: Function, onSocketData: Function, onError: Function, thisObject: any): void;
+        private host;
+        private port;
+        connect(host: string, port: number): void;
+        connectByUrl(url: string): void;
+        private _bindEvent();
+        send(message: any): void;
+        close(): void;
+        disconnect(): void;
     }
 }
