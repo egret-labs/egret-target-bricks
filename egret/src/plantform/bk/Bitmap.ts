@@ -3,16 +3,13 @@ namespace egret {
         protected $explicitBitmapWidth: number = NaN;
         protected $explicitBitmapHeight: number = NaN;
         protected readonly _size: Size = { width: 0, height: 0 };
-        private readonly _bkSprite: BK.Sprite;
+        private _bkSprite: BK.Sprite | BKSprite9;
         /**
          * @internal
          */
         public $bitmapData: egret.BKBitmapData | null = null;
         protected $texture: egret.Texture | null = null;
-        /**
-         * @internal
-         */
-        public $scale9Grid: egret.Rectangle | null = null;
+        protected $scale9Grid: egret.Rectangle | null = null;
 
         public constructor(value: Texture | null = null) {
             super(new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1));
@@ -26,13 +23,14 @@ namespace egret {
         }
 
         public set texture(value: Texture | null) {
+            if (this.$texture === value) {
+                return;
+            }
+
             this.$setTexture(value);
         }
 
         public $setTexture(value: Texture | null): void {
-            if (this.$texture === value) {
-                return;
-            }
             this.$texture = value;
 
             this._transformDirty = true;
@@ -62,19 +60,44 @@ namespace egret {
                 this._bkSprite.setTexture({} as any);
             }
         }
-        public get scale9Grid(): egret.Rectangle {
+
+        public get scale9Grid(): egret.Rectangle | null {
             return this.$scale9Grid;
         }
+        public set scale9Grid(value: egret.Rectangle | null) {
+            this.$setScale9Grid(value);
+        }
 
-        public set scale9Grid(value: egret.Rectangle) {
+        $setScale9Grid(value: egret.Rectangle | null): void {
             let self = this;
-            (self as any).$scale9Grid = value;
+            if (self.$scale9Grid == value) {
+                return;
+            }
+
+            // MD
+            if (self.$scale9Grid) {
+                if (value) {
+                    (this._bkSprite as any).setScale9Grid(value);
+                }
+                else {
+                    this._bkSprite = new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1);
+                    this._replaceNode(this._bkSprite);
+                    this.$setTexture(this.$texture);
+                }
+            }
+            else if (value) {
+                this._bkSprite = new BKSprite9();
+                this._replaceNode(this._bkSprite as any);
+                this._bkSprite.setScale9Grid(value);
+                this.$setTexture(this.$texture);
+            }
+
+            this._bkSprite.size = this._size;
+            self.$scale9Grid = value;
             self.$renderDirty = true;
         }
         /**
-         * @private
-         *
-         * @param value
+         * @override
          */
         $setWidth(value: number): boolean {
             let self = this;
@@ -90,11 +113,8 @@ namespace egret {
 
             return true;
         }
-
         /**
-         * @private
-         *
-         * @param value
+         * @override
          */
         $setHeight(value: number): boolean {
             let self = this;
@@ -110,25 +130,20 @@ namespace egret {
 
             return true;
         }
-
         /**
-         * @private
-         * 获取显示宽度
+         * @override
          */
         $getWidth(): number {
             return isNaN(this.$explicitBitmapWidth) ? this.$getContentBounds().width : this.$explicitBitmapWidth;
         }
-
         /**
-         * @private
-         * 获取显示宽度
+         * @override
          */
         $getHeight(): number {
             return isNaN(this.$explicitBitmapHeight) ? this.$getContentBounds().height : this.$explicitBitmapHeight;
         }
-
         /**
-         * @private
+         * @override
          */
         $measureContentBounds(bounds: Rectangle): void {
             if (this.$texture) {
@@ -143,9 +158,11 @@ namespace egret {
                 bounds.setTo(0, 0, w, h);
             }
         }
-
-        // MD
+        /**
+         * @override
+         */
         $getRenderNode(): sys.RenderNode {
+            // MD
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();

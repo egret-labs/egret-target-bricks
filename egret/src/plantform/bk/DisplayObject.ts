@@ -20,13 +20,31 @@ namespace egret {
             this._bkNode = bkNode || new BK.Node();
         }
 
+        protected _replaceNode(node: BK.Node): void {
+            this._transformDirty = true;
+            node.vertexColor = this._color;
+            node.hidden = !this.visible;
+
+            if (this._bkNode.parent) {
+                this._bkNode.parent.addChild(node, this.parent.getChildIndex(this));
+                this._bkNode.parent.removeChild(this._bkNode);
+            }
+
+            node.zOrder = this._bkNode.zOrder;
+            this._bkNode = node;
+        }
+        /**
+         * @override
+         */
         $setVisible(value: boolean): void {
             super.$setVisible(value);
 
             // MD
             this._bkNode.hidden = !value;
         }
-
+        /**
+         * @override
+         */
         $setAlpha(value: number): void {
             super.$setAlpha(value);
 
@@ -34,7 +52,9 @@ namespace egret {
             this._color.a = value;
             this._bkNode.vertexColor = this._color;
         }
-
+        /**
+         * @override
+         */
         $setX(value: number): boolean {
             let self = this;
             if (self.$x == value) {
@@ -47,7 +67,9 @@ namespace egret {
 
             return true;
         }
-
+        /**
+         * @override
+         */
         $setY(value: number): boolean {
             let self = this;
             if (self.$y == value) {
@@ -60,9 +82,8 @@ namespace egret {
 
             return true;
         }
-
         /**
-         * @private
+         * @override
          */
         $hitTest(stageX: number, stageY: number): DisplayObject {
             let self = this;
@@ -90,9 +111,11 @@ namespace egret {
             }
             return null;
         }
-
-        // MD
+        /**
+         * @override
+         */
         $getRenderNode(): sys.RenderNode {
+            // MD
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();
@@ -111,7 +134,9 @@ namespace egret {
 
             return this._bkNode as any;
         }
-
+        /**
+         * @override
+         */
         $onAddToStage(stage: Stage, nestLevel: number): void {
             super.$onAddToStage(stage, nestLevel);
 
@@ -121,7 +146,9 @@ namespace egret {
                 BKPlayer.instance._displayList.push(this);
             }
         }
-
+        /**
+         * @override
+         */
         $onRemoveFromStage(): void {
             super.$onRemoveFromStage();
 
@@ -131,20 +158,6 @@ namespace egret {
                 BKPlayer.instance._displayList.splice(index, 1);
             }
         }
-
-        // // MD
-        // $getMatrix(): Matrix {
-        //     let self = this;
-        //     if ((self as any).$matrixDirty) {
-        //         (self as any).$matrixDirty = false;
-
-        //         (self as any).$matrix.$updateScaleAndRotation((self as any).$scaleX, (self as any).$scaleY, (self as any).$skewX, (self as any).$skewY);
-        //     }
-
-        //     (self as any).$matrix.tx = self.$x;
-        //     (self as any).$matrix.ty = self.$y;
-        //     return (self as any).$matrix;
-        // }
     }
 
     egret.DisplayObject = BKDisplayObject;
