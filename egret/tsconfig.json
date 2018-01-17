@@ -29,6 +29,7 @@
         "./src/plantform/bk/BitmapData.ts",
         "./src/plantform/bk/DisplayObject.ts",
         "./src/plantform/bk/DisplayObjectContainer.ts",
+        "./src/plantform/bk/BKSprite9.ts",
         "./src/plantform/bk/Bitmap.ts",
         "./src/plantform/bk/Shape.ts",
         "./src/plantform/bk/Sprite.ts",

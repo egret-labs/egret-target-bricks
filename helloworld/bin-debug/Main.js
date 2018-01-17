@@ -193,7 +193,68 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // senddata();
+        // let t = new egret.Timer(1000);
+        // t.addEventListener(egret.TimerEvent.TIMER, () => {
+        //     senddata();
+        // }, this);
+        // t.start();
+        this.socketTest();
+    };
+    Main.prototype.socketTest = function () {
+        this.socket = new egret.WebSocket();
+        //设置数据格式，egret.WebSocket.TYPE_BINARY为二进制，egret.WebSocket.TYPE_STRING为字符串
+        this.socket.type = egret.WebSocket.TYPE_STRING;
+        //添加数据监听
+        //收到消息
+        this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
+        //连接成功
+        this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
+        //连接关闭
+        this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+        //出现异常
+        this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
+        this.socket.connect("http://10.0.11.39", 8081);
+    };
+    Main.prototype.onReceiveMessage = function () {
+        var _this = this;
+        //字符串
+        debugger;
+        var msg = this.socket.readUTF();
+        var data = JSON.stringify(msg);
+        console.log("收到消息", data);
+        // //二进制
+        // let byte : egret.ByteArray = new egret.ByteArray();
+        // this.socket.readUTF();
+        // this.socket.readBytes(byte);
+        // let raw = byte.rawBuffer;
+        // let eb = new egret.ByteArray(raw);
+        // eb.readUTF();
+        // let boo:boolean = byte.readBoolean();
+        // let num:number = byte.readInt();
+        // console.log("收到信息")
+        egret.setTimeout(function () {
+            debugger;
+            _this.socket.close();
+        }, this, 3000);
+    };
+    Main.prototype.onSocketOpen = function () {
+        console.log("连接成功");
+        debugger;
+        var data = {
+            name: "asdfgh",
+            type: "qwerty",
+            url: 123123
+        };
+        var str = JSON.stringify(data);
+        this.socket.writeUTF(str);
+    };
+    Main.prototype.onSocketClose = function () {
+        debugger;
+        console.log("连接关闭");
+    };
+    Main.prototype.onSocketError = function () {
+        debugger;
+        console.log("出现异常");
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -253,4 +314,4 @@ __reflect(Main.prototype, "Main");
 //         console.log("出现错误")
 //     }, this);
 //     urlloader.load(urlreq);
-// } 
+// }

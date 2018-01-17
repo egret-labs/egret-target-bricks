@@ -185,11 +185,10 @@ namespace egret {
             this._bkText.strokeSize = this.$TextField[sys.TextKeys.stroke];
 
             // BK values.
-            // const style = (this._bkText as any).style;
-            // style.width = 512;
-            // style.height = 64;
             (this._bkText as any).style.width = 512;
             (this._bkText as any).style.height = 64;
+            (this._bkText as any).style.maxWidth = 512;
+            (this._bkText as any).style.maxHeight = 64;
             const defaultShadowColor = 0x00000000; // ???!!!
             this._bkText.shadowColor = defaultShadowColor;
             this._bkText.shadowOffset = { x: 0, y: 0 };
@@ -1182,7 +1181,7 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            (this._bkText as any).style.width = values[sys.TextKeys.textFieldWidth];
+            (this._bkText as any).style.maxWidth = (this._bkText as any).style.width = values[sys.TextKeys.textFieldWidth];
 
             return true;
         }
@@ -1217,7 +1216,7 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            (this._bkText as any).style.height = values[sys.TextKeys.textFieldHeight];
+            (this._bkText as any).style.maxHeight = (this._bkText as any).style.height = values[sys.TextKeys.textFieldHeight];
 
             return true;
         }
@@ -2111,19 +2110,17 @@ namespace egret {
 
         // MD
         $getRenderNode(): sys.RenderNode {
-            if (this._transformDirty || (this as any).$matrixDirty) { //TODO !!!???
+            if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
 
-                const text = this._bkText.content;
-                this._bkText.content = ""; // ????!!!! 不滞空就会各种诡异 bug
-                this._bkText.content = text;
+                this._bkText.content = this._bkText.content;
 
                 const matrix = this.$getMatrix();
                 const bkMatrix = (this._bkNode.transform as any).matrix;
                 let tx = matrix.tx;
                 let ty = matrix.ty;
                 const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY - (this._bkText as any).style.height;
+                const pivotY = this.$anchorOffsetY - (this._bkText as any).size.height;
                 if (pivotX !== 0.0 || pivotY !== 0.0) {
                     tx -= matrix.a * pivotX + matrix.c * pivotY;
                     ty -= matrix.b * pivotX + matrix.d * pivotY;
@@ -2134,11 +2131,11 @@ namespace egret {
                         break;
 
                     case 1:
-                        tx -= ((this._bkText as any).style.width - this.$getWidth()) * 0.5;
+                        tx -= ((this._bkText as any).size.width - this.$getWidth()) * 0.5;
                         break;
 
                     case 2:
-                        tx -= (this._bkText as any).style.width - this.$getWidth();
+                        tx -= (this._bkText as any).size.width - this.$getWidth();
                         break;
                 }
 
@@ -2147,11 +2144,11 @@ namespace egret {
                         break;
 
                     case egret.VerticalAlign.MIDDLE:
-                        ty -= ((this._bkText as any).style.height - this.$getHeight()) * 0.5;
+                        ty += ((this._bkText as any).size.height - (this._bkText as any).height) * 0.5;
                         break;
 
                     case egret.VerticalAlign.BOTTOM:
-                        ty -= (this._bkText as any).style.height - this.$getHeight();
+                        ty += (this._bkText as any).size.height - (this._bkText as any).height;
                         break;
                 }
 

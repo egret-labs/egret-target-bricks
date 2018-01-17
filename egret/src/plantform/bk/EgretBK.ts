@@ -70,6 +70,7 @@ namespace egret {
         }
         isRunning = true;
 
+        modifyBricks();
         modifyEgret();
 
         if (!options) {
@@ -89,12 +90,22 @@ namespace egret {
         player = new BKPlayer(options);
     }
 
+    function modifyBricks(): void {
+    }
+
     function modifyEgret(): void {
         if (typeof eui !== "undefined") {
             type BKImageType = BKBitmap & eui.Image;
             interface BKImage extends BKImageType {
             };
 
+            Object.defineProperty(eui.Image.prototype, "scale9Grid", {
+                set: function (this: BKImage, value: egret.Rectangle | null): void {
+                    this.$setScale9Grid(value);
+                },
+                enumerable: true,
+                configurable: true
+            });
             eui.Image.prototype.$getRenderNode = function (this: BKImage): any {
                 let image = this.$bitmapData;
                 if (!image) {
@@ -110,19 +121,9 @@ namespace egret {
                 if (this._transformDirty || (this as any).$matrixDirty) {
                     this._transformDirty = false;
                     //
-                    let scale9Grid = this.scale9Grid || (this as any).$texture["scale9Grid"];
-                    if (scale9Grid) {
-                        // if (this.$renderNode instanceof egret.sys.NormalBitmapNode) {
-                        // } TODO
-                        (this as any)._size.width = this.$getWidth();
-                        (this as any)._size.height = this.$getHeight();
-                        (this as any)._bkSprite.size = (this as any)._size;
-                    }
-                    else {
-                        (this as any)._size.width = this.$getWidth();
-                        (this as any)._size.height = this.$getHeight();
-                        (this as any)._bkSprite.size = (this as any)._size;
-                    }
+                    (this as any)._size.width = this.$getWidth();
+                    (this as any)._size.height = this.$getHeight();
+                    (this as any)._bkSprite.size = (this as any)._size;
                     //
                     const matrix = this.$getMatrix();
                     const bkMatrix = (this._bkNode.transform as any).matrix;
