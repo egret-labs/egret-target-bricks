@@ -1032,7 +1032,12 @@ var KWebSocket = (function (_super) {
             this.sendCloseFrame(this.errcode, this.message);
         }
         else if (1 /* CLOSING */ == this.state) {
-            this.startPhaseTimeout(6 /* NO_PENDING_TIMEOUT */);
+            BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!normal closed");
+            this.close();
+            this.state = 0 /* CLOSED */;
+            if (this.delegate.onClose) {
+                this.delegate.onClose(this);
+            }
         }
     };
     KWebSocket.prototype.handlePingFrame = function () {
@@ -1167,6 +1172,9 @@ var KWebSocket = (function (_super) {
         return this.__sendBinaryFrame(data, 2 /* BINARY_FRAME */);
     };
     KWebSocket.prototype.sendCloseFrame = function (code, reason) {
+        if (this.isSendClose)
+            return;
+        this.isSendClose = true;
         var buf = new BK.Buffer(reason.length + 1, false);
         var data = new BK.Buffer(3 + reason.length, false);
         if (KWebSocket.isLittleEndian) {

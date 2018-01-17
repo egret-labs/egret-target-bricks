@@ -19,6 +19,9 @@
       "name": "assetsmanager"
     },
     {
+      "name": "socket"
+    },
+    {
       "name": "promise"
     },
     {

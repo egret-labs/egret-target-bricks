@@ -141,9 +141,70 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // senddata();
+        this.socketTest();
 
+    }
+    private socket: egret.WebSocket;
+    socketTest() {
+        this.socket = new egret.WebSocket();
+        //设置数据格式，egret.WebSocket.TYPE_BINARY为二进制，egret.WebSocket.TYPE_STRING为字符串
+        this.socket.type = egret.WebSocket.TYPE_STRING;
+        //添加数据监听
+        //收到消息
+        this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
+        //连接成功
+        this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
+        //连接关闭
+        this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+        //出现异常
+        this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
+        this.socket.connect("http://10.0.11.39", 8081);
+    }
 
+    onReceiveMessage() {
+        //字符串
+        debugger;
+        let msg = this.socket.readUTF();
+        let data = JSON.stringify(msg);
+        console.log("收到消息", data);
+
+        // //二进制
+        // let byte : egret.ByteArray = new egret.ByteArray();
+        // this.socket.readUTF();
+        // this.socket.readBytes(byte);
+        // let raw = byte.rawBuffer;
+        // let eb = new egret.ByteArray(raw);
+        // eb.readUTF();
+        // let boo:boolean = byte.readBoolean();
+        // let num:number = byte.readInt();
+        // console.log("收到信息")
+
+        egret.setTimeout(() => {
+            debugger;
+            this.socket.close();
+        }, this, 3000);
+    }
+
+    onSocketOpen() {
+        console.log("连接成功");
+        debugger;
+        let data = {
+            name: "asdfgh",
+            type: "qwerty",
+            url: 123123
+        }
+        let str = JSON.stringify(data);
+        this.socket.writeUTF(str);
+    }
+
+    onSocketClose() {
+        debugger;
+        console.log("连接关闭");
+    }
+
+    onSocketError() {
+        debugger;
+        console.log("出现异常")
     }
 
     /**
@@ -188,6 +249,7 @@ class Main extends egret.DisplayObjectContainer {
     }
 }
 
+
 // function senddata() {
 //     let urlreq = new egret.URLRequest();
 //     urlreq.method = egret.URLRequestMethod.POST;
@@ -210,3 +272,5 @@ class Main extends egret.DisplayObjectContainer {
 //     }, this);
 //     urlloader.load(urlreq);
 // }
+
+

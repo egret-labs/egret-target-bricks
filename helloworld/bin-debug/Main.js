@@ -193,8 +193,96 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // senddata();
+        // let t = new egret.Timer(1000);
+        // t.addEventListener(egret.TimerEvent.TIMER, () => {
+        //     senddata();
+        // }, this);
+        // t.start();
+        // this.socketTest();
+        var arcFill2 = new egret.Shape();
+        arcFill2.graphics.beginFill(0xff0000);
+        arcFill2.graphics.drawArc(200, 600, 50, 0, -Math.PI / 180 * 60, true);
+        arcFill2.graphics.endFill();
+        var arcFill1 = new egret.Shape();
+        arcFill1.graphics.beginFill(0xff0000);
+        arcFill1.graphics.drawArc(400, 600, 50, 0, -Math.PI / 180 * 60, false);
+        arcFill1.graphics.endFill();
+        this.addChild(arcFill1);
+        this.addChild(arcFill2);
+        var arcStroke2 = new egret.Shape();
+        arcStroke2.graphics.lineStyle(2, 0xffff00);
+        arcStroke2.graphics.drawArc(200, 400, 50, 0, -Math.PI / 180 * 30, true);
+        arcStroke2.graphics.endFill();
+        var arcStroke1 = new egret.Shape();
+        arcStroke1.graphics.lineStyle(2, 0xffff00);
+        arcStroke1.graphics.drawArc(400, 400, 50, 0, -Math.PI / 180 * 30, false);
+        arcStroke1.graphics.endFill();
+        this.addChild(arcStroke1);
+        this.addChild(arcStroke2);
+        var roundRect = new egret.Shape();
+        // roundRect.graphics.beginFill(0xff0000);
+        roundRect.graphics.lineStyle(2, 0xff0000);
+        roundRect.graphics.drawRoundRect(0, 0, 100, 100, 100, 50);
+        roundRect.graphics.endFill();
+        roundRect.x = roundRect.y = 50;
+        this.addChild(roundRect);
     };
+    // private socket: egret.WebSocket;
+    // socketTest() {
+    //     this.socket = new egret.WebSocket();
+    //     //设置数据格式，egret.WebSocket.TYPE_BINARY为二进制，egret.WebSocket.TYPE_STRING为字符串
+    //     this.socket.type = egret.WebSocket.TYPE_STRING;
+    //     //添加数据监听
+    //     //收到消息
+    //     this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
+    //     //连接成功
+    //     this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
+    //     //连接关闭
+    //     this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+    //     //出现异常
+    //     this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
+    //     this.socket.connect("http://10.0.11.39", 8081);
+    // }
+    // onReceiveMessage() {
+    //     //字符串
+    //     debugger;
+    //     let msg = this.socket.readUTF();
+    //     let data = JSON.stringify(msg);
+    //     console.log("收到消息", data);
+    //     // //二进制
+    //     // let byte : egret.ByteArray = new egret.ByteArray();
+    //     // this.socket.readUTF();
+    //     // this.socket.readBytes(byte);
+    //     // let raw = byte.rawBuffer;
+    //     // let eb = new egret.ByteArray(raw);
+    //     // eb.readUTF();
+    //     // let boo:boolean = byte.readBoolean();
+    //     // let num:number = byte.readInt();
+    //     // console.log("收到信息")
+    //     egret.setTimeout(() => {
+    //         debugger;
+    //         this.socket.close();
+    //     }, this, 3000);
+    // }
+    // onSocketOpen() {
+    //     console.log("连接成功");
+    //     debugger;
+    //     let data = {
+    //         name: "asdfgh",
+    //         type: "qwerty",
+    //         url: 123123
+    //     }
+    //     let str = JSON.stringify(data);
+    //     this.socket.writeUTF(str);
+    // }
+    // onSocketClose() {
+    //     debugger;
+    //     console.log("连接关闭");
+    // }
+    // onSocketError() {
+    //     debugger;
+    //     console.log("出现异常")
+    // }
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
@@ -253,4 +341,4 @@ __reflect(Main.prototype, "Main");
 //         console.log("出现错误")
 //     }, this);
 //     urlloader.load(urlreq);
-// } 
+// }

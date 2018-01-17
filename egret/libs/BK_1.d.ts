@@ -256,6 +256,15 @@ declare namespace BK {
         drawEllipse(x: number, y: number, width: number, height: number);
 
         /**
+         * 绘制弧线
+         */
+        arc(x: number, y: number, radius: number, sAngle: number, eAngle: number, counterclockwise: boolean)
+
+        /**
+         * 绘制介于两条直线的弧
+         */
+        arcTo(x1: number, y1: number, x2: number, y2: number, r: number)
+        /**
          * 将当前绘图位置移动到(x,y);
          */
         moveTo(x: number, y: number);

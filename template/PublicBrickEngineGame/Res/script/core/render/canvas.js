@@ -293,7 +293,7 @@ Canvas.prototype.useH5Mode = function()
     return 0;
 }
 
-//{ "drawCircle",bkJSCanvasDrawCircle,0},
+
 Canvas.prototype.drawCircle = function()
 {
     if(this.__nativeObj)
@@ -302,7 +302,7 @@ Canvas.prototype.drawCircle = function()
     }
     return 0;
 }
-//{ "drawLine",bkJSCanvasDrawLine,0},
+
 Canvas.prototype.drawLine = function()
 {
     if(this.__nativeObj)
@@ -311,7 +311,7 @@ Canvas.prototype.drawLine = function()
     }
     return 0;
 }
-//{ "drawEllipse",bkJSCanvasDrawEllipse,0},
+
 Canvas.prototype.drawEllipse = function()
 {
     if(this.__nativeObj)
@@ -320,7 +320,7 @@ Canvas.prototype.drawEllipse = function()
     }
     return 0;
 }
-//{ "drawImage",bkJSCanvasDrawImage,0},
+
 Canvas.prototype.drawImage = function()
 {
     if(this.__nativeObj)
@@ -345,7 +345,7 @@ Canvas.prototype.drawImage = function()
     }
     return 0;
 }
-//{ "fill",bkJSCanvasFill,0},
+
 Canvas.prototype.fill = function()
 {
     if(this.__nativeObj)
@@ -354,7 +354,7 @@ Canvas.prototype.fill = function()
     }
     return 0;
 }
-//{ "stroke",bkJSCanvasStroke,0},
+
 Canvas.prototype.stroke = function()
 {
     if(this.__nativeObj)
@@ -363,7 +363,7 @@ Canvas.prototype.stroke = function()
     }
     return 0;
 }
-//{ "rect",bkJSCanvasRect,0},
+
 Canvas.prototype.rect = function()
 {
     if(this.__nativeObj)
@@ -372,7 +372,6 @@ Canvas.prototype.rect = function()
     }
     return 0;
 }
-//{ "fillRect",bkJSCanvasFillRect,0},
 Canvas.prototype.fillRect = function()
 {
     if(this.__nativeObj)
@@ -381,7 +380,7 @@ Canvas.prototype.fillRect = function()
     }
     return 0;
 }
-//{ "strokeRect",bkJSCanvasStrokeRect,0},
+
 Canvas.prototype.strokeRect = function()
 {
     if(this.__nativeObj)
@@ -390,7 +389,7 @@ Canvas.prototype.strokeRect = function()
     }
     return 0;
 }
-//{ "clearRect",bkJSCanvasClearRect,0},
+
 Canvas.prototype.clearRect = function()
 {
     if(this.__nativeObj)
@@ -399,7 +398,7 @@ Canvas.prototype.clearRect = function()
     }
     return 0;
 }
-//{ "beginPath",bkJSCanvasPathBegin,0},
+
 Canvas.prototype.beginPath = function()
 {
     if(this.__nativeObj)
@@ -408,7 +407,7 @@ Canvas.prototype.beginPath = function()
     }
     return 0;
 }
-//{ "closePath",bkJSCanvasPathClose,0},
+
 Canvas.prototype.closePath = function()
 {
     if(this.__nativeObj)
@@ -417,7 +416,7 @@ Canvas.prototype.closePath = function()
     }
     return 0;
 }
-//{ "moveTo",bkJSCanvasPathMoveTo,0},
+
 Canvas.prototype.moveTo = function()
 {
     if(this.__nativeObj)
@@ -426,7 +425,7 @@ Canvas.prototype.moveTo = function()
     }
     return 0;
 }
-//{ "lineTo",bkJSCanvasPathLineTo,0},
+
 Canvas.prototype.lineTo = function()
 {
     if(this.__nativeObj)
@@ -435,7 +434,7 @@ Canvas.prototype.lineTo = function()
     }
     return 0;
 }
-//{ "arcTo",bkJSCanvasPathArcTo,0},
+
 Canvas.prototype.arcTo = function()
 {
     if(this.__nativeObj)
@@ -444,16 +443,22 @@ Canvas.prototype.arcTo = function()
     }
     return 0;
 }
-//{ "arc",bkJSCanvasPathArc,0},
 Canvas.prototype.arc = function()
 {
     if(this.__nativeObj)
     {
-        return this.__nativeObj.arc(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]);
+        var argumentLength = arguments.length;
+        if (argumentLength == 5){return this.__nativeObj.arc(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]);
+        }
+        else (argumentLength == 6)
+        {
+            return this.__nativeObj.arc(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5]);
+        }
+        
     }
     return 0;
 }
-//{ "quadraticCurveTo",bkJSCanvasPathQuadraticCurveTo,0},
+
 Canvas.prototype.quadraticCurveTo = function()
 {
     if(this.__nativeObj)
@@ -487,7 +492,8 @@ Canvas.prototype.restore = function()
     }
     return 0;
 }
-//
+
+
 Canvas.prototype.fillText = function()
 {
     if(this.__nativeObj)
@@ -505,7 +511,7 @@ Canvas.prototype.clip = function()
     }
     return 0;
 }
-//
+
 Canvas.prototype.isPointInPath = function()
 {
     if(this.__nativeObj)
@@ -534,6 +540,13 @@ Canvas.prototype.translate = function()
     if(this.__nativeObj)
     {
         return this.__nativeObj.translate(arguments[0],arguments[1]);
+    }
+}
+Canvas.prototype.transforms = function()
+{
+    if(this.__nativeObj)
+    {
+        return this.__nativeObj.transforms(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5]);
     }
 }
 Canvas.prototype.shadowColor = function()
@@ -573,6 +586,5 @@ Canvas.prototype.shadowOffsetY= function()
     }
 }
 
-//resign to BK object
 BK.Canvas = Canvas;
 BK.Script.log(0,0,"Load Canvas.js succeed.");
