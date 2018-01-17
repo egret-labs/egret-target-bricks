@@ -29,8 +29,9 @@
         "./src/plantform/bk/BitmapData.ts",
         "./src/plantform/bk/DisplayObject.ts",
         "./src/plantform/bk/DisplayObjectContainer.ts",
-        "./src/plantform/bk/BKSprite9.ts",
+        "./src/plantform/bk/external/BKSprite9.ts",
         "./src/plantform/bk/Bitmap.ts",
+        "./src/plantform/bk/Mesh.ts",
         "./src/plantform/bk/Shape.ts",
         "./src/plantform/bk/Sprite.ts",
         "./src/plantform/bk/TextField.ts",
@@ -39,6 +40,7 @@
         "./src/plantform/bk/Graphics.ts",
         "./src/plantform/bk/Stage.ts",
         "./src/plantform/bk/Player.ts",
+        "./src/plantform/bk/HTML5StageText.ts",
         "./src/plantform/bk/EgretBK.ts"
     ]
 }

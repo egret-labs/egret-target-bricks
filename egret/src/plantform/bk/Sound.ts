@@ -45,6 +45,12 @@ namespace egret {
 
         load(url: string): void {
             this.url = url;
+            if (BK.FileUtil.isFileExist(this.url)) {
+                $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+            }
+            else {
+                $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+            }
         }
 
         play(startTime: number = 0, loops: number = 0): egret.SoundChannel {

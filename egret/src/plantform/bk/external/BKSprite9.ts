@@ -18,19 +18,7 @@ namespace egret {
 
         public constructor() {
             //
-            const names = Object.getOwnPropertyNames(this.__nativeObj);
-            names.forEach(function (element) {
-                var key = element;
-                // log("name:"+key);
-                Object.defineProperty(this, key, {
-                    get: function () {
-                        return this.__nativeObj[key];
-                    },
-                    set: function (obj) {
-                        this.__nativeObj[key] = obj;
-                    }
-                });
-            }, this);
+            defineProxyProperties(this.__nativeObj, this);
 
             this.__nativeObj.addChild(this._leftTop);
             this.__nativeObj.addChild(this._centerTop);

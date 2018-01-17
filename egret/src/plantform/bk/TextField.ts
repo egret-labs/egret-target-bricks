@@ -28,7 +28,6 @@
 //////////////////////////////////////////////////////////////////////////////////////
 
 namespace egret {
-
     let SplitRegex = new RegExp("(?=[\\u00BF-\\u1FFF\\u2C00-\\uD7FF]|\\b|\\s)(?![。，！、》…）)}”】\\.\\,\\!\\?\\]\\:])");
 
     /**
@@ -113,14 +112,13 @@ namespace egret {
          * @language zh_CN
          */
         public static default_textColor: number = 0xffffff;
-
         /**
          * @version Egret 2.4
          * @platform Web,Native
          */
         constructor() {
             // MD
-            super(new BK.Text(undefined, ""));
+            super(new (BK as any).TextNode({}, ""));
             this._bkText = this._bkNode as any;
 
             // super();
@@ -169,30 +167,6 @@ namespace egret {
                 36: null,           //restrictNot
                 37: TextFieldInputType.TEXT            //inputType
             };
-
-            // MD
-            // Set default values.
-            this._bkText.fontSize = this.$TextField[sys.TextKeys.fontSize];
-            const defaultFontColor = 0xFFFFFFFF; // ???!!!
-            this._bkText.fontColor = defaultFontColor;
-
-            // textAlign
-            // verticalAlign
-            this._bkText.horizontalAlign = 0;
-            this._bkText.bold = this.$TextField[sys.TextKeys.bold];
-            this._bkText.italic = this.$TextField[sys.TextKeys.italic];
-            // this._bkText.strokeColor = this.$TextField[sys.TextKeys.strokeColor];
-            this._bkText.strokeSize = this.$TextField[sys.TextKeys.stroke];
-
-            // BK values.
-            (this._bkText as any).style.width = 512;
-            (this._bkText as any).style.height = 64;
-            (this._bkText as any).style.maxWidth = 512;
-            (this._bkText as any).style.maxHeight = 64;
-            const defaultShadowColor = 0x00000000; // ???!!!
-            this._bkText.shadowColor = defaultShadowColor;
-            this._bkText.shadowOffset = { x: 0, y: 0 };
-            this._bkText.shadowRadius = 0;
         }
 
         /**
@@ -284,7 +258,9 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._bkText.fontSize = value;
+            this._styleDirty = true;
+            this._style.fontSize = value;
+            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -322,7 +298,9 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._bkText.bold = value ? 1 : 0;
+            this._styleDirty = true;
+            this._style.bold = value ? 1 : 0;
+            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -360,7 +338,9 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._bkText.italic = value;
+            this._styleDirty = true;
+            this._style.italic = value ? 1 : 0;
+            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -406,18 +386,21 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
+            this._styleDirty = true;
 
             switch (value) {
                 case egret.HorizontalAlign.LEFT:
-                    this._bkText.horizontalAlign = 0;
+                    this._style.textAlign = 0;
                     break;
                 case egret.HorizontalAlign.CENTER:
-                    this._bkText.horizontalAlign = 1;
+                    this._style.textAlign = 1;
                     break;
                 case egret.HorizontalAlign.RIGHT:
-                    this._bkText.horizontalAlign = 2;
+                    this._style.textAlign = 2;
                     break;
             }
+
+            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -528,10 +511,13 @@ namespace egret {
 
             // MD
             let rgb_str = this._refitString(value, 6);//六位rgb格式
-            let old_argb_str = this._refitString(this._bkText.fontColor, 8);
+            let old_argb_str = this._refitString(this._style.textColor, 8);
             let new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
             let argb_num = parseInt(new_argb_str, 16);
-            this._bkText.fontColor = argb_num;
+
+            this._styleDirty = true;
+            this._style.textColor = argb_num;
+            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -728,7 +714,8 @@ namespace egret {
 
                 // MD
                 this._transformDirty = true;
-                this._bkText.content = text;
+                this._styleDirty = true;
+                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -836,10 +823,13 @@ namespace egret {
 
                 // MD
                 let rgb_str = this._refitString(value, 6);//六位rgb格式
-                let old_argb_str = this._refitString(this._bkText.strokeColor, 8);
+                let old_argb_str = this._refitString(this._style.strokeColor, 8);
                 let new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
                 let argb_num = parseInt(new_argb_str, 16);
-                this._bkText.fontColor = argb_num;
+
+                this._styleDirty = true;
+                this._style.strokeColor = argb_num;
+                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -884,7 +874,9 @@ namespace egret {
 
                 // MD
                 this._transformDirty = true;
-                this._bkText.strokeSize = value;
+                this._styleDirty = true;
+                this._style.strokeSize = value;
+                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -1181,7 +1173,8 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            (this._bkText as any).style.maxWidth = (this._bkText as any).style.width = values[sys.TextKeys.textFieldWidth];
+            this._styleDirty = true;
+            this._style.width = this._style.maxWidth = values[sys.TextKeys.textFieldWidth];
 
             return true;
         }
@@ -1216,7 +1209,8 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            (this._bkText as any).style.maxHeight = (this._bkText as any).style.height = values[sys.TextKeys.textFieldHeight];
+            this._styleDirty = true;
+            this._style.height = this._style.maxHeight = values[sys.TextKeys.textFieldHeight];
 
             return true;
         }
@@ -1532,7 +1526,7 @@ namespace egret {
             this.$getLinesArr();
 
             let w: number = !isNaN(this.$TextField[sys.TextKeys.textFieldWidth]) ? this.$TextField[sys.TextKeys.textFieldWidth] : this.$TextField[sys.TextKeys.textWidth];
-            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this);
+            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this as any);
             // MD
             let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : this.$TextField[sys.TextKeys.textHeight];
             bounds.setTo(0, 0, w, h);
@@ -1679,9 +1673,9 @@ namespace egret {
          */
         public get textHeight(): number {
             this.$getLinesArr();
-            // return TextFieldUtils.$getTextHeight(this);
+            // return TextFieldUtils.$getTextHeight(this as any);
             // MD
-            return this.$TextField[sys.TextKeys.textHeight]
+            return this.$TextField[sys.TextKeys.textHeight];
         }
 
         /**
@@ -1734,14 +1728,22 @@ namespace egret {
 
             // MD
             values[sys.TextKeys.numLines] = 1;
-            if (this._bkText.content) {
-                values[sys.TextKeys.textWidth] = this._bkText["width"];
-                values[sys.TextKeys.textHeight] = this._bkText["height"];
+
+            if (values[sys.TextKeys.text]) {
+                const textFieldWidth = values[sys.TextKeys.textFieldWidth];
+                if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
+                    values[sys.TextKeys.numLines] = 0;
+                    return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
+                }
+
+                values[sys.TextKeys.textWidth] = bkMeasureText(this.$getText(), this.fontFamily, this.size, this.bold, this.italic); // 
+                values[sys.TextKeys.textHeight] = (defaultText as any).height;
             }
             else {
                 values[sys.TextKeys.textWidth] = 0;
                 values[sys.TextKeys.textHeight] = 0;
             }
+
             return this.linesArr;
 
             // let text2Arr: Array<egret.ITextElement> = this.textArr;
@@ -1965,8 +1967,6 @@ namespace egret {
             //             //}
             //             lineCount++;
             //         }
-
-
             //     }
 
             //     if (i == text2Arr.length - 1 && lineElement) {
@@ -2096,8 +2096,25 @@ namespace egret {
         }
 
         // MD
-        protected _bkText: BK.Text;
-
+        private _styleDirty: boolean = true;
+        private readonly _bkText: any; // BK.TextNode
+        private readonly _style: BK.TextStyle = {
+            fontSize: TextField.default_size,
+            textColor: TextField.default_textColor + 0xFF000000,
+            maxWidth: 512,
+            maxHeight: 64,
+            width: 512,
+            height: 64,
+            textAlign: 0,
+            bold: 0,
+            italic: 0,
+            strokeColor: 0x00000000,
+            strokeSize: 0,
+            shadowRadius: 0,
+            shadowDx: 0,
+            shadowDy: 0,
+            shadowColor: 0x00000000
+        };
         /**
          * 为16进制数字补0，输出字符串
          */
@@ -2110,45 +2127,49 @@ namespace egret {
 
         // MD
         $getRenderNode(): sys.RenderNode {
+            if (this._styleDirty) { // 宽高即时更新太卡，需要延时处理。
+                this._styleDirty = false;
+                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
+            }
+
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
 
-                this._bkText.content = this._bkText.content;
-
                 const matrix = this.$getMatrix();
                 const bkMatrix = (this._bkNode.transform as any).matrix;
+                const textSize = (this._bkText as any).size;
                 let tx = matrix.tx;
                 let ty = matrix.ty;
                 const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY - (this._bkText as any).size.height;
+                const pivotY = this.$anchorOffsetY - textSize.height;
                 if (pivotX !== 0.0 || pivotY !== 0.0) {
                     tx -= matrix.a * pivotX + matrix.c * pivotY;
                     ty -= matrix.b * pivotX + matrix.d * pivotY;
                 }
 
-                switch (this._bkText.horizontalAlign) {
-                    case 0:
+                switch (this.$TextField[sys.TextKeys.textAlign]) {
+                    case egret.HorizontalAlign.LEFT:
                         break;
 
-                    case 1:
-                        tx -= ((this._bkText as any).size.width - this.$getWidth()) * 0.5;
+                    case egret.HorizontalAlign.CENTER:
+                        tx -= (textSize.width - this.$getWidth()) * 0.5;
                         break;
 
-                    case 2:
-                        tx -= (this._bkText as any).size.width - this.$getWidth();
+                    case egret.HorizontalAlign.RIGHT:
+                        tx -= textSize.width - this.$getWidth();
                         break;
                 }
 
-                switch (this.verticalAlign) {
+                switch (this.$TextField[sys.TextKeys.verticalAlign]) {
                     case egret.VerticalAlign.TOP:
                         break;
 
                     case egret.VerticalAlign.MIDDLE:
-                        ty += ((this._bkText as any).size.height - (this._bkText as any).height) * 0.5;
+                        ty += (textSize.height - (this._bkText as any).height) * 0.5;
                         break;
 
                     case egret.VerticalAlign.BOTTOM:
-                        ty += (this._bkText as any).size.height - (this._bkText as any).height;
+                        ty += textSize.height - (this._bkText as any).height;
                         break;
                 }
 
@@ -2158,6 +2179,40 @@ namespace egret {
             return this._bkNode as any;
         }
     }
+
+    const defaultStyle: BK.TextStyle = {
+        fontSize: TextField.default_size,
+        textColor: TextField.default_textColor + 0xFF000000,
+        maxWidth: 1280,
+        maxHeight: 256,
+        width: 1280,
+        height: 256,
+        textAlign: 0,
+        bold: 0,
+        italic: 0,
+        strokeColor: 0x00000000,
+        strokeSize: 0,
+        shadowRadius: 0,
+        shadowDx: 0,
+        shadowDy: 0,
+        shadowColor: 0x00000000
+    };
+    let defaultText: any; // BK.TextNode
+
+    function bkMeasureText(text: string, fontFamily: string, size: number, bold: boolean, italic: boolean): number {
+        if (!defaultText) {
+            defaultText = new (BK as any).TextNode(defaultStyle, "");
+        }
+
+        defaultStyle.fontSize = size;
+        defaultStyle.bold = bold ? 1 : 0;
+        defaultStyle.italic = italic ? 1 : 0;
+        defaultText.updateText(defaultStyle, text);
+
+        return defaultText.width;
+    }
+
+    sys.measureText = bkMeasureText as any;
 
     egret.TextField = BKTextField as any;
 }

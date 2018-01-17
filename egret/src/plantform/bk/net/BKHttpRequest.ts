@@ -41,7 +41,7 @@ namespace egret {
          */
         public send(data?: any): void {
             let self = this;
-            
+
             if (self.isNetUrl(self._url)) {
                 this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
                 let method: string;
@@ -86,15 +86,24 @@ namespace egret {
                 $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
             }
             else {
+                const bkBuffer = BK.FileUtil.readFile(self._url);
                 if (self._responseType === HttpResponseType.ARRAY_BUFFER) {
-                    // egret_native.readFileAsync(self._url, promise, "ArrayBuffer"); // TODO
-                    $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
+                    const buffer = new ArrayBuffer(bkBuffer.bufferLength());
+                    const uint8Array = new Uint8Array(buffer);
+
+                    while ((bkBuffer as any).pointer < bkBuffer.bufferLength() - 1) {
+                        const result = bkBuffer.readUint8Buffer();
+                        uint8Array[(bkBuffer as any).pointer - 1] = result;
+                    }
+
+                    self._response = buffer as any;
+                    bkBuffer.releaseBuffer();
                 }
                 else {
-                    const bkBuffer = BK.FileUtil.readFile(self._url);
                     self._response = bkBuffer.readAsString();
-                    $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
                 }
+
+                $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
             }
         }
 

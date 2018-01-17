@@ -30,12 +30,19 @@
 console = console || {} as any;
 console.warn = console.log = function (...others: any[]): void {
     let str = "";
-    if (others)
-        for (let other of others)
-            str += other;
+    if (others) {
+        for (let other of others) {
+            str += " " + other;
+        }
+    }
+
     BK.Script.log(0, 0, str);
 };
-console.assert = console.log; // TODO
+console.assert = function (c: boolean, ...others: any[]): void {
+    if (!c) {
+        console.log.apply(null, others);
+    }
+};
 
 namespace egret {
     egret.getTimer = function getTimer(): number {

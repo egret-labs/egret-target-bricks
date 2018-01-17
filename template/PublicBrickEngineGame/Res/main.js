@@ -120,7 +120,6 @@ var __extends = function (t, e) {
 };
 // Egret
 (function () {
-    BK.Script.loadlib('GameRes://script/core/ui/text.js');
     BK.Script.loadlib('GameRes://script/core/render/canvas.js');
     BK.Script.loadlib("GameRes://script/core/net/websocket.js");
     BK.Script.loadlib("GameRes://manifest.js");

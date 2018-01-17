@@ -98,7 +98,6 @@ namespace egret {
             let target = super.$hitTest(stageX, stageY);
             if (target == this) {
                 target = this.$graphics.$hitTest(stageX, stageY);
-                // target = null; // TODO
             }
 
             return target;

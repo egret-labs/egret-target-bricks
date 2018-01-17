@@ -29,8 +29,10 @@ namespace egret {
 
             this.$setTexture(value);
         }
-
-        public $setTexture(value: Texture | null): void {
+        /**
+         * @private
+         */
+        $setTexture(value: Texture | null): void {
             this.$texture = value;
 
             this._transformDirty = true;
