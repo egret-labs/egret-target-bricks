@@ -1032,9 +1032,12 @@ var KWebSocket = (function (_super) {
             this.sendCloseFrame(this.errcode, this.message);
         }
         else if (1 /* CLOSING */ == this.state) {
+            BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!normal closed");
             this.close();
             this.state = 0 /* CLOSED */;
-            BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!normal closed");
+            if (this.delegate.onClose) {
+                this.delegate.onClose(this);
+            }
         }
     };
     KWebSocket.prototype.handlePingFrame = function () {
