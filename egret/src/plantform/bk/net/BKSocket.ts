@@ -77,7 +77,7 @@ namespace egret {
         }
 
         send(message: any): void {
-            if (message instanceof String) {
+            if (typeof message == "string") {
                 this.$websocket.send(message);
             } else if (message instanceof ArrayBuffer) {
                 let b = new egret.ByteArray(message);

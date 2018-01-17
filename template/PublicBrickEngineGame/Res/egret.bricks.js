@@ -1518,7 +1518,7 @@ var egret;
             };
         };
         BKSocket.prototype.send = function (message) {
-            if (message instanceof String) {
+            if (typeof message == "string") {
                 this.$websocket.send(message);
             }
             else if (message instanceof ArrayBuffer) {
