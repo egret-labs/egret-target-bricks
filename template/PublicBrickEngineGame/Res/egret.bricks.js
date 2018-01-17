@@ -4485,25 +4485,67 @@ var egret;
          */
         BKGraphics.prototype.drawRoundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
             //暂不支持
-            // x = +x || 0;
-            // y = +y || 0;
-            // width = +width || 0;
-            // height = +height || 0;
-            // ellipseWidth = +ellipseWidth || 0;
-            // ellipseHeight = +ellipseHeight || 0;
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
-            // strokePath && strokePath.drawRoundRect(x, y, width, height, ellipseWidth, ellipseHeight);
-            // let radiusX = (ellipseWidth * 0.5) | 0;
-            // let radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
-            // let right = x + width;
-            // let bottom = y + height;
-            // let ybw = bottom - radiusY;
-            // this.extendBoundsByPoint(x, y);
-            // this.extendBoundsByPoint(right, bottom);
-            // this.updatePosition(right, ybw);
+            var _x = this.offsetX + x || 0;
+            var _y = this.offsetY - y || 0;
+            width = +width || 0;
+            height = +height || 0;
+            ellipseWidth = +ellipseWidth || 0;
+            ellipseHeight = +ellipseHeight || 0;
+            this.roundRect(x, y, width, height, ellipseWidth, ellipseHeight);
+            var radiusX = (ellipseWidth * 0.5) | 0;
+            var radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
+            var right = x + width;
+            var bottom = y + height;
+            var ybw = bottom - radiusY;
+            this.extendBoundsByPoint(x, y);
+            this.extendBoundsByPoint(right, bottom);
+            this.updatePosition(right, ybw);
             // this.$renderNode.dirtyRender = true;
+        };
+        BKGraphics.prototype.roundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
+            var radiusX = (ellipseWidth * 0.5) | 0;
+            var radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
+            if (!radiusX || !radiusY) {
+                this.drawRect(x, y, width, height);
+                return;
+            }
+            var hw = width * 0.5;
+            var hh = height * 0.5;
+            if (radiusX > hw) {
+                radiusX = hw;
+            }
+            if (radiusY > hh) {
+                radiusY = hh;
+            }
+            if (hw === radiusX && hh === radiusY) {
+                if (radiusX === radiusY) {
+                    this.drawCircle(x + radiusX, y + radiusY, radiusX);
+                }
+                else {
+                    this.drawEllipse(x, y, radiusX * 2, radiusY * 2);
+                }
+                return;
+            }
+            //    A-----B
+            //  H         C
+            //  G         D
+            //    F-----E
+            // 从D点开始，结束在D点
+            var right = x + width;
+            var bottom = y + height;
+            var xlw = x + radiusX;
+            var xrw = right - radiusX;
+            var ytw = y + radiusY;
+            var ybw = bottom - radiusY;
+            this.moveTo(right, ybw);
+            this.curveTo(right, bottom, xrw, bottom);
+            this.lineTo(xlw, bottom);
+            this.curveTo(x, bottom, x, ybw);
+            this.lineTo(x, ytw);
+            this.curveTo(x, y, xlw, y);
+            this.lineTo(xrw, y);
+            this.curveTo(right, y, right, ytw);
+            this.lineTo(right, ybw);
         };
         /**
          * Draw a circle.
@@ -4747,88 +4789,26 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.drawArc = function (x, y, radius, startAngle, endAngle, anticlockwise) {
-            //暂不支持
-            // if (radius < 0 || startAngle === endAngle) {
-            //     return;
-            // }
-            // x = +x || 0;
-            // y = +y || 0;
-            // radius = +radius || 0;
-            // startAngle = +startAngle || 0;
-            // endAngle = +endAngle || 0;
-            // anticlockwise = !!anticlockwise;
-            // startAngle = clampAngle(startAngle);
-            // endAngle = clampAngle(endAngle);
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // if (fillPath) {
-            //     fillPath.$lastX = this.lastX;
-            //     fillPath.$lastY = this.lastY;
-            //     fillPath.drawArc(x, y, radius, startAngle, endAngle, anticlockwise);
-            // }
-            // if (strokePath) {
-            //     strokePath.$lastX = this.lastX;
-            //     strokePath.$lastY = this.lastY;
-            //     strokePath.drawArc(x, y, radius, startAngle, endAngle, anticlockwise);
-            // }
-            // if (anticlockwise) {
-            //     this.arcBounds(x, y, radius, endAngle, startAngle);
-            // }
-            // else {
-            //     this.arcBounds(x, y, radius, startAngle, endAngle);
-            // }
-            // let endX = x + Math.cos(endAngle) * radius;
-            // let endY = y + Math.sin(endAngle) * radius;
-            // this.updatePosition(endX, endY);
-            // this.$renderNode.dirtyRender = true;
-        };
-        /**
-         * @private
-         * 测量圆弧的矩形大小
-         */
-        BKGraphics.prototype.arcBounds = function (x, y, radius, startAngle, endAngle) {
-            //赞不支持
-            // let PI = Math.PI;
-            // if (Math.abs(startAngle - endAngle) < 0.01) {
-            // this.extendBoundsByPoint(x - radius, y - radius);
-            // this.extendBoundsByPoint(x + radius, y + radius);
-            //     return;
-            // }
-            // if (startAngle > endAngle) {
-            //     endAngle += PI * 2;
-            // }
-            // let startX = Math.cos(startAngle) * radius;
-            // let endX = Math.cos(endAngle) * radius;
-            // let xMin = Math.min(startX, endX);
-            // let xMax = Math.max(startX, endX);
-            // let startY = Math.sin(startAngle) * radius;
-            // let endY = Math.sin(endAngle) * radius;
-            // let yMin = Math.min(startY, endY);
-            // let yMax = Math.max(startY, endY);
-            // let startRange = startAngle / (PI * 0.5);
-            // let endRange = endAngle / (PI * 0.5);
-            // for (let i = Math.ceil(startRange); i <= endRange; i++) {
-            //     switch (i % 4) {
-            //         case 0:
-            //             xMax = radius;
-            //             break;
-            //         case 1:
-            //             yMax = radius;
-            //             break;
-            //         case 2:
-            //             xMin = -radius;
-            //             break;
-            //         case 3:
-            //             yMin = -radius;
-            //             break;
-            //     }
-            // }
-            // xMin = Math.floor(xMin);
-            // yMin = Math.floor(yMin);
-            // xMax = Math.ceil(xMax);
-            // yMax = Math.ceil(yMax);
-            // this.extendBoundsByPoint(xMin + x, yMin + y);
-            // this.extendBoundsByPoint(xMax + x, yMax + y);
+            if (radius < 0 || startAngle === endAngle) {
+                return;
+            }
+            var _x = this.offsetX + x || 0;
+            var _y = this.offsetY - y || 0;
+            radius = +radius || 0;
+            startAngle = +startAngle || 0;
+            endAngle = +endAngle || 0;
+            anticlockwise = !!anticlockwise;
+            var _startAngle = clampAngle(-endAngle);
+            var _endAngle = clampAngle(startAngle);
+            this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
+            if (this.isStrokePath && this.isFillPath) {
+                this._BKCanvas.fill();
+                this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
+                this._BKCanvas.stroke();
+            }
+            var endX = x + Math.cos(endAngle) * radius;
+            var endY = y + Math.sin(endAngle) * radius;
+            this.updatePosition(endX, endY);
         };
         /**
          * Clear graphics that are drawn to this Graphics object, and reset fill and line style settings.
@@ -4932,6 +4912,13 @@ var egret;
     }());
     egret.BKGraphics = BKGraphics;
     __reflect(BKGraphics.prototype, "egret.BKGraphics");
+    function clampAngle(value) {
+        value %= Math.PI * 2;
+        if (value < 0) {
+            value += Math.PI * 2;
+        }
+        return value;
+    }
     egret.Graphics = BKGraphics;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////

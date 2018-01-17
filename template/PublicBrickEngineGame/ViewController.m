@@ -8,18 +8,12 @@
 
 #import "ViewController.h"
 #import "DemoGLView.h"
-#include <MobileCoreServices/UTCoreTypes.h>
-
-
-static ViewController* cmshow_view_controler = nil;
-//void openImageSelector(struct bkImageSelector* imageSelector);
 
 @interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     DemoGLView * _glview;
 }
 @end
-
 
 @implementation ViewController
 
@@ -29,50 +23,23 @@ static ViewController* cmshow_view_controler = nil;
     [self addGLView];
     [self loadInitJSScript];
     
-    
     NSString *demoPath = [[NSBundle mainBundle] pathForResource:@"Res/main" ofType:@"js"];
     if(demoPath){
         [_glview execJavaScriptFile:demoPath];
     }
 }
 
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
 -(void)addGLView
 {
-    _glview = [[bkGLView alloc] initWithFrame:CGRectMake(0 , 0, self.view.bounds.size.width, self.view.bounds.size.height)];
-    [_glview initialize];
+    _glview = [[DemoGLView alloc] initWithFrame:CGRectMake(0 , 0, self.view.bounds.size.width, self.view.bounds.size.height)];
     _glview.backgroundColor = [UIColor clearColor];
-    
     [self.view addSubview:_glview];
-    _glview.frame = CGRectMake(0 , 0, self.view.bounds.size.width, self.view.bounds.size.height);
-    cmshow_view_controler = self;
-//    bkDirectorSetSelectImageHandler(_glview.director, openImageSelector);
 }
-
-
-//- (void)selectPhoto:(struct bkImageSelector *)imageSelector {
-//    //    //创建UIImagePickerController对象
-//    UIImagePickerController * imagePicker = [ImagePicker bkCreateImagePicker:imageSelector delegages:(void*)self];
-//    if (imagePicker)
-//    {
-//        [self presentViewController:imagePicker animated:YES completion:nil];
-//    }
-//}
-
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-//    [ImagePicker bkImagePickerControllerCallBack:picker didFinishPickingMediaWithInfo:info];
-//}
-//
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-//{
-//    [ImagePicker bkImagePickerControllerDidCancelCallBack:picker];
-//}
 
 -(void)loadInitJSScript
 {
@@ -96,11 +63,3 @@ static ViewController* cmshow_view_controler = nil;
 }
 
 @end
-
-//void openImageSelector(struct bkImageSelector* imageSelector)
-//{
-//    if (cmshow_view_controler) {
-//        [cmshow_view_controler selectPhoto:imageSelector];
-//    }
-//}
-
