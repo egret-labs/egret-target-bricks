@@ -4,6 +4,9 @@ namespace egret {
         private _contentHeight: number = 0;
         private readonly _size: Size = { width: 0.0, height: 0.0 };
         private readonly _rawGrid: egret.Rectangle = new egret.Rectangle();
+        /**
+         * x y 描述左上角size，width height 描述右下角size
+         */
         private readonly _grid: egret.Rectangle = new egret.Rectangle();
         private readonly _leftTop: BK.Sprite = new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1);
         private readonly _centerTop: BK.Sprite = new BK.Sprite(0, 0, {} as any, 0, 1, 1, 1);
@@ -53,9 +56,6 @@ namespace egret {
             this._centerBottom.setTexture(value);
             this._rightBottom.setTexture(value);
         }
-        /**
-         * x y 描述左上角size，width height 描述右下角size
-         */
         public setScale9Grid(value: egret.Rectangle): void {
             this._rawGrid.setTo(
                 value.x,
