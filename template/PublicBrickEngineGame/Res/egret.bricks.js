@@ -5125,6 +5125,66 @@ var egret;
     }
     egret.Graphics = BKGraphics;
 })(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var localStorage;
+    (function (localStorage) {
+        var BKlocalStorage;
+        (function (BKlocalStorage) {
+            var localStoragePath = "GameSandBox://resource/localStorage";
+            function getItem(key) {
+                if (!BK.FileUtil.isFileExist(localStoragePath))
+                    return undefined;
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                if (!str) {
+                    return undefined;
+                }
+                var data = JSON.parse(str);
+                if (data) {
+                    return data[key];
+                }
+                return undefined;
+                // return "";
+            }
+            function setItem(key, value) {
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                var data = {};
+                if (str) {
+                    var parseData = JSON.parse(str);
+                    if (parseData) {
+                        data = parseData;
+                    }
+                }
+                data[key] = value;
+                var data_str = JSON.stringify(data);
+                BK.FileUtil.writeFile(localStoragePath, data_str);
+                return true;
+            }
+            function removeItem(key) {
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                if (!str)
+                    return;
+                var data = JSON.parse(str);
+                if (!data || !data[key])
+                    return;
+                delete data[key];
+                var data_str = JSON.stringify(data);
+                BK.FileUtil.writeFile(localStoragePath, data_str);
+            }
+            function clear() {
+                if (!BK.FileUtil.isFileExist(localStoragePath))
+                    return;
+                var data = {};
+                var data_str = JSON.stringify(data);
+                BK.FileUtil.writeFile(localStoragePath, data_str);
+            }
+            egret.localStorage.setItem = setItem;
+            egret.localStorage.getItem = getItem;
+            egret.localStorage.removeItem = removeItem;
+            egret.localStorage.clear = clear;
+        })(BKlocalStorage = localStorage.BKlocalStorage || (localStorage.BKlocalStorage = {}));
+    })(localStorage = egret.localStorage || (egret.localStorage = {}));
+})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.

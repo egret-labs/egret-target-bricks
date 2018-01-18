@@ -38,6 +38,7 @@
         "./src/plantform/bk/Sound.ts",
         "./src/plantform/bk/SoundChannel.ts",
         "./src/plantform/bk/Graphics.ts",
+        "./src/plantform/bk/localStorage.ts",
         "./src/plantform/bk/Stage.ts",
         "./src/plantform/bk/Player.ts",
         "./src/plantform/bk/HTML5StageText.ts",
