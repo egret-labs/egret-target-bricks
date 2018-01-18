@@ -55,6 +55,31 @@ namespace egret {
         /**
          * @override
          */
+        public set blendMode(value: string) {
+            let self = this;
+            let mode = sys.blendModeToNumber(value);
+            self.$blendMode = mode;
+
+            // MD
+            switch (value) {
+                case egret.BlendMode.NORMAL:
+                    (this._bkNode as any).blendMode = 1;
+                    break;
+
+                case egret.BlendMode.ADD:
+                    (this._bkNode as any).blendMode = 0;
+                    break;
+
+                case egret.BlendMode.ERASE:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        /**
+         * @override
+         */
         $setX(value: number): boolean {
             let self = this;
             if (self.$x == value) {

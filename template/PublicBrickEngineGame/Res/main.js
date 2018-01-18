@@ -109,7 +109,7 @@
 
 //
 var window = this;
-this.navigator = { userAgent: "BK" };
+this.navigator = { userAgent: "bricks" };
 this.setTimeout = this.setTimeout || function () { };
 var __extends = function (t, e) {
     function r() {

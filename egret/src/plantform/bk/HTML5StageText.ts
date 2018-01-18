@@ -76,12 +76,12 @@ namespace egret {
         }
 
         private onKeyboardInput(data): void {
-            this.textValue = data.value;
+            this.textValue = data;
             egret.Event.dispatchEvent(this, "updateText", false);
         }
 
         private onKeyboardComplete(res): void {
-            this.$textfield.text = res.value;
+            this.$textfield.text = res;
             this.$hide();
         }
 

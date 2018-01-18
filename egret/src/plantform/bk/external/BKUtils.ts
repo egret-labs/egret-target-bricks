@@ -1,4 +1,6 @@
 namespace egret {
+    export const emptyTexture = new BK.Texture('GameRes://resource/empty.png');
+
     export function defineProxyProperties(target: any, proxy: any): void {
         const names = Object.getOwnPropertyNames(target);
         for (let key of names) {
@@ -11,5 +13,19 @@ namespace egret {
                 }
             });
         }
+    }
+
+    export function bricksBufferToArrayBuffer(bricksBuffer: BK.Buffer): ArrayBuffer {
+        const arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        let pointer = 0;
+        while (pointer < bricksBuffer.bufferLength() - 1) {
+            const result = bricksBuffer.readUint8Buffer();
+            uint8Array[pointer++] = result;
+        }
+
+        // bricksBuffer.releaseBuffer();
+        return arrayBuffer;
     }
 }
