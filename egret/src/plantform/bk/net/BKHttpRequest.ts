@@ -8,7 +8,7 @@ namespace egret {
             this._responseType = value;
         }
 
-        private _response: string;
+        private _response: any;
         public get response(): any {
             return this._response;
         }
@@ -57,15 +57,13 @@ namespace egret {
                 this._bkHttpRequest.setHttpCookie(data); // 如何传 head
                 this._bkHttpRequest.requestAsync((res, code) => { // 不知道 code 给的什么
                     if (Number(code) === 200) {
-                        let result: string;
                         if (self._responseType === HttpResponseType.ARRAY_BUFFER) {
-                            // TODO
+                            self._response = bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            result = res.readAsString() || "";
+                            self._response = res.readAsString() || "";
                         }
 
-                        self._response = result;
                         $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
                     }
                     else {
@@ -88,19 +86,10 @@ namespace egret {
             else {
                 const bkBuffer = BK.FileUtil.readFile(self._url);
                 if (self._responseType === HttpResponseType.ARRAY_BUFFER) {
-                    const buffer = new ArrayBuffer(bkBuffer.bufferLength());
-                    const uint8Array = new Uint8Array(buffer);
-
-                    while ((bkBuffer as any).pointer < bkBuffer.bufferLength() - 1) {
-                        const result = bkBuffer.readUint8Buffer();
-                        uint8Array[(bkBuffer as any).pointer - 1] = result;
-                    }
-
-                    self._response = buffer as any;
-                    bkBuffer.releaseBuffer();
+                    self._response = bricksBufferToArrayBuffer(bkBuffer);
                 }
                 else {
-                    self._response = bkBuffer.readAsString();
+                    self._response = bkBuffer.readAsString() || "";
                 }
 
                 $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
