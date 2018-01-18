@@ -66,10 +66,7 @@ namespace egret {
                         result = data.data.readAsString();
                     } else {
                         let bkbuffer: BK.Buffer = data.data;
-                        let msg = bkbuffer.readAsString();
-                        let writeByte = new egret.ByteArray();
-                        writeByte.writeUTF(msg);
-                        result = writeByte.rawBuffer;
+                        result = bricksBufferToArrayBuffer(bkbuffer);
                     }
                     that.onSocketData.call(that.thisObject, result);
                 }
