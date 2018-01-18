@@ -143,7 +143,7 @@ namespace egret {
             this._rightTop.size = { width: rbW, height: ltH + 1 };
             this._leftCenter.size = { width: ltW + 1, height: centerHeight + 1 };
             this._centerCenter.size = { width: centerWidth + 1, height: centerHeight + 1 };
-            this._rightCenter.size = { width: rbW + 1, height: centerHeight + 1 };
+            this._rightCenter.size = { width: rbW, height: centerHeight + 1 };
             this._leftBottom.size = { width: ltW + 1, height: rbH };
             this._centerBottom.size = { width: centerWidth + 1, height: rbH };
             this._rightBottom.size = { width: rbW, height: rbH };

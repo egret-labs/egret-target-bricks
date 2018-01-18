@@ -108,11 +108,13 @@ namespace egret {
 
             Object.defineProperty(eui.Image.prototype, "scale9Grid", {
                 set: function (this: BKImage, value: egret.Rectangle | null): void {
-                    this.$setScale9Grid(value);
+                    (this as any).$setScale9Grid(value);
+                    this.invalidateDisplayList();
                 },
                 enumerable: true,
                 configurable: true
             });
+            
             eui.Image.prototype.$getRenderNode = function (this: BKImage): any {
                 let image = this.$bitmapData;
                 if (!image) {

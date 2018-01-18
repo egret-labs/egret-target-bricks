@@ -70,7 +70,7 @@ namespace egret {
             this.$setScale9Grid(value);
         }
 
-        $setScale9Grid(value: egret.Rectangle | null): void {
+        protected $setScale9Grid(value: egret.Rectangle | null): void {
             let self = this;
             if (self.$scale9Grid == value) {
                 return;

@@ -167,6 +167,8 @@ namespace egret {
                 36: null,           //restrictNot
                 37: TextFieldInputType.TEXT            //inputType
             };
+
+            this.$TextField[sys.TextKeys.lineSpacing] = 10; // MD
         }
 
         /**
@@ -258,9 +260,7 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
             this._style.fontSize = value;
-            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -298,9 +298,7 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
             this._style.bold = value ? 1 : 0;
-            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -338,9 +336,7 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
             this._style.italic = value ? 1 : 0;
-            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -386,7 +382,6 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
 
             switch (value) {
                 case egret.HorizontalAlign.LEFT:
@@ -399,8 +394,6 @@ namespace egret {
                     this._style.textAlign = 2;
                     break;
             }
-
-            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -460,7 +453,7 @@ namespace egret {
         }
 
         public set lineSpacing(value: number) {
-            this.$setLineSpacing(value);
+            // this.$setLineSpacing(value); TODO
         }
 
         $setLineSpacing(value: number): boolean {
@@ -515,9 +508,7 @@ namespace egret {
             let new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
             let argb_num = parseInt(new_argb_str, 16);
 
-            this._styleDirty = true;
             this._style.textColor = argb_num;
-            this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
             return true;
         }
@@ -714,8 +705,6 @@ namespace egret {
 
                 // MD
                 this._transformDirty = true;
-                this._styleDirty = true;
-                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -827,9 +816,7 @@ namespace egret {
                 let new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
                 let argb_num = parseInt(new_argb_str, 16);
 
-                this._styleDirty = true;
                 this._style.strokeColor = argb_num;
-                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -874,9 +861,7 @@ namespace egret {
 
                 // MD
                 this._transformDirty = true;
-                this._styleDirty = true;
                 this._style.strokeSize = value;
-                this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
 
                 return true;
             }
@@ -1173,7 +1158,6 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
             this._style.width = this._style.maxWidth = values[sys.TextKeys.textFieldWidth];
 
             return true;
@@ -1209,7 +1193,6 @@ namespace egret {
 
             // MD
             this._transformDirty = true;
-            this._styleDirty = true;
             this._style.height = this._style.maxHeight = values[sys.TextKeys.textFieldHeight];
 
             return true;
@@ -1526,9 +1509,9 @@ namespace egret {
             this.$getLinesArr();
 
             let w: number = !isNaN(this.$TextField[sys.TextKeys.textFieldWidth]) ? this.$TextField[sys.TextKeys.textFieldWidth] : this.$TextField[sys.TextKeys.textWidth];
-            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this as any);
+            let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this as any);
             // MD
-            let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : this.$TextField[sys.TextKeys.textHeight];
+            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : this.$TextField[sys.TextKeys.textHeight];
             bounds.setTo(0, 0, w, h);
         }
 
@@ -1673,9 +1656,9 @@ namespace egret {
          */
         public get textHeight(): number {
             this.$getLinesArr();
-            // return TextFieldUtils.$getTextHeight(this as any);
-            // MD
-            return this.$TextField[sys.TextKeys.textHeight];
+            return TextFieldUtils.$getTextHeight(this as any);
+            // // MD
+            // return this.$TextField[sys.TextKeys.textHeight];
         }
 
         /**
@@ -1727,259 +1710,259 @@ namespace egret {
             values[sys.TextKeys.textLinesChanged] = false;
 
             // MD
-            values[sys.TextKeys.numLines] = 1;
+            // values[sys.TextKeys.numLines] = 1;
 
-            if (values[sys.TextKeys.text]) {
-                const textFieldWidth = values[sys.TextKeys.textFieldWidth];
-                if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
-                    values[sys.TextKeys.numLines] = 0;
-                    return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
+            // if (values[sys.TextKeys.text]) {
+            //     const textFieldWidth = values[sys.TextKeys.textFieldWidth];
+            //     if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
+            //         values[sys.TextKeys.numLines] = 0;
+            //         return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
+            //     }
+
+            //     values[sys.TextKeys.textWidth] = bkMeasureText(this.$getText(), this.fontFamily, this.size, this.bold, this.italic); // 
+            //     values[sys.TextKeys.textHeight] = (defaultText as any).height;
+            // }
+            // else {
+            //     values[sys.TextKeys.textWidth] = 0;
+            //     values[sys.TextKeys.textHeight] = 0;
+            // }
+
+            // return this.linesArr;
+
+            let text2Arr: Array<egret.ITextElement> = this.textArr;
+
+            this.linesArr.length = 0;
+            values[sys.TextKeys.textHeight] = 0;
+            values[sys.TextKeys.textWidth] = 0;
+
+            let textFieldWidth: number = values[sys.TextKeys.textFieldWidth];
+            //宽度被设置为0
+            if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
+                values[sys.TextKeys.numLines] = 0;
+                return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
+            }
+
+            let linesArr: Array<egret.ILineElement> = this.linesArr;
+            let lineW: number = 0;
+            let lineCharNum: number = 0;
+            let lineH: number = 0;
+            let lineCount: number = 0;
+            let lineElement: egret.ILineElement;
+
+            for (let i: number = 0, text2ArrLength: number = text2Arr.length; i < text2ArrLength; i++) {
+                let element: egret.ITextElement = text2Arr[i];
+                //可能设置为没有文本，忽略绘制
+                if (!element.text) {
+                    if (lineElement) {
+                        lineElement.width = lineW;
+                        lineElement.height = lineH;
+                        lineElement.charNum = lineCharNum;
+                        values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
+                        values[sys.TextKeys.textHeight] += lineH;
+                    }
+                    continue;
+                }
+                element.style = element.style || <egret.ITextStyle>{};
+
+                let text: string = element.text.toString();
+                let textArr: string[] = text.split(/(?:\r\n|\r|\n)/);
+
+                for (let j: number = 0, textArrLength: number = textArr.length; j < textArrLength; j++) {
+                    if (linesArr[lineCount] == null) {
+                        lineElement = { width: 0, height: 0, elements: [], charNum: 0, hasNextLine: false };
+                        linesArr[lineCount] = lineElement;
+                        lineW = 0;
+                        lineH = 0;
+                        lineCharNum = 0;
+                    }
+
+                    if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT) {
+                        lineH = values[sys.TextKeys.fontSize];
+                    }
+                    else {
+                        lineH = Math.max(lineH, element.style.size || values[sys.TextKeys.fontSize]);
+                    }
+
+                    let isNextLine: boolean = true;
+                    if (textArr[j] == "") {
+                        if (j == textArrLength - 1) {
+                            isNextLine = false;
+                        }
+                    }
+                    else {
+                        let w: number = measureTextWidth(textArr[j], values, element.style);
+                        if (isNaN(textFieldWidth)) {//没有设置过宽
+                            lineW += w;
+                            lineCharNum += textArr[j].length;
+                            lineElement.elements.push(<egret.IWTextElement>{
+                                width: w,
+                                text: textArr[j],
+                                style: element.style
+                            });
+
+                            if (j == textArrLength - 1) {
+                                isNextLine = false;
+                            }
+                        }
+                        else {
+                            if (lineW + w <= textFieldWidth) {//在设置范围内
+                                lineElement.elements.push(<egret.IWTextElement>{
+                                    width: w,
+                                    text: textArr[j],
+                                    style: element.style
+                                });
+                                lineW += w;
+                                lineCharNum += textArr[j].length;
+
+                                if (j == textArrLength - 1) {
+                                    isNextLine = false;
+                                }
+                            }
+                            else {
+                                let k: number = 0;
+                                let ww: number = 0;
+                                let word: string = textArr[j];
+                                let words: string[];
+                                if (values[sys.TextKeys.wordWrap]) {
+                                    words = word.split(SplitRegex);
+                                }
+                                else {
+                                    words = word.match(/./g);
+                                }
+                                let wl: number = words.length;
+                                let charNum = 0;
+                                for (; k < wl; k++) {
+
+                                    // detect 4 bytes unicode, refer https://mths.be/punycode
+                                    var codeLen = words[k].length;
+                                    var has4BytesUnicode = false;
+                                    if (codeLen == 1 && k < wl - 1) // when there is 2 bytes high surrogate
+                                    {
+                                        var charCodeHigh = words[k].charCodeAt(0);
+                                        var charCodeLow = words[k + 1].charCodeAt(0);
+                                        if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
+                                            var realWord = words[k] + words[k + 1];
+                                            codeLen = 2;
+                                            has4BytesUnicode = true;
+                                            w = measureTextWidth(realWord, values, element.style);
+                                        } else {
+                                            w = measureTextWidth(words[k], values, element.style);
+                                        }
+                                    } else {
+                                        w = measureTextWidth(words[k], values, element.style);
+                                    }
+
+                                    // w = measureTextWidth(words[k], values, element.style);
+                                    if (lineW != 0 && lineW + w > textFieldWidth && lineW + k != 0) {
+                                        break;
+                                    }
+                                    if (ww + w > textFieldWidth) {//纯英文，一个词就超出宽度的情况
+                                        var words2: Array<string> = words[k].match(/./g);
+                                        for (var k2 = 0, wl2 = words2.length; k2 < wl2; k2++) {
+
+                                            // detect 4 bytes unicode, refer https://mths.be/punycode
+                                            var codeLen = words2[k2].length;
+                                            var has4BytesUnicode2 = false;
+                                            if (codeLen == 1 && k2 < wl2 - 1) // when there is 2 bytes high surrogate
+                                            {
+                                                var charCodeHigh = words2[k2].charCodeAt(0);
+                                                var charCodeLow = words2[k2 + 1].charCodeAt(0);
+                                                if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
+                                                    var realWord = words2[k2] + words2[k2 + 1];
+                                                    codeLen = 2;
+                                                    has4BytesUnicode2 = true;
+                                                    w = measureTextWidth(realWord, values, element.style);
+                                                } else {
+                                                    w = measureTextWidth(words2[k2], values, element.style);
+                                                }
+                                            } else {
+                                                w = measureTextWidth(words2[k2], values, element.style);
+                                            }
+                                            // w = measureTextWidth(words2[k2], values, element.style);
+
+                                            if (k2 > 0 && lineW + w > textFieldWidth) {
+                                                break;
+                                            }
+                                            // charNum += words2[k2].length;
+                                            charNum += codeLen;
+                                            ww += w;
+                                            lineW += w;
+                                            lineCharNum += charNum;
+
+                                            if (has4BytesUnicode2) {
+                                                k2++;
+                                            }
+                                        }
+                                    } else {
+                                        // charNum += words[k].length;
+                                        charNum += codeLen;
+                                        ww += w;
+                                        lineW += w;
+                                        lineCharNum += charNum;
+                                    }
+
+                                    if (has4BytesUnicode) {
+                                        k++;
+                                    }
+
+                                }
+
+                                if (k > 0) {
+                                    lineElement.elements.push(<egret.IWTextElement>{
+                                        width: ww,
+                                        text: word.substring(0, charNum),
+                                        style: element.style
+                                    });
+
+                                    let leftWord: string = word.substring(charNum);
+                                    let m: number;
+                                    let lwleng = leftWord.length;
+                                    for (m = 0; m < lwleng; m++) {
+                                        if (leftWord.charAt(m) != " ") {
+                                            break;
+                                        }
+                                    }
+                                    textArr[j] = leftWord.substring(m);
+                                }
+                                if (textArr[j] != "") {
+                                    j--;
+                                    isNextLine = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (isNextLine) {
+                        lineCharNum++;
+                        lineElement.hasNextLine = true;
+                    }
+
+                    if (j < textArr.length - 1) {//非最后一个
+                        lineElement.width = lineW;
+                        lineElement.height = lineH;
+                        lineElement.charNum = lineCharNum;
+                        values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
+                        values[sys.TextKeys.textHeight] += lineH;
+
+                        //if (this._type == TextFieldType.INPUT && !this._multiline) {
+                        //    this._numLines = linesArr.length;
+                        //    return linesArr;
+                        //}
+                        lineCount++;
+                    }
                 }
 
-                values[sys.TextKeys.textWidth] = bkMeasureText(this.$getText(), this.fontFamily, this.size, this.bold, this.italic); // 
-                values[sys.TextKeys.textHeight] = (defaultText as any).height;
+                if (i == text2Arr.length - 1 && lineElement) {
+                    lineElement.width = lineW;
+                    lineElement.height = lineH;
+                    lineElement.charNum = lineCharNum;
+                    values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
+                    values[sys.TextKeys.textHeight] += lineH;
+                }
             }
-            else {
-                values[sys.TextKeys.textWidth] = 0;
-                values[sys.TextKeys.textHeight] = 0;
-            }
 
-            return this.linesArr;
-
-            // let text2Arr: Array<egret.ITextElement> = this.textArr;
-
-            // this.linesArr.length = 0;
-            // values[sys.TextKeys.textHeight] = 0;
-            // values[sys.TextKeys.textWidth] = 0;
-
-            // let textFieldWidth: number = values[sys.TextKeys.textFieldWidth];
-            // //宽度被设置为0
-            // if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
-            //     values[sys.TextKeys.numLines] = 0;
-            //     return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
-            // }
-
-            // let linesArr: Array<egret.ILineElement> = this.linesArr;
-            // let lineW: number = 0;
-            // let lineCharNum: number = 0;
-            // let lineH: number = 0;
-            // let lineCount: number = 0;
-            // let lineElement: egret.ILineElement;
-
-            // for (let i: number = 0, text2ArrLength: number = text2Arr.length; i < text2ArrLength; i++) {
-            //     let element: egret.ITextElement = text2Arr[i];
-            //     //可能设置为没有文本，忽略绘制
-            //     if (!element.text) {
-            //         if (lineElement) {
-            //             lineElement.width = lineW;
-            //             lineElement.height = lineH;
-            //             lineElement.charNum = lineCharNum;
-            //             values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //             values[sys.TextKeys.textHeight] += lineH;
-            //         }
-            //         continue;
-            //     }
-            //     element.style = element.style || <egret.ITextStyle>{};
-
-            //     let text: string = element.text.toString();
-            //     let textArr: string[] = text.split(/(?:\r\n|\r|\n)/);
-
-            //     for (let j: number = 0, textArrLength: number = textArr.length; j < textArrLength; j++) {
-            //         if (linesArr[lineCount] == null) {
-            //             lineElement = { width: 0, height: 0, elements: [], charNum: 0, hasNextLine: false };
-            //             linesArr[lineCount] = lineElement;
-            //             lineW = 0;
-            //             lineH = 0;
-            //             lineCharNum = 0;
-            //         }
-
-            //         if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT) {
-            //             lineH = values[sys.TextKeys.fontSize];
-            //         }
-            //         else {
-            //             lineH = Math.max(lineH, element.style.size || values[sys.TextKeys.fontSize]);
-            //         }
-
-            //         let isNextLine: boolean = true;
-            //         if (textArr[j] == "") {
-            //             if (j == textArrLength - 1) {
-            //                 isNextLine = false;
-            //             }
-            //         }
-            //         else {
-            //             let w: number = measureTextWidth(textArr[j], values, element.style);
-            //             if (isNaN(textFieldWidth)) {//没有设置过宽
-            //                 lineW += w;
-            //                 lineCharNum += textArr[j].length;
-            //                 lineElement.elements.push(<egret.IWTextElement>{
-            //                     width: w,
-            //                     text: textArr[j],
-            //                     style: element.style
-            //                 });
-
-            //                 if (j == textArrLength - 1) {
-            //                     isNextLine = false;
-            //                 }
-            //             }
-            //             else {
-            //                 if (lineW + w <= textFieldWidth) {//在设置范围内
-            //                     lineElement.elements.push(<egret.IWTextElement>{
-            //                         width: w,
-            //                         text: textArr[j],
-            //                         style: element.style
-            //                     });
-            //                     lineW += w;
-            //                     lineCharNum += textArr[j].length;
-
-            //                     if (j == textArrLength - 1) {
-            //                         isNextLine = false;
-            //                     }
-            //                 }
-            //                 else {
-            //                     let k: number = 0;
-            //                     let ww: number = 0;
-            //                     let word: string = textArr[j];
-            //                     let words: string[];
-            //                     if (values[sys.TextKeys.wordWrap]) {
-            //                         words = word.split(SplitRegex);
-            //                     }
-            //                     else {
-            //                         words = word.match(/./g);
-            //                     }
-            //                     let wl: number = words.length;
-            //                     let charNum = 0;
-            //                     for (; k < wl; k++) {
-
-            //                         // detect 4 bytes unicode, refer https://mths.be/punycode
-            //                         var codeLen = words[k].length;
-            //                         var has4BytesUnicode = false;
-            //                         if (codeLen == 1 && k < wl - 1) // when there is 2 bytes high surrogate
-            //                         {
-            //                             var charCodeHigh = words[k].charCodeAt(0);
-            //                             var charCodeLow = words[k + 1].charCodeAt(0);
-            //                             if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-            //                                 var realWord = words[k] + words[k + 1];
-            //                                 codeLen = 2;
-            //                                 has4BytesUnicode = true;
-            //                                 w = measureTextWidth(realWord, values, element.style);
-            //                             } else {
-            //                                 w = measureTextWidth(words[k], values, element.style);
-            //                             }
-            //                         } else {
-            //                             w = measureTextWidth(words[k], values, element.style);
-            //                         }
-
-            //                         // w = measureTextWidth(words[k], values, element.style);
-            //                         if (lineW != 0 && lineW + w > textFieldWidth && lineW + k != 0) {
-            //                             break;
-            //                         }
-            //                         if (ww + w > textFieldWidth) {//纯英文，一个词就超出宽度的情况
-            //                             var words2: Array<string> = words[k].match(/./g);
-            //                             for (var k2 = 0, wl2 = words2.length; k2 < wl2; k2++) {
-
-            //                                 // detect 4 bytes unicode, refer https://mths.be/punycode
-            //                                 var codeLen = words2[k2].length;
-            //                                 var has4BytesUnicode2 = false;
-            //                                 if (codeLen == 1 && k2 < wl2 - 1) // when there is 2 bytes high surrogate
-            //                                 {
-            //                                     var charCodeHigh = words2[k2].charCodeAt(0);
-            //                                     var charCodeLow = words2[k2 + 1].charCodeAt(0);
-            //                                     if (charCodeHigh >= 0xD800 && charCodeHigh <= 0xDBFF && (charCodeLow & 0xFC00) == 0xDC00) { // low
-            //                                         var realWord = words2[k2] + words2[k2 + 1];
-            //                                         codeLen = 2;
-            //                                         has4BytesUnicode2 = true;
-            //                                         w = measureTextWidth(realWord, values, element.style);
-            //                                     } else {
-            //                                         w = measureTextWidth(words2[k2], values, element.style);
-            //                                     }
-            //                                 } else {
-            //                                     w = measureTextWidth(words2[k2], values, element.style);
-            //                                 }
-            //                                 // w = measureTextWidth(words2[k2], values, element.style);
-
-            //                                 if (k2 > 0 && lineW + w > textFieldWidth) {
-            //                                     break;
-            //                                 }
-            //                                 // charNum += words2[k2].length;
-            //                                 charNum += codeLen;
-            //                                 ww += w;
-            //                                 lineW += w;
-            //                                 lineCharNum += charNum;
-
-            //                                 if (has4BytesUnicode2) {
-            //                                     k2++;
-            //                                 }
-            //                             }
-            //                         } else {
-            //                             // charNum += words[k].length;
-            //                             charNum += codeLen;
-            //                             ww += w;
-            //                             lineW += w;
-            //                             lineCharNum += charNum;
-            //                         }
-
-            //                         if (has4BytesUnicode) {
-            //                             k++;
-            //                         }
-
-            //                     }
-
-            //                     if (k > 0) {
-            //                         lineElement.elements.push(<egret.IWTextElement>{
-            //                             width: ww,
-            //                             text: word.substring(0, charNum),
-            //                             style: element.style
-            //                         });
-
-            //                         let leftWord: string = word.substring(charNum);
-            //                         let m: number;
-            //                         let lwleng = leftWord.length;
-            //                         for (m = 0; m < lwleng; m++) {
-            //                             if (leftWord.charAt(m) != " ") {
-            //                                 break;
-            //                             }
-            //                         }
-            //                         textArr[j] = leftWord.substring(m);
-            //                     }
-            //                     if (textArr[j] != "") {
-            //                         j--;
-            //                         isNextLine = false;
-            //                     }
-            //                 }
-            //             }
-            //         }
-
-            //         if (isNextLine) {
-            //             lineCharNum++;
-            //             lineElement.hasNextLine = true;
-            //         }
-
-            //         if (j < textArr.length - 1) {//非最后一个
-            //             lineElement.width = lineW;
-            //             lineElement.height = lineH;
-            //             lineElement.charNum = lineCharNum;
-            //             values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //             values[sys.TextKeys.textHeight] += lineH;
-
-            //             //if (this._type == TextFieldType.INPUT && !this._multiline) {
-            //             //    this._numLines = linesArr.length;
-            //             //    return linesArr;
-            //             //}
-            //             lineCount++;
-            //         }
-            //     }
-
-            //     if (i == text2Arr.length - 1 && lineElement) {
-            //         lineElement.width = lineW;
-            //         lineElement.height = lineH;
-            //         lineElement.charNum = lineCharNum;
-            //         values[sys.TextKeys.textWidth] = Math.max(values[sys.TextKeys.textWidth], lineW);
-            //         values[sys.TextKeys.textHeight] += lineH;
-            //     }
-            // }
-
-            // values[sys.TextKeys.numLines] = linesArr.length;
-            // return linesArr;
+            values[sys.TextKeys.numLines] = linesArr.length;
+            return linesArr;
         }
 
         /**
@@ -1992,9 +1975,9 @@ namespace egret {
          * 返回要绘制的下划线列表
          */
         private drawText(): number[] {
-            // let node = this.textNode;
-            // let values = this.$TextField;
-            // //更新文本样式
+            // let node = this.textNode; // MD
+            let values = this.$TextField;
+            //更新文本样式 // MD
             // node.bold = values[sys.TextKeys.bold];
             // node.fontFamily = values[sys.TextKeys.fontFamily] || TextField.default_fontFamily;
             // node.italic = values[sys.TextKeys.italic];
@@ -2002,64 +1985,63 @@ namespace egret {
             // node.stroke = values[sys.TextKeys.stroke];
             // node.strokeColor = values[sys.TextKeys.strokeColor];
             // node.textColor = values[sys.TextKeys.textColor];
-            // //先算出需要的数值
-            // let lines: Array<egret.ILineElement> = this.$getLinesArr();
-            // if (values[sys.TextKeys.textWidth] == 0) {
-            //     return [];
-            // }
+            //先算出需要的数值
+            let lines: Array<egret.ILineElement> = this.$getLinesArr();
+            if (values[sys.TextKeys.textWidth] == 0) {
+                return [];
+            }
 
-            // let maxWidth: number = !isNaN(values[sys.TextKeys.textFieldWidth]) ? values[sys.TextKeys.textFieldWidth] : values[sys.TextKeys.textWidth];
-            // let textHeight: number = TextFieldUtils.$getTextHeight(this);
+            let maxWidth: number = !isNaN(values[sys.TextKeys.textFieldWidth]) ? values[sys.TextKeys.textFieldWidth] : values[sys.TextKeys.textWidth];
+            let textHeight: number = TextFieldUtils.$getTextHeight(this as any); // MD
 
-            // let drawY: number = 0;
-            // let startLine: number = TextFieldUtils.$getStartLine(this);
+            let drawY: number = 0;
+            let startLine: number = TextFieldUtils.$getStartLine(this as any); // MD
 
-            // let textFieldHeight: number = values[sys.TextKeys.textFieldHeight];
-            // if (!isNaN(textFieldHeight) && textFieldHeight > textHeight) {
-            //     let vAlign: number = TextFieldUtils.$getValign(this);
-            //     drawY += vAlign * (textFieldHeight - textHeight);
-            // }
-            // drawY = Math.round(drawY);
-            // let hAlign: number = TextFieldUtils.$getHalign(this);
+            let textFieldHeight: number = values[sys.TextKeys.textFieldHeight];
+            if (!isNaN(textFieldHeight) && textFieldHeight > textHeight) {
+                let vAlign: number = TextFieldUtils.$getValign(this as any); // MD
+                drawY += vAlign * (textFieldHeight - textHeight);
+            }
+            drawY = Math.round(drawY);
+            let hAlign: number = TextFieldUtils.$getHalign(this as any); // MD
 
-            // let drawX: number = 0;
-            // let underLineData: number[] = [];
-            // for (let i: number = startLine, numLinesLength: number = values[sys.TextKeys.numLines]; i < numLinesLength; i++) {
-            //     let line: egret.ILineElement = lines[i];
-            //     let h: number = line.height;
-            //     drawY += h / 2;
-            //     if (i != startLine) {
-            //         if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT && !values[sys.TextKeys.multiline]) {
-            //             break;
-            //         }
-            //         if (!isNaN(textFieldHeight) && drawY > textFieldHeight) {
-            //             break;
-            //         }
-            //     }
+            let drawX: number = 0;
+            let underLineData: number[] = [];
+            for (let i: number = startLine, numLinesLength: number = values[sys.TextKeys.numLines]; i < numLinesLength; i++) {
+                let line: egret.ILineElement = lines[i];
+                let h: number = line.height;
+                drawY += h / 2;
+                if (i != startLine) {
+                    if (values[sys.TextKeys.type] == egret.TextFieldType.INPUT && !values[sys.TextKeys.multiline]) {
+                        break;
+                    }
+                    if (!isNaN(textFieldHeight) && drawY > textFieldHeight) {
+                        break;
+                    }
+                }
 
-            //     drawX = Math.round((maxWidth - line.width) * hAlign);
-            //     for (let j: number = 0, elementsLength: number = line.elements.length; j < elementsLength; j++) {
-            //         let element: egret.IWTextElement = line.elements[j];
-            //         let size: number = element.style.size || values[sys.TextKeys.fontSize];
+                drawX = Math.round((maxWidth - line.width) * hAlign);
+                for (let j: number = 0, elementsLength: number = line.elements.length; j < elementsLength; j++) {
+                    let element: egret.IWTextElement = line.elements[j];
+                    let size: number = element.style.size || values[sys.TextKeys.fontSize];
 
-            //         node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
+                    // node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style); // MD
 
-            //         if (element.style.underline) {
-            //             underLineData.push(
-            //                 drawX,
-            //                 drawY + (h) / 2,
-            //                 element.width,
-            //                 element.style.textColor
-            //             );
-            //         }
+                    if (element.style.underline) {
+                        underLineData.push(
+                            drawX,
+                            drawY + (h) / 2,
+                            element.width,
+                            element.style.textColor
+                        );
+                    }
 
-            //         drawX += element.width;
-            //     }
-            //     drawY += h / 2 + values[sys.TextKeys.lineSpacing];
-            // }
+                    drawX += element.width;
+                }
+                drawY += h / 2 + values[sys.TextKeys.lineSpacing];
+            }
 
-            // return underLineData;
-            return []; // MD
+            return underLineData;
         }
 
         //增加点击事件
@@ -2096,7 +2078,6 @@ namespace egret {
         }
 
         // MD
-        private _styleDirty: boolean = true;
         private readonly _bkText: any; // BK.TextNode
         private readonly _style: BK.TextStyle = {
             fontSize: TextField.default_size,
@@ -2127,11 +2108,36 @@ namespace egret {
 
         // MD
         $getRenderNode(): sys.RenderNode {
-            if (this._styleDirty) { // 宽高即时更新太卡，需要延时处理。
-                this._styleDirty = false;
+            if (this.$renderDirty) {
+                this.$renderDirty = false;
+
+                if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
+                    this.inputUtils._updateProperties();
+                    if (this.$isTyping) {
+                        this.fillBackground();
+                        return;
+                    }
+                }
+                else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
+                    let graphics = this.graphicsNode;
+                    if (graphics) {
+                        graphics.clear();
+                    }
+                    return;
+                }
+
+                let underLines = this.drawText();
+                this.fillBackground(underLines);
+                //tudo 宽高很小的情况下webgl模式绘制异常
+                let bounds = this.$getRenderBounds();
+                this._style.width = this._style.maxWidth = Math.ceil(bounds.width);
+                this._style.height = this._style.maxHeight = Math.ceil(bounds.height);
+                Rectangle.release(bounds);
+
                 this._bkText.updateText(this._style, this.$TextField[sys.TextKeys.text]);
             }
 
+            //
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
 
@@ -2184,9 +2190,9 @@ namespace egret {
         fontSize: TextField.default_size,
         textColor: TextField.default_textColor + 0xFF000000,
         maxWidth: 1280,
-        maxHeight: 256,
+        maxHeight: 512,
         width: 1280,
-        height: 256,
+        height: 512,
         textAlign: 0,
         bold: 0,
         italic: 0,
