@@ -948,180 +948,119 @@ var egret;
     // MD
     egret.DisplayObjectContainer = BKDisplayObjectContainer;
 })(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    var BKBitmap = (function (_super) {
-        __extends(BKBitmap, _super);
-        function BKBitmap(value) {
-            if (value === void 0) { value = null; }
-            var _this = _super.call(this, new BK.Sprite(0, 0, {}, 0, 1, 1, 1)) || this;
-            _this.$explicitBitmapWidth = NaN;
-            _this.$explicitBitmapHeight = NaN;
-            _this._size = { width: 0, height: 0 };
-            /**
-             * @internal
-             */
-            _this.$bitmapData = null;
-            _this.$texture = null;
-            _this.$scale9Grid = null;
-            _this._bkSprite = _this._bkNode;
-            _this.texture = value;
+    /**
+     * This class is used to create lightweight shapes using the drawing application program interface (API). The Shape
+     * class includes a graphics property, which lets you access methods from the Graphics class.
+     * @see egret.Graphics
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/display/Shape.ts
+     * @language en_US
+     */
+    /**
+     * 此类用于使用绘图应用程序编程接口 (API) 创建简单形状。Shape 类含有 graphics 属性，通过该属性您可以访问各种矢量绘图方法。
+     * @see egret.Graphics
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/display/Shape.ts
+     * @language zh_CN
+     */
+    var BKShape = (function (_super) {
+        __extends(BKShape, _super);
+        /**
+         * Creates a new Shape object.
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
+         */
+        /**
+         * 创建一个 Shape 对象
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        function BKShape() {
+            var _this = _super.call(this) || this;
+            _this.$graphics = new egret.Graphics();
+            _this.$graphics.$setTarget(_this);
             return _this;
         }
-        Object.defineProperty(BKBitmap.prototype, "texture", {
+        Object.defineProperty(BKShape.prototype, "graphics", {
+            /**
+             * Specifies the Graphics object belonging to this Shape object, where vector drawing commands can occur.
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language en_US
+             */
+            /**
+             * 获取 Shape 中的 Graphics 对象。可通过此对象执行矢量绘图命令。
+             * @version Egret 2.4
+             * @platform Web,Native
+             * @language zh_CN
+             */
             get: function () {
-                return this.$texture;
-            },
-            set: function (value) {
-                if (this.$texture === value) {
-                    return;
-                }
-                this.$setTexture(value);
+                return this.$graphics;
             },
             enumerable: true,
             configurable: true
         });
-        BKBitmap.prototype.$setTexture = function (value) {
-            this.$texture = value;
-            this._transformDirty = true;
-            if (this.$texture) {
-                this.$bitmapData = this.$texture.bitmapData;
-                if (this.$bitmapData.bkTexture) {
-                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
-                    this._size.width = this.$texture.$bitmapWidth;
-                    this._size.height = this.$texture.$bitmapHeight;
-                    this._bkSprite.size = this._size;
-                }
-                else {
-                    this.$bitmapData = null;
-                    this._bkSprite.setTexture({});
-                }
-            }
-            else {
-                this.$bitmapData = null;
-                this._bkSprite.setTexture({});
-            }
+        /**
+         * @private
+         */
+        BKShape.prototype.$measureContentBounds = function (bounds) {
+            this.$graphics.$measureContentBounds(bounds);
         };
-        Object.defineProperty(BKBitmap.prototype, "scale9Grid", {
-            get: function () {
-                return this.$scale9Grid;
-            },
-            set: function (value) {
-                this.$setScale9Grid(value);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        BKBitmap.prototype.$setScale9Grid = function (value) {
-            var self = this;
-            if (self.$scale9Grid == value) {
-                return;
+        BKShape.prototype.$hitTest = function (stageX, stageY) {
+            var target = _super.prototype.$hitTest.call(this, stageX, stageY);
+            if (target == this) {
+                target = this.$graphics.$hitTest(stageX, stageY);
             }
-            // MD
-            if (self.$scale9Grid) {
-                if (value) {
-                    this._bkSprite.setScale9Grid(value);
-                }
-                else {
-                    this._bkSprite = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-                    this._replaceNode(this._bkSprite);
-                    this.$setTexture(this.$texture);
-                }
-            }
-            else if (value) {
-                this._bkSprite = new egret.BKSprite9();
-                this._replaceNode(this._bkSprite);
-                this._bkSprite.setScale9Grid(value);
-                this.$setTexture(this.$texture);
-            }
-            this._bkSprite.size = this._size;
-            self.$scale9Grid = value;
-            self.$renderDirty = true;
+            return target;
         };
         /**
-         * @override
+         * @private
          */
-        BKBitmap.prototype.$setWidth = function (value) {
-            var self = this;
-            if (value < 0 || value == self.$explicitBitmapWidth) {
-                return false;
-            }
-            self.$explicitBitmapWidth = value;
-            // MD
-            this._transformDirty = true;
-            this._size.width = value;
-            this._bkSprite.size = this._size;
-            return true;
-        };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$setHeight = function (value) {
-            var self = this;
-            if (value < 0 || value == self.$explicitBitmapHeight) {
-                return false;
-            }
-            self.$explicitBitmapHeight = value;
-            // MD
-            this._transformDirty = true;
-            this._size.height = value;
-            this._bkSprite.size = this._size;
-            return true;
-        };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$getWidth = function () {
-            return isNaN(this.$explicitBitmapWidth) ? this.$getContentBounds().width : this.$explicitBitmapWidth;
-        };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$getHeight = function () {
-            return isNaN(this.$explicitBitmapHeight) ? this.$getContentBounds().height : this.$explicitBitmapHeight;
-        };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$measureContentBounds = function (bounds) {
-            if (this.$texture) {
-                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this.$texture.$getTextureWidth();
-                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this.$texture.$getTextureHeight();
-                bounds.setTo(0, 0, w, h);
-            }
-            else {
-                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : 0;
-                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : 0;
-                bounds.setTo(0, 0, w, h);
+        BKShape.prototype.$onRemoveFromStage = function () {
+            _super.prototype.$onRemoveFromStage.call(this);
+            if (this.$graphics) {
+                this.$graphics.$onRemoveFromStage();
             }
         };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$getRenderNode = function () {
-            // MD
-            if (this._transformDirty || this.$matrixDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY - this._size.height;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-            return this._bkNode || null;
-        };
-        return BKBitmap;
+        return BKShape;
     }(egret.BKDisplayObject));
-    egret.BKBitmap = BKBitmap;
-    __reflect(BKBitmap.prototype, "egret.BKBitmap");
-    egret.Bitmap = BKBitmap;
+    egret.BKShape = BKShape;
+    __reflect(BKShape.prototype, "egret.BKShape");
+    egret.Shape = BKShape;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1390,15 +1329,21 @@ var egret;
                 egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
             }
             else {
+                var bkBuffer = BK.FileUtil.readFile(self._url);
                 if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
-                    // egret_native.readFileAsync(self._url, promise, "ArrayBuffer"); // TODO
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
+                    var buffer = new ArrayBuffer(bkBuffer.bufferLength());
+                    var uint8Array = new Uint8Array(buffer);
+                    while (bkBuffer.pointer < bkBuffer.bufferLength() - 1) {
+                        var result = bkBuffer.readUint8Buffer();
+                        uint8Array[bkBuffer.pointer - 1] = result;
+                    }
+                    self._response = buffer;
+                    bkBuffer.releaseBuffer();
                 }
                 else {
-                    var bkBuffer = BK.FileUtil.readFile(self._url);
                     self._response = bkBuffer.readAsString();
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                 }
+                egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
             }
         };
         /**
@@ -1573,19 +1518,7 @@ var egret;
             this._rightBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
             this.__nativeObj = new BK.Node();
             //
-            var names = Object.getOwnPropertyNames(this.__nativeObj);
-            names.forEach(function (element) {
-                var key = element;
-                // log("name:"+key);
-                Object.defineProperty(this, key, {
-                    get: function () {
-                        return this.__nativeObj[key];
-                    },
-                    set: function (obj) {
-                        this.__nativeObj[key] = obj;
-                    }
-                });
-            }, this);
+            egret.defineProxyProperties(this.__nativeObj, this);
             this.__nativeObj.addChild(this._leftTop);
             this.__nativeObj.addChild(this._centerTop);
             this.__nativeObj.addChild(this._rightTop);
@@ -1706,6 +1639,333 @@ var egret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
+    var BKBitmap = (function (_super) {
+        __extends(BKBitmap, _super);
+        function BKBitmap(value) {
+            if (value === void 0) { value = null; }
+            var _this = _super.call(this, new BK.Sprite(0, 0, {}, 0, 1, 1, 1)) || this;
+            _this.$explicitBitmapWidth = NaN;
+            _this.$explicitBitmapHeight = NaN;
+            _this._size = { width: 0, height: 0 };
+            /**
+             * @internal
+             */
+            _this.$bitmapData = null;
+            _this.$texture = null;
+            _this.$scale9Grid = null;
+            _this._bkSprite = _this._bkNode;
+            _this.texture = value;
+            return _this;
+        }
+        Object.defineProperty(BKBitmap.prototype, "texture", {
+            get: function () {
+                return this.$texture;
+            },
+            set: function (value) {
+                if (this.$texture === value) {
+                    return;
+                }
+                this.$setTexture(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         */
+        BKBitmap.prototype.$setTexture = function (value) {
+            this.$texture = value;
+            this._transformDirty = true;
+            if (this.$texture) {
+                this.$bitmapData = this.$texture.bitmapData;
+                if (this.$bitmapData.bkTexture) {
+                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
+                    this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
+                    this._size.width = this.$texture.$bitmapWidth;
+                    this._size.height = this.$texture.$bitmapHeight;
+                    this._bkSprite.size = this._size;
+                }
+                else {
+                    this.$bitmapData = null;
+                    this._bkSprite.setTexture({});
+                }
+            }
+            else {
+                this.$bitmapData = null;
+                this._bkSprite.setTexture({});
+            }
+        };
+        Object.defineProperty(BKBitmap.prototype, "scale9Grid", {
+            get: function () {
+                return this.$scale9Grid;
+            },
+            set: function (value) {
+                this.$setScale9Grid(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKBitmap.prototype.$setScale9Grid = function (value) {
+            var self = this;
+            if (self.$scale9Grid == value) {
+                return;
+            }
+            // MD
+            if (self.$scale9Grid) {
+                if (value) {
+                    this._bkSprite.setScale9Grid(value);
+                }
+                else {
+                    this._bkSprite = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+                    this._replaceNode(this._bkSprite);
+                    this.$setTexture(this.$texture);
+                }
+            }
+            else if (value) {
+                this._bkSprite = new egret.BKSprite9();
+                this._replaceNode(this._bkSprite);
+                this._bkSprite.setScale9Grid(value);
+                this.$setTexture(this.$texture);
+            }
+            this._bkSprite.size = this._size;
+            self.$scale9Grid = value;
+            self.$renderDirty = true;
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$setWidth = function (value) {
+            var self = this;
+            if (value < 0 || value == self.$explicitBitmapWidth) {
+                return false;
+            }
+            self.$explicitBitmapWidth = value;
+            // MD
+            this._transformDirty = true;
+            this._size.width = value;
+            this._bkSprite.size = this._size;
+            return true;
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$setHeight = function (value) {
+            var self = this;
+            if (value < 0 || value == self.$explicitBitmapHeight) {
+                return false;
+            }
+            self.$explicitBitmapHeight = value;
+            // MD
+            this._transformDirty = true;
+            this._size.height = value;
+            this._bkSprite.size = this._size;
+            return true;
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$getWidth = function () {
+            return isNaN(this.$explicitBitmapWidth) ? this.$getContentBounds().width : this.$explicitBitmapWidth;
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$getHeight = function () {
+            return isNaN(this.$explicitBitmapHeight) ? this.$getContentBounds().height : this.$explicitBitmapHeight;
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$measureContentBounds = function (bounds) {
+            if (this.$texture) {
+                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : this.$texture.$getTextureWidth();
+                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : this.$texture.$getTextureHeight();
+                bounds.setTo(0, 0, w, h);
+            }
+            else {
+                var w = !isNaN(this.$explicitBitmapWidth) ? this.$explicitBitmapWidth : 0;
+                var h = !isNaN(this.$explicitBitmapHeight) ? this.$explicitBitmapHeight : 0;
+                bounds.setTo(0, 0, w, h);
+            }
+        };
+        /**
+         * @override
+         */
+        BKBitmap.prototype.$getRenderNode = function () {
+            // MD
+            if (this._transformDirty || this.$matrixDirty) {
+                this._transformDirty = false;
+                var matrix = this.$getMatrix();
+                var bkMatrix = this._bkNode.transform.matrix;
+                var tx = matrix.tx;
+                var ty = matrix.ty;
+                var pivotX = this.$anchorOffsetX;
+                var pivotY = this.$anchorOffsetY - this._size.height;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            }
+            return this._bkNode || null;
+        };
+        return BKBitmap;
+    }(egret.BKDisplayObject));
+    egret.BKBitmap = BKBitmap;
+    __reflect(BKBitmap.prototype, "egret.BKBitmap");
+    egret.Bitmap = BKBitmap;
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKMesh = (function (_super) {
+        __extends(BKMesh, _super);
+        function BKMesh() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this._verticesDirty = true;
+            _this._boundsDirty = true;
+            _this._bounds = new egret.Rectangle();
+            _this._bkMesh = new BK.Mesh({}, [], []);
+            _this.$bitmapData = null;
+            _this.$texture = null;
+            return _this;
+        }
+        Object.defineProperty(BKMesh.prototype, "texture", {
+            get: function () {
+                return this.$texture;
+            },
+            set: function (value) {
+                if (this.$texture === value) {
+                    return;
+                }
+                this.$setTexture(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         */
+        BKMesh.prototype.$setTexture = function (value) {
+            this.$texture = value;
+            this._transformDirty = true;
+            if (this.$texture) {
+                this.$bitmapData = this.$texture.bitmapData;
+                if (this.$bitmapData.bkTexture) {
+                    this._bkMesh.setTexture(this.$bitmapData.bkTexture);
+                    this._bkMesh.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
+                }
+                else {
+                    this.$bitmapData = null;
+                    this._bkMesh.setTexture({});
+                }
+            }
+            else {
+                this.$bitmapData = null;
+                this._bkMesh.setTexture({});
+            }
+        };
+        /**
+         * @override
+         */
+        BKMesh.prototype.$updateVertices = function () {
+            this._verticesDirty = true;
+            this._boundsDirty = true;
+            this.$renderNode = new egret.sys.MeshNode();
+        };
+        /**
+         * @override
+         */
+        BKMesh.prototype.$measureContentBounds = function (bounds) {
+            if (this._boundsDirty) {
+                this._boundsDirty = false;
+                var node = this.$renderNode;
+                var vertices = node.vertices;
+                if (vertices.length) {
+                    this._bounds.setTo(Number.MAX_VALUE, Number.MAX_VALUE, -Number.MAX_VALUE, -Number.MAX_VALUE);
+                    for (var i = 0, l = vertices.length; i < l; i += 2) {
+                        var x = vertices[i];
+                        var y = vertices[i + 1];
+                        if (this._bounds.x > x)
+                            this._bounds.x = x;
+                        if (this._bounds.width < x)
+                            this._bounds.width = x;
+                        if (this._bounds.y > y)
+                            this._bounds.y = y;
+                        if (this._bounds.height < y)
+                            this._bounds.height = y;
+                    }
+                    this._bounds.width -= this._bounds.x;
+                    this._bounds.height -= this._bounds.y;
+                }
+                else {
+                    this._bounds.setTo(0, 0, 0, 0);
+                }
+                node.bounds.copyFrom(this._bounds);
+            }
+            bounds.copyFrom(this._bounds);
+        };
+        /**
+         * @override
+         */
+        BKMesh.prototype.$getRenderNode = function () {
+            if (this._verticesDirty) {
+                this._verticesDirty = false;
+                var meshNode = this.$renderNode;
+                var nodeVercices = meshNode.vertices;
+                var nodeUV = meshNode.uvs;
+                var bkVertices = this._bkMesh.getVertices();
+                if (!bkVertices) {
+                    bkVertices = [];
+                }
+                if (bkVertices.length !== nodeVercices.length / 2) {
+                    for (var i = bkVertices.length, l = nodeVercices.length / 2; i < l; ++i) {
+                        bkVertices[i] = {};
+                    }
+                    for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                        var vertex = bkVertices[i];
+                        vertex.x = nodeVercices[iD];
+                        vertex.y = nodeVercices[iD + 1];
+                        vertex.z = this._bkNode.zOrder;
+                        vertex.r = 1.0;
+                        vertex.g = 1.0;
+                        vertex.b = 1.0;
+                        vertex.a = 1.0;
+                        vertex.u = nodeUV[iD];
+                        vertex.v = nodeUV[iD + 1];
+                    }
+                }
+                else {
+                    for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                        var vertex = bkVertices[i];
+                        vertex.x = nodeVercices[iD];
+                        vertex.y = nodeVercices[iD + 1];
+                    }
+                }
+                this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices);
+            }
+            if (this._transformDirty || this.$matrixDirty) {
+                this._transformDirty = false;
+                var matrix = this.$getMatrix();
+                var bkMatrix = this._bkNode.transform.matrix;
+                var tx = matrix.tx;
+                var ty = matrix.ty;
+                var pivotX = this.$anchorOffsetX;
+                var pivotY = this.$anchorOffsetY;
+                if (pivotX !== 0.0 || pivotY !== 0.0) {
+                    tx -= matrix.a * pivotX + matrix.c * pivotY;
+                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+                }
+                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            }
+            return this._bkNode;
+        };
+        return BKMesh;
+    }(egret.BKDisplayObject));
+    egret.BKMesh = BKMesh;
+    __reflect(BKMesh.prototype, "egret.BKMesh");
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
     var BKImageLoader = (function (_super) {
         __extends(BKImageLoader, _super);
         function BKImageLoader() {
@@ -1745,121 +2005,6 @@ var egret;
     egret.BKImageLoader = BKImageLoader;
     __reflect(BKImageLoader.prototype, "egret.BKImageLoader", ["egret.ImageLoader"]);
     egret.ImageLoader = BKImageLoader;
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    /**
-     * This class is used to create lightweight shapes using the drawing application program interface (API). The Shape
-     * class includes a graphics property, which lets you access methods from the Graphics class.
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language en_US
-     */
-    /**
-     * 此类用于使用绘图应用程序编程接口 (API) 创建简单形状。Shape 类含有 graphics 属性，通过该属性您可以访问各种矢量绘图方法。
-     * @see egret.Graphics
-     * @version Egret 2.4
-     * @platform Web,Native
-     * @includeExample egret/display/Shape.ts
-     * @language zh_CN
-     */
-    var BKShape = (function (_super) {
-        __extends(BKShape, _super);
-        /**
-         * Creates a new Shape object.
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language en_US
-         */
-        /**
-         * 创建一个 Shape 对象
-         * @version Egret 2.4
-         * @platform Web,Native
-         * @language zh_CN
-         */
-        function BKShape() {
-            var _this = _super.call(this) || this;
-            _this.$graphics = new egret.Graphics();
-            _this.$graphics.$setTarget(_this);
-            return _this;
-        }
-        Object.defineProperty(BKShape.prototype, "graphics", {
-            /**
-             * Specifies the Graphics object belonging to this Shape object, where vector drawing commands can occur.
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language en_US
-             */
-            /**
-             * 获取 Shape 中的 Graphics 对象。可通过此对象执行矢量绘图命令。
-             * @version Egret 2.4
-             * @platform Web,Native
-             * @language zh_CN
-             */
-            get: function () {
-                return this.$graphics;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         */
-        BKShape.prototype.$measureContentBounds = function (bounds) {
-            this.$graphics.$measureContentBounds(bounds);
-        };
-        BKShape.prototype.$hitTest = function (stageX, stageY) {
-            var target = _super.prototype.$hitTest.call(this, stageX, stageY);
-            if (target == this) {
-                target = this.$graphics.$hitTest(stageX, stageY);
-                // target = null; // TODO
-            }
-            return target;
-        };
-        /**
-         * @private
-         */
-        BKShape.prototype.$onRemoveFromStage = function () {
-            _super.prototype.$onRemoveFromStage.call(this);
-            if (this.$graphics) {
-                this.$graphics.$onRemoveFromStage();
-            }
-        };
-        return BKShape;
-    }(egret.BKDisplayObject));
-    egret.BKShape = BKShape;
-    __reflect(BKShape.prototype, "egret.BKShape");
-    egret.Shape = BKShape;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -2091,7 +2236,7 @@ var egret;
         function BKTextField() {
             var _this = 
             // MD
-            _super.call(this, new BK.Text(undefined, "")) || this;
+            _super.call(this, new BK.TextNode({}, "")) || this;
             _this.$inputEnabled = false;
             /**
              * @private
@@ -2117,6 +2262,25 @@ var egret;
              * @private
              */
             _this.$isTyping = false;
+            // MD
+            _this._styleDirty = true;
+            _this._style = {
+                fontSize: egret.TextField.default_size,
+                textColor: egret.TextField.default_textColor + 0xFF000000,
+                maxWidth: 512,
+                maxHeight: 64,
+                width: 512,
+                height: 64,
+                textAlign: 0,
+                bold: 0,
+                italic: 0,
+                strokeColor: 0x00000000,
+                strokeSize: 0,
+                shadowRadius: 0,
+                shadowDx: 0,
+                shadowDy: 0,
+                shadowColor: 0x00000000
+            };
             _this._bkText = _this._bkNode;
             // super();
             // let textNode = new sys.TextNode();
@@ -2163,27 +2327,6 @@ var egret;
                 36: null,
                 37: egret.TextFieldInputType.TEXT //inputType
             };
-            // MD
-            // Set default values.
-            _this._bkText.fontSize = _this.$TextField[0 /* fontSize */];
-            var defaultFontColor = 0xFFFFFFFF; // ???!!!
-            _this._bkText.fontColor = defaultFontColor;
-            // textAlign
-            // verticalAlign
-            _this._bkText.horizontalAlign = 0;
-            _this._bkText.bold = _this.$TextField[15 /* bold */];
-            _this._bkText.italic = _this.$TextField[16 /* italic */];
-            // this._bkText.strokeColor = this.$TextField[sys.TextKeys.strokeColor];
-            _this._bkText.strokeSize = _this.$TextField[27 /* stroke */];
-            // BK values.
-            _this._bkText.style.width = 512;
-            _this._bkText.style.height = 64;
-            _this._bkText.style.maxWidth = 512;
-            _this._bkText.style.maxHeight = 64;
-            var defaultShadowColor = 0x00000000; // ???!!!
-            _this._bkText.shadowColor = defaultShadowColor;
-            _this._bkText.shadowOffset = { x: 0, y: 0 };
-            _this._bkText.shadowRadius = 0;
             return _this;
         }
         /**
@@ -2265,7 +2408,9 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._bkText.fontSize = value;
+            this._styleDirty = true;
+            this._style.fontSize = value;
+            this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "bold", {
@@ -2302,7 +2447,9 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._bkText.bold = value ? 1 : 0;
+            this._styleDirty = true;
+            this._style.bold = value ? 1 : 0;
+            this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "italic", {
@@ -2339,7 +2486,9 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._bkText.italic = value;
+            this._styleDirty = true;
+            this._style.italic = value ? 1 : 0;
+            this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
             return true;
         };
         /**
@@ -2383,17 +2532,19 @@ var egret;
             this.$invalidateTextField();
             // MD
             this._transformDirty = true;
+            this._styleDirty = true;
             switch (value) {
                 case egret.HorizontalAlign.LEFT:
-                    this._bkText.horizontalAlign = 0;
+                    this._style.textAlign = 0;
                     break;
                 case egret.HorizontalAlign.CENTER:
-                    this._bkText.horizontalAlign = 1;
+                    this._style.textAlign = 1;
                     break;
                 case egret.HorizontalAlign.RIGHT:
-                    this._bkText.horizontalAlign = 2;
+                    this._style.textAlign = 2;
                     break;
             }
+            this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "verticalAlign", {
@@ -2501,10 +2652,12 @@ var egret;
             this.$invalidateTextField();
             // MD
             var rgb_str = this._refitString(value, 6); //六位rgb格式
-            var old_argb_str = this._refitString(this._bkText.fontColor, 8);
+            var old_argb_str = this._refitString(this._style.textColor, 8);
             var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
             var argb_num = parseInt(new_argb_str, 16);
-            this._bkText.fontColor = argb_num;
+            this._styleDirty = true;
+            this._style.textColor = argb_num;
+            this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "wordWrap", {
@@ -2691,7 +2844,8 @@ var egret;
                 this.setMiddleStyle([{ text: text }]);
                 // MD
                 this._transformDirty = true;
-                this._bkText.content = text;
+                this._styleDirty = true;
+                this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
                 return true;
             }
             return false;
@@ -2795,10 +2949,12 @@ var egret;
                 values[26 /* strokeColorString */] = egret.toColorString(value);
                 // MD
                 var rgb_str = this._refitString(value, 6); //六位rgb格式
-                var old_argb_str = this._refitString(this._bkText.strokeColor, 8);
+                var old_argb_str = this._refitString(this._style.strokeColor, 8);
                 var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
                 var argb_num = parseInt(new_argb_str, 16);
-                this._bkText.fontColor = argb_num;
+                this._styleDirty = true;
+                this._style.strokeColor = argb_num;
+                this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
                 return true;
             }
             return false;
@@ -2840,7 +2996,9 @@ var egret;
                 this.$TextField[27 /* stroke */] = value;
                 // MD
                 this._transformDirty = true;
-                this._bkText.strokeSize = value;
+                this._styleDirty = true;
+                this._style.strokeSize = value;
+                this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
                 return true;
             }
             return false;
@@ -3142,7 +3300,8 @@ var egret;
             this.$invalidateTextField();
             // MD
             this._transformDirty = true;
-            this._bkText.style.maxWidth = this._bkText.style.width = values[3 /* textFieldWidth */];
+            this._styleDirty = true;
+            this._style.width = this._style.maxWidth = values[3 /* textFieldWidth */];
             return true;
         };
         /**
@@ -3171,7 +3330,8 @@ var egret;
             this.$invalidateTextField();
             // MD
             this._transformDirty = true;
-            this._bkText.style.maxHeight = this._bkText.style.height = values[4 /* textFieldHeight */];
+            this._styleDirty = true;
+            this._style.height = this._style.maxHeight = values[4 /* textFieldHeight */];
             return true;
         };
         /**
@@ -3466,7 +3626,7 @@ var egret;
         BKTextField.prototype.$measureContentBounds = function (bounds) {
             this.$getLinesArr();
             var w = !isNaN(this.$TextField[3 /* textFieldWidth */]) ? this.$TextField[3 /* textFieldWidth */] : this.$TextField[5 /* textWidth */];
-            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this);
+            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : TextFieldUtils.$getTextHeight(this as any);
             // MD
             var h = !isNaN(this.$TextField[4 /* textFieldHeight */]) ? this.$TextField[4 /* textFieldHeight */] : this.$TextField[6 /* textHeight */];
             bounds.setTo(0, 0, w, h);
@@ -3603,7 +3763,7 @@ var egret;
              */
             get: function () {
                 this.$getLinesArr();
-                // return TextFieldUtils.$getTextHeight(this);
+                // return TextFieldUtils.$getTextHeight(this as any);
                 // MD
                 return this.$TextField[6 /* textHeight */];
             },
@@ -3649,9 +3809,14 @@ var egret;
             values[18 /* textLinesChanged */] = false;
             // MD
             values[29 /* numLines */] = 1;
-            if (this._bkText.content) {
-                values[5 /* textWidth */] = this._bkText["width"];
-                values[6 /* textHeight */] = this._bkText["height"];
+            if (values[13 /* text */]) {
+                var textFieldWidth = values[3 /* textFieldWidth */];
+                if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
+                    values[29 /* numLines */] = 0;
+                    return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
+                }
+                values[5 /* textWidth */] = bkMeasureText(this.$getText(), this.fontFamily, this.size, this.bold, this.italic); // 
+                values[6 /* textHeight */] = defaultText.height;
             }
             else {
                 values[5 /* textWidth */] = 0;
@@ -3973,37 +4138,41 @@ var egret;
         };
         // MD
         BKTextField.prototype.$getRenderNode = function () {
+            if (this._styleDirty) {
+                this._styleDirty = false;
+                this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
+            }
             if (this._transformDirty || this.$matrixDirty) {
                 this._transformDirty = false;
-                this._bkText.content = this._bkText.content;
                 var matrix = this.$getMatrix();
                 var bkMatrix = this._bkNode.transform.matrix;
+                var textSize = this._bkText.size;
                 var tx = matrix.tx;
                 var ty = matrix.ty;
                 var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY - this._bkText.size.height;
+                var pivotY = this.$anchorOffsetY - textSize.height;
                 if (pivotX !== 0.0 || pivotY !== 0.0) {
                     tx -= matrix.a * pivotX + matrix.c * pivotY;
                     ty -= matrix.b * pivotX + matrix.d * pivotY;
                 }
-                switch (this._bkText.horizontalAlign) {
-                    case 0:
+                switch (this.$TextField[9 /* textAlign */]) {
+                    case egret.HorizontalAlign.LEFT:
                         break;
-                    case 1:
-                        tx -= (this._bkText.size.width - this.$getWidth()) * 0.5;
+                    case egret.HorizontalAlign.CENTER:
+                        tx -= (textSize.width - this.$getWidth()) * 0.5;
                         break;
-                    case 2:
-                        tx -= this._bkText.size.width - this.$getWidth();
+                    case egret.HorizontalAlign.RIGHT:
+                        tx -= textSize.width - this.$getWidth();
                         break;
                 }
-                switch (this.verticalAlign) {
+                switch (this.$TextField[10 /* verticalAlign */]) {
                     case egret.VerticalAlign.TOP:
                         break;
                     case egret.VerticalAlign.MIDDLE:
-                        ty += (this._bkText.size.height - this._bkText.height) * 0.5;
+                        ty += (textSize.height - this._bkText.height) * 0.5;
                         break;
                     case egret.VerticalAlign.BOTTOM:
-                        ty += this._bkText.size.height - this._bkText.height;
+                        ty += textSize.height - this._bkText.height;
                         break;
                 }
                 bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
@@ -4053,6 +4222,35 @@ var egret;
     }(egret.BKDisplayObject));
     egret.BKTextField = BKTextField;
     __reflect(BKTextField.prototype, "egret.BKTextField");
+    var defaultStyle = {
+        fontSize: egret.TextField.default_size,
+        textColor: egret.TextField.default_textColor + 0xFF000000,
+        maxWidth: 1280,
+        maxHeight: 256,
+        width: 1280,
+        height: 256,
+        textAlign: 0,
+        bold: 0,
+        italic: 0,
+        strokeColor: 0x00000000,
+        strokeSize: 0,
+        shadowRadius: 0,
+        shadowDx: 0,
+        shadowDy: 0,
+        shadowColor: 0x00000000
+    };
+    var defaultText; // BK.TextNode
+    function bkMeasureText(text, fontFamily, size, bold, italic) {
+        if (!defaultText) {
+            defaultText = new BK.TextNode(defaultStyle, "");
+        }
+        defaultStyle.fontSize = size;
+        defaultStyle.bold = bold ? 1 : 0;
+        defaultStyle.italic = italic ? 1 : 0;
+        defaultText.updateText(defaultStyle, text);
+        return defaultText.width;
+    }
+    egret.sys.measureText = bkMeasureText;
     egret.TextField = BKTextField;
 })(egret || (egret = {}));
 var egret;
@@ -4066,6 +4264,12 @@ var egret;
         }
         BKSound.prototype.load = function (url) {
             this.url = url;
+            if (BK.FileUtil.isFileExist(this.url)) {
+                egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+            }
+            else {
+                egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+            }
         };
         BKSound.prototype.play = function (startTime, loops) {
             if (startTime === void 0) { startTime = 0; }
@@ -5442,6 +5646,141 @@ var egret;
 //  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
+    /**
+     * @classdesc
+     * @extends egret.StageText
+     * @private
+     */
+    var BKHTML5StageText = (function (_super) {
+        __extends(BKHTML5StageText, _super);
+        /**
+         * @private
+         */
+        function BKHTML5StageText() {
+            var _this = _super.call(this) || this;
+            /**
+             * @private
+             */
+            _this.textValue = "";
+            _this.onKeyboardComplete = _this.onKeyboardComplete.bind(_this);
+            _this.onKeyboardInput = _this.onKeyboardInput.bind(_this);
+            return _this;
+        }
+        /**
+         * @private
+         *
+         * @param textfield
+         */
+        BKHTML5StageText.prototype.$setTextField = function (textfield) {
+            this.$textfield = textfield;
+            return true;
+        };
+        /**
+         * @private
+         *
+         */
+        BKHTML5StageText.prototype.$addToStage = function () {
+        };
+        /**
+         * @private
+         *
+         */
+        BKHTML5StageText.prototype.$show = function () {
+            BK.Editor.showKeyBoard(this.onKeyboardComplete, this.onKeyboardInput);
+            this.dispatchEvent(new egret.Event("focus"));
+        };
+        BKHTML5StageText.prototype.onKeyboardInput = function (data) {
+            this.textValue = data.value;
+            egret.Event.dispatchEvent(this, "updateText", false);
+        };
+        BKHTML5StageText.prototype.onKeyboardComplete = function (res) {
+            this.$textfield.text = res.value;
+            this.$hide();
+        };
+        /**
+         * @private
+         */
+        BKHTML5StageText.prototype.$hide = function () {
+            // TODO
+            this.dispatchEvent(new egret.Event("blur"));
+        };
+        /**
+         * @private
+         *
+         * @returns
+         */
+        BKHTML5StageText.prototype.$getText = function () {
+            if (!this.textValue) {
+                this.textValue = "";
+            }
+            return this.textValue;
+        };
+        /**
+         * @private
+         *
+         * @param value
+         */
+        BKHTML5StageText.prototype.$setText = function (value) {
+            this.textValue = value;
+            // this.resetText();
+            return true;
+        };
+        /**
+         * @private
+         */
+        BKHTML5StageText.prototype.$setColor = function (value) {
+            return true;
+        };
+        BKHTML5StageText.prototype.$onBlur = function () {
+        };
+        /**
+         * @private
+         *
+         */
+        BKHTML5StageText.prototype.$removeFromStage = function () {
+        };
+        /**
+         * 修改位置
+         * @private
+         */
+        BKHTML5StageText.prototype.$resetStageText = function () {
+        };
+        return BKHTML5StageText;
+    }(egret.EventDispatcher));
+    egret.BKHTML5StageText = BKHTML5StageText;
+    __reflect(BKHTML5StageText.prototype, "egret.BKHTML5StageText", ["egret.StageText"]);
+    egret.StageText = BKHTML5StageText;
+})(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
 //
 console = console || {};
 console.warn = console.log = function () {
@@ -5450,14 +5789,23 @@ console.warn = console.log = function () {
         others[_i] = arguments[_i];
     }
     var str = "";
-    if (others)
+    if (others) {
         for (var _a = 0, others_1 = others; _a < others_1.length; _a++) {
             var other = others_1[_a];
-            str += other;
+            str += " " + other;
         }
+    }
     BK.Script.log(0, 0, str);
 };
-console.assert = console.log; // TODO
+console.assert = function (c) {
+    var others = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        others[_i - 1] = arguments[_i];
+    }
+    if (!c) {
+        console.log.apply(null, others);
+    }
+};
 var egret;
 (function (egret) {
     egret.getTimer = function getTimer() {
@@ -5561,3 +5909,24 @@ var egret;
 })(egret || (egret = {}));
 if (true) {
 }
+var egret;
+(function (egret) {
+    function defineProxyProperties(target, proxy) {
+        var names = Object.getOwnPropertyNames(target);
+        var _loop_1 = function (key) {
+            Object.defineProperty(proxy, key, {
+                get: function () {
+                    return target[key];
+                },
+                set: function (obj) {
+                    target[key] = obj;
+                }
+            });
+        };
+        for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
+            var key = names_1[_i];
+            _loop_1(key);
+        }
+    }
+    egret.defineProxyProperties = defineProxyProperties;
+})(egret || (egret = {}));
