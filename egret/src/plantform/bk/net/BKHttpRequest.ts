@@ -43,7 +43,9 @@ namespace egret {
             let self = this;
 
             if (self.isNetUrl(self._url)) {
-                this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
+                let originalUrl = self._url;
+                let encodeURL = this.encodeURL(originalUrl);
+                this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
                 let method: string;
                 if (this._method === egret.HttpMethod.GET) {
                     method = "get";
@@ -96,6 +98,32 @@ namespace egret {
 
                 $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
             }
+        }
+
+        private encodeURL(originalUrl: string) {
+            if (!originalUrl || originalUrl === '')
+                return '';
+            let search_index = originalUrl.indexOf(`?`)
+            if (search_index < 0)
+                return originalUrl;
+            let head = originalUrl.slice(0, search_index);
+            let search = originalUrl.slice(search_index + 1);
+            let searchArr = search.split('&');
+            let new_search = "";
+            for (let i = 0; i < searchArr.length; i++) {
+                let str = searchArr[i];//"data=xxx";
+                let strArr = str.split('=');
+                //strArr[0] = "data"
+                //strArr[1] = "xxx"|undefine;
+                let name = strArr[0];
+                let value = strArr[1] ? strArr[1] : "";
+                new_search += name + "=" + encodeURIComponent(value);
+                if (i < searchArr.length - 1) {
+                    new_search += "&";
+                }
+            }
+            return head + "?" + new_search;
+
         }
 
         /**

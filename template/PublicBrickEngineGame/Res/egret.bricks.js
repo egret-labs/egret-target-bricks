@@ -1311,7 +1311,9 @@ var egret;
         BKHttpRequest.prototype.send = function (data) {
             var self = this;
             if (self.isNetUrl(self._url)) {
-                this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
+                var originalUrl = self._url;
+                var encodeURL = this.encodeURL(originalUrl);
+                this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
                 var method = void 0;
                 if (this._method === egret.HttpMethod.GET) {
                     method = "get";
@@ -1330,7 +1332,9 @@ var egret;
                             self._response = egret.bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            self._response = res.readAsString() || "";
+                            var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(res));
+                            self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            // self._response = res.readAsString() || "";
                         }
                         egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                     }
@@ -1361,6 +1365,30 @@ var egret;
                 }
                 egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
             }
+        };
+        BKHttpRequest.prototype.encodeURL = function (originalUrl) {
+            if (!originalUrl || originalUrl === '')
+                return '';
+            var search_index = originalUrl.indexOf("?");
+            if (search_index < 0)
+                return originalUrl;
+            var head = originalUrl.slice(0, search_index);
+            var search = originalUrl.slice(search_index + 1);
+            var searchArr = search.split('&');
+            var new_search = "";
+            for (var i = 0; i < searchArr.length; i++) {
+                var str = searchArr[i]; //"data=xxx";
+                var strArr = str.split('=');
+                //strArr[0] = "data"
+                //strArr[1] = "xxx"|undefine;
+                var name_1 = strArr[0];
+                var value = strArr[1] ? strArr[1] : "";
+                new_search += name_1 + "=" + encodeURIComponent(value);
+                if (i < searchArr.length - 1) {
+                    new_search += "&";
+                }
+            }
+            return head + "?" + new_search;
         };
         /**
          * 是否是网络地址
@@ -1480,11 +1508,12 @@ var egret;
                 this.$websocket.send(message);
             }
             else if (message instanceof ArrayBuffer) {
-                var b = new egret.ByteArray(message);
-                var msg = b.readUTF();
-                var bkBuffer = new BK.Buffer(msg.length);
-                bkBuffer.writeAsString(msg);
-                this.$websocket.send(bkBuffer);
+                // let b = new egret.ByteArray(message);
+                // let msg = b.readUTF();
+                // let bkBuffer = new BK.Buffer(msg.length);
+                // bkBuffer.writeAsString(msg);
+                var arrayBuffer = egret.arrayBufferToBrickBuffer(message);
+                this.$websocket.send(arrayBuffer);
             }
         };
         BKSocket.prototype.resHandler = function (event) {
@@ -6039,12 +6068,21 @@ var egret;
         var arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
         var uint8Array = new Uint8Array(arrayBuffer);
         var pointer = 0;
-        while (pointer < bricksBuffer.bufferLength() - 1) {
-            var result = bricksBuffer.readUint8Buffer();
-            uint8Array[pointer++] = result;
+        while (pointer < bricksBuffer.bufferLength()) {
+            uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
         }
         // bricksBuffer.releaseBuffer();
         return arrayBuffer;
     }
     egret.bricksBufferToArrayBuffer = bricksBufferToArrayBuffer;
+    function arrayBufferToBrickBuffer(arrayBuffer) {
+        var bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var pointer = 0;
+        while (pointer < arrayBuffer.byteLength) {
+            bricksBuffer.writeUint8Buffer(uint8Array[pointer++]);
+        }
+        return bricksBuffer;
+    }
+    egret.arrayBufferToBrickBuffer = arrayBufferToBrickBuffer;
 })(egret || (egret = {}));

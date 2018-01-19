@@ -193,26 +193,26 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // this.socketTest();
-        var arcFill2 = new egret.Shape();
-        arcFill2.graphics.beginFill(0xff0000);
-        arcFill2.graphics.drawArc(200, 600, 50, 0, -Math.PI / 180 * 60, true);
-        arcFill2.graphics.endFill();
-        var arcFill1 = new egret.Shape();
-        arcFill1.graphics.beginFill(0xff0000);
-        arcFill1.graphics.drawArc(400, 600, 50, 0, -Math.PI / 180 * 60, false);
-        arcFill1.graphics.endFill();
-        this.addChild(arcFill1);
-        this.addChild(arcFill2);
+        this.socketTest();
+        // let arcFill2: egret.Shape = new egret.Shape();
+        // arcFill2.graphics.beginFill(0xff0000);
+        // arcFill2.graphics.drawArc(200, 600, 50, 0, -Math.PI / 180 * 60, true);
+        // arcFill2.graphics.endFill();
+        // let arcFill1: egret.Shape = new egret.Shape();
+        // arcFill1.graphics.beginFill(0xff0000);
+        // arcFill1.graphics.drawArc(400, 600, 50, 0, -Math.PI / 180 * 60, false);
+        // arcFill1.graphics.endFill();
+        // this.addChild(arcFill1);
+        // this.addChild(arcFill2);
         var arcStroke2 = new egret.Shape();
         arcStroke2.graphics.lineStyle(2, 0xffff00);
-        arcStroke2.graphics.drawArc(200, 400, 50, 0, -Math.PI / 180 * 30, true);
+        arcStroke2.graphics.drawRect(200, 400, 500, 100);
         arcStroke2.graphics.endFill();
-        var arcStroke1 = new egret.Shape();
-        arcStroke1.graphics.lineStyle(2, 0xffff00);
-        arcStroke1.graphics.drawArc(400, 400, 50, 0, -Math.PI / 180 * 30, false);
-        arcStroke1.graphics.endFill();
-        this.addChild(arcStroke1);
+        // let arcStroke1 = new egret.Shape();
+        // arcStroke1.graphics.lineStyle(2, 0xffff00);
+        // arcStroke1.graphics.drawArc(400, 400, 50, 0, -Math.PI / 180 * 30, false);
+        // arcStroke1.graphics.endFill();
+        // this.addChild(arcStroke1);
         this.addChild(arcStroke2);
         var roundRect = new egret.Shape();
         // roundRect.graphics.beginFill(0xff0000);
@@ -221,6 +221,13 @@ var Main = (function (_super) {
         roundRect.graphics.endFill();
         roundRect.x = roundRect.y = 50;
         this.addChild(roundRect);
+        // debugger;
+        var json = RES.getRes("description_json");
+        egret.localStorage.setItem("1", "name");
+        egret.localStorage.setItem("json", json);
+        egret.localStorage.getItem("1");
+        // egret.localStorage.removeItem("1");
+        // egret.localStorage.clear()
     };
     Main.prototype.socketTest = function () {
         this.socket = new egret.WebSocket();
@@ -255,13 +262,17 @@ var Main = (function (_super) {
         // let num:number = byte.readInt();
         // console.log("收到信息")
         egret.setTimeout(function () {
-            debugger;
-            _this.socket.close();
+            // debugger;
+            _this.send();
+            // this.socket.close();
         }, this, 3000);
     };
     Main.prototype.onSocketOpen = function () {
         console.log("连接成功");
         debugger;
+        this.send();
+    };
+    Main.prototype.send = function () {
         var data = {
             name: "asdfgh",
             type: "qwerty",
