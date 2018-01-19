@@ -48,7 +48,7 @@ namespace egret {
             if (parent) {
                 if (this._colorDirty === 2 || parent._colorDirty !== 0) {
                     this._colorDirty = 1;
-                    this._color.a = parent.$alpha * this.$alpha;
+                    this._color.a = parent._color.a * this.$alpha;
                     this._bkNode.vertexColor = this._color;
                 }
                 else if (this._colorDirty === 1) {
