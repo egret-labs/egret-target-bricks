@@ -77,11 +77,12 @@ namespace egret {
             if (typeof message == "string") {
                 this.$websocket.send(message);
             } else if (message instanceof ArrayBuffer) {
-                let b = new egret.ByteArray(message);
-                let msg = b.readUTF();
-                let bkBuffer = new BK.Buffer(msg.length);
-                bkBuffer.writeAsString(msg);
-                this.$websocket.send(bkBuffer);
+                // let b = new egret.ByteArray(message);
+                // let msg = b.readUTF();
+                // let bkBuffer = new BK.Buffer(msg.length);
+                // bkBuffer.writeAsString(msg);
+                const arrayBuffer = arrayBufferToBrickBuffer(message);
+                this.$websocket.send(arrayBuffer);
             }
         }
 

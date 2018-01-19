@@ -27,7 +27,7 @@ namespace egret.localStorage.BKlocalStorage {
         }
         data[key] = value;
         let data_str = JSON.stringify(data);
-        BK.FileUtil.writeFile(localStoragePath, data_str);
+        BK.FileUtil.writeFile(localStoragePath, data_str as any);
         return true;
     }
 
@@ -40,7 +40,7 @@ namespace egret.localStorage.BKlocalStorage {
             return;
         delete data[key];
         let data_str = JSON.stringify(data);
-        BK.FileUtil.writeFile(localStoragePath, data_str);
+        BK.FileUtil.writeFile(localStoragePath, data_str as any);
     }
 
     function clear(): void {
@@ -48,7 +48,7 @@ namespace egret.localStorage.BKlocalStorage {
             return;
         let data = {};
         let data_str = JSON.stringify(data);
-        BK.FileUtil.writeFile(localStoragePath, data_str);
+        BK.FileUtil.writeFile(localStoragePath, data_str as any);
     }
 
     egret.localStorage.setItem = setItem;

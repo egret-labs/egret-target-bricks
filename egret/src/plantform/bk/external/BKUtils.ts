@@ -20,12 +20,23 @@ namespace egret {
         const uint8Array = new Uint8Array(arrayBuffer);
 
         let pointer = 0;
-        while (pointer < bricksBuffer.bufferLength() - 1) {
-            const result = bricksBuffer.readUint8Buffer();
-            uint8Array[pointer++] = result;
+        while (pointer < bricksBuffer.bufferLength()) {
+            uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
+        }
+        // bricksBuffer.releaseBuffer();
+
+        return arrayBuffer;
+    }
+
+    export function arrayBufferToBrickBuffer(arrayBuffer: ArrayBuffer): BK.Buffer {
+        const bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        let pointer = 0;
+        while (pointer < arrayBuffer.byteLength) {
+            bricksBuffer.writeUint8Buffer(uint8Array[pointer++]);
         }
 
-        // bricksBuffer.releaseBuffer();
-        return arrayBuffer;
+        return bricksBuffer;
     }
 }
