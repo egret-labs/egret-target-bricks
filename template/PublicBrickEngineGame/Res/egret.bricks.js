@@ -1311,7 +1311,9 @@ var egret;
         BKHttpRequest.prototype.send = function (data) {
             var self = this;
             if (self.isNetUrl(self._url)) {
-                this._bkHttpRequest = new BK.HttpUtil(this._url); // 没文档，只能新建实例
+                var originalUrl = self._url;
+                var encodeURL = this.encodeURL(originalUrl);
+                this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
                 var method = void 0;
                 if (this._method === egret.HttpMethod.GET) {
                     method = "get";
@@ -1361,6 +1363,30 @@ var egret;
                 }
                 egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
             }
+        };
+        BKHttpRequest.prototype.encodeURL = function (originalUrl) {
+            if (!originalUrl || originalUrl === '')
+                return '';
+            var search_index = originalUrl.indexOf("?");
+            if (search_index < 0)
+                return originalUrl;
+            var head = originalUrl.slice(0, search_index);
+            var search = originalUrl.slice(search_index + 1);
+            var searchArr = search.split('&');
+            var new_search = "";
+            for (var i = 0; i < searchArr.length; i++) {
+                var str = searchArr[i]; //"data=xxx";
+                var strArr = str.split('=');
+                //strArr[0] = "data"
+                //strArr[1] = "xxx"|undefine;
+                var name_1 = strArr[0];
+                var value = strArr[1] ? strArr[1] : "";
+                new_search += name_1 + "=" + encodeURIComponent(value);
+                if (i < searchArr.length - 1) {
+                    new_search += "&";
+                }
+            }
+            return head + "?" + new_search;
         };
         /**
          * 是否是网络地址
