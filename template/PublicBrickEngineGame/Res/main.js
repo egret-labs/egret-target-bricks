@@ -109,6 +109,8 @@
 
 //
 var window = this;
+var global = global || this;
+global.bricks = {};
 this.navigator = { userAgent: "bricks" };
 this.setTimeout = this.setTimeout || function () { };
 var __extends = function (t, e) {

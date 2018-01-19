@@ -110,6 +110,13 @@ namespace egret {
         /**
          * @override
          */
+        $setMatrix(matrix: Matrix, needUpdateProperties: boolean = true): void {
+            super.$setMatrix(matrix, needUpdateProperties);
+            this._transformDirty = true;
+        }
+        /**
+         * @override
+         */
         $hitTest(stageX: number, stageY: number): DisplayObject {
             let self = this;
             if (!self.$visible) { // MD
