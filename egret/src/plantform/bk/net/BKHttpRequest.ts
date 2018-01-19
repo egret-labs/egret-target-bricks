@@ -63,7 +63,9 @@ namespace egret {
                             self._response = bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            self._response = res.readAsString() || "";
+                            const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
+                            self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            // self._response = res.readAsString() || "";
                         }
 
                         $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
