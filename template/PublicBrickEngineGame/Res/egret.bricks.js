@@ -19,6 +19,13 @@ var egret;
              * @internal
              */
             _this._transformDirty = true;
+            /**
+             * @internal
+             */
+            _this._colorDirty = 0;
+            /**
+             * @internal
+             */
             _this._color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
             _this._bkNode = bkNode || new BK.Node();
             return _this;
@@ -35,6 +42,32 @@ var egret;
             this._bkNode = node;
         };
         /**
+         * @internal
+         */
+        BKDisplayObject.prototype._updateColor = function () {
+            var parent = this.$parent;
+            if (parent) {
+                if (this._colorDirty === 2 || parent._colorDirty !== 0) {
+                    this._colorDirty = 1;
+                    this._color.a = parent._color.a * this.$alpha;
+                    this._bkNode.vertexColor = this._color;
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
+            else {
+                if (this._colorDirty === 2) {
+                    this._colorDirty = 1;
+                    this._color.a = this.$alpha;
+                    this._bkNode.vertexColor = this._color;
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
+        };
+        /**
          * @override
          */
         BKDisplayObject.prototype.$setVisible = function (value) {
@@ -47,9 +80,7 @@ var egret;
          */
         BKDisplayObject.prototype.$setAlpha = function (value) {
             _super.prototype.$setAlpha.call(this, value);
-            // MD
-            this._color.a = value;
-            this._bkNode.vertexColor = this._color;
+            this._colorDirty = 2; // self and child.
         };
         Object.defineProperty(BKDisplayObject.prototype, "blendMode", {
             /**
@@ -105,6 +136,14 @@ var egret;
         /**
          * @override
          */
+        BKDisplayObject.prototype.$setMatrix = function (matrix, needUpdateProperties) {
+            if (needUpdateProperties === void 0) { needUpdateProperties = true; }
+            _super.prototype.$setMatrix.call(this, matrix, needUpdateProperties);
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
         BKDisplayObject.prototype.$hitTest = function (stageX, stageY) {
             var self = this;
             if (!self.$visible) {
@@ -136,6 +175,7 @@ var egret;
          */
         BKDisplayObject.prototype.$getRenderNode = function () {
             // MD
+            this._updateColor();
             if (this._transformDirty || this.$matrixDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
@@ -938,6 +978,7 @@ var egret;
         });
         // MD
         BKDisplayObjectContainer.prototype.$getRenderNode = function () {
+            this._updateColor();
             if (this._transformDirty || this.$matrixDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
@@ -1835,6 +1876,7 @@ var egret;
          */
         BKBitmap.prototype.$getRenderNode = function () {
             // MD
+            this._updateColor();
             if (this._transformDirty || this.$matrixDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
@@ -6012,6 +6054,7 @@ var egret;
                 if (width === 0 || height === 0) {
                     return null;
                 }
+                this._updateColor();
                 if (this._transformDirty || this.$matrixDirty) {
                     this._transformDirty = false;
                     //
