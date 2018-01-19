@@ -165,6 +165,8 @@ namespace egret {
          */
         $getRenderNode(): sys.RenderNode {
             // MD
+            this._updateColor();
+            
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();

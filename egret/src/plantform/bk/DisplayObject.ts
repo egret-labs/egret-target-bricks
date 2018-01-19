@@ -8,7 +8,14 @@ namespace egret {
          * @internal
          */
         public _transformDirty: boolean = true;
-        protected readonly _color: Color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
+        /**
+         * @internal
+         */
+        public _colorDirty: number = 0;
+        /**
+         * @internal
+         */
+        public readonly _color: Color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
         /**
          * @internal
          */
@@ -34,6 +41,32 @@ namespace egret {
             this._bkNode = node;
         }
         /**
+         * @internal
+         */
+        public _updateColor(): void {
+            const parent = <any>this.$parent as BKDisplayObject;
+            if (parent) {
+                if (this._colorDirty === 2 || parent._colorDirty !== 0) {
+                    this._colorDirty = 1;
+                    this._color.a = parent.$alpha * this.$alpha;
+                    this._bkNode.vertexColor = this._color;
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
+            else {
+                if (this._colorDirty === 2) {
+                    this._colorDirty = 1;
+                    this._color.a = this.$alpha;
+                    this._bkNode.vertexColor = this._color;
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
+        }
+        /**
          * @override
          */
         $setVisible(value: boolean): void {
@@ -48,9 +81,7 @@ namespace egret {
         $setAlpha(value: number): void {
             super.$setAlpha(value);
 
-            // MD
-            this._color.a = value;
-            this._bkNode.vertexColor = this._color;
+            this._colorDirty = 2; // self and child.
         }
         /**
          * @override
@@ -148,6 +179,8 @@ namespace egret {
          */
         $getRenderNode(): sys.RenderNode {
             // MD
+            this._updateColor();
+
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();

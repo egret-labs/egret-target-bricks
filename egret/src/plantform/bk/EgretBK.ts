@@ -114,7 +114,7 @@ namespace egret {
                 enumerable: true,
                 configurable: true
             });
-            
+
             eui.Image.prototype.$getRenderNode = function (this: BKImage): any {
                 let image = this.$bitmapData;
                 if (!image) {
@@ -126,6 +126,8 @@ namespace egret {
                 if (width === 0 || height === 0) {
                     return null;
                 }
+
+                this._updateColor();
 
                 if (this._transformDirty || (this as any).$matrixDirty) {
                     this._transformDirty = false;
