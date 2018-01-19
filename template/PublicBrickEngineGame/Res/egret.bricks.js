@@ -1332,7 +1332,9 @@ var egret;
                             self._response = egret.bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            self._response = res.readAsString() || "";
+                            var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(res));
+                            self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            // self._response = res.readAsString() || "";
                         }
                         egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                     }
@@ -1506,11 +1508,12 @@ var egret;
                 this.$websocket.send(message);
             }
             else if (message instanceof ArrayBuffer) {
-                var b = new egret.ByteArray(message);
-                var msg = b.readUTF();
-                var bkBuffer = new BK.Buffer(msg.length);
-                bkBuffer.writeAsString(msg);
-                this.$websocket.send(bkBuffer);
+                // let b = new egret.ByteArray(message);
+                // let msg = b.readUTF();
+                // let bkBuffer = new BK.Buffer(msg.length);
+                // bkBuffer.writeAsString(msg);
+                var arrayBuffer = egret.arrayBufferToBrickBuffer(message);
+                this.$websocket.send(arrayBuffer);
             }
         };
         BKSocket.prototype.resHandler = function (event) {
@@ -6065,12 +6068,21 @@ var egret;
         var arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
         var uint8Array = new Uint8Array(arrayBuffer);
         var pointer = 0;
-        while (pointer < bricksBuffer.bufferLength() - 1) {
-            var result = bricksBuffer.readUint8Buffer();
-            uint8Array[pointer++] = result;
+        while (pointer < bricksBuffer.bufferLength()) {
+            uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
         }
         // bricksBuffer.releaseBuffer();
         return arrayBuffer;
     }
     egret.bricksBufferToArrayBuffer = bricksBufferToArrayBuffer;
+    function arrayBufferToBrickBuffer(arrayBuffer) {
+        var bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var pointer = 0;
+        while (pointer < arrayBuffer.byteLength) {
+            bricksBuffer.writeUint8Buffer(uint8Array[pointer++]);
+        }
+        return bricksBuffer;
+    }
+    egret.arrayBufferToBrickBuffer = arrayBufferToBrickBuffer;
 })(egret || (egret = {}));
