@@ -76,69 +76,62 @@ function getItems() {
 
 //成绩上报
 function uploadScore() {
-    var data = {
-        "cmd" : cmd,
-        "from" : "ios",       //描述请求来源或场景 h5.xxx.yyy/ios.xxx.yyy/android.xxx.yyy 用于后台统计
-        "openId":"4558665DATRGFGFS455",   //上报用户的openId
-        "gameId":1,           //游戏ID
-        "version":"2.0",      //游戏版本
-        "roomId" : 123,       //房间ID
-        //具体的得分数据数组。数组中每个元素为一个用户的得分
-    　　"gData":[
-    　　     {
-                //第一个用户的得分
-    　　         "openId":"4558665DATRGFGFS455",
-    　　         "scoreInfo":{
-                        "score":4455,   //用户得分  必须上报
-                        //附加参数，上报和使用都由第三方决定，最多支持5个附加参数，可选
-                        "a1":1,
-                        "a2":2,
-    　　               },
-    　　          "actInfo":{     //活动数据由第三方配置定义，key值统一用p1,p2,...此数据只用于活动，不会保存到用户的房间数据里, 现支持最多支持16个
+　   var gData = [
+　　     {
+            //第一个用户的得分
+　　         "openId":"4558665DATRGFGFS455",
+　　         "scoreInfo":{
+                    "score":4455,   //用户得分  必须上报
+                    //附加参数，上报和使用都由第三方决定，最多支持5个附加参数，可选
+                    "a1":1,
+                    "a2":2,
+　　               },
+　　          "actInfo":{     //活动数据由第三方配置定义，key值统一用p1,p2,...此数据只用于活动，不会保存到用户的房间数据里, 现支持最多支持16个
 　　                   "p1":1,    //参数0
 　　                   "p2":5,    //参数1
 　　              },
-    　　     },
-            {
-                 //第二个用户的得分
-    　　         "openId":"SDJIIWJIEQWJ232389DA",
-    　　         "scoreInfo":{
-                        "score":4455,   //用户得分  必须上报
-                        //附加参数，上报和使用都由第三方决定，最多支持5个附加参数，可选
-                        "a1":1,
-                        "a2":2,
-    　　               },
-    　　          "actInfo":{     //活动数据由第三方配置定义，key值统一用p1,p2,...此数据只用于活动，不会保存到用户的房间数据里, 现支持最多支持16个
+　　     },
+        {
+                //第二个用户的得分
+　　         "openId":"SDJIIWJIEQWJ232389DA",
+　　         "scoreInfo":{
+                    "score":4455,   //用户得分  必须上报
+                    //附加参数，上报和使用都由第三方决定，最多支持5个附加参数，可选
+                    "a1":1,
+                    "a2":2,
+　　               },
+　　          "actInfo":{     //活动数据由第三方配置定义，key值统一用p1,p2,...此数据只用于活动，不会保存到用户的房间数据里, 现支持最多支持16个
 　　                   "p1":1,    //参数0
 　　                   "p2":5,    //参数1
 　　              },
-            }
-            //第n个用户的得分 ...
-        ],
-        //735新加，支持各模式玩游戏
-        "arkData":{
-            /**模式一**/
-            "pkMode":1,                    //pk模式 1-PVP  2-PVE
-            "wording":"胜利",             //结果展示wording
-            "groupInfo":
-            [
-             {
-             "rank":1,                     //组排名，如有并列第一的则两组的rank都是1
-             "openIds":["4558665DATRGFGFS455","SDJIIWJIEQWJ232389DA"],         //组成员openId
-             "grpWording":                       //组 wording，可选
-             [
-              ["得分","123","分" ],
-              ["用时","123","秒" ],
-              ["杀怪","123" ],
-              ]
-             }
-             ]
         }
-    };
-    BK.QQ.scoreUpload(data,function(err,cmd,data){
+        //第n个用户的得分 ...
+    ];
+
+    //735新加，支持各模式玩游戏.选填项
+    var arkData = {
+        /**模式一**/
+        "pkMode":1,                  //pk模式 1-PVP  2-PVE
+        "wording":"胜利",             //结果展示wording
+        "groupInfo":
+        [
+            {
+                "rank":1,                     //组排名，如有并列第一的则两组的rank都是1
+                "openIds":["4558665DATRGFGFS455","SDJIIWJIEQWJ232389DA"],         //组成员openId
+                "grpWording":                       //组 wording，可选
+                [
+                    ["得分","123","分" ],
+                    ["用时","123","秒" ],
+                    ["杀怪","123" ],
+                ]
+            },
+            //...
+        ]
+    }
+    BK.QQ.scoreUpload(gData,function(err,cmd,data){
         //errCode ，0表示成功其他为异常
         //data = {}
-    });
+    },arkData);
 }
 
 // 获取房间内的用户成绩数据

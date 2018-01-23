@@ -1764,8 +1764,8 @@ var egret;
                 if (this.$bitmapData.bkTexture) {
                     this._bkSprite.setTexture(this.$bitmapData.bkTexture);
                     this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
-                    this._size.width = this.$texture.$bitmapWidth;
-                    this._size.height = this.$texture.$bitmapHeight;
+                    this._size.width = this.$getWidth(); //this.$texture.$bitmapWidth;
+                    this._size.height = this.$getHeight(); //this.$texture.$bitmapHeight;
                     this._bkSprite.size = this._size;
                 }
                 else {
@@ -4469,6 +4469,8 @@ var egret;
 var egret;
 (function (egret) {
     var BKGraphics = (function () {
+        // public _BKCanvas: BK.Canvas;
+        // public _BKNode: BK.Node;
         /**
          * Initializes a Graphics object.
          * @version Egret 2.4
@@ -4502,6 +4504,8 @@ var egret;
              * 线条宽度
              */
             this.lineWidth = 0;
+            this.strokeColor = { r: 0, g: 0, b: 0, a: 0 };
+            this.fillColor = { r: 0, g: 0, b: 0, a: 0 };
             /**
              * @private
              */
@@ -4525,11 +4529,12 @@ var egret;
             var stage = egret.lifecycle.stage;
             this.stageW = stage.stageWidth;
             this.stageH = stage.stageHeight;
-            this._BKCanvas = new BK.Canvas(2 * this.stageW, 2 * this.stageH); //sys.GraphicsNode();
-            this._BKCanvas.position = { x: -this.stageW, y: -this.stageH };
+            // this._BKNode = new BK.Node();
+            // this._BKCanvas = new BK.Canvas(2 * this.stageW, 2 * this.stageH)//sys.GraphicsNode();
+            // this._BKCanvas.position = { x: - this.stageW, y: - this.stageH };
             this.offsetX = this.stageW;
             this.offsetY = this.stageH;
-            this._BKCanvas.backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
+            // this._BKCanvas.backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
         }
         /**
          * @private
@@ -4539,7 +4544,7 @@ var egret;
             if (this.targetDisplay) {
                 this.targetDisplay.$renderNode = null;
             }
-            target._bkNode.addChild(this._BKCanvas);
+            // (target as BKDisplayObject)._bkNode.addChild(this._BKNode);
             // target._bkNode.addChild(this._BKCanvas);
             this.targetDisplay = target;
         };
@@ -4585,16 +4590,12 @@ var egret;
             if (alpha === void 0) { alpha = 1; }
             color = +color || 0;
             alpha = +alpha || 0;
-            // this.fillPath = this.$renderNode.beginFill(color, alpha, this.strokePath);
-            // if (this.$renderNode.drawData.length > 1) {
-            //     this.fillPath.moveTo(this.lastX, this.lastY);
-            // }
             this.isFillPath = true;
             var rgb_str = this._refitString(color, 6); //六位rgb格式
             var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
             var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
             var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
-            this._BKCanvas.fillColor = { r: red, g: green, b: blue, a: alpha };
+            this.fillColor = { r: red, g: green, b: blue, a: alpha };
         };
         /**
           * 为16进制数字补0，输出字符串
@@ -4629,12 +4630,8 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.beginGradientFill = function (type, colors, alphas, ratios, matrix) {
-            //暂不使用
             if (matrix === void 0) { matrix = null; }
-            // this.fillPath = this.$renderNode.beginGradientFill(type, colors, alphas, ratios, matrix, this.strokePath);
-            // if (this.$renderNode.drawData.length > 1) {
-            //     this.fillPath.moveTo(this.lastX, this.lastY);
-            // }
+            //暂不使用
         };
         /**
          * Apply fill to the lines and curves added after the previous calling to the beginFill() method.
@@ -4649,14 +4646,14 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.endFill = function () {
-            // this.fillPath = null;
+            // // this.fillPath = null;
             if (this.isFillPath) {
-                this._BKCanvas.fill();
+                // this._BKCanvas.fill();
                 this.isFillPath = false;
             }
             if (this.isStrokePath) {
-                this._BKCanvas.stroke();
-                this._BKCanvas.closePath();
+                // this._BKCanvas.stroke();
+                // this._BKCanvas.closePath();
                 this.isStrokePath = false;
             }
         };
@@ -4690,27 +4687,6 @@ var egret;
          * @platform Web,Native
          * @language zh_CN
          */
-        // public lineStyle(thickness: number = NaN, color: number = 0, alpha: number = 1.0, pixelHinting: boolean = false,
-        //     scaleMode: string = "normal", caps: string = null, joints: string = null, miterLimit: number = 3, lineDash?: number[]): void {
-        //     thickness = +thickness || 0;
-        //     if (thickness <= 0) {
-        //         this.strokePath = null;
-        //         this.setStrokeWidth(0);
-        //     }
-        //     else {
-        //         color = +color || 0;
-        //         alpha = +alpha || 0;
-        //         miterLimit = +miterLimit || 0;
-        //         this.setStrokeWidth(thickness);
-        //         this.strokePath = this.$renderNode.lineStyle(thickness, color, alpha, caps, joints, miterLimit);
-        //         if (lineDash) {
-        //             this.strokePath.setLineDash(lineDash);
-        //         }
-        //         if (this.$renderNode.drawData.length > 1) {
-        //             this.strokePath.moveTo(this.lastX, this.lastY);
-        //         }
-        //     }
-        // }
         BKGraphics.prototype.lineStyle = function (thickness, color, alpha, pixelHinting, scaleMode, caps, joints, miterLimit, lineDash) {
             if (thickness === void 0) { thickness = NaN; }
             if (color === void 0) { color = 0; }
@@ -4730,13 +4706,14 @@ var egret;
                 alpha = +alpha || 0;
                 this.setStrokeWidth(thickness);
                 this.lineWidth = thickness;
-                this._BKCanvas.lineWidth = thickness;
+                // this._BKCanvas.lineWidth = thickness;
                 this.isStrokePath = true;
                 var rgb_str = this._refitString(color, 6);
                 var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
                 var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
                 var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
-                this._BKCanvas.strokeColor = { r: red, g: green, b: blue, a: alpha };
+                this.strokeColor = { r: red, g: green, b: blue, a: alpha };
+                // this._BKCanvas.strokeColor = { r: red, g: green, b: blue, a: alpha };
             }
         };
         /**
@@ -4760,22 +4737,13 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.drawRect = function (x, y, width, height) {
-            var _x = +x + this.offsetX || 0;
-            var _y = -y + this.offsetY || 0;
+            var _x = +x || 0;
+            var _y = -y || 0;
             width = +width || 0;
             height = +height || 0;
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.drawRect(x, y, width, height);
-            // strokePath && strokePath.drawRect(x, y, width, height);
-            this.extendBoundsByPoint(x + width, y + height);
-            this.updatePosition(x, y);
-            // this.$renderNode.dirtyRender = true;
             if (this.isFillPath) {
-                this._BKCanvas.fillRect(_x, _y - height, width, height);
-            }
-            if (this.isStrokePath) {
-                this._BKCanvas.strokeRect(_x, _y - height, width, height);
+                var texture = new BK.Texture(BKGraphics.pixelPath);
+                this.addSprite(texture, _x, _y, width, height);
             }
         };
         /**
@@ -4804,67 +4772,8 @@ var egret;
          */
         BKGraphics.prototype.drawRoundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
             //暂不支持
-            var _x = this.offsetX + x || 0;
-            var _y = this.offsetY - y || 0;
-            width = +width || 0;
-            height = +height || 0;
-            ellipseWidth = +ellipseWidth || 0;
-            ellipseHeight = +ellipseHeight || 0;
-            this.roundRect(x, y, width, height, ellipseWidth, ellipseHeight);
-            var radiusX = (ellipseWidth * 0.5) | 0;
-            var radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
-            var right = x + width;
-            var bottom = y + height;
-            var ybw = bottom - radiusY;
-            this.extendBoundsByPoint(x, y);
-            this.extendBoundsByPoint(right, bottom);
-            this.updatePosition(right, ybw);
-            // this.$renderNode.dirtyRender = true;
         };
         BKGraphics.prototype.roundRect = function (x, y, width, height, ellipseWidth, ellipseHeight) {
-            var radiusX = (ellipseWidth * 0.5) | 0;
-            var radiusY = ellipseHeight ? (ellipseHeight * 0.5) | 0 : radiusX;
-            if (!radiusX || !radiusY) {
-                this.drawRect(x, y, width, height);
-                return;
-            }
-            var hw = width * 0.5;
-            var hh = height * 0.5;
-            if (radiusX > hw) {
-                radiusX = hw;
-            }
-            if (radiusY > hh) {
-                radiusY = hh;
-            }
-            if (hw === radiusX && hh === radiusY) {
-                if (radiusX === radiusY) {
-                    this.drawCircle(x + radiusX, y + radiusY, radiusX);
-                }
-                else {
-                    this.drawEllipse(x, y, radiusX * 2, radiusY * 2);
-                }
-                return;
-            }
-            //    A-----B
-            //  H         C
-            //  G         D
-            //    F-----E
-            // 从D点开始，结束在D点
-            var right = x + width;
-            var bottom = y + height;
-            var xlw = x + radiusX;
-            var xrw = right - radiusX;
-            var ytw = y + radiusY;
-            var ybw = bottom - radiusY;
-            this.moveTo(right, ybw);
-            this.curveTo(right, bottom, xrw, bottom);
-            this.lineTo(xlw, bottom);
-            this.curveTo(x, bottom, x, ybw);
-            this.lineTo(x, ytw);
-            this.curveTo(x, y, xlw, y);
-            this.lineTo(xrw, y);
-            this.curveTo(right, y, right, ytw);
-            this.lineTo(right, ybw);
         };
         /**
          * Draw a circle.
@@ -4885,24 +4794,26 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.drawCircle = function (x, y, radius) {
-            var _x = +x + this.offsetX || 0;
-            var _y = -y + this.offsetY || 0;
+            var _x = +x || 0;
+            var _y = -y || 0;
             radius = +radius || 0;
-            this._BKCanvas.drawCircle(_x, _y, radius);
-            if (this.isStrokePath && this.isFillPath) {
-                this._BKCanvas.fill();
-                this._BKCanvas.drawCircle(_x, _y, radius);
-                this._BKCanvas.stroke();
+            if (this.isFillPath) {
+                var texture = new BK.Texture(BKGraphics.circlePath);
+                this.addSprite(texture, _x, _y, radius * 2, radius * 2, true);
             }
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.drawCircle(x, y, radius);
-            // strokePath && strokePath.drawCircle(x, y, radius);
-            // //-1 +2 解决WebGL裁切问题
-            this.extendBoundsByPoint(x - radius - 1, y - radius - 1);
-            this.extendBoundsByPoint(x + radius + 2, y + radius + 2);
-            this.updatePosition(x + radius, y);
-            // this.$renderNode.dirtyRender = true;
+        };
+        BKGraphics.prototype.addSprite = function (texture, x, y, width, height, isCenter) {
+            if (isCenter === void 0) { isCenter = false; }
+            var rect = new BK.Sprite(width, height, texture, 0, 1, 1, 1);
+            rect.position = { x: x, y: y };
+            rect.vertexColor = this.fillColor;
+            if (isCenter) {
+                rect.anchor = { x: 0.5, y: 0.5 };
+            }
+            else {
+                rect.anchor = { x: 0, y: 1 };
+            }
+            this.targetDisplay['_bkNode'].addChild(rect);
         };
         /**
          * Draw an ellipse.
@@ -4925,25 +4836,17 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.drawEllipse = function (x, y, width, height) {
-            var _x = +x + this.offsetX || 0;
-            var _y = -y + this.offsetY || 0;
+            var _x = +x || 0;
+            var _y = -y || 0;
             width = +width || 0;
             height = +height || 0;
-            this._BKCanvas.drawEllipse(_x, _y, width, height);
-            if (this.isStrokePath && this.isFillPath) {
-                this._BKCanvas.fill();
-                this._BKCanvas.drawEllipse(_x, _y, width, height);
-                this._BKCanvas.stroke();
+            if (this.isFillPath) {
+                var texture = new BK.Texture(BKGraphics.circlePath);
+                var rect = new BK.Sprite(width, height, texture, 0, 1, 1, 1);
+                rect.position = { x: _x, y: _y - height };
+                rect.vertexColor = this.fillColor;
+                this.targetDisplay['_bkNode'].addChild(rect);
             }
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.drawEllipse(x, y, width, height);
-            // strokePath && strokePath.drawEllipse(x, y, width, height);
-            // //-1 +2 解决WebGL裁切问题
-            this.extendBoundsByPoint(x - 1, y - 1);
-            this.extendBoundsByPoint(x + width + 2, y + height + 2);
-            this.updatePosition(x + width, y + height * 0.5);
-            // this.$renderNode.dirtyRender = true;
         };
         /**
          * Move the current drawing position to (x, y). If any of these parameters is missed, calling this method will fail and the current drawing position keeps unchanged.
@@ -4962,17 +4865,17 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.moveTo = function (x, y) {
-            var _x = x + this.offsetX || 0;
-            var _y = -y + this.offsetY || 0;
-            this._BKCanvas.moveTo(_x, _y);
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.moveTo(x, y);
-            // strokePath && strokePath.moveTo(x, y);
-            // this.includeLastPosition = false;
-            // this.lastX = x;
-            // this.lastY = y;
-            // this.$renderNode.dirtyRender = true;
+            // let _x = x + this.offsetX || 0;
+            // let _y = - y + this.offsetY || 0;
+            // this._BKCanvas.moveTo(_x, _y);
+            // // let fillPath = this.fillPath;
+            // // let strokePath = this.strokePath;
+            // // fillPath && fillPath.moveTo(x, y);
+            // // strokePath && strokePath.moveTo(x, y);
+            // // this.includeLastPosition = false;
+            // // this.lastX = x;
+            // // this.lastY = y;
+            // // this.$renderNode.dirtyRender = true;
         };
         /**
          * Draw a straight line from the current drawing position to (x, y) using the current line style; the current drawing position is then set to (x, y).
@@ -4991,15 +4894,15 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.lineTo = function (x, y) {
-            var _x = x + this.offsetX || 0;
-            var _y = -y + this.offsetY || 0;
-            this._BKCanvas.lineTo(_x, _y);
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.lineTo(x, y);
-            // strokePath && strokePath.lineTo(x, y);
-            this.updatePosition(x, y);
-            // this.$renderNode.dirtyRender = true;
+            // let _x = x + this.offsetX || 0;
+            // let _y = - y + this.offsetY || 0;
+            // this._BKCanvas.lineTo(_x, _y);
+            // // let fillPath = this.fillPath;
+            // // let strokePath = this.strokePath;
+            // // fillPath && fillPath.lineTo(x, y);
+            // // strokePath && strokePath.lineTo(x, y);
+            // this.updatePosition(x, y);
+            // // this.$renderNode.dirtyRender = true;
         };
         /**
          * Draw a quadratic Bezier curve from the current drawing position to (anchorX, anchorY) using the current line style according to the control points specified by (controlX, controlY). The current drawing position is then set to (anchorX, anchorY).
@@ -5026,19 +4929,19 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.curveTo = function (controlX, controlY, anchorX, anchorY) {
-            var _controlX = this.offsetX + controlX || 0;
-            var _controlY = this.offsetY - controlY || 0;
-            var _anchorX = this.offsetX + anchorX || 0;
-            var _anchorY = this.offsetY - anchorY || 0;
-            this._BKCanvas.quadraticCurveTo(_controlX, _controlY, _anchorX, _anchorY);
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.curveTo(controlX, controlY, anchorX, anchorY);
-            // strokePath && strokePath.curveTo(controlX, controlY, anchorX, anchorY);
-            this.extendBoundsByPoint(controlX, controlY);
-            this.extendBoundsByPoint(anchorX, anchorY);
-            this.updatePosition(anchorX, anchorY);
-            // this.$renderNode.dirtyRender = true;
+            // let _controlX = this.offsetX + controlX || 0;
+            // let _controlY = this.offsetY - controlY || 0;
+            // let _anchorX = this.offsetX + anchorX || 0;
+            // let _anchorY = this.offsetY - anchorY || 0;
+            // this._BKCanvas.quadraticCurveTo(_controlX, _controlY, _anchorX, _anchorY)
+            // // let fillPath = this.fillPath;
+            // // let strokePath = this.strokePath;
+            // // fillPath && fillPath.curveTo(controlX, controlY, anchorX, anchorY);
+            // // strokePath && strokePath.curveTo(controlX, controlY, anchorX, anchorY);
+            // this.extendBoundsByPoint(controlX, controlY);
+            // this.extendBoundsByPoint(anchorX, anchorY);
+            // this.updatePosition(anchorX, anchorY);
+            // // this.$renderNode.dirtyRender = true;
         };
         /**
          * Draws a cubic Bezier curve from the current drawing position to the specified anchor. Cubic Bezier curves consist of two anchor points and two control points. The curve interpolates the two anchor points and two control points to the curve.
@@ -5065,22 +4968,22 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.cubicCurveTo = function (controlX1, controlY1, controlX2, controlY2, anchorX, anchorY) {
-            var _controlX1 = this.offsetX + controlX1 || 0;
-            var _controlY1 = this.offsetY - controlY1 || 0;
-            var _controlX2 = this.offsetX + controlX2 || 0;
-            var _controlY2 = this.offsetY - controlY2 || 0;
-            var _anchorX = this.offsetX + anchorX || 0;
-            var _anchorY = this.offsetY - anchorY || 0;
-            this._BKCanvas.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _anchorX, _anchorY);
-            // let fillPath = this.fillPath;
-            // let strokePath = this.strokePath;
-            // fillPath && fillPath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
-            // strokePath && strokePath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
-            this.extendBoundsByPoint(controlX1, controlY1);
-            this.extendBoundsByPoint(controlX2, controlY2);
-            this.extendBoundsByPoint(anchorX, anchorY);
-            this.updatePosition(anchorX, anchorY);
-            // this.$renderNode.dirtyRender = true;
+            // let _controlX1 = this.offsetX + controlX1 || 0;
+            // let _controlY1 = this.offsetY - controlY1 || 0;
+            // let _controlX2 = this.offsetX + controlX2 || 0;
+            // let _controlY2 = this.offsetY - controlY2 || 0;
+            // let _anchorX = this.offsetX + anchorX || 0;
+            // let _anchorY = this.offsetY - anchorY || 0;
+            // this._BKCanvas.bezierCurveTo(_controlX1, _controlY1, _controlX2, _controlY2, _anchorX, _anchorY);
+            // // let fillPath = this.fillPath;
+            // // let strokePath = this.strokePath;
+            // // fillPath && fillPath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            // // strokePath && strokePath.cubicCurveTo(controlX1, controlY1, controlX2, controlY2, anchorX, anchorY);
+            // this.extendBoundsByPoint(controlX1, controlY1);
+            // this.extendBoundsByPoint(controlX2, controlY2);
+            // this.extendBoundsByPoint(anchorX, anchorY);
+            // this.updatePosition(anchorX, anchorY);
+            // // this.$renderNode.dirtyRender = true;
         };
         /**
          * adds an arc to the path which is centered at (x, y) position with radius r starting at startAngle and ending
@@ -5108,26 +5011,26 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.drawArc = function (x, y, radius, startAngle, endAngle, anticlockwise) {
-            if (radius < 0 || startAngle === endAngle) {
-                return;
-            }
-            var _x = this.offsetX + x || 0;
-            var _y = this.offsetY - y || 0;
-            radius = +radius || 0;
-            startAngle = +startAngle || 0;
-            endAngle = +endAngle || 0;
-            anticlockwise = !!anticlockwise;
-            var _startAngle = clampAngle(-endAngle);
-            var _endAngle = clampAngle(startAngle);
-            this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
-            if (this.isStrokePath && this.isFillPath) {
-                this._BKCanvas.fill();
-                this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
-                this._BKCanvas.stroke();
-            }
-            var endX = x + Math.cos(endAngle) * radius;
-            var endY = y + Math.sin(endAngle) * radius;
-            this.updatePosition(endX, endY);
+            // if (radius < 0 || startAngle === endAngle) {
+            //     return;
+            // }
+            // let _x = this.offsetX + x || 0;
+            // let _y = this.offsetY - y || 0;
+            // radius = +radius || 0;
+            // startAngle = +startAngle || 0;
+            // endAngle = +endAngle || 0;
+            // anticlockwise = !!anticlockwise;
+            // let _startAngle = clampAngle(-endAngle);
+            // let _endAngle = clampAngle(startAngle);
+            // this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
+            // if (this.isStrokePath && this.isFillPath) {
+            //     this._BKCanvas.fill();
+            //     this._BKCanvas.arc(_x, _y, radius, _startAngle, _endAngle, anticlockwise);
+            //     this._BKCanvas.stroke();
+            // }
+            // let endX = x + Math.cos(endAngle) * radius;
+            // let endY = y + Math.sin(endAngle) * radius;
+            // this.updatePosition(endX, endY);
         };
         /**
          * Clear graphics that are drawn to this Graphics object, and reset fill and line style settings.
@@ -5142,15 +5045,15 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.clear = function () {
-            // this.$renderNode.clear();
-            this.updatePosition(0, 0);
-            this.minX = Infinity;
-            this.minY = Infinity;
-            this.maxX = -Infinity;
-            this.maxY = -Infinity;
-            this._BKCanvas.clearRect(0, 0, 2 * this.stageW, 2 * this.stageH);
-            this.isFillPath = false;
-            this.isStrokePath = false;
+            // // this.$renderNode.clear();
+            // this.updatePosition(0, 0);
+            // this.minX = Infinity;
+            // this.minY = Infinity;
+            // this.maxX = -Infinity;
+            // this.maxY = -Infinity;
+            // this._BKCanvas.clearRect(0, 0, 2 * this.stageW, 2 * this.stageH);
+            // this.isFillPath = false;
+            // this.isStrokePath = false;
         };
         /**
          * @private
@@ -5214,9 +5117,9 @@ var egret;
          *
          */
         BKGraphics.prototype.$hitTest = function (stageX, stageY) {
-            if (this._BKCanvas.hittest({ x: stageX, y: stageY })) {
-                return this.targetDisplay;
-            }
+            // if (this._BKCanvas.hittest({ x: stageX, y: stageY })) {
+            //     return this.targetDisplay;
+            // }
             return null;
         };
         /**
@@ -5227,6 +5130,8 @@ var egret;
             //     this.$renderNode.clean();
             // }
         };
+        BKGraphics.pixelPath = "GameRes://resource/pixel.png";
+        BKGraphics.circlePath = "GameRes://resource/circle.png";
         return BKGraphics;
     }());
     egret.BKGraphics = BKGraphics;

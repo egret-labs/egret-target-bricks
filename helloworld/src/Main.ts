@@ -100,6 +100,8 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
+
+
         let topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
@@ -111,6 +113,10 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;
+        egret.setTimeout(() => {
+            let texture: egret.Texture = RES.getRes("bg_jpg");
+            icon.texture = texture;
+        }, this, 3000);
 
         let line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);

@@ -22,16 +22,6 @@ interface BKUIManagerOptions
     onSwitchCamera?:()=>void,
     onBeautyPlus?:()=>void,
     onBeautyMinus?:()=>void,
-    onCameraOn?:()=>void,
-    onCameraOff?:()=>void,
-    onGetUserInfo?:()=>void,
-
-    //模式
-    onLiveMode?:()=>void,
-    onRealTimeMode?:()=>void,
-    onLiveMaster?:()=>void,
-    onLiveGuest?:()=>void,
-    onApollouser?:()=>void,
 }
 class BKUIManager
 {
@@ -56,10 +46,9 @@ class BKUIManager
         BK.Director.root.scale = {x:scaleX,y:scaleY};
     }
     updateInfomation(content:string){
-        BK.Script.log(0, 0, "updateInfomation :" + content);
-        if (this.infomationText) {
-            this.infomationText.content = content;
-        }
+      if (this.infomationText) {
+        this.infomationText.content = content;
+      }
     }
     initSelectRoomIdUI(selectCallback:(roomId:number)=>void)
     {
@@ -142,7 +131,7 @@ class BKUIManager
             infoStr = "参加者模式.点击开始加入房间";
         }
         this.infomationText = this.infoNewText(infoStr);
-        this.infomationText.zOrder = -9999999;
+        this.infomationText.zOrder = -9999;
         BK.Director.root.addChild(this.infomationText);
 
         //隐藏按钮
@@ -160,7 +149,7 @@ class BKUIManager
         closeBtn.position = {x:this.options.designWidth-100-10,y:this.options.designHeight-100-10}
 
         //背景
-        var backTex  =new BK.Texture('GameRes://resource/texture/3px.png');  
+        var backTex  =new BK.Texture('GameRes://resource/texture/background.png');  
         var background =new BK.Sprite(this.options.designWidth,this.options.designHeight,backTex,0,1,1,1);
         background.zOrder = 10000;
         BK.Director.root.addChild(background);
@@ -170,7 +159,7 @@ class BKUIManager
         BK.Director.root.addChild(hideBtn);
         BK.Director.root.addChild(closeBtn);
 
-        var currY = this.options.designHeight - 80;
+        var currY = this.options.designHeight - 200;
         var space1 = 100;
         var space2 = 50;
         currY = currY - space1;
@@ -222,7 +211,6 @@ class BKUIManager
         BK.Director.root.addChild(micOn);
 
         //本地视频信号
-        /**
         currY = currY - space1;
         var localVideoText = this.newText("本地视频信号");
         localVideoText.position = {x:10,y:currY}; 
@@ -243,32 +231,9 @@ class BKUIManager
         }.bind(this));
         localOn.position = {x:150,y:currY}
         localOn.zOrder = -999;
-        BK.Director.root.addChild(localOn); */
+        BK.Director.root.addChild(localOn);
 
-        //摄像头开关
-        currY = currY - space1;
-        var cameraText = this.newText("摄像头开关");
-        cameraText.position = {x:10,y:currY}; 
-        cameraText.zOrder = -9999;
-        BK.Director.root.addChild(cameraText);
-        
-        currY = currY -space2;
-        var cameraOff = new BK.Button(100,100,"GameRes://resource/texture/camera_off.png",function () {
-            BK.Script.log(0,0,"cameraOff click!");
-            this.options.onCameraOff();
-        }.bind(this));
-        cameraOff.position = {x:10,y:currY}
-        cameraOff.zOrder = -9999;
-        BK.Director.root.addChild(cameraOff);
-        var cameraOn = new BK.Button(100,100,"GameRes://resource/texture/camera_on.png",function () {
-            BK.Script.log(0,0,"cameraOn click!");
-            this.options.onCameraOn();
-        }.bind(this));
-        cameraOn.position = {x:150,y:currY}
-        cameraOn.zOrder = -999;
-        BK.Director.root.addChild(cameraOn);
-
-        //切换摄像头
+        //
         currY = currY - space1;
         var switchText = this.newText("切换摄像头");
         switchText.position = {x:10,y:currY}; 
@@ -283,7 +248,6 @@ class BKUIManager
         switchBtn.position = {x:10,y:currY}
         switchBtn.zOrder = -9999;
         BK.Director.root.addChild(switchBtn);
-
 
         ///远端视频信号
         currY = currY - space1;
@@ -331,72 +295,7 @@ class BKUIManager
         beautyMinus.position = {x:150,y:currY}
         beautyMinus.zOrder = -999;
         BK.Director.root.addChild(beautyMinus);
-
-         //获取房间内用户状态
-         currY = currY - space1;
-         var userInfoText = this.newText("用户状态");
-         userInfoText.position = {x:10,y:currY}; 
-         userInfoText.zOrder = -9999;
-         BK.Director.root.addChild(userInfoText);
-         
-         currY = currY -space2;
-         var userInfoBtn = new BK.Button(100,100,"GameRes://resource/texture/master.png",function () {
-             BK.Script.log(0,0,"userInfoBtn click!");
-             this.options.onGetUserInfo();
-         }.bind(this));
-         userInfoBtn.position = {x:10,y:currY}
-         userInfoBtn.zOrder = -9999;
-         BK.Director.root.addChild(userInfoBtn);
-         
-
-        ///第二列
-        //模式
-        // currY = this.options.designHeight - 200;
-        // var column2X = this.options.designWidth/2.0;
-        // var live_mode = new BK.Button(150,80,"GameRes://resource/texture/qav/live_mode.png",function () {
-        //     BK.Script.log(0,0,"live_mode click!");
-        //     this.options.onLiveMode();
-        // }.bind(this));
-        // live_mode.position = {x:column2X,y:currY}
-        // live_mode.zOrder = -9999;
-        // BK.Director.root.addChild(live_mode);
-
-        // var realtime_mode = new BK.Button(150,80,"GameRes://resource/texture/qav/realtime_mode.png",function () {
-        //     BK.Script.log(0,0,"realtime_mode click!");
-        //     this.options.onRealTimeMode();
-        // }.bind(this));
-        // realtime_mode.position = {x:column2X+200,y:currY}
-        // realtime_mode.zOrder = -9999;
-        // BK.Director.root.addChild(realtime_mode);
        
-        // //角色
-        // currY = currY -space2*3;
-        // var role_live_master = new BK.Button(150,80,"GameRes://resource/texture/qav/role_live_master.png",function () {
-        //     BK.Script.log(0,0,"role_live_master click!");
-        //     this.options.onLiveMaster();
-        // }.bind(this));
-        // role_live_master.position = {x:column2X,y:currY}
-        // role_live_master.zOrder = -9999;
-        // BK.Director.root.addChild(role_live_master);
-
-        // currY = currY -space2*2;
-        // var role_live_guest = new BK.Button(150,80,"GameRes://resource/texture/qav/role_live_guest.png",function () {
-        //     BK.Script.log(0,0,"role_live_guest click!");
-        //     this.options.onLiveGuest();
-        // }.bind(this));
-        // role_live_guest.position = {x:column2X,y:currY}
-        // role_live_guest.zOrder = -9999;
-        // BK.Director.root.addChild(role_live_guest);
-      
-        // currY = currY -space2*2;
-        // var role_apollouser = new BK.Button(150,80,"GameRes://resource/texture/qav/role_apollouser.png",function () {
-        //     BK.Script.log(0,0,"role_apollouser click!");
-        //     this.options.onApollouser();
-        // }.bind(this));
-        // role_apollouser.position = {x:column2X,y:currY}
-        // role_apollouser.zOrder = -9999;
-        // BK.Director.root.addChild(role_apollouser);
-      
         // beautyText.zOrder = -9999;
         // beauty.zOrder = -999;
         // BK.Director.root.addChild(beautyText);
@@ -406,7 +305,7 @@ class BKUIManager
         var startRoom = new BK.Button(200,100,"GameRes://resource/texture/start_normal.png",function () {
           this.options.onStartRoom();
         }.bind(this));
-        startRoom.setPressTexturePath('GameRes://resource/texture/start_pressed.png');
+        startRoom.setPressTexturePath('GameRes://resource/texture/start_pressed.png.png');
         startRoom.position = {x:this.options.designWidth-200,y:this.options.designHeight/2.0};
         startRoom.anchor = {x:0.5,y:0.5};
         BK.Director.root.addChild(startRoom);
@@ -541,7 +440,11 @@ class BKUIManager
     }
 }
 
+
+
 ///////房间管理///////
+
+///
 
 var currPlayerOpenIds = [];
 var otherViewCount = 0;
@@ -555,41 +458,28 @@ function addQAVView(openId:string) {
     }
 
     if (isExist == false) {
-        currPlayerOpenIds.push(openId);
         if (openId == GameStatusInfo.openId) {
-            BK.Script.log(1,1,"添加本地信号view openID:"+openId);
+                        
             var avCamera = BK.AVCamera.start({
                 identifier: "", // unique id (openId)
                 width: uiManager.options.designWidth/2.0,
                 height: uiManager.options.designHeight/2.0,
                 scaleSample: 0.125,
-                needFaceTracker: false,
-                skipFaceTrackerNum: 60,
+                needFaceTracker: true,
+                skipFaceTrackerNum:3,
                 //parent: nil, // 父亲节点，默认为root
                 position: {x: uiManager.options.designWidth/2.0, y: 0, z: 0}, // 相对于父亲左下角的坐标
                 onPrePreview: function(frameData) {
-                    //BK.Script.log(1, 0, "features = " + JSON.stringify(frameData.faceFeatures));
+                    BK.Script.log(1, 0, "features = " + JSON.stringify(frameData.faceFeatures));
                 }
             });
         }else
         {
-            BK.Script.log(1,1,"添加远端信号view openID:"+openId);
-            var height = 500;
-            var width  = height * 9/16;
-            
-            var pos = {x:100,y:height*otherViewCount};
-            var identifier =  openId; 
-            ////////开发demo工程下，会将openid的最后5作为标识.手q环境下，依然用openid
-            if (GameStatusInfo.devPlatform) {
-                if (openId.length == 32) {
-                    identifier = openId.substr(32-5, 5); 
-                    BK.Script.log(1, 0, "开发工程下 identifier= "+identifier);
-                }
-            }
-
-            var othersView = new QAVView(identifier, width, height, true, undefined, pos,undefined);
+            var pos = {x:100,y:otherViewCount*400};
+            var othersView = new QAVView(openId, 300, 300, true, undefined, pos,undefined);
             otherViewCount++
         }
+        currPlayerOpenIds.push(openId);
     }
 }
 
@@ -599,34 +489,40 @@ var env = BKRoomEnvironment.QQ_DEBUG;
 if (GameStatusInfo.devPlatform) {
     env = BKRoomEnvironment.DEMO_DEV;
 }
-// 
-BK.QQAVManager.setQAVCfg({
-    avRoleName:"white"
-});
 var roomManager = new BKRoomManager({
     gameId:GameStatusInfo.gameId,
     openId:GameStatusInfo.openId,
     environment:env,
     onJoinRoom:function (statusCode:number,room:BK.Room) {
+        BK.Script.log(0,0,"onJoinRoom:");
+
+
+        // BK.QQAVManager.setMic(true, function (errCode: number, cmd: string, data: any) {
+        //     BK.Script.log(1, 1, "BK.QQAVManager.setMic errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
+        // });
+
+        // BK.QQAVManager.setSpeaker(true, function (errCode: number, cmd: string, data: any) {
+        //     BK.Script.log(1, 1, "BK.QQAVManager.setSpeaker errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
+        // });
+
+        // BK.QQAVManager.setBeauty(8);
+
+        // BK.QQAVManager.switchCamera(true,0, function (errCode: number, cmd: string, data: any) {
+        //     BK.Script.log(1, 1, "BK.QQAVManager.switchCamera errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
+        // });
+        // BK.QQAVManager.setRemoteVideo(false)
+        // BK.QQAVManager.setLocalVideo(true)
+
         for (let index = 0; index < room.currentPlayers.length; index++) {
             const player = room.currentPlayers[index];
-            BK.Script.log(0,0,"onJoinRoom roomId:"+room.roomId+" openId:"+player.openId);
             addQAVView(player.openId);
             uiManager.updateInfomation(player.openId+"加入厘米秀房间成功"); 
-
-            //如果是自己，开启心跳
-            if(player.openId == GameStatusInfo.openId)
-            {
-                //心跳间隔5s
-                roomManager.startHeartbeat(5*1000);
-            }
         }
     }
 });
 
 var cameraPos = 0 ;
 var beauty = 0;
-var AudioCategory = 0; //模式 0实时
 // iPhone 6 (750x1334) 的分辨率为标准进行缩放。
 var uiManager = new BKUIManager({
     designWidth:750,
@@ -639,7 +535,7 @@ var uiManager = new BKUIManager({
         }else{
             uiManager.updateInfomation("正在加入厘米秀房间");
             roomManager.guestJoinRoom(GameStatusInfo.roomId);
-        }        
+        }
     },
     onCloseRoom:function () {
         BK.Script.log(0,0,"onCloseRoom");
@@ -647,11 +543,7 @@ var uiManager = new BKUIManager({
         BK.QQAVManager.exitRoom(function(err:number,cmd:string,data:any)
         {   
             BK.Script.log(0,0,"onCloseRoom error:"+err);
-            if (err == 0) {
-                uiManager.updateInfomation("离开视频房间 成功");
-            } else {
-                uiManager.updateInfomation("离开视频房间 失败");
-            } 
+            uiManager.updateInfomation("离开视频房间成功");
         })
     },
     onSpeakerOn:function(){
@@ -660,11 +552,7 @@ var uiManager = new BKUIManager({
       BK.QQAVManager.setSpeaker(true,function(err:number,cmd:string,data:any)
       {   
           BK.Script.log(0,0,"onSpeakerOn error:"+err);
-          if (err == 0) {
-              uiManager.updateInfomation("打开扬声器 成功");
-          } else {
-              uiManager.updateInfomation("打开扬声器 失败");
-          }    
+          uiManager.updateInfomation("打开扬声器成功");
       })
     }, 
     onSpeakerOff:function(){
@@ -672,12 +560,8 @@ var uiManager = new BKUIManager({
       uiManager.updateInfomation("正在关闭扬声器"); 
       BK.QQAVManager.setSpeaker(false,function(err:number,cmd:string,data:any)
       {   
-          BK.Script.log(0, 0, "onSpeakerOn error:" + err);
-          if (err == 0) {
-              uiManager.updateInfomation("关闭扬声器 成功");
-          } else {
-              uiManager.updateInfomation("关闭扬声器 失败");
-          }    
+          BK.Script.log(0,0,"onSpeakerOn error:"+err);
+          uiManager.updateInfomation("关闭扬声器成功");          
       })
     },
     onMicOn:function () {
@@ -685,11 +569,7 @@ var uiManager = new BKUIManager({
         BK.QQAVManager.setMic(true,function(err:number,cmd:string,data:any)
         {   
             BK.Script.log(0,0,"setMic error:"+err);
-            if (err==0) {
-                uiManager.updateInfomation("打开麦克风 成功");
-            }else{
-                uiManager.updateInfomation("打开麦克风 失败");
-            }
+            uiManager.updateInfomation("打开麦克风");
         })
     },
     onMicOff:function () {
@@ -697,35 +577,30 @@ var uiManager = new BKUIManager({
         BK.QQAVManager.setMic(false,function(err:number,cmd:string,data:any)
         {   
             BK.Script.log(0,0,"setMic error:"+err);
-            if (err==0) {
-                uiManager.updateInfomation("关闭麦克风 成功");
-            }else{
-                uiManager.updateInfomation("关闭麦克风 失败");
-            }
+            uiManager.updateInfomation("关闭麦克风成功");
         })
+    },
+    //本地信号
+    onLocalOn:function () {
+        BK.Script.log(0,0,"onLocalOn");
+        BK.QQAVManager.setLocalVideo(true);
+    },
+    onLocalOff:function () {
+        BK.Script.log(0,0,"onLocalOff");
+        BK.QQAVManager.setLocalVideo(false);
     },
     //远程信号
     onRemoteOn:function () {
         BK.Script.log(0,0,"onRemoteOn");
         BK.QQAVManager.setRemoteVideo(true);
-
-        var openIdList = [];
-        for (let index = 0; index < roomManager.room.currentPlayers.length; index++) {
-            const player = roomManager.room.currentPlayers[index];
-            openIdList.push(player.openId);
-        }
-        BK.QQAVManager.watchRemoteVideo(openIdList);
-        uiManager.updateInfomation("远程信号 开启 成功");
     },
     onRemoteOff:function () {
         BK.Script.log(0,0,"onRemoteOff");
         BK.QQAVManager.setRemoteVideo(false);
-        uiManager.updateInfomation("远程信号 关闭 成功");
     },
     //切换摄像头
     onSwitchCamera:function () {
         BK.Script.log(0,0,"onSwitchCamera");
-        uiManager.updateInfomation("正在切换摄像头");
         var tmpPos = cameraPos;
         if (tmpPos == 1) {
             tmpPos = 0;
@@ -733,99 +608,20 @@ var uiManager = new BKUIManager({
             tmpPos = 1;
         }
         cameraPos = tmpPos;
-        BK.QQAVManager.switchCamera(tmpPos,function (err:number,cmd:string,data:any) {
+        BK.QQAVManager.switchCamera(true,tmpPos,function (err:number,cmd:string,data:any) {
             BK.Script.log(0,0,"onSwitchCamera err:"+err);
-            if (tmpPos==1) {
-                uiManager.updateInfomation("切换摄像头 后置 成功");
-            }else{
-                uiManager.updateInfomation("切换摄像头 前置 成功");                
-            }
-        }.bind(this));
+        });
     },
     //美颜
     onBeautyPlus:function () {
         BK.Script.log(0,0,"onBeautyPlus");
         beauty = beauty +1;
         BK.QQAVManager.setBeauty(beauty);
-        uiManager.updateInfomation("增加美颜值:"+beauty);
     },
     onBeautyMinus:function () {
         BK.Script.log(0,0,"onBeautyMinus");
         beauty = beauty -1;
         BK.QQAVManager.setBeauty(beauty);
-        uiManager.updateInfomation("减少美颜值:"+beauty);        
-    },
-    //摄像头开关
-    onCameraOn : function () {
-        uiManager.updateInfomation("正在打开摄像头");
-        BK.QQAVManager.enableCamera(true,function (err:number,cmd:string,data:any) {
-            BK.Script.log(0,0,"enableCamera true.err:"+err);
-            if(err == 0)
-            {
-                uiManager.updateInfomation("打开摄像头 成功");
-            }else{
-                uiManager.updateInfomation("打开摄像头 失败");                
-            }
-        });
-    },
-    onCameraOff:function () {
-        uiManager.updateInfomation("正在关闭摄像头");
-        BK.QQAVManager.enableCamera(false,function (err:number,cmd:string,data:any) {
-            BK.Script.log(0,0,"enableCamera false.err:"+err);
-            if(err == 0)
-            {
-                uiManager.updateInfomation("关闭摄像头 成功");
-            }else{
-                uiManager.updateInfomation("关闭摄像头 失败");                
-            }
-        });
-    },
-    onGetUserInfo:function () {
-        // BK.QQAVManager.getEndpointList(function (err:number,cmd:string,data:any) {
-        //     BK.Script.log(0,0,"getEndpointList false.err:"+err+" data:"+JSON.stringify(data));
-        // });
-        var idList = [];
-        for (let index = 0; index < roomManager.room.currentPlayers.length; index++) {
-            const player = roomManager.room.currentPlayers[index];
-            idList.push(player.openId);
-        }
-        BK.QQAVManager.watchRemoteVideo(idList);
-
-
-        var isFront = BK.QQAVManager.isFrontCamera();
-        if (isFront /*boolean*/) {
-            uiManager.updateInfomation("当前为前置摄像头");
-        }else{
-            uiManager.updateInfomation("当前为后置摄像头");                
-        }
-    },
-    //模式
-    // onLiveMode:function () {
-    //     //直播
-    //     BK.QQAVManager.changeAudioCategory(1,function (err:number,cmd:string,data:any) {
-    //         BK.Script.log(0,0,"changeAudioCategory onLiveMode false.err:"+err+" data:"+JSON.stringify(data));
-    //     });
-    // },
-    // onRealTimeMode:function () {
-    //     //实时
-    //     BK.QQAVManager.changeAudioCategory(0,function (err:number,cmd:string,data:any) {
-    //         BK.Script.log(0,0,"changeAudioCategory onRealTimeMode false.err:"+err+" data:"+JSON.stringify(data));
-    //     });
-    // },
-    // onLiveMaster:function () {
-    //     BK.QQAVManager.changeQAVRole("LiveMaster",function (err:number,cmd:string,data:any) {
-    //         BK.Script.log(0,0,"changeQAVRole LiveMaster false.err:"+err+" data:"+JSON.stringify(data));
-    //     });
-    // },
-    // onLiveGuest:function () {
-    //     BK.QQAVManager.changeQAVRole("LiveGuest",function (err:number,cmd:string,data:any) {
-    //         BK.Script.log(0,0,"changeQAVRole LiveGuest false.err:"+err+" data:"+JSON.stringify(data));
-    //     });
-    // },
-    // onApollouser:function () {
-    //     BK.QQAVManager.changeQAVRole("apollouser",function (err:number,cmd:string,data:any) {
-    //         BK.Script.log(0,0,"changeQAVRole apollouser false.err:"+err+" data:"+JSON.stringify(data));
-    //     });
-    // },
+    }
 });
 uiManager.initUI();

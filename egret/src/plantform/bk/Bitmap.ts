@@ -48,8 +48,8 @@ namespace egret {
                         this.$texture.$bitmapHeight,
                         this.$texture.$rotated
                     );
-                    this._size.width = this.$texture.$bitmapWidth;
-                    this._size.height = this.$texture.$bitmapHeight;
+                    this._size.width = this.$getWidth()//this.$texture.$bitmapWidth;
+                    this._size.height = this.$getHeight()//this.$texture.$bitmapHeight;
                     this._bkSprite.size = this._size;
                 }
                 else {
@@ -166,7 +166,7 @@ namespace egret {
         $getRenderNode(): sys.RenderNode {
             // MD
             this._updateColor();
-            
+
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();

@@ -15,6 +15,7 @@ if (GameStatusInfo.devPlatform) {
     env = BKRoomEnvironment.DEMO_DEV;
 }
 
+
 ///////房间管理///////
 var roomManager = new BKRoomManager({
     gameId:GameStatusInfo.gameId,
@@ -23,51 +24,23 @@ var roomManager = new BKRoomManager({
     onJoinRoom:function (statusCode:number,room:BK.Room) {
         BK.Script.log(0,0,"onJoinRoom:");
 
-        //接受本地相机信号。true则可以显示相机信息
         BK.QQAVManager.setLocalVideo(true)
 
-        //接受远端信号。true则可以接受他人视频信号
-        BK.QQAVManager.setRemoteVideo(false)
-
-        //麦克风
         BK.QQAVManager.setMic(true, function (errCode: number, cmd: string, data: any) {
             BK.Script.log(1, 1, "BK.QQAVManager.setMic errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
         });
 
-        //扬声器
         BK.QQAVManager.setSpeaker(true, function (errCode: number, cmd: string, data: any) {
-            if (errCode == 0) {
-                BK.Script.log(0,0,"enableCamera Succ");
-            }else{
-                BK.Script.log(0,0,"enableCamera Failed");   
-            }
             BK.Script.log(1, 1, "BK.QQAVManager.setSpeaker errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
         });
 
-        //启动相机
-        BK.QQAVManager.enableCamera(true,function (err:number,cmd:string,data:any) {
-            if (err == 0) {
-                BK.Script.log(0,0,"enableCamera Succ");
-            }else{
-                BK.Script.log(0,0,"enableCamera Failed");   
-            }
-        });
-
-        //切换相机
-        BK.QQAVManager.switchCamera(0, function (errCode: number, cmd: string, data: any) {
+        BK.QQAVManager.switchCamera(true,0, function (errCode: number, cmd: string, data: any) {
             BK.Script.log(1, 1, "BK.QQAVManager.switchCamera errCode:"+errCode+" cmd:"+cmd+" data:"+JSON.stringify(data));
         });
-
-        //美颜
         BK.QQAVManager.setBeauty(8);
 
-        //离开视频房间
-        BK.QQAVManager.exitRoom(function(err:number,cmd:string,data:any)
-        {   
-            BK.Script.log(0,0,"onCloseRoom error:"+err);
-            uiManager.updateInfomation("离开视频房间成功");
-        });
-        
+        BK.QQAVManager.setRemoteVideo(false)
+
     }
 });
 
