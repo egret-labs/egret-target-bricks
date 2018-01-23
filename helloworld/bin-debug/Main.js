@@ -166,6 +166,10 @@ var Main = (function (_super) {
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;
+        egret.setTimeout(function () {
+            var texture = RES.getRes("bg_jpg");
+            icon.texture = texture;
+        }, this, 3000);
         var line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);
         line.graphics.moveTo(0, 0);

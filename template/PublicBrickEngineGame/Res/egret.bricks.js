@@ -107,6 +107,109 @@ var egret;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(BKDisplayObject.prototype, "mask", {
+            /**
+             * @override
+             */
+            set: function (value) {
+                var self = this;
+                if (value === self) {
+                    return;
+                }
+                if (!(this instanceof egret.BKBitmap)) {
+                    console.log("QQ 玩一玩不支持该种类型的影片剪辑被遮罩，只有 Bitmap 类型可以被遮罩，或不使用遮罩。");
+                    return;
+                }
+                if (value) {
+                    if (value instanceof egret.BKBitmap) {
+                        if (value == self.$mask) {
+                            return;
+                        }
+                        if (value.$maskedObject) {
+                            value.$maskedObject.mask = null;
+                        }
+                        value.$maskedObject = self;
+                        self.$mask = value;
+                        var clipNode = new BK.ClipNode(value._bkNode);
+                        clipNode.zOrder = this._bkNode.zOrder;
+                        if (this._bkNode.parent) {
+                            this._bkNode.parent.addChild(clipNode, this.parent.getChildIndex(this));
+                            this._bkNode.parent.removeChild(this._bkNode);
+                        }
+                        clipNode.addChild(this._bkNode);
+                        // if (!egret.nativeRender) {
+                        //     value.updateRenderMode();
+                        // }
+                        // if (self.$maskRect) {
+                        //     if (egret.nativeRender) {
+                        //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                        //     }
+                        //     self.$maskRect = null;
+                        // }
+                        // if (egret.nativeRender) {
+                        //     self.$nativeDisplayObject.setMask(value.$nativeDisplayObject.id);
+                        // }
+                    }
+                    else {
+                        // if (!self.$maskRect) {
+                        //     self.$maskRect = new egret.Rectangle();
+                        // }
+                        // self.$maskRect.copyFrom(value);
+                        // if (egret.nativeRender) {
+                        //     self.$nativeDisplayObject.setMaskRect(value.x, value.y, value.width, value.height);
+                        // }
+                        // if (self.$mask) {
+                        //     self.$mask.$maskedObject = null;
+                        //     if (!egret.nativeRender) {
+                        //         self.$mask.updateRenderMode();
+                        //     }
+                        // }
+                        // if (self.mask) {
+                        //     if (egret.nativeRender) {
+                        //         self.$nativeDisplayObject.setMask(-1);
+                        //     }
+                        //     self.$mask = null;
+                        // }
+                        console.log("QQ 玩一玩不支持该种类型的遮罩，请使用 Bitmap 遮罩，或不使用遮罩。");
+                    }
+                }
+                else {
+                    if (self.$mask) {
+                        // self.$mask.$maskedObject = null;
+                        // if (!egret.nativeRender) {
+                        //     self.$mask.updateRenderMode();
+                        // }
+                    }
+                    if (self.mask) {
+                        // if (egret.nativeRender) {
+                        //     self.$nativeDisplayObject.setMask(-1);
+                        // }
+                        // MD
+                        var clipNode = this._bkNode.parent;
+                        if (clipNode && clipNode.parent) {
+                            this._bkNode.zOrder = clipNode.zOrder;
+                            clipNode.parent.addChild(this._bkNode, this.parent.getChildIndex(this));
+                            clipNode.parent.removeChild(clipNode);
+                        }
+                        else {
+                            // Never.
+                        }
+                        self.$mask = null;
+                    }
+                    // if (self.$maskRect) {
+                    //     if (egret.nativeRender) {
+                    //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                    //     }
+                    //     self.$maskRect = null;
+                    // }
+                }
+                // if (!egret.nativeRender) {
+                //     self.updateRenderMode();
+                // }
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * @override
          */
@@ -409,9 +512,22 @@ var egret;
                 }
             }
             // MD
-            this._bkNode.addChild(child._bkNode, index);
+            var childBKNode = child._bkNode;
+            if (childBKNode.parent) {
+                this._bkNode.addChild(childBKNode.parent, index);
+            }
+            else {
+                this._bkNode.addChild(childBKNode, index);
+            }
             for (var i = 0, l = this.$children.length; i < l; i++) {
-                this.$children[i]._bkNode.zOrder = -i;
+                var childBKNode_1 = this.$children[i]._bkNode;
+                var bkNodeParent = childBKNode_1.parent;
+                if (bkNodeParent && bkNodeParent.parent === this._bkNode) {
+                    bkNodeParent.zOrder = -i;
+                }
+                else {
+                    childBKNode_1.zOrder = -i;
+                }
             }
             this.$childAdded(child, index);
             return child;
@@ -623,7 +739,10 @@ var egret;
                 children.splice(indexNow, 1);
             }
             // MD
-            this._bkNode.removeChild(child._bkNode);
+            var childBKNode = child._bkNode;
+            if (childBKNode.parent) {
+                childBKNode.parent.removeChild(childBKNode);
+            }
             return child;
         };
         /**
@@ -672,10 +791,24 @@ var egret;
             this.$children.splice(index, 0, child);
             this.$childAdded(child, index);
             // MD
-            this._bkNode.removeChild(child._bkNode);
-            this._bkNode.addChild(child._bkNode, index);
+            var childBKNode = child._bkNode;
+            var bkNodeParent = childBKNode.parent; // 兼容有遮罩的情况.
+            if (bkNodeParent) {
+                bkNodeParent.removeChild(childBKNode);
+                bkNodeParent.addChild(childBKNode, index);
+            }
+            else {
+                // Never.
+            }
             for (var i = 0, l = this.$children.length; i < l; i++) {
-                this.$children[i]._bkNode.zOrder = -i;
+                var childBKNode_2 = this.$children[i]._bkNode;
+                var bkNodeParent_1 = childBKNode_2.parent;
+                if (bkNodeParent_1 && bkNodeParent_1.parent === this._bkNode) {
+                    bkNodeParent_1.zOrder = -i;
+                }
+                else {
+                    childBKNode_2.zOrder = -i;
+                }
             }
         };
         /**
@@ -759,8 +892,20 @@ var egret;
             this.$childAdded(child2, index1);
             this.$childAdded(child1, index2);
             // MD
-            child2._bkNode.zOrder = -index1;
-            child1._bkNode.zOrder = -index2;
+            var bkNode1 = child1._bkNode;
+            var bkNode2 = child2._bkNode;
+            if (bkNode1.parent === this._bkNode) {
+                bkNode1.zOrder = -index2;
+            }
+            else {
+                bkNode1.parent.zOrder = -index2; // 兼容有遮罩的情况.
+            }
+            if (bkNode2.parent === this._bkNode) {
+                bkNode2.zOrder = -index1;
+            }
+            else {
+                bkNode2.parent.zOrder = -index1; // 兼容有遮罩的情况.
+            }
         };
         /**
          * Removes all child DisplayObject instances from the child list of the DisplayObjectContainer instance. The parent
@@ -2349,9 +2494,7 @@ var egret;
          * @platform Web,Native
          */
         function BKTextField() {
-            var _this = 
-            // MD
-            _super.call(this, new BK.TextNode({}, "")) || this;
+            var _this = _super.call(this) || this;
             _this.$inputEnabled = false;
             /**
              * @private
@@ -2361,6 +2504,32 @@ var egret;
              * @private
              */
             _this.graphicsNode = null;
+            // $updateRenderNode(): void {
+            //     if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
+            //         this.inputUtils._updateProperties();
+            //         if (this.$isTyping) {
+            //             this.fillBackground();
+            //             return;
+            //         }
+            //     }
+            //     else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
+            //         let graphics = this.graphicsNode;
+            //         if (graphics) {
+            //             graphics.clear();
+            //         }
+            //         return;
+            //     }
+            //     let underLines = this.drawText();
+            //     this.fillBackground(underLines);
+            //     //tudo 宽高很小的情况下webgl模式绘制异常
+            //     let bounds = this.$getRenderBounds();
+            //     let node = this.textNode;
+            //     node.x = bounds.x;
+            //     node.y = bounds.y;
+            //     node.width = Math.ceil(bounds.width);
+            //     node.height = Math.ceil(bounds.height);
+            //     Rectangle.release(bounds);
+            // }
             /**
              * @private
              */
@@ -2377,24 +2546,10 @@ var egret;
              * @private
              */
             _this.$isTyping = false;
-            _this._style = {
-                fontSize: egret.TextField.default_size,
-                textColor: egret.TextField.default_textColor + 0xFF000000,
-                maxWidth: 512,
-                maxHeight: 64,
-                width: 512,
-                height: 64,
-                textAlign: 0,
-                bold: 0,
-                italic: 0,
-                strokeColor: 0x00000000,
-                strokeSize: 0,
-                shadowRadius: 0,
-                shadowDx: 0,
-                shadowDy: 0,
-                shadowColor: 0x00000000
-            };
-            _this._bkText = _this._bkNode;
+            // MD
+            _this._bkTextNodes = [];
+            // MD
+            _this._bkTextContainer = _this._bkNode;
             // super();
             // let textNode = new sys.TextNode();
             // textNode.fontFamily = TextField.default_fontFamily;
@@ -2440,8 +2595,8 @@ var egret;
                 36: null,
                 37: egret.TextFieldInputType.TEXT //inputType
             };
-            _this.$TextField[1 /* lineSpacing */] = 10; // MD
             return _this;
+            // this.$TextField[sys.TextKeys.lineSpacing] = 10; // MD
         }
         /**
          * @private
@@ -2522,7 +2677,6 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._style.fontSize = value;
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "bold", {
@@ -2559,7 +2713,6 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._style.bold = value ? 1 : 0;
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "italic", {
@@ -2596,7 +2749,6 @@ var egret;
             this.invalidateFontString();
             // MD
             this._transformDirty = true;
-            this._style.italic = value ? 1 : 0;
             return true;
         };
         /**
@@ -2638,19 +2790,6 @@ var egret;
             }
             values[9 /* textAlign */] = value;
             this.$invalidateTextField();
-            // MD
-            this._transformDirty = true;
-            switch (value) {
-                case egret.HorizontalAlign.LEFT:
-                    this._style.textAlign = 0;
-                    break;
-                case egret.HorizontalAlign.CENTER:
-                    this._style.textAlign = 1;
-                    break;
-                case egret.HorizontalAlign.RIGHT:
-                    this._style.textAlign = 2;
-                    break;
-            }
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "verticalAlign", {
@@ -2684,8 +2823,6 @@ var egret;
             }
             values[10 /* verticalAlign */] = value;
             this.$invalidateTextField();
-            // MD
-            this._transformDirty = true;
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "lineSpacing", {
@@ -2707,7 +2844,7 @@ var egret;
                 return this.$TextField[1 /* lineSpacing */];
             },
             set: function (value) {
-                // this.$setLineSpacing(value); TODO
+                this.$setLineSpacing(value);
             },
             enumerable: true,
             configurable: true
@@ -2756,12 +2893,6 @@ var egret;
                 this.inputUtils._setColor(this.$TextField[2 /* textColor */]);
             }
             this.$invalidateTextField();
-            // MD
-            var rgb_str = this._refitString(value, 6); //六位rgb格式
-            var old_argb_str = this._refitString(this._style.textColor, 8);
-            var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
-            var argb_num = parseInt(new_argb_str, 16);
-            this._style.textColor = argb_num;
             return true;
         };
         Object.defineProperty(BKTextField.prototype, "wordWrap", {
@@ -3049,12 +3180,6 @@ var egret;
                 this.$invalidateTextField();
                 values[25 /* strokeColor */] = value;
                 values[26 /* strokeColorString */] = egret.toColorString(value);
-                // MD
-                var rgb_str = this._refitString(value, 6); //六位rgb格式
-                var old_argb_str = this._refitString(this._style.strokeColor, 8);
-                var new_argb_str = old_argb_str.substring(0, 2) + rgb_str;
-                var argb_num = parseInt(new_argb_str, 16);
-                this._style.strokeColor = argb_num;
                 return true;
             }
             return false;
@@ -3096,7 +3221,6 @@ var egret;
                 this.$TextField[27 /* stroke */] = value;
                 // MD
                 this._transformDirty = true;
-                this._style.strokeSize = value;
                 return true;
             }
             return false;
@@ -3398,7 +3522,6 @@ var egret;
             this.$invalidateTextField();
             // MD
             this._transformDirty = true;
-            this._style.width = this._style.maxWidth = values[3 /* textFieldWidth */];
             return true;
         };
         /**
@@ -3427,7 +3550,6 @@ var egret;
             this.$invalidateTextField();
             // MD
             this._transformDirty = true;
-            this._style.height = this._style.maxHeight = values[4 /* textFieldHeight */];
             return true;
         };
         /**
@@ -3723,35 +3845,7 @@ var egret;
             this.$getLinesArr();
             var w = !isNaN(this.$TextField[3 /* textFieldWidth */]) ? this.$TextField[3 /* textFieldWidth */] : this.$TextField[5 /* textWidth */];
             var h = !isNaN(this.$TextField[4 /* textFieldHeight */]) ? this.$TextField[4 /* textFieldHeight */] : egret.TextFieldUtils.$getTextHeight(this);
-            // MD
-            // let h: number = !isNaN(this.$TextField[sys.TextKeys.textFieldHeight]) ? this.$TextField[sys.TextKeys.textFieldHeight] : this.$TextField[sys.TextKeys.textHeight];
             bounds.setTo(0, 0, w, h);
-        };
-        BKTextField.prototype.$updateRenderNode = function () {
-            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                this.inputUtils._updateProperties();
-                if (this.$isTyping) {
-                    this.fillBackground();
-                    return;
-                }
-            }
-            else if (this.$TextField[3 /* textFieldWidth */] == 0) {
-                var graphics = this.graphicsNode;
-                if (graphics) {
-                    graphics.clear();
-                }
-                return;
-            }
-            var underLines = this.drawText();
-            this.fillBackground(underLines);
-            //tudo 宽高很小的情况下webgl模式绘制异常
-            var bounds = this.$getRenderBounds();
-            var node = this.textNode;
-            node.x = bounds.x;
-            node.y = bounds.y;
-            node.width = Math.ceil(bounds.width);
-            node.height = Math.ceil(bounds.height);
-            egret.Rectangle.release(bounds);
         };
         Object.defineProperty(BKTextField.prototype, "textFlow", {
             /**
@@ -3860,8 +3954,6 @@ var egret;
             get: function () {
                 this.$getLinesArr();
                 return egret.TextFieldUtils.$getTextHeight(this);
-                // // MD
-                // return this.$TextField[sys.TextKeys.textHeight];
             },
             enumerable: true,
             configurable: true
@@ -3903,22 +3995,6 @@ var egret;
                 return this.linesArr;
             }
             values[18 /* textLinesChanged */] = false;
-            // MD
-            // values[sys.TextKeys.numLines] = 1;
-            // if (values[sys.TextKeys.text]) {
-            //     const textFieldWidth = values[sys.TextKeys.textFieldWidth];
-            //     if (!isNaN(textFieldWidth) && textFieldWidth == 0) {
-            //         values[sys.TextKeys.numLines] = 0;
-            //         return [{ width: 0, height: 0, charNum: 0, elements: [], hasNextLine: false }];
-            //     }
-            //     values[sys.TextKeys.textWidth] = bkMeasureText(this.$getText(), this.fontFamily, this.size, this.bold, this.italic); // 
-            //     values[sys.TextKeys.textHeight] = (defaultText as any).height;
-            // }
-            // else {
-            //     values[sys.TextKeys.textWidth] = 0;
-            //     values[sys.TextKeys.textHeight] = 0;
-            // }
-            // return this.linesArr;
             var text2Arr = this.textArr;
             this.linesArr.length = 0;
             values[6 /* textHeight */] = 0;
@@ -4164,12 +4240,14 @@ var egret;
             }
             drawY = Math.round(drawY);
             var hAlign = egret.TextFieldUtils.$getHalign(this); // MD
+            var nodeCount = 0; // MD
             var drawX = 0;
             var underLineData = [];
             for (var i = startLine, numLinesLength = values[29 /* numLines */]; i < numLinesLength; i++) {
                 var line = lines[i];
                 var h = line.height;
-                drawY += h / 2;
+                // drawY += h / 2;
+                drawY += h; // MD
                 if (i != startLine) {
                     if (values[24 /* type */] == egret.TextFieldType.INPUT && !values[30 /* multiline */]) {
                         break;
@@ -4182,14 +4260,47 @@ var egret;
                 for (var j = 0, elementsLength = line.elements.length; j < elementsLength; j++) {
                     var element = line.elements[j];
                     var size = element.style.size || values[0 /* fontSize */];
-                    // node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style); // MD
+                    // MD
+                    tempStyle.italic = element.style.italic ? 1 : values[16 /* italic */];
+                    tempStyle.bold = element.style.bold ? 1 : values[15 /* bold */];
+                    tempStyle.fontSize = size;
+                    tempStyle.strokeSize = isNaN(Number(element.style.stroke)) ? values[27 /* stroke */] : element.style.stroke;
+                    tempStyle.strokeColor = 0xFF000000 + (isNaN(Number(element.style.strokeColor)) ? values[25 /* strokeColor */] : element.style.strokeColor);
+                    tempStyle.textColor = 0xFF000000 + (isNaN(Number(element.style.textColor)) ? values[2 /* textColor */] : element.style.textColor);
+                    tempStyle.width = tempStyle.maxWidth = element.width;
+                    tempStyle.height = tempStyle.maxHeight = size * 1.15; // 高度不够会被裁切。
+                    var bkText = void 0; // BK.TextNode
+                    if (nodeCount < this._bkTextNodes.length) {
+                        bkText = this._bkTextNodes[nodeCount];
+                        bkText.updateText(tempStyle, element.text);
+                    }
+                    else {
+                        bkText = createTextNode(element.text, tempStyle);
+                        this._bkTextNodes[nodeCount] = bkText;
+                        this._bkTextContainer.addChild(bkText);
+                    }
+                    bkText.position = { x: drawX, y: -(drawY) };
+                    // node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
+                    nodeCount++;
+                    // MD END
                     if (element.style.underline) {
-                        underLineData.push(drawX, drawY + (h) / 2, element.width, element.style.textColor);
+                        underLineData.push(drawX, 
+                        // drawY + (h) / 2, 
+                        drawY, // MD
+                        element.width, element.style.textColor);
                     }
                     drawX += element.width;
                 }
-                drawY += h / 2 + values[1 /* lineSpacing */];
+                // drawY += h / 2 + values[sys.TextKeys.lineSpacing];
+                drawY += values[1 /* lineSpacing */]; // MD
             }
+            // MD 移除多余的节点
+            for (var i = nodeCount; i < this._bkTextNodes.length; ++i) {
+                var bkText = this._bkTextNodes[i]; // BK.TextNode
+                bkTextNodes.push(bkText);
+                this._bkTextContainer.removeChild(bkText);
+            }
+            this._bkTextNodes.length = nodeCount;
             return underLineData;
         };
         //增加点击事件
@@ -4202,24 +4313,23 @@ var egret;
         };
         //处理富文本中有href的
         BKTextField.prototype.onTapHandler = function (e) {
-            // MD
-            // if (this.$TextField[sys.TextKeys.type] == egret.TextFieldType.INPUT) {
-            //     return;
-            // }
-            // let ele: ITextElement = TextFieldUtils.$getTextElement(this, e.localX, e.localY);
-            // if (ele == null) {
-            //     return;
-            // }
-            // let style: egret.ITextStyle = ele.style;
-            // if (style && style.href) {
-            //     if (style.href.match(/^event:/)) {
-            //         let type: string = style.href.match(/^event:/)[0];
-            //         egret.TextEvent.dispatchTextEvent(this, egret.TextEvent.LINK, style.href.substring(type.length));
-            //     }
-            //     else {
-            //         open(style.href, style.target || "_blank");
-            //     }
-            // }
+            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
+                return;
+            }
+            var ele = egret.TextFieldUtils.$getTextElement(this, e.localX, e.localY);
+            if (ele == null) {
+                return;
+            }
+            var style = ele.style;
+            if (style && style.href) {
+                if (style.href.match(/^event:/)) {
+                    var type = style.href.match(/^event:/)[0];
+                    egret.TextEvent.dispatchTextEvent(this, egret.TextEvent.LINK, style.href.substring(type.length));
+                }
+                else {
+                    open(style.href, style.target || "_blank");
+                }
+            }
         };
         /**
          * 为16进制数字补0，输出字符串
@@ -4241,54 +4351,30 @@ var egret;
                     }
                 }
                 else if (this.$TextField[3 /* textFieldWidth */] == 0) {
-                    var graphics = this.graphicsNode;
-                    if (graphics) {
-                        graphics.clear();
-                    }
+                    // let graphics = this.$graphicsNode;
+                    // if (graphics) {
+                    //     graphics.clear();
+                    // }
                     return;
                 }
                 var underLines = this.drawText();
                 this.fillBackground(underLines);
                 //tudo 宽高很小的情况下webgl模式绘制异常
-                var bounds = this.$getRenderBounds();
-                this._style.width = this._style.maxWidth = Math.ceil(bounds.width);
-                this._style.height = this._style.maxHeight = Math.ceil(bounds.height);
-                egret.Rectangle.release(bounds);
-                this._bkText.updateText(this._style, this.$TextField[13 /* text */]);
+                // let bounds = this.$getRenderBounds(); // MD
+                // Rectangle.release(bounds);
             }
             //
             if (this._transformDirty || this.$matrixDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
                 var bkMatrix = this._bkNode.transform.matrix;
-                var textSize = this._bkText.size;
                 var tx = matrix.tx;
                 var ty = matrix.ty;
                 var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY - textSize.height;
+                var pivotY = this.$anchorOffsetY;
                 if (pivotX !== 0.0 || pivotY !== 0.0) {
                     tx -= matrix.a * pivotX + matrix.c * pivotY;
                     ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                switch (this.$TextField[9 /* textAlign */]) {
-                    case egret.HorizontalAlign.LEFT:
-                        break;
-                    case egret.HorizontalAlign.CENTER:
-                        tx -= (textSize.width - this.$getWidth()) * 0.5;
-                        break;
-                    case egret.HorizontalAlign.RIGHT:
-                        tx -= textSize.width - this.$getWidth();
-                        break;
-                }
-                switch (this.$TextField[10 /* verticalAlign */]) {
-                    case egret.VerticalAlign.TOP:
-                        break;
-                    case egret.VerticalAlign.MIDDLE:
-                        ty += (textSize.height - this._bkText.height) * 0.5;
-                        break;
-                    case egret.VerticalAlign.BOTTOM:
-                        ty += textSize.height - this._bkText.height;
-                        break;
                 }
                 bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
             }
@@ -4337,6 +4423,23 @@ var egret;
     }(egret.BKDisplayObject));
     egret.BKTextField = BKTextField;
     __reflect(BKTextField.prototype, "egret.BKTextField");
+    var tempStyle = {
+        fontSize: egret.TextField.default_size,
+        textColor: egret.TextField.default_textColor + 0xFF000000,
+        maxWidth: 64,
+        maxHeight: 64,
+        width: 64,
+        height: 64,
+        textAlign: 0,
+        bold: 0,
+        italic: 0,
+        strokeColor: 0xFF000000,
+        strokeSize: 0,
+        shadowRadius: 0,
+        shadowDx: 0,
+        shadowDy: 0,
+        shadowColor: 0xFF000000
+    };
     var defaultStyle = {
         fontSize: egret.TextField.default_size,
         textColor: egret.TextField.default_textColor + 0xFF000000,
@@ -4347,14 +4450,24 @@ var egret;
         textAlign: 0,
         bold: 0,
         italic: 0,
-        strokeColor: 0x00000000,
+        strokeColor: 0xFF000000,
         strokeSize: 0,
         shadowRadius: 0,
         shadowDx: 0,
         shadowDy: 0,
-        shadowColor: 0x00000000
+        shadowColor: 0xFF000000
     };
+    var bkTextNodes = []; // BK.TextNode[]
     var defaultText; // BK.TextNode
+    function createTextNode(text, style) {
+        if (bkTextNodes.length > 0) {
+            var textNode_1 = bkTextNodes.pop();
+            textNode_1.updateText(style, text);
+            return textNode_1;
+        }
+        var textNode = new BK.TextNode(style, text);
+        return textNode;
+    }
     function bkMeasureText(text, fontFamily, size, bold, italic) {
         if (!defaultText) {
             defaultText = new BK.TextNode(defaultStyle, "");
@@ -5939,7 +6052,6 @@ var egret;
     }
     function modifyEgret() {
         if (typeof eui !== "undefined") {
-            ;
             Object.defineProperty(eui.Image.prototype, "scale9Grid", {
                 set: function (value) {
                     this.$setScale9Grid(value);
@@ -5982,7 +6094,6 @@ var egret;
                 return this._bkNode;
             };
         }
-        debugger;
         if (typeof egret.WebSocket !== undefined) {
             egret.ISocket = egret.BKSocket;
         }
