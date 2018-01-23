@@ -437,8 +437,9 @@ namespace egret {
             }
 
             // MD
-            if ((child as any)._bkNode.parent) { // 兼容有遮罩的情况.
-                (child as any)._bkNode.parent.removeChild(child);
+            const childBKNode = (child as BKDisplayObject)._bkNode;
+            if (childBKNode.parent) { // 兼容有遮罩的情况.
+                childBKNode.parent.removeChild(childBKNode);
             }
 
             return child;

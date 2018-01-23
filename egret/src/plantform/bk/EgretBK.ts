@@ -104,7 +104,7 @@ namespace egret {
         if (typeof eui !== "undefined") {
             type BKImageType = BKBitmap & eui.Image;
             interface BKImage extends BKImageType {
-            };
+            }
 
             Object.defineProperty(eui.Image.prototype, "scale9Grid", {
                 set: function (this: BKImage, value: egret.Rectangle | null): void {
@@ -152,9 +152,8 @@ namespace egret {
 
                 return this._bkNode as any;
             };
-
         }
-        debugger
+
         if (typeof WebSocket !== undefined) {
             egret.ISocket = egret.BKSocket;
         }
