@@ -166,10 +166,10 @@ var Main = (function (_super) {
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;
-        egret.setTimeout(function () {
-            var texture = RES.getRes("bg_jpg");
-            icon.texture = texture;
-        }, this, 3000);
+        // egret.setTimeout(() => {
+        //     let texture: egret.Texture = RES.getRes("bg_jpg");
+        //     icon.texture = texture;
+        // }, this, 3000);
         var line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);
         line.graphics.moveTo(0, 0);
@@ -197,6 +197,13 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+        debugger;
+        var shp = new egret.Shape();
+        shp.graphics.lineStyle(2, 0x000000);
+        shp.graphics.moveTo(10, 10);
+        shp.graphics.lineTo(500, 20);
+        shp.graphics.endFill();
+        this.addChild(shp);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。

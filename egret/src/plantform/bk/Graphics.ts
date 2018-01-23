@@ -6,8 +6,8 @@ namespace egret {
 
         private stageW: number;
         private stageH: number;
-        private offsetX: number;
-        private offsetY: number;
+        // private offsetX: number;
+        // private offsetY: number;
 
         // public _BKCanvas: BK.Canvas;
 
@@ -32,8 +32,8 @@ namespace egret {
             // this._BKNode = new BK.Node();
             // this._BKCanvas = new BK.Canvas(2 * this.stageW, 2 * this.stageH)//sys.GraphicsNode();
             // this._BKCanvas.position = { x: - this.stageW, y: - this.stageH };
-            this.offsetX = this.stageW;
-            this.offsetY = this.stageH;
+            // this.offsetX = this.stageW;
+            // this.offsetY = this.stageH;
             // this._BKCanvas.backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
         }
 
@@ -62,11 +62,11 @@ namespace egret {
         /**
          * 当前移动到的坐标X
          */
-        private lastX: number = 0;
+        private lastX: number;
         /**
          * 当前移动到的坐标Y
          */
-        private lastY: number = 0;
+        private lastY: number;
         /**
          * 当前正在绘制的填充
          */
@@ -417,17 +417,19 @@ namespace egret {
          * @language zh_CN
          */
         public moveTo(x: number, y: number): void {
-            // let _x = x + this.offsetX || 0;
-            // let _y = - y + this.offsetY || 0;
+            let _x = x || 0;
+            let _y = - y || 0;
+            this.lastX = _x;
+            this.lastY = _y;
             // this._BKCanvas.moveTo(_x, _y);
-            // // let fillPath = this.fillPath;
-            // // let strokePath = this.strokePath;
-            // // fillPath && fillPath.moveTo(x, y);
-            // // strokePath && strokePath.moveTo(x, y);
-            // // this.includeLastPosition = false;
-            // // this.lastX = x;
-            // // this.lastY = y;
-            // // this.$renderNode.dirtyRender = true;
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.moveTo(x, y);
+            // strokePath && strokePath.moveTo(x, y);
+            // this.includeLastPosition = false;
+            // this.lastX = _x;
+            // this.lastY = _y;
+            // this.$renderNode.dirtyRender = true;
         }
 
         /**
@@ -447,15 +449,37 @@ namespace egret {
          * @language zh_CN
          */
         public lineTo(x: number, y: number): void {
-            // let _x = x + this.offsetX || 0;
-            // let _y = - y + this.offsetY || 0;
+            if (this.isStrokePath) {
+                let _x = x || 0;
+                let _y = - y || 0;
+                let _lastX = this.lastX !== undefined ? this.lastX : x;
+                let _lastY = this.lastY !== undefined ? this.lastY : y;
+
+                //由x,y,lastx,lasty算出相对的偏移角度以及距离；
+                let distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2))
+                let rotation: number;
+                if (_x - _lastX !== 0) {
+                    rotation = (Math.atan((_y - _lastY) / (_x - _lastX)) / Math.PI) * 180;
+                } else {
+                    rotation = _y - _lastY > 0 ? 90 : -90;
+                }
+
+                let texture = new BK.Texture(BKGraphics.pixelPath,6,0,0,1,1);
+                let line = new BK.Sprite(distance, this.lineWidth, texture, 0, 1, 1, 1);
+                line.position = { x: _lastX, y: _lastY };
+                line.rotation = { x: 0, y: 0, z: rotation }
+                line.vertexColor = this.strokeColor;
+                this.targetDisplay['_bkNode'].addChild(line);
+                this.lastX = _x;
+                this.lastY = _y;
+            }
             // this._BKCanvas.lineTo(_x, _y);
-            // // let fillPath = this.fillPath;
-            // // let strokePath = this.strokePath;
-            // // fillPath && fillPath.lineTo(x, y);
-            // // strokePath && strokePath.lineTo(x, y);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.lineTo(x, y);
+            // strokePath && strokePath.lineTo(x, y);
             // this.updatePosition(x, y);
-            // // this.$renderNode.dirtyRender = true;
+            // this.$renderNode.dirtyRender = true;
         }
 
         /**

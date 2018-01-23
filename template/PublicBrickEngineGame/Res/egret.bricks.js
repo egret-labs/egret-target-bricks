@@ -4582,6 +4582,8 @@ var egret;
 var egret;
 (function (egret) {
     var BKGraphics = (function () {
+        // private offsetX: number;
+        // private offsetY: number;
         // public _BKCanvas: BK.Canvas;
         // public _BKNode: BK.Node;
         /**
@@ -4597,14 +4599,6 @@ var egret;
          * @language zh_CN
          */
         function BKGraphics() {
-            /**
-             * 当前移动到的坐标X
-             */
-            this.lastX = 0;
-            /**
-             * 当前移动到的坐标Y
-             */
-            this.lastY = 0;
             /**
              * 线条的左上方宽度
              */
@@ -4645,8 +4639,8 @@ var egret;
             // this._BKNode = new BK.Node();
             // this._BKCanvas = new BK.Canvas(2 * this.stageW, 2 * this.stageH)//sys.GraphicsNode();
             // this._BKCanvas.position = { x: - this.stageW, y: - this.stageH };
-            this.offsetX = this.stageW;
-            this.offsetY = this.stageH;
+            // this.offsetX = this.stageW;
+            // this.offsetY = this.stageH;
             // this._BKCanvas.backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
         }
         /**
@@ -4978,17 +4972,19 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.moveTo = function (x, y) {
-            // let _x = x + this.offsetX || 0;
-            // let _y = - y + this.offsetY || 0;
+            var _x = x || 0;
+            var _y = -y || 0;
+            this.lastX = _x;
+            this.lastY = _y;
             // this._BKCanvas.moveTo(_x, _y);
-            // // let fillPath = this.fillPath;
-            // // let strokePath = this.strokePath;
-            // // fillPath && fillPath.moveTo(x, y);
-            // // strokePath && strokePath.moveTo(x, y);
-            // // this.includeLastPosition = false;
-            // // this.lastX = x;
-            // // this.lastY = y;
-            // // this.$renderNode.dirtyRender = true;
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.moveTo(x, y);
+            // strokePath && strokePath.moveTo(x, y);
+            // this.includeLastPosition = false;
+            // this.lastX = _x;
+            // this.lastY = _y;
+            // this.$renderNode.dirtyRender = true;
         };
         /**
          * Draw a straight line from the current drawing position to (x, y) using the current line style; the current drawing position is then set to (x, y).
@@ -5007,15 +5003,36 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.lineTo = function (x, y) {
-            // let _x = x + this.offsetX || 0;
-            // let _y = - y + this.offsetY || 0;
+            if (this.isStrokePath) {
+                var _x = x || 0;
+                var _y = -y || 0;
+                var _lastX = this.lastX !== undefined ? this.lastX : x;
+                var _lastY = this.lastY !== undefined ? this.lastY : y;
+                //由x,y,lastx,lasty算出相对的偏移角度以及距离；
+                var distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2));
+                var rotation = void 0;
+                if (_x - _lastX !== 0) {
+                    rotation = (Math.atan((_y - _lastY) / (_x - _lastX)) / Math.PI) * 180;
+                }
+                else {
+                    rotation = _y - _lastY > 0 ? 90 : -90;
+                }
+                var texture = new BK.Texture(BKGraphics.pixelPath, 6, 0, 0, 1, 1);
+                var line = new BK.Sprite(distance, this.lineWidth, texture, 0, 1, 1, 1);
+                line.position = { x: _lastX, y: _lastY };
+                line.rotation = { x: 0, y: 0, z: rotation };
+                line.vertexColor = this.strokeColor;
+                this.targetDisplay['_bkNode'].addChild(line);
+                this.lastX = _x;
+                this.lastY = _y;
+            }
             // this._BKCanvas.lineTo(_x, _y);
-            // // let fillPath = this.fillPath;
-            // // let strokePath = this.strokePath;
-            // // fillPath && fillPath.lineTo(x, y);
-            // // strokePath && strokePath.lineTo(x, y);
+            // let fillPath = this.fillPath;
+            // let strokePath = this.strokePath;
+            // fillPath && fillPath.lineTo(x, y);
+            // strokePath && strokePath.lineTo(x, y);
             // this.updatePosition(x, y);
-            // // this.$renderNode.dirtyRender = true;
+            // this.$renderNode.dirtyRender = true;
         };
         /**
          * Draw a quadratic Bezier curve from the current drawing position to (anchorX, anchorY) using the current line style according to the control points specified by (controlX, controlY). The current drawing position is then set to (anchorX, anchorY).

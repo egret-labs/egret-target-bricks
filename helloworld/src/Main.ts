@@ -113,10 +113,10 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;
-        egret.setTimeout(() => {
-            let texture: egret.Texture = RES.getRes("bg_jpg");
-            icon.texture = texture;
-        }, this, 3000);
+        // egret.setTimeout(() => {
+        //     let texture: egret.Texture = RES.getRes("bg_jpg");
+        //     icon.texture = texture;
+        // }, this, 3000);
 
         let line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);
@@ -147,6 +147,30 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+
+        // let y = 20;
+        // let t = new egret.Timer(50)
+        // t.addEventListener(egret.TimerEvent.TIMER, () => {
+        //     let shp = new egret.Shape();
+        //     shp.graphics.lineStyle(2, 0x00ff00);
+        //     shp.graphics.moveTo(10, 10);
+        //     shp.graphics.lineTo(500, y);
+        //     shp.graphics.endFill();
+        //     this.addChild(shp);
+        //     y += 1;
+        // }, this);
+        // t.start()
+        let shp = new egret.Shape();
+        shp.graphics.lineStyle(2, 0x00ff00);
+        shp.graphics.moveTo(68, 84);
+        shp.graphics.lineTo(167, 76);
+        shp.graphics.lineTo(221, 118);
+        shp.graphics.lineTo(290, 162);
+        shp.graphics.lineTo(297, 228);
+        shp.graphics.lineTo(412, 250);
+        shp.graphics.lineTo(443, 174);
+        shp.graphics.endFill();
+        this.addChild(shp);
     }
 
 
