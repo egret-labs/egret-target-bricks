@@ -201,9 +201,23 @@ namespace egret {
             }
 
             // MD
-            this._bkNode.addChild((child as BKDisplayObject)._bkNode, index);
+            const childBKNode = (child as BKDisplayObject)._bkNode;
+            if (childBKNode.parent) { // 兼容有遮罩的情况.
+                this._bkNode.addChild(childBKNode.parent, index);
+            }
+            else {
+                this._bkNode.addChild(childBKNode, index);
+            }
+
             for (let i = 0, l = this.$children.length; i < l; i++) {
-                (this.$children[i] as BKDisplayObject)._bkNode.zOrder = -i;
+                const childBKNode = (this.$children[i] as BKDisplayObject)._bkNode;
+                const bkNodeParent = childBKNode.parent;
+                if (bkNodeParent && bkNodeParent.parent === this._bkNode) { // 兼容有遮罩的情况.
+                    bkNodeParent.zOrder = -i;
+                }
+                else {
+                    childBKNode.zOrder = -i;
+                }
             }
 
             this.$childAdded(child, index);
@@ -421,8 +435,12 @@ namespace egret {
             if (indexNow != -1) {
                 children.splice(indexNow, 1);
             }
+
             // MD
-            this._bkNode.removeChild((child as any)._bkNode);
+            const childBKNode = (child as BKDisplayObject)._bkNode;
+            if (childBKNode.parent) { // 兼容有遮罩的情况.
+                childBKNode.parent.removeChild(childBKNode);
+            }
 
             return child;
         }
@@ -473,11 +491,27 @@ namespace egret {
             //放到新的位置
             this.$children.splice(index, 0, child);
             this.$childAdded(child, index);
+
             // MD
-            this._bkNode.removeChild((child as BKDisplayObject)._bkNode);
-            this._bkNode.addChild((child as BKDisplayObject)._bkNode, index);
+            const childBKNode = (child as BKDisplayObject)._bkNode;
+            const bkNodeParent = childBKNode.parent; // 兼容有遮罩的情况.
+            if (bkNodeParent) {
+                bkNodeParent.removeChild(childBKNode);
+                bkNodeParent.addChild(childBKNode, index);
+            }
+            else {
+                // Never.
+            }
+
             for (let i = 0, l = this.$children.length; i < l; i++) {
-                (this.$children[i] as BKDisplayObject)._bkNode.zOrder = -i;
+                const childBKNode = (this.$children[i] as BKDisplayObject)._bkNode;
+                const bkNodeParent = childBKNode.parent;
+                if (bkNodeParent && bkNodeParent.parent === this._bkNode) { // 兼容有遮罩的情况.
+                    bkNodeParent.zOrder = -i;
+                }
+                else {
+                    childBKNode.zOrder = -i;
+                }
             }
         }
 
@@ -564,9 +598,24 @@ namespace egret {
             list[index2] = child1;
             this.$childAdded(child2, index1);
             this.$childAdded(child1, index2);
+
             // MD
-            (child2 as BKDisplayObject)._bkNode.zOrder = -index1;
-            (child1 as BKDisplayObject)._bkNode.zOrder = -index2;
+            const bkNode1 = (child1 as BKDisplayObject)._bkNode;
+            const bkNode2 = (child2 as BKDisplayObject)._bkNode;
+
+            if (bkNode1.parent === this._bkNode) {
+                bkNode1.zOrder = -index2;
+            }
+            else {
+                bkNode1.parent.zOrder = -index2; // 兼容有遮罩的情况.
+            }
+
+            if (bkNode2.parent === this._bkNode) {
+                bkNode2.zOrder = -index1;
+            }
+            else {
+                bkNode2.parent.zOrder = -index1; // 兼容有遮罩的情况.
+            }
         }
 
         /**
@@ -801,7 +850,7 @@ namespace egret {
         // MD
         $getRenderNode(): sys.RenderNode {
             this._updateColor();
-            
+
             if (this._transformDirty || (this as any).$matrixDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();

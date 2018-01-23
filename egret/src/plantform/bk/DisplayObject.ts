@@ -111,6 +111,113 @@ namespace egret {
         /**
          * @override
          */
+        public set mask(value: DisplayObject | Rectangle) {
+            let self = this;
+            if (value === self) {
+                return;
+            }
+
+            if (!(this instanceof BKBitmap)) {
+                console.log("QQ 玩一玩不支持该种类型的影片剪辑被遮罩，只有 Bitmap 类型可以被遮罩，或不使用遮罩。");
+                return;
+            }
+
+            if (value) {
+                if (value instanceof BKBitmap) { // 只支持 bitmap 遮罩，其他全不支持
+                    if (value == self.$mask) {
+                        return;
+                    }
+                    if (value.$maskedObject) {
+                        value.$maskedObject.mask = null;
+                    }
+                    value.$maskedObject = self;
+                    self.$mask = value;
+
+                    const clipNode = new BK.ClipNode(value._bkNode as BK.Sprite);
+                    clipNode.zOrder = this._bkNode.zOrder;
+
+                    if (this._bkNode.parent) {
+                        this._bkNode.parent.addChild(clipNode, this.parent.getChildIndex(this));
+                        this._bkNode.parent.removeChild(this._bkNode);
+                    }
+
+                    clipNode.addChild(this._bkNode as any);
+
+                    // if (!egret.nativeRender) {
+                    //     value.updateRenderMode();
+                    // }
+                    // if (self.$maskRect) {
+                    //     if (egret.nativeRender) {
+                    //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                    //     }
+                    //     self.$maskRect = null;
+                    // }
+                    // if (egret.nativeRender) {
+                    //     self.$nativeDisplayObject.setMask(value.$nativeDisplayObject.id);
+                    // }
+                }
+                else {
+                    // if (!self.$maskRect) {
+                    //     self.$maskRect = new egret.Rectangle();
+                    // }
+                    // self.$maskRect.copyFrom(value);
+                    // if (egret.nativeRender) {
+                    //     self.$nativeDisplayObject.setMaskRect(value.x, value.y, value.width, value.height);
+                    // }
+                    // if (self.$mask) {
+                    //     self.$mask.$maskedObject = null;
+                    //     if (!egret.nativeRender) {
+                    //         self.$mask.updateRenderMode();
+                    //     }
+                    // }
+                    // if (self.mask) {
+                    //     if (egret.nativeRender) {
+                    //         self.$nativeDisplayObject.setMask(-1);
+                    //     }
+                    //     self.$mask = null;
+                    // }
+                    console.log("QQ 玩一玩不支持该种类型的遮罩，请使用 Bitmap 遮罩，或不使用遮罩。");
+                }
+            }
+            else {
+                if (self.$mask) {
+                    // self.$mask.$maskedObject = null;
+                    // if (!egret.nativeRender) {
+                    //     self.$mask.updateRenderMode();
+                    // }
+                }
+                if (self.mask) {
+                    // if (egret.nativeRender) {
+                    //     self.$nativeDisplayObject.setMask(-1);
+                    // }
+
+                    // MD
+                    const clipNode = this._bkNode.parent;
+                    if (clipNode && clipNode.parent) {
+                        this._bkNode.zOrder = clipNode.zOrder;
+                        clipNode.parent.addChild(this._bkNode, this.parent.getChildIndex(this));
+                        clipNode.parent.removeChild(clipNode);
+                    }
+                    else {
+                        // Never.
+                    }
+
+                    self.$mask = null;
+                }
+                // if (self.$maskRect) {
+                //     if (egret.nativeRender) {
+                //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                //     }
+                //     self.$maskRect = null;
+                // }
+            }
+            // if (!egret.nativeRender) {
+            //     self.updateRenderMode();
+            // }
+        }
+        /**
+         * @override
+         */
         $setX(value: number): boolean {
             let self = this;
             if (self.$x == value) {
