@@ -290,7 +290,10 @@ namespace egret {
             if (this.isFillPath) {
                 let texture = new BK.Texture(BKGraphics.pixelPath);
                 this.addSprite(texture, _x, _y, width, height)
+                this.extendBoundsByPoint(x + width, y + height);
+                this.updatePosition(x, y);
             }
+
         }
 
         /**
@@ -350,6 +353,9 @@ namespace egret {
             if (this.isFillPath) {
                 let texture = new BK.Texture(BKGraphics.circlePath);
                 this.addSprite(texture, _x, _y, radius * 2, radius * 2, true);
+                this.extendBoundsByPoint(x - radius - 1, y - radius - 1);
+                this.extendBoundsByPoint(x + radius + 2, y + radius + 2)
+                this.updatePosition(x + radius, y);
             }
         }
 
@@ -397,6 +403,9 @@ namespace egret {
                 rect.position = { x: _x, y: _y - height };
                 rect.vertexColor = this.fillColor;
                 this.targetDisplay['_bkNode'].addChild(rect);
+                this.extendBoundsByPoint(x - 1, y - 1);
+                this.extendBoundsByPoint(x + width + 2, y + height + 2);
+                this.updatePosition(x + width, y + height * 0.5);
             }
         }
 
@@ -419,8 +428,8 @@ namespace egret {
         public moveTo(x: number, y: number): void {
             let _x = x || 0;
             let _y = - y || 0;
-            this.lastX = _x;
-            this.lastY = _y;
+            this.lastX = x;
+            this.lastY = y;
             // this._BKCanvas.moveTo(_x, _y);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
@@ -452,8 +461,8 @@ namespace egret {
             if (this.isStrokePath) {
                 let _x = x || 0;
                 let _y = - y || 0;
-                let _lastX = this.lastX !== undefined ? this.lastX : x;
-                let _lastY = this.lastY !== undefined ? this.lastY : y;
+                let _lastX = this.lastX !== undefined ? this.lastX : _x;
+                let _lastY = this.lastY !== undefined ? -this.lastY : _y;
 
                 //由x,y,lastx,lasty算出相对的偏移角度以及距离；
                 let distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2))
@@ -464,14 +473,14 @@ namespace egret {
                     rotation = _y - _lastY > 0 ? 90 : -90;
                 }
 
-                let texture = new BK.Texture(BKGraphics.pixelPath,6,0,0,1,1);
+                let texture = new BK.Texture(BKGraphics.pixelPath, 6, 0, 0, 1, 1);
                 let line = new BK.Sprite(distance, this.lineWidth, texture, 0, 1, 1, 1);
                 line.position = { x: _lastX, y: _lastY };
                 line.rotation = { x: 0, y: 0, z: rotation }
                 line.vertexColor = this.strokeColor;
                 this.targetDisplay['_bkNode'].addChild(line);
-                this.lastX = _x;
-                this.lastY = _y;
+                this.lastX = x;
+                this.lastY = y;
             }
             // this._BKCanvas.lineTo(_x, _y);
             // let fillPath = this.fillPath;
@@ -737,6 +746,14 @@ namespace egret {
             // if (this._BKCanvas.hittest({ x: stageX, y: stageY })) {
             //     return this.targetDisplay;
             // }
+
+            let bkNode: BK.Node = this.targetDisplay['_bkNode'];
+            let worldPosition = BK.Director.root.convertToWorldSpace({ x: stageX, y: -stageY })
+            for (let i = 0; i < bkNode.children.length; i++) {
+                if (bkNode.children[i].hittest(worldPosition)) {
+                    return this.targetDisplay;
+                }
+            }
             return null;
         }
 

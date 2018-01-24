@@ -99,17 +99,25 @@ class Main extends egret.DisplayObjectContainer {
         let stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
+        sky.name = "sky";
 
 
 
         let topMask = new egret.Shape();
+        topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
         topMask.y = 33;
         this.addChild(topMask);
 
+        topMask.touchEnabled = true;
+        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
+            console.log("点击")
+        }, this);
+
         let icon = this.createBitmapByName("egret_icon_png");
+        icon.name = "icon";
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;

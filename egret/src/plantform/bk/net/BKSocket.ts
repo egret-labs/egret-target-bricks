@@ -62,10 +62,12 @@ namespace egret {
             ws.onMessage = (ws, data) => {
                 if (that.onSocketData) {
                     let result: any;
+                    let bkbuffer: BK.Buffer = data.data;
                     if (!data.isBinary) {
-                        result = data.data.readAsString();
+                        // result = data.data.readAsString();
+                        const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkbuffer));
+                        result = egretBytes.readUTFBytes(egretBytes.length);
                     } else {
-                        let bkbuffer: BK.Buffer = data.data;
                         result = bricksBufferToArrayBuffer(bkbuffer);
                     }
                     that.onSocketData.call(that.thisObject, result);

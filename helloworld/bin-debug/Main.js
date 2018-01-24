@@ -156,13 +156,20 @@ var Main = (function (_super) {
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
+        sky.name = "sky";
         var topMask = new egret.Shape();
+        topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
         topMask.y = 33;
         this.addChild(topMask);
+        topMask.touchEnabled = true;
+        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
+            console.log("点击");
+        }, this);
         var icon = this.createBitmapByName("egret_icon_png");
+        icon.name = "icon";
         this.addChild(icon);
         icon.x = 26;
         icon.y = 33;
@@ -197,11 +204,27 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        debugger;
+        // let y = 20;
+        // let t = new egret.Timer(50)
+        // t.addEventListener(egret.TimerEvent.TIMER, () => {
+        //     let shp = new egret.Shape();
+        //     shp.graphics.lineStyle(2, 0x00ff00);
+        //     shp.graphics.moveTo(10, 10);
+        //     shp.graphics.lineTo(500, y);
+        //     shp.graphics.endFill();
+        //     this.addChild(shp);
+        //     y += 1;
+        // }, this);
+        // t.start()
         var shp = new egret.Shape();
-        shp.graphics.lineStyle(2, 0x000000);
-        shp.graphics.moveTo(10, 10);
-        shp.graphics.lineTo(500, 20);
+        shp.graphics.lineStyle(2, 0x00ff00);
+        shp.graphics.moveTo(68, 84);
+        shp.graphics.lineTo(167, 76);
+        shp.graphics.lineTo(221, 118);
+        shp.graphics.lineTo(290, 162);
+        shp.graphics.lineTo(297, 228);
+        shp.graphics.lineTo(412, 250);
+        shp.graphics.lineTo(443, 174);
         shp.graphics.endFill();
         this.addChild(shp);
     };

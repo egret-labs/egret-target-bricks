@@ -1678,11 +1678,13 @@ var egret;
             ws.onMessage = function (ws, data) {
                 if (that.onSocketData) {
                     var result = void 0;
+                    var bkbuffer = data.data;
                     if (!data.isBinary) {
-                        result = data.data.readAsString();
+                        // result = data.data.readAsString();
+                        var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(bkbuffer));
+                        result = egretBytes.readUTFBytes(egretBytes.length);
                     }
                     else {
-                        var bkbuffer = data.data;
                         result = egret.bricksBufferToArrayBuffer(bkbuffer);
                     }
                     that.onSocketData.call(that.thisObject, result);
@@ -4851,6 +4853,8 @@ var egret;
             if (this.isFillPath) {
                 var texture = new BK.Texture(BKGraphics.pixelPath);
                 this.addSprite(texture, _x, _y, width, height);
+                this.extendBoundsByPoint(x + width, y + height);
+                this.updatePosition(x, y);
             }
         };
         /**
@@ -4907,6 +4911,9 @@ var egret;
             if (this.isFillPath) {
                 var texture = new BK.Texture(BKGraphics.circlePath);
                 this.addSprite(texture, _x, _y, radius * 2, radius * 2, true);
+                this.extendBoundsByPoint(x - radius - 1, y - radius - 1);
+                this.extendBoundsByPoint(x + radius + 2, y + radius + 2);
+                this.updatePosition(x + radius, y);
             }
         };
         BKGraphics.prototype.addSprite = function (texture, x, y, width, height, isCenter) {
@@ -4953,6 +4960,9 @@ var egret;
                 rect.position = { x: _x, y: _y - height };
                 rect.vertexColor = this.fillColor;
                 this.targetDisplay['_bkNode'].addChild(rect);
+                this.extendBoundsByPoint(x - 1, y - 1);
+                this.extendBoundsByPoint(x + width + 2, y + height + 2);
+                this.updatePosition(x + width, y + height * 0.5);
             }
         };
         /**
@@ -4974,8 +4984,8 @@ var egret;
         BKGraphics.prototype.moveTo = function (x, y) {
             var _x = x || 0;
             var _y = -y || 0;
-            this.lastX = _x;
-            this.lastY = _y;
+            this.lastX = x;
+            this.lastY = y;
             // this._BKCanvas.moveTo(_x, _y);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
@@ -5006,8 +5016,8 @@ var egret;
             if (this.isStrokePath) {
                 var _x = x || 0;
                 var _y = -y || 0;
-                var _lastX = this.lastX !== undefined ? this.lastX : x;
-                var _lastY = this.lastY !== undefined ? this.lastY : y;
+                var _lastX = this.lastX !== undefined ? this.lastX : _x;
+                var _lastY = this.lastY !== undefined ? -this.lastY : _y;
                 //由x,y,lastx,lasty算出相对的偏移角度以及距离；
                 var distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2));
                 var rotation = void 0;
@@ -5023,8 +5033,8 @@ var egret;
                 line.rotation = { x: 0, y: 0, z: rotation };
                 line.vertexColor = this.strokeColor;
                 this.targetDisplay['_bkNode'].addChild(line);
-                this.lastX = _x;
-                this.lastY = _y;
+                this.lastX = x;
+                this.lastY = y;
             }
             // this._BKCanvas.lineTo(_x, _y);
             // let fillPath = this.fillPath;
@@ -5250,6 +5260,13 @@ var egret;
             // if (this._BKCanvas.hittest({ x: stageX, y: stageY })) {
             //     return this.targetDisplay;
             // }
+            var bkNode = this.targetDisplay['_bkNode'];
+            var worldPosition = BK.Director.root.convertToWorldSpace({ x: stageX, y: -stageY });
+            for (var i = 0; i < bkNode.children.length; i++) {
+                if (bkNode.children[i].hittest(worldPosition)) {
+                    return this.targetDisplay;
+                }
+            }
             return null;
         };
         /**
