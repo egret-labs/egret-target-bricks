@@ -157,6 +157,7 @@ namespace egret {
         if (typeof WebSocket !== undefined) {
             egret.ISocket = egret.BKSocket;
         }
+        egret.MovieClip=BKMovieClip as any;
     }
 
     egret.runEgret = runEgret;
