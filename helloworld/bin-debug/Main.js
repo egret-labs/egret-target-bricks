@@ -206,13 +206,17 @@ var Main = (function (_super) {
         this.textfield = textfield;
         var shp = new egret.Shape();
         shp.graphics.lineStyle(2, 0x00ff00);
-        shp.graphics.moveTo(68, 84);
-        shp.graphics.lineTo(167, 76);
-        shp.graphics.lineTo(221, 118);
-        shp.graphics.lineTo(290, 162);
-        shp.graphics.lineTo(297, 228);
-        shp.graphics.lineTo(412, 250);
-        shp.graphics.lineTo(443, 174);
+        shp.graphics.moveTo(100, 100);
+        shp.graphics.lineTo(500, 100);
+        shp.graphics.lineTo(500, 500);
+        shp.graphics.lineTo(300, 500);
+        shp.graphics.lineTo(100, 100);
+        // shp.graphics.lineTo(167, 76);
+        // shp.graphics.lineTo(221, 118);
+        // shp.graphics.lineTo(290, 162);
+        // shp.graphics.lineTo(297, 228);
+        // shp.graphics.lineTo(412, 250);
+        // shp.graphics.lineTo(443, 174);
         shp.graphics.endFill();
         this.addChild(shp);
         egret.setTimeout(function () {

@@ -469,11 +469,9 @@ namespace egret {
                 //由x,y,lastx,lasty算出相对的偏移角度以及距离；
                 let distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2))
                 let rotation: number;
-                if (_x - _lastX !== 0) {
-                    rotation = (Math.atan((_y - _lastY) / (_x - _lastX)) / Math.PI) * 180;
-                } else {
-                    rotation = _y - _lastY > 0 ? 90 : -90;
-                }
+
+                rotation = Math.atan2((_y - _lastY), (_x - _lastX)) / Math.PI * 180;
+
 
                 let texture = new BK.Texture(BKGraphics.pixelPath, 6, 0, 0, 1, 1);
                 let line = new BK.Sprite(distance, this.lineWidth, texture, 0, 1, 1, 1);

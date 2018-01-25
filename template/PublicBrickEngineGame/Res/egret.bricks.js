@@ -32,13 +32,14 @@ var egret;
         }
         BKDisplayObject.prototype._replaceNode = function (node) {
             this._transformDirty = true;
-            node.vertexColor = this._color;
-            node.hidden = !this.visible;
+            node.vertexColor = this._bkNode.vertexColor;
+            node.hidden = this._bkNode.hidden;
+            node.blendMode = this._bkNode.blendMode;
+            node.zOrder = this._bkNode.zOrder;
             if (this._bkNode.parent) {
                 this._bkNode.parent.addChild(node, this.parent.getChildIndex(this));
                 this._bkNode.parent.removeChild(this._bkNode);
             }
-            node.zOrder = this._bkNode.zOrder;
             this._bkNode = node;
         };
         /**
@@ -67,6 +68,19 @@ var egret;
                 }
             }
         };
+        BKDisplayObject.prototype._updateBKNodeMatrix = function () {
+            var matrix = this.$getMatrix();
+            var bkMatrix = this._bkNode.transform.matrix;
+            var tx = matrix.tx;
+            var ty = matrix.ty;
+            var pivotX = this.$anchorOffsetX;
+            var pivotY = this.$anchorOffsetY;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        };
         /**
          * @override
          */
@@ -80,6 +94,7 @@ var egret;
          */
         BKDisplayObject.prototype.$setAlpha = function (value) {
             _super.prototype.$setAlpha.call(this, value);
+            // MD
             this._colorDirty = 2; // self and child.
         };
         Object.defineProperty(BKDisplayObject.prototype, "blendMode", {
@@ -90,6 +105,22 @@ var egret;
                 var self = this;
                 var mode = egret.sys.blendModeToNumber(value);
                 self.$blendMode = mode;
+                // if (egret.nativeRender) {
+                //     self.$nativeDisplayObject.setBlendMode(mode);
+                // }
+                // else {
+                self.updateRenderMode(); // MD
+                var p = self.$parent;
+                if (p && !p.$cacheDirty) {
+                    p.$cacheDirty = true;
+                    p.$cacheDirtyUp();
+                }
+                var maskedObject = self.$maskedObject;
+                if (maskedObject && !maskedObject.$cacheDirty) {
+                    maskedObject.$cacheDirty = true;
+                    maskedObject.$cacheDirtyUp();
+                }
+                // }
                 // MD
                 switch (value) {
                     case egret.BlendMode.NORMAL:
@@ -196,15 +227,15 @@ var egret;
                         }
                         self.$mask = null;
                     }
-                    // if (self.$maskRect) {
-                    //     if (egret.nativeRender) {
-                    //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
-                    //     }
-                    //     self.$maskRect = null;
-                    // }
+                    if (self.$maskRect) {
+                        // if (egret.nativeRender) {
+                        //     self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                        // }
+                        self.$maskRect = null;
+                    }
                 }
                 // if (!egret.nativeRender) {
-                //     self.updateRenderMode();
+                self.updateRenderMode();
                 // }
             },
             enumerable: true,
@@ -241,6 +272,7 @@ var egret;
          */
         BKDisplayObject.prototype.$setScaleX = function (value) {
             _super.prototype.$setScaleX.call(this, value);
+            // MD
             this._transformDirty = true;
         };
         /**
@@ -248,6 +280,15 @@ var egret;
          */
         BKDisplayObject.prototype.$setScaleY = function (value) {
             _super.prototype.$setScaleY.call(this, value);
+            // MD
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
+        BKDisplayObject.prototype.$setRotation = function (value) {
+            _super.prototype.$setRotation.call(this, value);
+            // MD
             this._transformDirty = true;
         };
         /**
@@ -255,6 +296,7 @@ var egret;
          */
         BKDisplayObject.prototype.$setSkewX = function (value) {
             _super.prototype.$setSkewX.call(this, value);
+            // MD
             this._transformDirty = true;
         };
         /**
@@ -262,6 +304,7 @@ var egret;
          */
         BKDisplayObject.prototype.$setSkewY = function (value) {
             _super.prototype.$setSkewY.call(this, value);
+            // MD
             this._transformDirty = true;
         };
         /**
@@ -270,6 +313,7 @@ var egret;
         BKDisplayObject.prototype.$setMatrix = function (matrix, needUpdateProperties) {
             if (needUpdateProperties === void 0) { needUpdateProperties = true; }
             _super.prototype.$setMatrix.call(this, matrix, needUpdateProperties);
+            // MD
             this._transformDirty = true;
         };
         /**
@@ -305,23 +349,26 @@ var egret;
          * @override
          */
         BKDisplayObject.prototype.$getRenderNode = function () {
-            // MD
-            this._updateColor();
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            var self = this;
+            // let node = self.$renderNode;
+            var node = self._bkNode; // MD
+            if (!node) {
+                return null;
             }
-            return this._bkNode;
+            self._updateColor(); // MD
+            if (self.$renderDirty) {
+                // node.cleanBeforeRender(); // MD
+                self.$updateRenderNode();
+                self.$renderDirty = false;
+                // node = self.$renderNode;
+                node = self._bkNode; // MD
+            }
+            // MD
+            if (self._transformDirty) {
+                self._transformDirty = false;
+                this._updateBKNodeMatrix();
+            }
+            return node;
         };
         /**
          * @override
@@ -417,6 +464,23 @@ var egret;
             _this.$children = [];
             return _this;
         }
+        BKDisplayObjectContainer.prototype._updateBKNodeMatrix = function () {
+            var matrix = this.$getMatrix();
+            var bkMatrix = this._bkNode.transform.matrix;
+            var tx = matrix.tx;
+            var ty = matrix.ty;
+            var pivotX = this.$anchorOffsetX;
+            var pivotY = this.$anchorOffsetY;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+            if (this.$scrollRect) {
+                tx -= this.$scrollRect.x;
+                ty -= this.$scrollRect.y;
+            }
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        };
         Object.defineProperty(BKDisplayObjectContainer.prototype, "numChildren", {
             /**
              * Returns the number of children of this object.
@@ -1149,29 +1213,6 @@ var egret;
             enumerable: true,
             configurable: true
         });
-        // MD
-        BKDisplayObjectContainer.prototype.$getRenderNode = function () {
-            this._updateColor();
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                if (this.$scrollRect) {
-                    tx -= this.$scrollRect.x;
-                    ty -= this.$scrollRect.y;
-                }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-            return this._bkNode;
-        };
         /**
          * @private
          */
@@ -1953,6 +1994,22 @@ var egret;
             _this.texture = value;
             return _this;
         }
+        BKBitmap.prototype._updateBKNodeMatrix = function () {
+            if (!this.$texture) {
+                return;
+            }
+            var matrix = this.$getMatrix();
+            var bkMatrix = this._bkNode.transform.matrix;
+            var tx = matrix.tx;
+            var ty = matrix.ty;
+            var pivotX = this.$anchorOffsetX;
+            var pivotY = this.$anchorOffsetY - this._size.height;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        };
         Object.defineProperty(BKBitmap.prototype, "texture", {
             get: function () {
                 return this.$texture;
@@ -1971,8 +2028,8 @@ var egret;
          */
         BKBitmap.prototype.$setTexture = function (value) {
             this.$texture = value;
-            this._transformDirty = true;
             if (this.$texture) {
+                this._transformDirty = true;
                 this.$bitmapData = this.$texture.bitmapData;
                 if (this.$bitmapData.bkTexture) {
                     this._bkSprite.setTexture(this.$bitmapData.bkTexture);
@@ -2084,28 +2141,6 @@ var egret;
                 bounds.setTo(0, 0, w, h);
             }
         };
-        /**
-         * @override
-         */
-        BKBitmap.prototype.$getRenderNode = function () {
-            // MD
-            this._updateColor();
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY - this._size.height;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-            return this._bkNode || null;
-        };
         return BKBitmap;
     }(egret.BKDisplayObject));
     egret.BKBitmap = BKBitmap;
@@ -2125,7 +2160,6 @@ var egret;
                 0, 1, 2
             ])) || this;
             _this._textureDirty = true;
-            _this._verticesDirty = true;
             _this._boundsDirty = true;
             _this._bounds = new egret.Rectangle();
             _this.$bitmapData = null;
@@ -2172,8 +2206,8 @@ var egret;
          * @override
          */
         BKMesh.prototype.$updateVertices = function () {
-            this._verticesDirty = true;
             this._boundsDirty = true;
+            this.$renderDirty = true;
             this.$renderNode = new egret.sys.MeshNode();
         };
         /**
@@ -2211,80 +2245,59 @@ var egret;
         /**
          * @override
          */
-        BKMesh.prototype.$getRenderNode = function () {
-            // if (!this.$texture) {
-            //     return;
-            // }
-            if (this._verticesDirty) {
-                this._verticesDirty = false;
-                var meshNode = this.$renderNode;
-                var nodeVercices = meshNode.vertices;
-                var nodeUV = meshNode.uvs;
-                var bkVertices = this._bkMesh.getVertices();
-                if (!bkVertices) {
-                    bkVertices = [];
-                }
-                if (bkVertices.length !== nodeVercices.length / 2) {
-                    for (var i = bkVertices.length, l = nodeVercices.length / 2; i < l; ++i) {
-                        bkVertices[i] = {};
-                    }
-                    var subTextureRotated = this.$texture.$rotated;
-                    var subTextureX = this.$texture.$bitmapX;
-                    var subTextureY = this.$texture.$bitmapY;
-                    var subTextureWidth = this.$texture.$bitmapWidth;
-                    var subTextureHeight = this.$texture.$bitmapHeight;
-                    var textureWidth = this.$texture.$sourceWidth;
-                    var textureHeight = this.$texture.$sourceHeight;
-                    var kx1 = subTextureX / textureWidth;
-                    var kx2 = subTextureRotated ? subTextureHeight / textureWidth : subTextureWidth / textureWidth;
-                    var ky1 = subTextureY / textureHeight;
-                    var ky2 = subTextureRotated ? subTextureWidth / textureHeight : subTextureHeight / textureHeight;
-                    for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
-                        var vertex = bkVertices[i];
-                        var u = nodeUV[iD];
-                        var v = nodeUV[iD + 1];
-                        vertex.x = nodeVercices[iD];
-                        vertex.y = -nodeVercices[iD + 1];
-                        vertex.z = this._bkNode.zOrder;
-                        vertex.r = 1.0;
-                        vertex.g = 1.0;
-                        vertex.b = 1.0;
-                        vertex.a = 1.0;
-                        // uv
-                        if (subTextureRotated) {
-                            vertex.u = kx1 + (1.0 - v) * kx2;
-                            vertex.v = 1.0 - (ky1 + u * ky2);
-                        }
-                        else {
-                            vertex.u = kx1 + u * kx2;
-                            vertex.v = 1.0 - (ky1 + v * ky2);
-                        }
-                    }
-                }
-                else {
-                    for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
-                        var vertex = bkVertices[i];
-                        vertex.x = nodeVercices[iD];
-                        vertex.y = -nodeVercices[iD + 1];
-                    }
-                }
-                this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices); // 需要提供更加高性能的接口
+        BKMesh.prototype.$updateRenderNode = function () {
+            var meshNode = this.$renderNode;
+            var nodeVercices = meshNode.vertices;
+            var nodeUV = meshNode.uvs;
+            var bkVertices = this._bkMesh.getVertices();
+            if (!bkVertices) {
+                bkVertices = [];
             }
-            if (this._transformDirty || this.$matrixDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+            if (bkVertices.length !== nodeVercices.length / 2) {
+                for (var i = bkVertices.length, l = nodeVercices.length / 2; i < l; ++i) {
+                    bkVertices[i] = {};
                 }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+                var subTextureRotated = this.$texture.$rotated;
+                var subTextureX = this.$texture.$bitmapX;
+                var subTextureY = this.$texture.$bitmapY;
+                var subTextureWidth = this.$texture.$bitmapWidth;
+                var subTextureHeight = this.$texture.$bitmapHeight;
+                var textureWidth = this.$texture.$sourceWidth;
+                var textureHeight = this.$texture.$sourceHeight;
+                var kx1 = subTextureX / textureWidth;
+                var kx2 = subTextureRotated ? subTextureHeight / textureWidth : subTextureWidth / textureWidth;
+                var ky1 = subTextureY / textureHeight;
+                var ky2 = subTextureRotated ? subTextureWidth / textureHeight : subTextureHeight / textureHeight;
+                for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                    var vertex = bkVertices[i];
+                    var u = nodeUV[iD];
+                    var v = nodeUV[iD + 1];
+                    vertex.x = nodeVercices[iD];
+                    vertex.y = -nodeVercices[iD + 1];
+                    vertex.z = this._bkNode.zOrder;
+                    vertex.r = 1.0;
+                    vertex.g = 1.0;
+                    vertex.b = 1.0;
+                    vertex.a = 1.0;
+                    // uv
+                    if (subTextureRotated) {
+                        vertex.u = kx1 + (1.0 - v) * kx2;
+                        vertex.v = 1.0 - (ky1 + u * ky2);
+                    }
+                    else {
+                        vertex.u = kx1 + u * kx2;
+                        vertex.v = 1.0 - (ky1 + v * ky2);
+                    }
+                }
             }
-            return this._bkNode;
+            else {
+                for (var i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                    var vertex = bkVertices[i];
+                    vertex.x = nodeVercices[iD];
+                    vertex.y = -nodeVercices[iD + 1];
+                }
+            }
+            this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices); // 需要提供更加高性能的接口
         };
         return BKMesh;
     }(egret.BKDisplayObject));
@@ -3837,17 +3850,16 @@ var egret;
             var self = this;
             self.$renderDirty = true;
             self.$TextField[18 /* textLinesChanged */] = true;
-            // MD
-            // let p = self.$parent;
-            // if (p && !p.$cacheDirty) {
-            //     p.$cacheDirty = true;
-            //     p.$cacheDirtyUp();
-            // }
-            // let maskedObject = self.$maskedObject;
-            // if (maskedObject && !maskedObject.$cacheDirty) {
-            //     maskedObject.$cacheDirty = true;
-            //     maskedObject.$cacheDirtyUp();
-            // }
+            var p = self.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
+            }
+            var maskedObject = self.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
+            }
         };
         BKTextField.prototype.$getRenderBounds = function () {
             var bounds = this.$getContentBounds();
@@ -4369,46 +4381,29 @@ var egret;
             var zero = "00000000";
             return zero.substr(0, length - str.length) + str;
         };
-        // MD
-        BKTextField.prototype.$getRenderNode = function () {
-            if (this.$renderDirty) {
-                this.$renderDirty = false;
-                if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
-                    this.inputUtils._updateProperties();
-                    if (this.$isTyping) {
-                        this.fillBackground();
-                        return;
-                    }
-                }
-                else if (this.$TextField[3 /* textFieldWidth */] == 0) {
-                    // let graphics = this.$graphicsNode;
-                    // if (graphics) {
-                    //     graphics.clear();
-                    // }
+        /**
+         * @override
+         */
+        BKTextField.prototype.$updateRenderNode = function () {
+            if (this.$TextField[24 /* type */] == egret.TextFieldType.INPUT) {
+                this.inputUtils._updateProperties();
+                if (this.$isTyping) {
+                    this.fillBackground();
                     return;
                 }
-                var underLines = this.drawText();
-                this.fillBackground(underLines);
-                //tudo 宽高很小的情况下webgl模式绘制异常
-                // let bounds = this.$getRenderBounds(); // MD
-                // Rectangle.release(bounds);
             }
-            //
-            if (this._transformDirty || this.$matrixDirty) {
-                this._transformDirty = false;
-                var matrix = this.$getMatrix();
-                var bkMatrix = this._bkNode.transform.matrix;
-                var tx = matrix.tx;
-                var ty = matrix.ty;
-                var pivotX = this.$anchorOffsetX;
-                var pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            else if (this.$TextField[3 /* textFieldWidth */] == 0) {
+                // let graphics = this.$graphicsNode;
+                // if (graphics) {
+                //     graphics.clear();
+                // }
+                return;
             }
-            return this._bkNode;
+            var underLines = this.drawText();
+            this.fillBackground(underLines);
+            //tudo 宽高很小的情况下webgl模式绘制异常
+            // let bounds = this.$getRenderBounds(); // MD
+            // Rectangle.release(bounds);
         };
         /**
          * default fontFamily
@@ -5051,12 +5046,7 @@ var egret;
                 //由x,y,lastx,lasty算出相对的偏移角度以及距离；
                 var distance = Math.sqrt(Math.pow(_x - _lastX, 2) + Math.pow(_y - _lastY, 2));
                 var rotation = void 0;
-                if (_x - _lastX !== 0) {
-                    rotation = (Math.atan((_y - _lastY) / (_x - _lastX)) / Math.PI) * 180;
-                }
-                else {
-                    rotation = _y - _lastY > 0 ? 90 : -90;
-                }
+                rotation = Math.atan2((_y - _lastY), (_x - _lastX)) / Math.PI * 180;
                 var texture = new BK.Texture(BKGraphics.pixelPath, 6, 0, 0, 1, 1);
                 var line = new BK.Sprite(distance, this.lineWidth, texture, 0, 1, 1, 1);
                 line.position = { x: _lastX, y: _lastY };
@@ -6081,10 +6071,6 @@ var egret;
      * @private
      */
     function setTimeout(listener, thisObject, delay) {
-        var args = [];
-        for (var _i = 3; _i < arguments.length; _i++) {
-            args[_i - 3] = arguments[_i];
-        }
         BK.Director.ticker.setTimeout(listener, delay, thisObject);
     }
     egret.setTimeout = setTimeout;
@@ -6133,7 +6119,7 @@ var egret;
                 enumerable: true,
                 configurable: true
             });
-            eui.Image.prototype.$getRenderNode = function () {
+            eui.Image.prototype.$updateRenderNode = function () {
                 var image = this.$bitmapData;
                 if (!image) {
                     return null;
@@ -6144,27 +6130,9 @@ var egret;
                 if (width === 0 || height === 0) {
                     return null;
                 }
-                this._updateColor();
-                if (this._transformDirty || this.$matrixDirty) {
-                    this._transformDirty = false;
-                    //
-                    this._size.width = this.$getWidth();
-                    this._size.height = this.$getHeight();
-                    this._bkSprite.size = this._size;
-                    //
-                    var matrix = this.$getMatrix();
-                    var bkMatrix = this._bkNode.transform.matrix;
-                    var tx = matrix.tx;
-                    var ty = matrix.ty;
-                    var pivotX = this.$anchorOffsetX;
-                    var pivotY = this.$anchorOffsetY - this._size.height;
-                    if (pivotX !== 0.0 || pivotY !== 0.0) {
-                        tx -= matrix.a * pivotX + matrix.c * pivotY;
-                        ty -= matrix.b * pivotX + matrix.d * pivotY;
-                    }
-                    bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-                }
-                return this._bkNode;
+                this._size.width = this.$getWidth();
+                this._size.height = this.$getHeight();
+                this._bkSprite.size = this._size;
             };
         }
         if (typeof egret.WebSocket !== undefined) {
@@ -6321,6 +6289,23 @@ var egret;
             //     this.$renderNode = new sys.NormalBitmapNode();
             // }
         }
+        BKMovieClip.prototype._updateBKNodeMatrix = function () {
+            if (!this.$texture) {
+                return;
+            }
+            var matrix = this.$getMatrix();
+            var bkMatrix = this._bkNode.transform.matrix;
+            var tx = matrix.tx;
+            var ty = matrix.ty;
+            var pivotX = this.$anchorOffsetX;
+            var pivotY = this.$anchorOffsetY - this._size.height;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+            var frame = this.frames[this.$currentFrameNum - 1];
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx + frame.x, -ty - frame.y);
+        };
         Object.defineProperty(BKMovieClip.prototype, "smoothing", {
             /**
              * Whether or not is smoothed when scaled.
@@ -6388,68 +6373,46 @@ var egret;
                 this.constructFrame();
             }
         };
-        // /**
-        //  * @private
-        //  */
-        // $updateRenderNode(): void {
-        //     let texture = this.$texture;
-        //     if (texture) {
-        //         let offsetX: number = Math.round(this.offsetPoint.x);
-        //         let offsetY: number = Math.round(this.offsetPoint.y);
-        //         let bitmapWidth: number = texture.$bitmapWidth;
-        //         let bitmapHeight: number = texture.$bitmapHeight;
-        //         let textureWidth: number = texture.$getTextureWidth();
-        //         let textureHeight: number = texture.$getTextureHeight();
-        //         let destW: number = Math.round(texture.$getScaleBitmapWidth());
-        //         let destH: number = Math.round(texture.$getScaleBitmapHeight());
-        //         let sourceWidth: number = texture.$sourceWidth;
-        //         let sourceHeight: number = texture.$sourceHeight;
-        //         sys.BitmapNode.$updateTextureData(<sys.NormalBitmapNode>this.$renderNode, texture.$bitmapData, texture.$bitmapX, texture.$bitmapY,
-        //             bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, egret.BitmapFillMode.SCALE, this.$smoothing);
-        //     }
-        // }
-        BKMovieClip.prototype.$getRenderNode = function () {
+        /**
+         * @private
+         */
+        BKMovieClip.prototype.$updateRenderNode = function () {
+            // let texture = this.$texture;
+            // if (texture) {
+            //     let offsetX: number = Math.round(this.offsetPoint.x);
+            //     let offsetY: number = Math.round(this.offsetPoint.y);
+            //     let bitmapWidth: number = texture.$bitmapWidth;
+            //     let bitmapHeight: number = texture.$bitmapHeight;
+            //     let textureWidth: number = texture.$getTextureWidth();
+            //     let textureHeight: number = texture.$getTextureHeight();
+            //     let destW: number = Math.round(texture.$getScaleBitmapWidth());
+            //     let destH: number = Math.round(texture.$getScaleBitmapHeight());
+            //     let sourceWidth: number = texture.$sourceWidth;
+            //     let sourceHeight: number = texture.$sourceHeight;
+            //     sys.BitmapNode.$updateTextureData(<sys.NormalBitmapNode>this.$renderNode, texture.$bitmapData, texture.$bitmapX, texture.$bitmapY,
+            //         bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, egret.BitmapFillMode.SCALE, this.$smoothing);
+            // }
+            // MD
             if (this.frames[this.$currentFrameNum - 1].res) {
-                this.$setTexture();
                 if (this.$texture) {
-                    // MD
-                    if (this._transformDirty || this.$matrixDirty) {
-                        this._transformDirty = false;
-                        var matrix = this.$getMatrix();
-                        var bkMatrix = this._bkNode.transform.matrix;
-                        var tx = matrix.tx;
-                        var ty = matrix.ty;
-                        var pivotX = this.$anchorOffsetX;
-                        var pivotY = this.$anchorOffsetY - this._size.height;
-                        if (pivotX !== 0.0 || pivotY !== 0.0) {
-                            tx -= matrix.a * pivotX + matrix.c * pivotY;
-                            ty -= matrix.b * pivotX + matrix.d * pivotY;
-                        }
-                        bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx + this.frames[this.$currentFrameNum - 1].x, -(ty + this.frames[this.$currentFrameNum - 1].y));
+                    this._transformDirty = true;
+                    this.$bitmapData = this.$texture.bitmapData;
+                    if (this.$bitmapData.bkTexture) {
+                        this._bkSprite.setTexture(this.$bitmapData.bkTexture);
+                        this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
+                        this._size.width = this.$texture.$bitmapWidth;
+                        this._size.height = this.$texture.$bitmapHeight;
+                        this._bkSprite.size = this._size;
                     }
-                }
-            }
-            return this._bkNode || null;
-        };
-        BKMovieClip.prototype.$setTexture = function () {
-            this._transformDirty = true;
-            if (this.$texture) {
-                this.$bitmapData = this.$texture.bitmapData;
-                if (this.$bitmapData.bkTexture) {
-                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
-                    this._size.width = this.$texture.$bitmapWidth;
-                    this._size.height = this.$texture.$bitmapHeight;
-                    this._bkSprite.size = this._size;
+                    else {
+                        this.$bitmapData = null;
+                        this._bkSprite.setTexture({});
+                    }
                 }
                 else {
                     this.$bitmapData = null;
                     this._bkSprite.setTexture({});
                 }
-            }
-            else {
-                this.$bitmapData = null;
-                this._bkSprite.setTexture({});
             }
         };
         /**
@@ -6752,7 +6715,6 @@ var egret;
             self.$movieClipData.$getOffsetByFrame(currentFrameNum, self.offsetPoint);
             self.displayedKeyFrameNum = currentFrameNum;
             self.$renderDirty = true;
-            //this.$renderDirty = texture ? true : false;//
             // if (egret.nativeRender) {
             //     self.$nativeDisplayObject.setDataToBitmapNode(self.$nativeDisplayObject.id, texture,
             //         [texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight,
