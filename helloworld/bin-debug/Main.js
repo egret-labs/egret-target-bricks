@@ -160,12 +160,12 @@ var Main = (function (_super) {
         egret.Tween.get(sky).to({ scaleX: 0, scaleY: 0 }, 3000).call(function () {
             console.log('success');
         });
-        // egret.Ticker.getInstance().register(()=>{
-        //     console.log (sky.localToGlobal())
-        // },this)
-        egret.setTimeout(function () {
+        egret.Ticker.getInstance().register(function () {
             console.log(sky.localToGlobal());
-        }, this, 1500);
+        }, this);
+        // egret.setTimeout(() => {
+        //     console.log(sky.localToGlobal())
+        // }, this, 1500)
         var topMask = new egret.Shape();
         topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);

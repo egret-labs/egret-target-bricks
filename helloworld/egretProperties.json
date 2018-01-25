@@ -23,10 +23,6 @@
     },
     {
       "name": "promise"
-    },
-    {
-      "name": "brick",
-      "path": "../egret/out/"
     }
   ]
 }
