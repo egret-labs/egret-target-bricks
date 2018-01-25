@@ -157,15 +157,6 @@ var Main = (function (_super) {
         sky.width = stageW;
         sky.height = stageH;
         sky.name = "sky";
-        egret.Tween.get(sky).to({ scaleX: 0, scaleY: 0 }, 3000).call(function () {
-            console.log('success');
-        });
-        egret.Ticker.getInstance().register(function () {
-            console.log(sky.localToGlobal());
-        }, this);
-        // egret.setTimeout(() => {
-        //     console.log(sky.localToGlobal())
-        // }, this, 1500)
         var topMask = new egret.Shape();
         topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -213,18 +204,6 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        // let y = 20;
-        // let t = new egret.Timer(50)
-        // t.addEventListener(egret.TimerEvent.TIMER, () => {
-        //     let shp = new egret.Shape();
-        //     shp.graphics.lineStyle(2, 0x00ff00);
-        //     shp.graphics.moveTo(10, 10);
-        //     shp.graphics.lineTo(500, y);
-        //     shp.graphics.endFill();
-        //     this.addChild(shp);
-        //     y += 1;
-        // }, this);
-        // t.start()
         var shp = new egret.Shape();
         shp.graphics.lineStyle(2, 0x00ff00);
         shp.graphics.moveTo(68, 84);
@@ -236,6 +215,10 @@ var Main = (function (_super) {
         shp.graphics.lineTo(443, 174);
         shp.graphics.endFill();
         this.addChild(shp);
+        egret.setTimeout(function () {
+            debugger;
+            shp.graphics.clear();
+        }, this, 3000);
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。

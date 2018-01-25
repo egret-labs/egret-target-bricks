@@ -4955,7 +4955,8 @@ var egret;
             else {
                 rect.anchor = { x: 0, y: 1 };
             }
-            this.targetDisplay['_bkNode'].addChild(rect);
+            var bkNode = this.targetDisplay['_bkNode'];
+            bkNode.addChild(rect);
         };
         /**
          * Draw an ellipse.
@@ -4987,7 +4988,8 @@ var egret;
                 var rect = new BK.Sprite(width, height, texture, 0, 1, 1, 1);
                 rect.position = { x: _x, y: _y - height };
                 rect.vertexColor = this.fillColor;
-                this.targetDisplay['_bkNode'].addChild(rect);
+                var bkNode = this.targetDisplay['_bkNode'];
+                bkNode.addChild(rect);
                 this.extendBoundsByPoint(x - 1, y - 1);
                 this.extendBoundsByPoint(x + width + 2, y + height + 2);
                 this.updatePosition(x + width, y + height * 0.5);
@@ -5060,7 +5062,8 @@ var egret;
                 line.position = { x: _lastX, y: _lastY };
                 line.rotation = { x: 0, y: 0, z: rotation };
                 line.vertexColor = this.strokeColor;
-                this.targetDisplay['_bkNode'].addChild(line);
+                var bkNode = this.targetDisplay['_bkNode'];
+                bkNode.addChild(line);
                 this.lastX = x;
                 this.lastY = y;
             }
@@ -5213,15 +5216,19 @@ var egret;
          * @language zh_CN
          */
         BKGraphics.prototype.clear = function () {
-            // // this.$renderNode.clear();
-            // this.updatePosition(0, 0);
-            // this.minX = Infinity;
-            // this.minY = Infinity;
-            // this.maxX = -Infinity;
-            // this.maxY = -Infinity;
+            // this.$renderNode.clear();
+            this.updatePosition(0, 0);
+            this.minX = Infinity;
+            this.minY = Infinity;
+            this.maxX = -Infinity;
+            this.maxY = -Infinity;
             // this._BKCanvas.clearRect(0, 0, 2 * this.stageW, 2 * this.stageH);
-            // this.isFillPath = false;
-            // this.isStrokePath = false;
+            var bkNode = this.targetDisplay['_bkNode'];
+            while (bkNode.children.length > 0) {
+                bkNode.removeChild(bkNode.children[0]);
+            }
+            this.isFillPath = false;
+            this.isStrokePath = false;
         };
         /**
          * @private
@@ -6074,6 +6081,10 @@ var egret;
      * @private
      */
     function setTimeout(listener, thisObject, delay) {
+        var args = [];
+        for (var _i = 3; _i < arguments.length; _i++) {
+            args[_i - 3] = arguments[_i];
+        }
         BK.Director.ticker.setTimeout(listener, delay, thisObject);
     }
     egret.setTimeout = setTimeout;
