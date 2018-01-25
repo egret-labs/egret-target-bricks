@@ -101,19 +101,6 @@ class Main extends egret.DisplayObjectContainer {
         sky.height = stageH;
         sky.name = "sky";
 
-        egret.Tween.get(sky).to({ scaleX: 0, scaleY: 0 }, 3000).call(() => {
-            console.log('success')
-        })
-
-        egret.Ticker.getInstance().register(()=>{
-            console.log (sky.localToGlobal())
-        },this)
-        // egret.setTimeout(() => {
-        //     console.log(sky.localToGlobal())
-        // }, this, 1500)
-
-
-
         let topMask = new egret.Shape();
         topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -167,18 +154,6 @@ class Main extends egret.DisplayObjectContainer {
         textfield.y = 135;
         this.textfield = textfield;
 
-        // let y = 20;
-        // let t = new egret.Timer(50)
-        // t.addEventListener(egret.TimerEvent.TIMER, () => {
-        //     let shp = new egret.Shape();
-        //     shp.graphics.lineStyle(2, 0x00ff00);
-        //     shp.graphics.moveTo(10, 10);
-        //     shp.graphics.lineTo(500, y);
-        //     shp.graphics.endFill();
-        //     this.addChild(shp);
-        //     y += 1;
-        // }, this);
-        // t.start()
         let shp = new egret.Shape();
         shp.graphics.lineStyle(2, 0x00ff00);
         shp.graphics.moveTo(68, 84);
@@ -190,6 +165,10 @@ class Main extends egret.DisplayObjectContainer {
         shp.graphics.lineTo(443, 174);
         shp.graphics.endFill();
         this.addChild(shp);
+        egret.setTimeout(()=>{
+            debugger;
+            shp.graphics.clear()
+        },this,3000);
     }
 
 
