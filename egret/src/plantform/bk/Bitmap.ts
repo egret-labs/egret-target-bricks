@@ -18,6 +18,25 @@ namespace egret {
             this.texture = value;
         }
 
+        protected _updateBKNodeMatrix(): void {
+            if (!this.$texture) {
+                return;
+            }
+            
+            const matrix = this.$getMatrix();
+            const bkMatrix = (this._bkNode.transform as any).matrix;
+            let tx = matrix.tx;
+            let ty = matrix.ty;
+            const pivotX = this.$anchorOffsetX;
+            const pivotY = this.$anchorOffsetY - this._size.height;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        }
+
         public get texture(): Texture | null {
             return this.$texture;
         }
@@ -35,9 +54,8 @@ namespace egret {
         $setTexture(value: Texture | null): void {
             this.$texture = value;
 
-            this._transformDirty = true;
-
             if (this.$texture) {
+                this._transformDirty = true;
                 this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
                 if (this.$bitmapData.bkTexture) {
                     this._bkSprite.setTexture(this.$bitmapData.bkTexture);
@@ -159,31 +177,6 @@ namespace egret {
 
                 bounds.setTo(0, 0, w, h);
             }
-        }
-        /**
-         * @override
-         */
-        $getRenderNode(): sys.RenderNode {
-            // MD
-            this._updateColor();
-
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY - this._size.height;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-
-            return this._bkNode as any || null;
         }
     }
 

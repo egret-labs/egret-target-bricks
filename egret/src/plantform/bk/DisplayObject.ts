@@ -29,15 +29,17 @@ namespace egret {
 
         protected _replaceNode(node: BK.Node): void {
             this._transformDirty = true;
-            node.vertexColor = this._color;
-            node.hidden = !this.visible;
+
+            node.vertexColor = this._bkNode.vertexColor;
+            node.hidden = this._bkNode.hidden;
+            (node as any).blendMode = (this._bkNode as any).blendMode;
+            node.zOrder = this._bkNode.zOrder;
 
             if (this._bkNode.parent) {
                 this._bkNode.parent.addChild(node, this.parent.getChildIndex(this));
                 this._bkNode.parent.removeChild(this._bkNode);
             }
 
-            node.zOrder = this._bkNode.zOrder;
             this._bkNode = node;
         }
         /**
@@ -66,6 +68,21 @@ namespace egret {
                 }
             }
         }
+
+        protected _updateBKNodeMatrix(): void {
+            const matrix = this.$getMatrix();
+            const bkMatrix = (this._bkNode.transform as any).matrix;
+            let tx = matrix.tx;
+            let ty = matrix.ty;
+            const pivotX = this.$anchorOffsetX;
+            const pivotY = this.$anchorOffsetY;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        }
         /**
          * @override
          */
@@ -81,6 +98,7 @@ namespace egret {
         $setAlpha(value: number): void {
             super.$setAlpha(value);
 
+            // MD
             this._colorDirty = 2; // self and child.
         }
         /**
@@ -90,6 +108,23 @@ namespace egret {
             let self = this;
             let mode = sys.blendModeToNumber(value);
             self.$blendMode = mode;
+
+            // if (egret.nativeRender) {
+            //     self.$nativeDisplayObject.setBlendMode(mode);
+            // }
+            // else {
+            (self as any).updateRenderMode(); // MD
+            let p = self.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
+            }
+            let maskedObject = self.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
+            }
+            // }
 
             // MD
             switch (value) {
@@ -204,15 +239,16 @@ namespace egret {
 
                     self.$mask = null;
                 }
-                // if (self.$maskRect) {
-                //     if (egret.nativeRender) {
-                //         self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
-                //     }
-                //     self.$maskRect = null;
-                // }
+                if (self.$maskRect) {
+                    // if (egret.nativeRender) {
+                    //     self.$nativeDisplayObject.setMaskRect(0, 0, 0, 0);
+                    // }
+                    self.$maskRect = null;
+                }
             }
+
             // if (!egret.nativeRender) {
-            //     self.updateRenderMode();
+            (self as any).updateRenderMode();
             // }
         }
         /**
@@ -252,6 +288,8 @@ namespace egret {
          */
         $setScaleX(value: number) {
             super.$setScaleX(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -260,6 +298,18 @@ namespace egret {
          */
         $setScaleY(value: number) {
             super.$setScaleY(value);
+
+            // MD
+            this._transformDirty = true;
+        }
+
+        /**
+         * @override
+         */
+        $setRotation(value: number) {
+            super.$setRotation(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -268,6 +318,8 @@ namespace egret {
          */
         $setSkewX(value: number) {
             super.$setSkewX(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -276,6 +328,8 @@ namespace egret {
          */
         $setSkewY(value: number) {
             super.$setSkewY(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -284,6 +338,8 @@ namespace egret {
          */
         $setMatrix(matrix: Matrix, needUpdateProperties: boolean = true): void {
             super.$setMatrix(matrix, needUpdateProperties);
+
+            // MD
             this._transformDirty = true;
         }
         /**
@@ -319,26 +375,30 @@ namespace egret {
          * @override
          */
         $getRenderNode(): sys.RenderNode {
-            // MD
-            this._updateColor();
-
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+            let self = this;
+            // let node = self.$renderNode;
+            let node = self._bkNode as any; // MD
+            if (!node) {
+                return null;
             }
 
-            return this._bkNode as any;
+            self._updateColor(); // MD
+
+            if (self.$renderDirty) {
+                // node.cleanBeforeRender(); // MD
+                self.$updateRenderNode();
+                self.$renderDirty = false;
+                // node = self.$renderNode;
+                node = self._bkNode as any; // MD
+            }
+
+            // MD
+            if (self._transformDirty) {
+                self._transformDirty = false;
+                this._updateBKNodeMatrix();
+            }
+
+            return node;
         }
         /**
          * @override

@@ -1429,17 +1429,17 @@ namespace egret {
             let self = this;
             self.$renderDirty = true;
             self.$TextField[sys.TextKeys.textLinesChanged] = true;
-            // MD
-            // let p = self.$parent;
-            // if (p && !p.$cacheDirty) {
-            //     p.$cacheDirty = true;
-            //     p.$cacheDirtyUp();
-            // }
-            // let maskedObject = self.$maskedObject;
-            // if (maskedObject && !maskedObject.$cacheDirty) {
-            //     maskedObject.$cacheDirty = true;
-            //     maskedObject.$cacheDirtyUp();
-            // }
+
+            let p = self.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
+            }
+            let maskedObject = self.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
+            }
         }
 
         $getRenderBounds(): Rectangle {
@@ -2061,53 +2061,30 @@ namespace egret {
 
             return zero.substr(0, length - str.length) + str;
         }
-
-        // MD
-        $getRenderNode(): sys.RenderNode {
-            if (this.$renderDirty) {
-                this.$renderDirty = false;
-
-                if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
-                    this.inputUtils._updateProperties();
-                    if (this.$isTyping) {
-                        this.fillBackground();
-                        return;
-                    }
-                }
-                else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
-                    // let graphics = this.$graphicsNode;
-                    // if (graphics) {
-                    //     graphics.clear();
-                    // }
+        /**
+         * @override
+         */
+        $updateRenderNode(): void {
+            if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
+                this.inputUtils._updateProperties();
+                if (this.$isTyping) {
+                    this.fillBackground();
                     return;
                 }
-
-                let underLines = this.drawText();
-                this.fillBackground(underLines);
-                //tudo 宽高很小的情况下webgl模式绘制异常
-                // let bounds = this.$getRenderBounds(); // MD
-                // Rectangle.release(bounds);
+            }
+            else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
+                // let graphics = this.$graphicsNode;
+                // if (graphics) {
+                //     graphics.clear();
+                // }
+                return;
             }
 
-            //
-            if (this._transformDirty || (this as any).$matrixDirty) {
-                this._transformDirty = false;
-
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-
-            return this._bkNode as any;
+            let underLines = this.drawText();
+            this.fillBackground(underLines);
+            //tudo 宽高很小的情况下webgl模式绘制异常
+            // let bounds = this.$getRenderBounds(); // MD
+            // Rectangle.release(bounds);
         }
     }
 
