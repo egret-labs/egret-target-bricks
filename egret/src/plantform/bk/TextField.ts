@@ -118,8 +118,6 @@ namespace egret {
          */
         constructor() {
             super(); // BK.Node.
-            // MD
-            this._bkTextContainer = this._bkNode as any;
 
             // super();
             // let textNode = new sys.TextNode();
@@ -1473,33 +1471,33 @@ namespace egret {
             bounds.setTo(0, 0, w, h);
         }
 
-        // $updateRenderNode(): void {
-        //     if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
-        //         this.inputUtils._updateProperties();
-        //         if (this.$isTyping) {
-        //             this.fillBackground();
-        //             return;
-        //         }
-        //     }
-        //     else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
-        //         let graphics = this.graphicsNode;
-        //         if (graphics) {
-        //             graphics.clear();
-        //         }
-        //         return;
-        //     }
+        $updateRenderNode(): void {
+            if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
+                this.inputUtils._updateProperties();
+                if (this.$isTyping) {
+                    this.fillBackground();
+                    return;
+                }
+            }
+            else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
+                // let graphics = this.graphicsNode;
+                // if (graphics) {
+                //     graphics.clear();
+                // }
+                return;
+            }
 
-        //     let underLines = this.drawText();
-        //     this.fillBackground(underLines);
-        //     //tudo 宽高很小的情况下webgl模式绘制异常
-        //     let bounds = this.$getRenderBounds();
-        //     let node = this.textNode;
-        //     node.x = bounds.x;
-        //     node.y = bounds.y;
-        //     node.width = Math.ceil(bounds.width);
-        //     node.height = Math.ceil(bounds.height);
-        //     Rectangle.release(bounds);
-        // }
+            let underLines = this.drawText(); // MD
+            // this.fillBackground(underLines);
+            // //tudo 宽高很小的情况下webgl模式绘制异常
+            // let bounds = this.$getRenderBounds();
+            // let node = this.textNode;
+            // node.x = bounds.x;
+            // node.y = bounds.y;
+            // node.width = Math.ceil(bounds.width);
+            // node.height = Math.ceil(bounds.height);
+            // Rectangle.release(bounds);
+        }
 
         /**
          * @private
@@ -1972,19 +1970,19 @@ namespace egret {
                     tempStyle.width = tempStyle.maxWidth = element.width;
                     tempStyle.height = tempStyle.maxHeight = size * 1.15; // 高度不够会被裁切。
 
-                    let bkText: any; // BK.TextNode
-                    if (nodeCount < this._bkTextNodes.length) {
-                        bkText = this._bkTextNodes[nodeCount];
-                        bkText.updateText(tempStyle, element.text);
+                    let bkNode: any; // BK.TextNode
+                    if (nodeCount < this._bkNodes.length) {
+                        bkNode = this._bkNodes[nodeCount];
+                        bkNode.updateText(tempStyle, element.text);
                     }
                     else {
-                        bkText = createTextNode(element.text, tempStyle);
-                        this._bkTextNodes[nodeCount] = bkText;
-                        this._bkTextContainer.addChild(bkText);
+                        bkNode = createTextNode(element.text, tempStyle);
+                        this._bkNodes[nodeCount] = bkNode;
+                        this._bkNode.addChild(bkNode);
                     }
 
-                    bkText.position = { x: drawX, y: -(drawY) };
                     // node.drawText(drawX, drawY + (h - size) / 2, element.text, element.style);
+                    bkNode.position = { x: drawX, y: -(drawY) };
                     nodeCount++;
                     // MD END
 
@@ -2006,13 +2004,13 @@ namespace egret {
             }
 
             // MD 移除多余的节点
-            for (let i = nodeCount; i < this._bkTextNodes.length; ++i) {
-                const bkText: any = this._bkTextNodes[i]; // BK.TextNode
-                bkTextNodes.push(bkText);
-                this._bkTextContainer.removeChild(bkText);
+            for (let i = nodeCount; i < this._bkNodes.length; ++i) {
+                const bkNode: any = this._bkNodes[i]; // BK.TextNode
+                bkTextNodes.push(bkNode);
+                this._bkNode.removeChild(bkNode);
             }
 
-            this._bkTextNodes.length = nodeCount;
+            this._bkNodes.length = nodeCount;
 
             return underLineData;
         }
@@ -2050,41 +2048,12 @@ namespace egret {
         }
 
         // MD
-        private readonly _bkTextNodes: any[] = [];
-        private readonly _bkTextContainer: BK.Node; // BK.TextNode
-        /**
-         * 为16进制数字补0，输出字符串
-         */
-        private _refitString(num: number, length: number): string {
-            let str = num.toString(16);
-            let zero = "00000000";
+        private readonly _bkNodes: any[] = [];
 
-            return zero.substr(0, length - str.length) + str;
-        }
-        /**
-         * @override
-         */
-        $updateRenderNode(): void {
-            if (this.$TextField[sys.TextKeys.type] == TextFieldType.INPUT) {
-                this.inputUtils._updateProperties();
-                if (this.$isTyping) {
-                    this.fillBackground();
-                    return;
-                }
+        protected _updateSelfColor(): void {
+            for (const node of this._bkNodes) {
+                node.vertexColor = this._color;
             }
-            else if (this.$TextField[sys.TextKeys.textFieldWidth] == 0) {
-                // let graphics = this.$graphicsNode;
-                // if (graphics) {
-                //     graphics.clear();
-                // }
-                return;
-            }
-
-            let underLines = this.drawText();
-            this.fillBackground(underLines);
-            //tudo 宽高很小的情况下webgl模式绘制异常
-            // let bounds = this.$getRenderBounds(); // MD
-            // Rectangle.release(bounds);
         }
     }
 

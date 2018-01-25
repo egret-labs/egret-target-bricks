@@ -42,31 +42,9 @@ namespace egret {
 
             this._bkNode = node;
         }
-        /**
-         * @internal
-         */
-        public _updateColor(): void {
-            const parent = <any>this.$parent as BKDisplayObject;
-            if (parent) {
-                if (this._colorDirty === 2 || parent._colorDirty !== 0) {
-                    this._colorDirty = 1;
-                    this._color.a = parent._color.a * this.$alpha;
-                    this._bkNode.vertexColor = this._color;
-                }
-                else if (this._colorDirty === 1) {
-                    this._colorDirty = 0;
-                }
-            }
-            else {
-                if (this._colorDirty === 2) {
-                    this._colorDirty = 1;
-                    this._color.a = this.$alpha;
-                    this._bkNode.vertexColor = this._color;
-                }
-                else if (this._colorDirty === 1) {
-                    this._colorDirty = 0;
-                }
-            }
+
+        protected _updateSelfColor(): void {
+            this._bkNode.vertexColor = this._color;
         }
 
         protected _updateBKNodeMatrix(): void {
@@ -82,6 +60,32 @@ namespace egret {
             }
 
             bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        }
+        /**
+         * @internal
+         */
+        public _updateColor(): void {
+            const parent = <any>this.$parent as BKDisplayObject;
+            if (parent) {
+                if (this._colorDirty === 2 || parent._colorDirty !== 0) {
+                    this._colorDirty = 1;
+                    this._color.a = parent._color.a * this.$alpha;
+                    this._updateSelfColor();
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
+            else {
+                if (this._colorDirty === 2) {
+                    this._colorDirty = 1;
+                    this._color.a = this.$alpha;
+                    this._updateSelfColor();
+                }
+                else if (this._colorDirty === 1) {
+                    this._colorDirty = 0;
+                }
+            }
         }
         /**
          * @override
