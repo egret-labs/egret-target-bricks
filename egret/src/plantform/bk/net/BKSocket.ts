@@ -83,7 +83,7 @@ namespace egret {
                 // let msg = b.readUTF();
                 // let bkBuffer = new BK.Buffer(msg.length);
                 // bkBuffer.writeAsString(msg);
-                const arrayBuffer = arrayBufferToBrickBuffer(message);
+                const arrayBuffer = arrayBufferToBricksBuffer(message);
                 this.$websocket.send(arrayBuffer);
             }
         }

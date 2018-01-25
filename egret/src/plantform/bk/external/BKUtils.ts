@@ -28,7 +28,7 @@ namespace egret {
         return arrayBuffer;
     }
 
-    export function arrayBufferToBrickBuffer(arrayBuffer: ArrayBuffer): BK.Buffer {
+    export function arrayBufferToBricksBuffer(arrayBuffer: ArrayBuffer): BK.Buffer {
         const bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
         const uint8Array = new Uint8Array(arrayBuffer);
 
