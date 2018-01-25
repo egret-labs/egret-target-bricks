@@ -157,6 +157,15 @@ var Main = (function (_super) {
         sky.width = stageW;
         sky.height = stageH;
         sky.name = "sky";
+        egret.Tween.get(sky).to({ scaleX: 0, scaleY: 0 }, 3000).call(function () {
+            console.log('success');
+        });
+        // egret.Ticker.getInstance().register(()=>{
+        //     console.log (sky.localToGlobal())
+        // },this)
+        egret.setTimeout(function () {
+            console.log(sky.localToGlobal());
+        }, this, 1500);
         var topMask = new egret.Shape();
         topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
