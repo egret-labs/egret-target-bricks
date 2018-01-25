@@ -101,6 +101,17 @@ class Main extends egret.DisplayObjectContainer {
         sky.height = stageH;
         sky.name = "sky";
 
+        egret.Tween.get(sky).to({ scaleX: 0, scaleY: 0 }, 3000).call(() => {
+            console.log('success')
+        })
+
+        egret.Ticker.getInstance().register(()=>{
+            console.log (sky.localToGlobal())
+        },this)
+        // egret.setTimeout(() => {
+        //     console.log(sky.localToGlobal())
+        // }, this, 1500)
+
 
 
         let topMask = new egret.Shape();

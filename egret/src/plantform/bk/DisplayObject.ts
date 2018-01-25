@@ -233,6 +233,7 @@ namespace egret {
 
             return true;
         }
+
         /**
          * @override
          */
@@ -248,6 +249,39 @@ namespace egret {
 
             return true;
         }
+
+        /**
+         * @override
+         */
+        $setScaleX(value: number) {
+            super.$setScaleX(value);
+            this._transformDirty = true;
+        }
+
+        /**
+         * @override
+         */
+        $setScaleY(value: number) {
+            super.$setScaleY(value);
+            this._transformDirty = true;
+        }
+
+        /**
+         * @override
+         */
+        $setSkewX(value: number) {
+            super.$setSkewX(value);
+            this._transformDirty = true;
+        }
+
+        /**
+         * @override
+         */
+        $setSkewY(value: number) {
+            super.$setSkewY(value);
+            this._transformDirty = true;
+        }
+
         /**
          * @override
          */
@@ -293,7 +327,7 @@ namespace egret {
             // MD
             this._updateColor();
 
-            if (this._transformDirty || (this as any).$matrixDirty) {
+            if (this._transformDirty) {
                 this._transformDirty = false;
                 const matrix = this.$getMatrix();
                 const bkMatrix = (this._bkNode.transform as any).matrix;

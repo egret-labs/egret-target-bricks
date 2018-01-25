@@ -239,6 +239,34 @@ var egret;
         /**
          * @override
          */
+        BKDisplayObject.prototype.$setScaleX = function (value) {
+            _super.prototype.$setScaleX.call(this, value);
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
+        BKDisplayObject.prototype.$setScaleY = function (value) {
+            _super.prototype.$setScaleY.call(this, value);
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
+        BKDisplayObject.prototype.$setSkewX = function (value) {
+            _super.prototype.$setSkewX.call(this, value);
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
+        BKDisplayObject.prototype.$setSkewY = function (value) {
+            _super.prototype.$setSkewY.call(this, value);
+            this._transformDirty = true;
+        };
+        /**
+         * @override
+         */
         BKDisplayObject.prototype.$setMatrix = function (matrix, needUpdateProperties) {
             if (needUpdateProperties === void 0) { needUpdateProperties = true; }
             _super.prototype.$setMatrix.call(this, matrix, needUpdateProperties);
@@ -279,7 +307,7 @@ var egret;
         BKDisplayObject.prototype.$getRenderNode = function () {
             // MD
             this._updateColor();
-            if (this._transformDirty || this.$matrixDirty) {
+            if (this._transformDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
                 var bkMatrix = this._bkNode.transform.matrix;
@@ -1124,7 +1152,7 @@ var egret;
         // MD
         BKDisplayObjectContainer.prototype.$getRenderNode = function () {
             this._updateColor();
-            if (this._transformDirty || this.$matrixDirty) {
+            if (this._transformDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
                 var bkMatrix = this._bkNode.transform.matrix;
@@ -2062,7 +2090,7 @@ var egret;
         BKBitmap.prototype.$getRenderNode = function () {
             // MD
             this._updateColor();
-            if (this._transformDirty || this.$matrixDirty) {
+            if (this._transformDirty) {
                 this._transformDirty = false;
                 var matrix = this.$getMatrix();
                 var bkMatrix = this._bkNode.transform.matrix;
