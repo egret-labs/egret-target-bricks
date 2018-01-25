@@ -68,6 +68,21 @@ namespace egret {
                 }
             }
         }
+
+        protected _updateBKNodeMatrix(): void {
+            const matrix = this.$getMatrix();
+            const bkMatrix = (this._bkNode.transform as any).matrix;
+            let tx = matrix.tx;
+            let ty = matrix.ty;
+            const pivotX = this.$anchorOffsetX;
+            const pivotY = this.$anchorOffsetY;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        }
         /**
          * @override
          */
@@ -83,6 +98,7 @@ namespace egret {
         $setAlpha(value: number): void {
             super.$setAlpha(value);
 
+            // MD
             this._colorDirty = 2; // self and child.
         }
         /**
@@ -92,6 +108,23 @@ namespace egret {
             let self = this;
             let mode = sys.blendModeToNumber(value);
             self.$blendMode = mode;
+
+            // if (egret.nativeRender) {
+            //     self.$nativeDisplayObject.setBlendMode(mode);
+            // }
+            // else {
+            (self as any).updateRenderMode(); // MD
+            let p = self.$parent;
+            if (p && !p.$cacheDirty) {
+                p.$cacheDirty = true;
+                p.$cacheDirtyUp();
+            }
+            let maskedObject = self.$maskedObject;
+            if (maskedObject && !maskedObject.$cacheDirty) {
+                maskedObject.$cacheDirty = true;
+                maskedObject.$cacheDirtyUp();
+            }
+            // }
 
             // MD
             switch (value) {
@@ -255,6 +288,8 @@ namespace egret {
          */
         $setScaleX(value: number) {
             super.$setScaleX(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -263,6 +298,18 @@ namespace egret {
          */
         $setScaleY(value: number) {
             super.$setScaleY(value);
+
+            // MD
+            this._transformDirty = true;
+        }
+
+        /**
+         * @override
+         */
+        $setRotation(value: number) {
+            super.$setRotation(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -271,6 +318,8 @@ namespace egret {
          */
         $setSkewX(value: number) {
             super.$setSkewX(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -279,6 +328,8 @@ namespace egret {
          */
         $setSkewY(value: number) {
             super.$setSkewY(value);
+
+            // MD
             this._transformDirty = true;
         }
 
@@ -324,31 +375,6 @@ namespace egret {
          * @override
          */
         $getRenderNode(): sys.RenderNode {
-            // MD
-            this._updateColor();
-
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-
-            return this._bkNode as any;
-        }
-        /**
-         * @override
-         */
-        $getRenderNodeRaw(): sys.RenderNode {
             let self = this;
             // let node = self.$renderNode;
             let node = self._bkNode as any; // MD
@@ -373,21 +399,6 @@ namespace egret {
             }
 
             return node;
-        }
-        
-        protected _updateBKNodeMatrix(): void {
-            const matrix = (this as any).$matrix;
-            const bkMatrix = (this._bkNode.transform as any).matrix;
-            let tx = this.$x;
-            let ty = this.$y;
-            const pivotX = this.$anchorOffsetX;
-            const pivotY = this.$anchorOffsetY;
-            if (pivotX !== 0.0 || pivotY !== 0.0) {
-                tx -= matrix.a * pivotX + matrix.c * pivotY;
-                ty -= matrix.b * pivotX + matrix.d * pivotY;
-            }
-
-            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
         }
         /**
          * @override

@@ -155,6 +155,26 @@ namespace egret {
             // }
         }
 
+        protected _updateBKNodeMatrix(): void {
+            if (!this.$texture) {
+                return;
+            }
+
+            const matrix = this.$getMatrix();
+            const bkMatrix = (this._bkNode.transform as any).matrix;
+            let tx = matrix.tx;
+            let ty = matrix.ty;
+            const pivotX = this.$anchorOffsetX;
+            const pivotY = this.$anchorOffsetY - this._size.height;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+
+            const frame = this.frames[this.$currentFrameNum - 1];
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx + frame.x, -ty - frame.y);
+        }
+
         // protected createNativeDisplayObject(): void {
         //     this.$nativeDisplayObject = new egret_native.NativeDisplayObject(egret_native.NativeObjectType.BITMAP_TEXT);
         // }
@@ -230,84 +250,54 @@ namespace egret {
                 this.constructFrame();
             }
         }
+        /**
+         * @private
+         */
+        $updateRenderNode(): void {
+            // let texture = this.$texture;
+            // if (texture) {
+            //     let offsetX: number = Math.round(this.offsetPoint.x);
+            //     let offsetY: number = Math.round(this.offsetPoint.y);
+            //     let bitmapWidth: number = texture.$bitmapWidth;
+            //     let bitmapHeight: number = texture.$bitmapHeight;
+            //     let textureWidth: number = texture.$getTextureWidth();
+            //     let textureHeight: number = texture.$getTextureHeight();
+            //     let destW: number = Math.round(texture.$getScaleBitmapWidth());
+            //     let destH: number = Math.round(texture.$getScaleBitmapHeight());
+            //     let sourceWidth: number = texture.$sourceWidth;
+            //     let sourceHeight: number = texture.$sourceHeight;
 
+            //     sys.BitmapNode.$updateTextureData(<sys.NormalBitmapNode>this.$renderNode, texture.$bitmapData, texture.$bitmapX, texture.$bitmapY,
+            //         bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, egret.BitmapFillMode.SCALE, this.$smoothing);
+            // }
 
-        // /**
-        //  * @private
-        //  */
-        // $updateRenderNode(): void {
-        //     let texture = this.$texture;
-        //     if (texture) {
-        //         let offsetX: number = Math.round(this.offsetPoint.x);
-        //         let offsetY: number = Math.round(this.offsetPoint.y);
-        //         let bitmapWidth: number = texture.$bitmapWidth;
-        //         let bitmapHeight: number = texture.$bitmapHeight;
-        //         let textureWidth: number = texture.$getTextureWidth();
-        //         let textureHeight: number = texture.$getTextureHeight();
-        //         let destW: number = Math.round(texture.$getScaleBitmapWidth());
-        //         let destH: number = Math.round(texture.$getScaleBitmapHeight());
-        //         let sourceWidth: number = texture.$sourceWidth;
-        //         let sourceHeight: number = texture.$sourceHeight;
-
-        //         sys.BitmapNode.$updateTextureData(<sys.NormalBitmapNode>this.$renderNode, texture.$bitmapData, texture.$bitmapX, texture.$bitmapY,
-        //             bitmapWidth, bitmapHeight, offsetX, offsetY, textureWidth, textureHeight, destW, destH, sourceWidth, sourceHeight, egret.BitmapFillMode.SCALE, this.$smoothing);
-        //     }
-        // }
-
-        $getRenderNode(): sys.RenderNode {
+            // MD
             if (this.frames[this.$currentFrameNum - 1].res) {
-                this.$setTexture();
-
                 if (this.$texture) {
-                    // MD
-                    if (this._transformDirty || (this as any).$matrixDirty) {
-                        this._transformDirty = false;
-                        const matrix = this.$getMatrix();
-                        const bkMatrix = (this._bkNode.transform as any).matrix;
-                        let tx = matrix.tx;
-                        let ty = matrix.ty;
-                        const pivotX = this.$anchorOffsetX;
-                        const pivotY = this.$anchorOffsetY - this._size.height;
-                        if (pivotX !== 0.0 || pivotY !== 0.0) {
-                            tx -= matrix.a * pivotX + matrix.c * pivotY;
-                            ty -= matrix.b * pivotX + matrix.d * pivotY;
-                        }
-
-                        bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d,
-                            tx + this.frames[this.$currentFrameNum - 1].x,
-                            -(ty + this.frames[this.$currentFrameNum - 1].y));
+                    this._transformDirty = true;
+                    this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
+                    if (this.$bitmapData.bkTexture) {
+                        this._bkSprite.setTexture(this.$bitmapData.bkTexture);
+                        this._bkSprite.adjustTexturePosition(
+                            this.$texture.$bitmapX,
+                            this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight),
+                            this.$texture.$bitmapWidth,
+                            this.$texture.$bitmapHeight,
+                            this.$texture.$rotated
+                        );
+                        this._size.width = this.$texture.$bitmapWidth;
+                        this._size.height = this.$texture.$bitmapHeight;
+                        this._bkSprite.size = this._size;
+                    } else {
+                        this.$bitmapData = null;
+                        this._bkSprite.setTexture({} as any);
                     }
-                }
-            }
-            return this._bkNode as any || null;
-        }
-
-        $setTexture() {
-            this._transformDirty = true;
-            if (this.$texture) {
-                this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
-                if (this.$bitmapData.bkTexture) {
-                    this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    this._bkSprite.adjustTexturePosition(
-                        this.$texture.$bitmapX,
-                        this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight),
-                        this.$texture.$bitmapWidth,
-                        this.$texture.$bitmapHeight,
-                        this.$texture.$rotated
-                    );
-                    this._size.width = this.$texture.$bitmapWidth;
-                    this._size.height = this.$texture.$bitmapHeight;
-                    this._bkSprite.size = this._size;
                 } else {
                     this.$bitmapData = null;
                     this._bkSprite.setTexture({} as any);
                 }
-            } else {
-                this.$bitmapData = null;
-                this._bkSprite.setTexture({} as any);
             }
         }
-
         /**
          * @private
          */
@@ -634,8 +624,6 @@ namespace egret {
             self.displayedKeyFrameNum = currentFrameNum;
             self.$renderDirty = true;
 
-            //this.$renderDirty = texture ? true : false;//
-
             // if (egret.nativeRender) {
             //     self.$nativeDisplayObject.setDataToBitmapNode(self.$nativeDisplayObject.id, texture,
             //         [texture.$bitmapX, texture.$bitmapY, texture.$bitmapWidth, texture.$bitmapHeight,
@@ -646,16 +634,16 @@ namespace egret {
             //     self.$nativeDisplayObject.setHeight(texture.$getTextureHeight() + self.offsetPoint.y);
             // }
             // else {
-            let p = self.$parent;
-            if (p && !p.$cacheDirty) {
-                p.$cacheDirty = true;
-                p.$cacheDirtyUp();
-            }
-            let maskedObject = self.$maskedObject;
-            if (maskedObject && !maskedObject.$cacheDirty) {
-                maskedObject.$cacheDirty = true;
-                maskedObject.$cacheDirtyUp();
-            }
+                let p = self.$parent;
+                if (p && !p.$cacheDirty) {
+                    p.$cacheDirty = true;
+                    p.$cacheDirtyUp();
+                }
+                let maskedObject = self.$maskedObject;
+                if (maskedObject && !maskedObject.$cacheDirty) {
+                    maskedObject.$cacheDirty = true;
+                    maskedObject.$cacheDirtyUp();
+                }
             // }
         }
 

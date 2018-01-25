@@ -74,6 +74,26 @@ namespace egret {
             this.$children = [];
         }
 
+        protected _updateBKNodeMatrix(): void {
+            const matrix = this.$getMatrix();
+            const bkMatrix = (this._bkNode.transform as any).matrix;
+            let tx = matrix.tx;
+            let ty = matrix.ty;
+            const pivotX = this.$anchorOffsetX;
+            const pivotY = this.$anchorOffsetY;
+            if (pivotX !== 0.0 || pivotY !== 0.0) {
+                tx -= matrix.a * pivotX + matrix.c * pivotY;
+                ty -= matrix.b * pivotX + matrix.d * pivotY;
+            }
+
+            if (this.$scrollRect) {
+                tx -= this.$scrollRect.x;
+                ty -= this.$scrollRect.y;
+            }
+
+            bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+        }
+
         /**
          * Returns the number of children of this object.
          * @version Egret 2.4
@@ -845,34 +865,6 @@ namespace egret {
                 self.$scrollRect = null;
                 this._bkClipRectNode.enableClip = false;
             }
-        }
-
-        // MD
-        $getRenderNode(): sys.RenderNode {
-            this._updateColor();
-
-            if (this._transformDirty) {
-                this._transformDirty = false;
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
-                }
-
-                if (this.$scrollRect) {
-                    tx -= this.$scrollRect.x;
-                    ty -= this.$scrollRect.y;
-                }
-
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
-            }
-
-            return this._bkNode as any;
         }
     }
     // MD

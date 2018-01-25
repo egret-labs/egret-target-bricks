@@ -2,7 +2,6 @@ namespace egret {
 
     export class BKMesh extends BKDisplayObject {
         private _textureDirty: boolean = true;
-        private _verticesDirty: boolean = true;
         private _boundsDirty: boolean = true;
         private readonly _bounds: Rectangle = new Rectangle();
         private readonly _bkMesh: BK.Mesh;
@@ -63,14 +62,12 @@ namespace egret {
                 (this._bkMesh as any).setTexture({} as any);
             }
         }
-
         /**
          * @override
          */
         $updateVertices(): void {
-            this._verticesDirty = true;
             this._boundsDirty = true;
-
+            this.$renderDirty = true;
             this.$renderNode = new sys.MeshNode();
         }
         /**
@@ -103,92 +100,67 @@ namespace egret {
         /**
          * @override
          */
-        $getRenderNode(): sys.RenderNode {
-            // if (!this.$texture) {
-            //     return;
-            // }
+        $updateRenderNode(): void {
+            const meshNode = this.$renderNode as sys.MeshNode;
+            const nodeVercices = meshNode.vertices;
+            const nodeUV = meshNode.uvs;
 
-            if (this._verticesDirty) {
-                this._verticesDirty = false;
-
-                const meshNode = this.$renderNode as sys.MeshNode;
-                const nodeVercices = meshNode.vertices;
-                const nodeUV = meshNode.uvs;
-                let bkVertices = (this._bkMesh as any).getVertices();
-                if (!bkVertices) {
-                    bkVertices = [];
-                }
-
-                if (bkVertices.length !== nodeVercices.length / 2) {
-                    for (let i = bkVertices.length, l = nodeVercices.length / 2; i < l; ++i) {
-                        bkVertices[i] = {};
-                    }
-
-                    const subTextureRotated = this.$texture.$rotated;
-                    const subTextureX = this.$texture.$bitmapX;
-                    const subTextureY = this.$texture.$bitmapY;
-                    const subTextureWidth = this.$texture.$bitmapWidth;
-                    const subTextureHeight = this.$texture.$bitmapHeight;
-                    const textureWidth = this.$texture.$sourceWidth;
-                    const textureHeight = this.$texture.$sourceHeight;
-
-                    const kx1 = subTextureX / textureWidth;
-                    const kx2 = subTextureRotated ? subTextureHeight / textureWidth : subTextureWidth / textureWidth;
-                    const ky1 = subTextureY / textureHeight;
-                    const ky2 = subTextureRotated ? subTextureWidth / textureHeight : subTextureHeight / textureHeight;
-
-                    for (let i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
-                        const vertex = bkVertices[i];
-                        const u = nodeUV[iD];
-                        const v = nodeUV[iD + 1];
-
-                        vertex.x = nodeVercices[iD];
-                        vertex.y = -nodeVercices[iD + 1];
-                        vertex.z = this._bkNode.zOrder;
-                        vertex.r = 1.0;
-                        vertex.g = 1.0;
-                        vertex.b = 1.0;
-                        vertex.a = 1.0;
-
-                        // uv
-                        if (subTextureRotated) {
-                            vertex.u = kx1 + (1.0 - v) * kx2;
-                            vertex.v = 1.0 - (ky1 + u * ky2);
-                        }
-                        else {
-                            vertex.u = kx1 + u * kx2;
-                            vertex.v = 1.0 - (ky1 + v * ky2);
-                        }
-                    }
-                }
-                else {
-                    for (let i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
-                        const vertex = bkVertices[i];
-                        vertex.x = nodeVercices[iD];
-                        vertex.y = -nodeVercices[iD + 1];
-                    }
-                }
-
-                this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices); // 需要提供更加高性能的接口
+            let bkVertices = (this._bkMesh as any).getVertices();
+            if (!bkVertices) {
+                bkVertices = [];
             }
 
-            if (this._transformDirty || (this as any).$matrixDirty) {
-                this._transformDirty = false;
-                const matrix = this.$getMatrix();
-                const bkMatrix = (this._bkNode.transform as any).matrix;
-                let tx = matrix.tx;
-                let ty = matrix.ty;
-                const pivotX = this.$anchorOffsetX;
-                const pivotY = this.$anchorOffsetY;
-                if (pivotX !== 0.0 || pivotY !== 0.0) {
-                    tx -= matrix.a * pivotX + matrix.c * pivotY;
-                    ty -= matrix.b * pivotX + matrix.d * pivotY;
+            if (bkVertices.length !== nodeVercices.length / 2) {
+                for (let i = bkVertices.length, l = nodeVercices.length / 2; i < l; ++i) {
+                    bkVertices[i] = {};
                 }
 
-                bkMatrix.set(matrix.a, -matrix.b, -matrix.c, matrix.d, tx, -ty);
+                const subTextureRotated = this.$texture.$rotated;
+                const subTextureX = this.$texture.$bitmapX;
+                const subTextureY = this.$texture.$bitmapY;
+                const subTextureWidth = this.$texture.$bitmapWidth;
+                const subTextureHeight = this.$texture.$bitmapHeight;
+                const textureWidth = this.$texture.$sourceWidth;
+                const textureHeight = this.$texture.$sourceHeight;
+
+                const kx1 = subTextureX / textureWidth;
+                const kx2 = subTextureRotated ? subTextureHeight / textureWidth : subTextureWidth / textureWidth;
+                const ky1 = subTextureY / textureHeight;
+                const ky2 = subTextureRotated ? subTextureWidth / textureHeight : subTextureHeight / textureHeight;
+
+                for (let i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                    const vertex = bkVertices[i];
+                    const u = nodeUV[iD];
+                    const v = nodeUV[iD + 1];
+
+                    vertex.x = nodeVercices[iD];
+                    vertex.y = -nodeVercices[iD + 1];
+                    vertex.z = this._bkNode.zOrder;
+                    vertex.r = 1.0;
+                    vertex.g = 1.0;
+                    vertex.b = 1.0;
+                    vertex.a = 1.0;
+
+                    // uv
+                    if (subTextureRotated) {
+                        vertex.u = kx1 + (1.0 - v) * kx2;
+                        vertex.v = 1.0 - (ky1 + u * ky2);
+                    }
+                    else {
+                        vertex.u = kx1 + u * kx2;
+                        vertex.v = 1.0 - (ky1 + v * ky2);
+                    }
+                }
+            }
+            else {
+                for (let i = 0, iD = 0, l = bkVertices.length; i < l; ++i, iD += 2) {
+                    const vertex = bkVertices[i];
+                    vertex.x = nodeVercices[iD];
+                    vertex.y = -nodeVercices[iD + 1];
+                }
             }
 
-            return this._bkNode as any;
+            this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices); // 需要提供更加高性能的接口
         }
     }
 
