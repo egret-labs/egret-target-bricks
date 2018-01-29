@@ -2790,9 +2790,9 @@ var egret;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.moveTo(x, y);
             // strokePath && strokePath.moveTo(x, y);
-            // this.includeLastPosition = false;
-            // this.lastX = _x;
-            // this.lastY = _y;
+            this.includeLastPosition = false;
+            this.lastX = x;
+            this.lastY = y;
             // this.$renderNode.dirtyRender = true;
         };
         /**
@@ -2828,15 +2828,13 @@ var egret;
                 line.vertexColor = this.strokeColor;
                 var bkNode = this.targetDisplay['_bkNode'];
                 bkNode.addChild(line);
-                this.lastX = x;
-                this.lastY = y;
+                this.updatePosition(x, y);
             }
             // this._BKCanvas.lineTo(_x, _y);
             // let fillPath = this.fillPath;
             // let strokePath = this.strokePath;
             // fillPath && fillPath.lineTo(x, y);
             // strokePath && strokePath.lineTo(x, y);
-            // this.updatePosition(x, y);
             // this.$renderNode.dirtyRender = true;
         };
         /**
