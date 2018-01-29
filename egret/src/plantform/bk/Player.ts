@@ -35,6 +35,7 @@ namespace egret {
         private readonly _mainTicker: BK.MainTicker = BK.Director.ticker;
         private readonly _viewRect: Rectangle = new egret.Rectangle();
         private readonly _touch: sys.TouchHandler = new sys.TouchHandler(this.stage);
+        // private readonly _root: BK.Node = new BK.Node();
         /**
          * @internal
          */
@@ -48,6 +49,8 @@ namespace egret {
 
             this._options = options;
 
+            // BK.Director.root.addChild(this._root);
+            // this._root.addChild((<any>this.stage as BKStage)._bkNode);
             BK.Director.root.addChild((<any>this.stage as BKStage)._bkNode);
             lifecycle.stage = this.stage;
             // lifecycle.addLifecycleListener(WebLifeCycleHandler); ?
@@ -139,7 +142,7 @@ namespace egret {
             this.stage.$stageHeight = stageHeight;
             BK.Director.root.position = { x: left, y: BK.Director.screenPixelSize.height - top };
             BK.Director.root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
-
+            // this._root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
             this._viewRect.setTo(left, top, stageWidth, stageHeight);
             // BK.Director.renderSize = { width: stageWidth, height: stageHeight }; // can not work
 

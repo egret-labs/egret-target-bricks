@@ -428,6 +428,10 @@ namespace egret {
                 BKPlayer.instance._displayList.splice(index, 1);
             }
         }
+
+        public invalidUpdate(): void {
+            this.$getRenderNode();
+        }
     }
 
     egret.DisplayObject = BKDisplayObject;

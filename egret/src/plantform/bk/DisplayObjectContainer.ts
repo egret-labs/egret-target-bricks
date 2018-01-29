@@ -241,6 +241,7 @@ namespace egret {
             }
 
             this.$childAdded(child, index);
+
             return child;
         }
 
@@ -835,6 +836,14 @@ namespace egret {
                 return this;
             }
             return super.$hitTest(stageX, stageY);
+        }
+
+        public invalidUpdate(): void {
+            for (const child of this.$children as BKDisplayObject[]) {
+                child.invalidUpdate();
+            }
+            
+            this.$getRenderNode();
         }
 
         // MD

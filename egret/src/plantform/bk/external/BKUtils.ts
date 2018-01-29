@@ -1,5 +1,5 @@
 namespace egret {
-    export const emptyTexture = new BK.Texture('GameRes://resource/empty.png');
+    export const emptyTexture = BK.Texture.createTexture(1, 1);
 
     export function defineProxyProperties(target: any, proxy: any): void {
         const names = Object.getOwnPropertyNames(target);

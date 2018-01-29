@@ -5,20 +5,21 @@ namespace egret {
         public readonly source: string | any = ""; // url 或 render node
         public readonly bkTexture: BK.Texture | null = null;
 
-        constructor(source: string | any) {
+        constructor(source: string | BK.Texture) {
             super();
 
             this.source = source;
             if (typeof this.source === "string") {
                 this.bkTexture = new BK.Texture(this.source);
-                this.width = this.bkTexture.size.width;
-                this.height = this.bkTexture.size.height;
             }
             else {
-                // TODO
+                this.bkTexture = this.source;
             }
 
+            this.width = this.bkTexture.size.width;
+            this.height = this.bkTexture.size.height;
         }
+
         static $invalidate() {
 
         }
