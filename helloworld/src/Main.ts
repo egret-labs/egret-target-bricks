@@ -100,15 +100,19 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
+
+        let container = new egret.DisplayObjectContainer();
+
+
         let topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
         topMask.y = 33;
-        this.addChild(topMask);
+        container.addChild(topMask);
 
         let icon = this.createBitmapByName("egret_icon_png");
-        this.addChild(icon);
+        container.addChild(icon);
         icon.x = 26;
         icon.y = 33;
 
@@ -119,7 +123,7 @@ class Main extends egret.DisplayObjectContainer {
         line.graphics.endFill();
         line.x = 172;
         line.y = 61;
-        this.addChild(line);
+        container.addChild(line);
 
         let colorLabel = new egret.TextField();
         colorLabel.textColor = 0xffffff;
@@ -129,7 +133,9 @@ class Main extends egret.DisplayObjectContainer {
         colorLabel.size = 24;
         colorLabel.x = 172;
         colorLabel.y = 80;
-        this.addChild(colorLabel);
+        container.addChild(colorLabel);
+
+        this.addChild(container);
 
         let textfield = new egret.TextField();
         this.addChild(textfield);
@@ -142,63 +148,15 @@ class Main extends egret.DisplayObjectContainer {
         textfield.y = 135;
         this.textfield = textfield;
 
+        let renderTexture = new egret.RenderTexture();
+        renderTexture.drawToTexture(container);
 
-
-        let container = new egret.DisplayObjectContainer();
-        container.x = 100;
-        container.y = 100;
-        let shp = new egret.Shape();
-        // shp.x = shp.y = 100;
-        shp.graphics.lineStyle(2, 0x00ff00);
-        shp.graphics.moveTo(0, 0);
-        shp.graphics.lineTo(500, 0);
-        shp.graphics.lineTo(500, 500);
-        shp.graphics.lineTo(0, 500);
-        shp.graphics.lineTo(0, 0);
-        // shp.graphics.lineTo(167, 76);
-        // shp.graphics.lineTo(221, 118);
-        // shp.graphics.lineTo(290, 162);
-        // shp.graphics.lineTo(297, 228);
-        // shp.graphics.lineTo(412, 250);
-        // shp.graphics.lineTo(443, 174);
-        shp.graphics.endFill();
-        container.addChild(shp);
-
-        let a = new egret.Shape();
-        container.addChild(a)
-        a.graphics.beginFill(0x0000ff, 1);
-        a.graphics.drawCircle(0, 0, 30);
-        a.graphics.endFill();
-        a.x = 0;
-        a.y = 0;
-
-        let b = new egret.Shape();
-        container.addChild(b)
-        b.graphics.beginFill(0x00ff00, 1);
-        b.graphics.drawCircle(0, 0, 30);
-        b.graphics.endFill();
-        b.x = shp.width;
-        b.y = 0;
-
-        let c = new egret.Shape();
-        container.addChild(c)
-        c.graphics.beginFill(0xff0000, 1);
-        c.graphics.drawCircle(0, 0, 30);
-        c.graphics.endFill();
-        c.x = shp.width;
-        c.y = shp.height;
-
-
-        let d = new egret.Shape();
-        container.addChild(d)
-        d.graphics.beginFill(0xffff00, 1);
-        d.graphics.drawCircle(0, 0, 30);
-        d.graphics.endFill();
-        d.x = 0;
-        d.y = shp.height;
-        
-
-        this.addChild(container);
+        egret.setTimeout(() => {
+            let image = new egret.Bitmap();
+            image.texture = renderTexture;
+            image.y = 500;
+            this.addChild(image);
+        }, this, 3000)
     }
 
 

@@ -395,6 +395,9 @@ var egret;
                 egret.BKPlayer.instance._displayList.splice(index, 1);
             }
         };
+        BKDisplayObject.prototype.invalidUpdate = function () {
+            this.$getRenderNode();
+        };
         return BKDisplayObject;
     }(egret.DisplayObject));
     egret.BKDisplayObject = BKDisplayObject;
@@ -1187,6 +1190,13 @@ var egret;
             }
             return _super.prototype.$hitTest.call(this, stageX, stageY);
         };
+        BKDisplayObjectContainer.prototype.invalidUpdate = function () {
+            for (var _i = 0, _a = this.$children; _i < _a.length; _i++) {
+                var child = _a[_i];
+                child.invalidUpdate();
+            }
+            this.$getRenderNode();
+        };
         Object.defineProperty(BKDisplayObjectContainer.prototype, "scrollRect", {
             // MD
             set: function (value) {
@@ -1261,72 +1271,155 @@ var egret;
 //////////////////////////////////////////////////////////////////////////////////////
 var egret;
 (function (egret) {
-    var BKRenderBuffer = (function () {
-        function BKRenderBuffer(width, height) {
-            this.surface = {};
-            this.context = {};
-            //保证rootCanvas是第一个创建的canvas
+    /**
+     * RenderTexture is a dynamic texture
+     * @extends egret.Texture
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/display/RenderTexture.ts
+     * @language en_US
+     */
+    /**
+     * RenderTexture 是动态纹理类，他实现了将显示对象及其子对象绘制成为一个纹理的功能
+     * @extends egret.Texture
+     * @version Egret 2.4
+     * @platform Web,Native
+     * @includeExample egret/display/RenderTexture.ts
+     * @language zh_CN
+     */
+    var BKRenderTexture = (function (_super) {
+        __extends(BKRenderTexture, _super);
+        function BKRenderTexture() {
+            return _super.call(this) || this;
+            // this.$renderBuffer = new sys.RenderBuffer(); // MD
+            // let bitmapData = new egret.BitmapData(this.$renderBuffer.surface);
+            // bitmapData.$deleteSource = false;
+            // this._setBitmapData(bitmapData);
         }
-        Object.defineProperty(BKRenderBuffer.prototype, "width", {
-            /**
-             * 渲染缓冲的宽度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(BKRenderBuffer.prototype, "height", {
-            /**
-             * 渲染缓冲的高度，以像素为单位。
-             * @readOnly
-             */
-            get: function () {
-                return 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
         /**
-         * 改变渲染缓冲的大小并清空缓冲区
-         * @param width 改变后的宽
-         * @param height 改变后的高
-         * @param useMaxSize 若传入true，则将改变后的尺寸与已有尺寸对比，保留较大的尺寸。
+         * The specified display object is drawn as a texture
+         * @param displayObject {egret.DisplayObject} the display to draw
+         * @param clipBounds {egret.Rectangle} clip rect
+         * @param scale {number} scale factor
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language en_US
          */
-        BKRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
+        /**
+         * 将指定显示对象绘制为一个纹理
+         * @param displayObject {egret.DisplayObject} 需要绘制的显示对象
+         * @param clipBounds {egret.Rectangle} 绘制矩形区域
+         * @param scale {number} 缩放比例
+         * @version Egret 2.4
+         * @platform Web,Native
+         * @language zh_CN
+         */
+        BKRenderTexture.prototype.drawToTexture = function (displayObject, clipBounds, scale) {
+            if (scale === void 0) { scale = 1; }
+            if (clipBounds && (clipBounds.width == 0 || clipBounds.height == 0)) {
+                return false;
+            }
+            var bounds = clipBounds || displayObject.$getOriginalBounds();
+            if (bounds.width == 0 || bounds.height == 0) {
+                return false;
+            }
+            scale /= egret.$TextureScaleFactor;
+            var width = (bounds.x + bounds.width) * scale;
+            var height = (bounds.y + bounds.height) * scale;
+            if (clipBounds) {
+                width = bounds.width * scale;
+                height = bounds.height * scale;
+            }
+            // MD
+            var bitmapData;
+            var bkNode = displayObject._bkNode;
+            var parentBKNode = bkNode.parent;
+            var bkTexture = BK.Texture.createTexture(width, height);
+            displayObject.invalidUpdate();
+            var backScale = BK.Director.root.scale;
+            BK.Director.root.scale = { x: 1.0, y: 1.0 };
+            //
+            // if (parentBKNode) {
+            //     parentBKNode.removeChild(bkNode);
+            // }
+            BK.Render.renderToTexture(bkNode, bkTexture);
+            // if (parentBKNode) {
+            //     parentBKNode.addChild(bkNode);
+            // }
+            BK.Director.root.scale = backScale;
+            if (clipBounds) {
+                var bGraphics = new BK.Graphics();
+                bGraphics.drawTexture(bkTexture, clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height); // scale
+                var subBKTexture = BK.Texture.createTexture(clipBounds.width, clipBounds.height);
+                BK.Render.renderToTexture(bGraphics, subBKTexture);
+                bitmapData = new egret.BKBitmapData(subBKTexture);
+            }
+            else {
+                bitmapData = new egret.BKBitmapData(bkTexture);
+            }
+            // bitmapData.$deleteSource = false;
+            this._setBitmapData(bitmapData);
+            this.$bitmapData.width = width;
+            this.$bitmapData.height = height;
+            // MD END
+            // if (egret.nativeRender) {
+            //     egret_native.activateBuffer(this.$renderBuffer);
+            //     let useClip = false;
+            //     let clipX = 0;
+            //     let clipY = 0;
+            //     let clipW = 0;
+            //     let clipH = 0;
+            //     if (clipBounds) {
+            //         useClip = true;
+            //         clipX = clipBounds.x;
+            //         clipY = clipBounds.y;
+            //         clipW = clipBounds.width;
+            //         clipH = clipBounds.height;
+            //     }
+            //     egret_native.updateNativeRender();
+            //     egret_native.nrRenderDisplayObject(displayObject.$nativeDisplayObject.id, scale, useClip, clipX, clipY, clipW, clipH);
+            //     egret_native.activateBuffer(null);
+            // }
+            // else {
+            //     let matrix = Matrix.create();
+            //     matrix.identity();
+            //     //应用裁切
+            //     if (clipBounds) {
+            //         matrix.translate(-clipBounds.x, -clipBounds.y);
+            //     }
+            //     matrix.scale(scale, scale);
+            //     sys.systemRenderer.render(displayObject, renderBuffer, matrix, true);
+            //     Matrix.release(matrix);
+            // }
+            //设置纹理参数
+            this.$initData(0, 0, width, height, 0, 0, width, height, width, height);
+            return true;
         };
         /**
-         * 获取指定区域的像素
+         * @inheritDoc
          */
-        BKRenderBuffer.prototype.getPixels = function (x, y, width, height) {
-            if (width === void 0) { width = 1; }
-            if (height === void 0) { height = 1; }
-            return [];
+        BKRenderTexture.prototype.getPixel32 = function (x, y) {
+            var data;
+            // if (this.$renderBuffer) {
+            //     let scale = $TextureScaleFactor;
+            //     x = Math.round(x / scale);
+            //     y = Math.round(y / scale);
+            //     data = this.$renderBuffer.getPixels(x, y, 1, 1);
+            // }
+            return data;
         };
         /**
-         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
-         * @param type 转换的类型，如: "image/png","image/jpeg"
+         * @inheritDoc
          */
-        BKRenderBuffer.prototype.toDataURL = function (type, encoderOptions) {
-            return "";
+        BKRenderTexture.prototype.dispose = function () {
+            _super.prototype.dispose.call(this);
+            this.$renderBuffer = null;
         };
-        /**
-         * 清空缓冲区数据
-         */
-        BKRenderBuffer.prototype.clear = function () {
-        };
-        /**
-         * 销毁绘制对象
-         */
-        BKRenderBuffer.prototype.destroy = function () {
-        };
-        return BKRenderBuffer;
-    }());
-    egret.BKRenderBuffer = BKRenderBuffer;
-    __reflect(BKRenderBuffer.prototype, "egret.BKRenderBuffer", ["egret.sys.RenderBuffer"]);
-    egret.sys.RenderBuffer = BKRenderBuffer;
+        return BKRenderTexture;
+    }(egret.Texture));
+    egret.BKRenderTexture = BKRenderTexture;
+    __reflect(BKRenderTexture.prototype, "egret.BKRenderTexture");
+    egret.RenderTexture = BKRenderTexture;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
@@ -4269,12 +4362,15 @@ var egret;
             _this._mainTicker = BK.Director.ticker;
             _this._viewRect = new egret.Rectangle();
             _this._touch = new egret.sys.TouchHandler(_this.stage);
+            // private readonly _root: BK.Node = new BK.Node();
             /**
              * @internal
              */
             _this._displayList = [];
             BKPlayer.instance = _this;
             _this._options = options;
+            // BK.Director.root.addChild(this._root);
+            // this._root.addChild((<any>this.stage as BKStage)._bkNode);
             BK.Director.root.addChild(_this.stage._bkNode);
             egret.lifecycle.stage = _this.stage;
             // lifecycle.addLifecycleListener(WebLifeCycleHandler); ?
@@ -4357,6 +4453,7 @@ var egret;
             this.stage.$stageHeight = stageHeight;
             BK.Director.root.position = { x: left, y: BK.Director.screenPixelSize.height - top };
             BK.Director.root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
+            // this._root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
             this._viewRect.setTo(left, top, stageWidth, stageHeight);
             // BK.Director.renderSize = { width: stageWidth, height: stageHeight }; // can not work
             this.stage.dispatchEventWith(egret.Event.RESIZE);
@@ -4375,6 +4472,103 @@ var egret;
     egret.BKPlayer = BKPlayer;
     __reflect(BKPlayer.prototype, "egret.BKPlayer", ["egret.sys.Screen"]);
 })(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
+    var BKRenderBuffer = (function () {
+        function BKRenderBuffer(width, height) {
+            this.surface = {};
+            this.context = {};
+            //保证rootCanvas是第一个创建的canvas
+        }
+        Object.defineProperty(BKRenderBuffer.prototype, "width", {
+            /**
+             * 渲染缓冲的宽度，以像素为单位。
+             * @readOnly
+             */
+            get: function () {
+                return 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(BKRenderBuffer.prototype, "height", {
+            /**
+             * 渲染缓冲的高度，以像素为单位。
+             * @readOnly
+             */
+            get: function () {
+                return 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * 改变渲染缓冲的大小并清空缓冲区
+         * @param width 改变后的宽
+         * @param height 改变后的高
+         * @param useMaxSize 若传入true，则将改变后的尺寸与已有尺寸对比，保留较大的尺寸。
+         */
+        BKRenderBuffer.prototype.resize = function (width, height, useMaxSize) {
+        };
+        /**
+         * 获取指定区域的像素
+         */
+        BKRenderBuffer.prototype.getPixels = function (x, y, width, height) {
+            if (width === void 0) { width = 1; }
+            if (height === void 0) { height = 1; }
+            return [];
+        };
+        /**
+         * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
+         * @param type 转换的类型，如: "image/png","image/jpeg"
+         */
+        BKRenderBuffer.prototype.toDataURL = function (type, encoderOptions) {
+            return "";
+        };
+        /**
+         * 清空缓冲区数据
+         */
+        BKRenderBuffer.prototype.clear = function () {
+        };
+        /**
+         * 销毁绘制对象
+         */
+        BKRenderBuffer.prototype.destroy = function () {
+        };
+        return BKRenderBuffer;
+    }());
+    egret.BKRenderBuffer = BKRenderBuffer;
+    __reflect(BKRenderBuffer.prototype, "egret.BKRenderBuffer", ["egret.sys.RenderBuffer"]);
+    egret.sys.RenderBuffer = BKRenderBuffer;
+})(egret || (egret = {}));
 var egret;
 (function (egret) {
     var BKBitmapData = (function (_super) {
@@ -4388,12 +4582,12 @@ var egret;
             _this.source = source;
             if (typeof _this.source === "string") {
                 _this.bkTexture = new BK.Texture(_this.source);
-                _this.width = _this.bkTexture.size.width;
-                _this.height = _this.bkTexture.size.height;
             }
             else {
-                // TODO
+                _this.bkTexture = _this.source;
             }
+            _this.width = _this.bkTexture.size.width;
+            _this.height = _this.bkTexture.size.height;
             return _this;
         }
         BKBitmapData.$invalidate = function () {
@@ -7318,7 +7512,7 @@ var egret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
-    egret.emptyTexture = new BK.Texture('GameRes://resource/empty.png');
+    egret.emptyTexture = BK.Texture.createTexture(1, 1);
     function defineProxyProperties(target, proxy) {
         var names = Object.getOwnPropertyNames(target);
         var _loop_1 = function (key) {

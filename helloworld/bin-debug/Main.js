@@ -150,33 +150,24 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
+        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        sky.name = "sky";
+        var container = new egret.DisplayObjectContainer();
         var topMask = new egret.Shape();
-        topMask.name = "topMask";
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
         topMask.y = 33;
-        this.addChild(topMask);
-        topMask.touchEnabled = true;
-        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
-            console.log("点击");
-        }, this);
+        container.addChild(topMask);
         var icon = this.createBitmapByName("egret_icon_png");
-        icon.name = "icon";
-        this.addChild(icon);
+        container.addChild(icon);
         icon.x = 26;
         icon.y = 33;
-        // egret.setTimeout(() => {
-        //     let texture: egret.Texture = RES.getRes("bg_jpg");
-        //     icon.texture = texture;
-        // }, this, 3000);
         var line = new egret.Shape();
         line.graphics.lineStyle(2, 0xffffff);
         line.graphics.moveTo(0, 0);
@@ -184,7 +175,7 @@ var Main = (function (_super) {
         line.graphics.endFill();
         line.x = 172;
         line.y = 61;
-        this.addChild(line);
+        container.addChild(line);
         var colorLabel = new egret.TextField();
         colorLabel.textColor = 0xffffff;
         colorLabel.width = stageW - 172;
@@ -193,7 +184,8 @@ var Main = (function (_super) {
         colorLabel.size = 24;
         colorLabel.x = 172;
         colorLabel.y = 80;
-        this.addChild(colorLabel);
+        container.addChild(colorLabel);
+        this.addChild(container);
         var textfield = new egret.TextField();
         this.addChild(textfield);
         textfield.alpha = 0;
@@ -204,24 +196,13 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
-        var shp = new egret.Shape();
-        shp.graphics.lineStyle(2, 0x00ff00);
-        shp.graphics.moveTo(100, 100);
-        shp.graphics.lineTo(500, 100);
-        shp.graphics.lineTo(500, 500);
-        shp.graphics.lineTo(300, 500);
-        shp.graphics.lineTo(100, 100);
-        // shp.graphics.lineTo(167, 76);
-        // shp.graphics.lineTo(221, 118);
-        // shp.graphics.lineTo(290, 162);
-        // shp.graphics.lineTo(297, 228);
-        // shp.graphics.lineTo(412, 250);
-        // shp.graphics.lineTo(443, 174);
-        shp.graphics.endFill();
-        this.addChild(shp);
+        var renderTexture = new egret.RenderTexture();
+        renderTexture.drawToTexture(container);
         egret.setTimeout(function () {
-            debugger;
-            shp.graphics.clear();
+            var image = new egret.Bitmap();
+            image.texture = renderTexture;
+            image.y = 500;
+            _this.addChild(image);
         }, this, 3000);
     };
     /**
