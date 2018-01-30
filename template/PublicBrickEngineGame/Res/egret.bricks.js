@@ -1337,21 +1337,34 @@ var egret;
             var bkTexture = BK.Texture.createTexture(width, height);
             displayObject.invalidUpdate();
             var backScale = BK.Director.root.scale;
-            BK.Director.root.scale = { x: 1.0, y: 1.0 };
-            //
-            // if (parentBKNode) {
-            //     parentBKNode.removeChild(bkNode);
-            // }
+            // BK.Director.root.scale = { x: 1.0, y: 1.0 };
+            // //
+            // // if (parentBKNode) {
+            // //     parentBKNode.removeChild(bkNode);
+            // // }
+            // BK.Render.renderToTexture(bkNode, bkTexture);
+            // // if (parentBKNode) {
+            // //     parentBKNode.addChild(bkNode);
+            // // }
+            ////矩形平移后renderToTexture
+            debugger;
+            var old_matrix = displayObject.$getMatrix().clone();
+            var matrix = egret.Matrix.create();
+            var stageH = egret.lifecycle.stage.stageHeight;
+            matrix.translate(bounds.x, -bounds.y - bounds.height);
+            displayObject.$setMatrix(matrix);
+            displayObject.$getRenderNode();
+            // bkNode.transform.matrix.set(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,-stageH + bounds.y + bounds.height);
             BK.Render.renderToTexture(bkNode, bkTexture);
-            // if (parentBKNode) {
-            //     parentBKNode.addChild(bkNode);
-            // }
+            //还原displayobject位置
+            displayObject.$setMatrix(old_matrix);
+            displayObject.$getRenderNode();
             BK.Director.root.scale = backScale;
             if (clipBounds) {
                 var bGraphics = new BK.Graphics();
                 bGraphics.drawTexture(bkTexture, clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height); // scale
                 var subBKTexture = BK.Texture.createTexture(clipBounds.width, clipBounds.height);
-                BK.Render.renderToTexture(bGraphics, subBKTexture);
+                // BK.Render.renderToTexture(bGraphics, subBKTexture);
                 bitmapData = new egret.BKBitmapData(subBKTexture);
             }
             else {
@@ -1361,6 +1374,13 @@ var egret;
             this._setBitmapData(bitmapData);
             this.$bitmapData.width = width;
             this.$bitmapData.height = height;
+            // ////  测试，直接在root上添加sprite
+            // // bkTexture.writeToDisk("GameSandBox://test.png")
+            // // let tex = new BK.Texture("GameSandBox://test.png");
+            // var bkImage = new BK.Sprite(bkTexture.size.width, bkTexture.size.height, bkTexture, 0, 1, 1, 1);
+            // bkImage.position = { x: 0, y: -400 };
+            // BK.Director.root.addChild(bkImage);
+            // ////
             // MD END
             // if (egret.nativeRender) {
             //     egret_native.activateBuffer(this.$renderBuffer);
