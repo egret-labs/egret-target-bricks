@@ -99,7 +99,7 @@ class Main extends egret.DisplayObjectContainer {
         let stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-
+        debugger
 
         let container = new egret.DisplayObjectContainer();
 
@@ -149,7 +149,8 @@ class Main extends egret.DisplayObjectContainer {
         this.textfield = textfield;
 
         let renderTexture = new egret.RenderTexture();
-        renderTexture.drawToTexture(container);
+        let rectangle = new egret.Rectangle(100,33,icon.width,icon.height)
+        renderTexture.drawToTexture(container,rectangle);
 
         egret.setTimeout(() => {
             let image = new egret.Bitmap();

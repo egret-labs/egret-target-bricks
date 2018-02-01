@@ -25,6 +25,7 @@ const config: ResourceManagerConfig = {
                 outputDir,
                 commands: [
                     new CompilePlugin({ libraryType: "debug" }),
+                    new ExmlPlugin('commonjs'), // 非 EUI 项目关闭此设置
                     new ManifestPlugin({ output: 'manifest.json' }),
                     new BricksPlugin()
                 ]

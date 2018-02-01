@@ -106,8 +106,9 @@
 
 //输入框
 // BK.Script.loadlib("GameRes://script/demo/ui/editor_demo.js");
+// BK.Script.loadlib("GameRes://script/demo/render/rederToTexture_demo.js");
 
-//
+
 var window = this;
 var global = global || this;
 global.bricks = {};

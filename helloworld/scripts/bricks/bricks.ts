@@ -1,17 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-
-
 type ManifestConfig = {
-
     initial: string[],
-
     game: string[]
-
 }
-
 export class BricksPlugin implements plugins.Command {
-
     constructor() {
     }
     async onFile(file: plugins.File) {
@@ -19,9 +12,7 @@ export class BricksPlugin implements plugins.Command {
         if (filename == 'manifest.json') {
             const contents = file.contents.toString();
             const jsonData: ManifestConfig = JSON.parse(contents);
-
             let content = '';
-
             for (let item of jsonData.initial) {
                 if (item != 'js/promise.js' && item != 'js/promise.min.js') {
                     content += `BK.Script.loadlib("GameRes://${item}");\n`
@@ -39,6 +30,5 @@ export class BricksPlugin implements plugins.Command {
         return file;
     }
     async onFinish(pluginContext) {
-
     }
 }

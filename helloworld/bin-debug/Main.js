@@ -157,6 +157,7 @@ var Main = (function (_super) {
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
+        debugger;
         var container = new egret.DisplayObjectContainer();
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -197,7 +198,8 @@ var Main = (function (_super) {
         textfield.y = 135;
         this.textfield = textfield;
         var renderTexture = new egret.RenderTexture();
-        renderTexture.drawToTexture(container);
+        var rectangle = new egret.Rectangle(100, 33, icon.width, icon.height);
+        renderTexture.drawToTexture(container, rectangle);
         egret.setTimeout(function () {
             var image = new egret.Bitmap();
             image.texture = renderTexture;

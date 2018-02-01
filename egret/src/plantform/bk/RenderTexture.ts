@@ -100,55 +100,49 @@ namespace egret {
 
             (displayObject as BKDisplayObject).invalidUpdate();
 
-            const backScale = BK.Director.root.scale;
-            // BK.Director.root.scale = { x: 1.0, y: 1.0 };
-
-            // //
-            // // if (parentBKNode) {
-            // //     parentBKNode.removeChild(bkNode);
-            // // }
-            // BK.Render.renderToTexture(bkNode, bkTexture);
-            // // if (parentBKNode) {
-            // //     parentBKNode.addChild(bkNode);
-            // // }
-
-                      ////矩形平移后renderToTexture
-            debugger;
+            ////矩形平移后renderToTexture
             let old_matrix = displayObject.$getMatrix().clone();
             var matrix = egret.Matrix.create();
             let stageH = egret.lifecycle.stage.stageHeight;
-            matrix.translate(bounds.x, - bounds.y - bounds.height);
+            matrix.translate(-bounds.x, - bounds.y - bounds.height);
             displayObject.$setMatrix(matrix);
             displayObject.$getRenderNode();
-            // bkNode.transform.matrix.set(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,-stageH + bounds.y + bounds.height);
-            BK.Render.renderToTexture(bkNode, bkTexture);
-            //还原displayobject位置
-            displayObject.$setMatrix(old_matrix);
-            displayObject.$getRenderNode();
 
-            BK.Director.root.scale = backScale;
             if (clipBounds) {
-                var bGraphics = new BK.Graphics();
-                bGraphics.drawTexture(bkTexture, clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height); // scale
-                var subBKTexture = BK.Texture.createTexture(clipBounds.width, clipBounds.height);
+                // var bGraphics = new BK.Graphics();
+                // bGraphics.drawTexture(bkTexture, clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height); // scale
+                // var subBKTexture = BK.Texture.createTexture(clipBounds.width, clipBounds.height);
                 // BK.Render.renderToTexture(bGraphics, subBKTexture);
-                bitmapData = new egret.BKBitmapData(subBKTexture);
+
+                //增加裁切节点，渲染贴图后再去掉
+                let clipNode = new (BK as any).ClipRectNode(0, 0, bounds.width, bounds.height);
+                clipNode.position = { x: 0, y: 0 };
+                let parent = bkNode.parent;
+                bkNode.removeFromParent();
+                clipNode.addChild(bkNode);
+                //裁切
+                let subBKTexture = BK.Texture.createTexture(bounds.width, bounds.height);
+                BK.Render.renderToTexture(clipNode, subBKTexture);
+                //还原
+                bkNode.removeFromParent();
+                parent.addChild(bkNode)
+                displayObject.$setMatrix(old_matrix);
+                displayObject.$getRenderNode();
+
+                bitmapData = new egret.BKBitmapData(subBKTexture,true);
             }
             else {
-                bitmapData = new egret.BKBitmapData(bkTexture);
+
+                BK.Render.renderToTexture(bkNode, bkTexture);
+                //还原displayobject位置
+                displayObject.$setMatrix(old_matrix);
+                displayObject.$getRenderNode();
+                bitmapData = new egret.BKBitmapData(bkTexture, true);
             }
             // bitmapData.$deleteSource = false;
             this._setBitmapData(bitmapData as any);
             this.$bitmapData.width = width;
             this.$bitmapData.height = height;
-
-            // ////  测试，直接在root上添加sprite
-            // // bkTexture.writeToDisk("GameSandBox://test.png")
-            // // let tex = new BK.Texture("GameSandBox://test.png");
-            // var bkImage = new BK.Sprite(bkTexture.size.width, bkTexture.size.height, bkTexture, 0, 1, 1, 1);
-            // bkImage.position = { x: 0, y: -400 };
-            // BK.Director.root.addChild(bkImage);
-            // ////
 
             // MD END
 
