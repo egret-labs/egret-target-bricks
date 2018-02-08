@@ -50,6 +50,7 @@ eUsrHasLoginErr = 3012;     // 用户重复加入房间
 eRoomIsFullErr = 3013;     // 房间已满员
 eCreateRoomErr = 3014;     // 创建房间失败，系统异常
 ePlayerHasJoin = 3015;     // 玩家已经加入房间，不允许挑战影子
+eUgcDataAnti       = 3020,      // 用户信息非法被过滤
 // 4000~4999，GCONN错误码
 eFowardToClientErr = 4000;     // 下行消息转发失败
 eFowardToSvrErr = 4001;     // 上行消息转发失败
@@ -241,9 +242,8 @@ BK.QQ = (function () {
 
         });
 
-        //游戏内购
         /**
-         * 
+         * 游戏内购
          * @param {*} gameOrientation 1（默认，竖屏）2.横屏（home键在左边）3.横屏 （home键在右边）
          * @param {*} transparent   是否透明
          * @param {*} itemList 
@@ -269,9 +269,38 @@ BK.QQ = (function () {
                 BK.MQQ.SsoRequest.addListener(cbCmd, this, function (errCode, cmd, data) {
                     if (errCode == 0) {
                         if (data.op && data.op == "apolloGamePlatform.buyProps") {
-                            callback(errCode, data.data);
+                            callback(data.data.code , data.data);
                         }
                     }
+                }.bind(this));
+            }
+            BK.MQQ.SsoRequest.send(data, cmd);
+        }
+
+        /**
+         * 消耗道具
+         * @param {*} itemList 
+         * @param {*} callback 
+         */
+        this.consumeItems = function(itemList,callback){
+            var cmd = "apollo_game_item.consume_game_items";
+            var data = {
+                "cmd" : cmd,
+                "from": GameStatusInfo.platform,
+                "gameId": GameStatusInfo.gameId,
+                "openId": GameStatusInfo.openId,
+                "items": itemList
+            }
+            if (callback) {
+                BK.MQQ.SsoRequest.removeListener(cmd, this);
+                BK.MQQ.SsoRequest.addListener(cmd, this, function (errCode, cmd, data) {
+                    var succList = [];
+                    var failList = [];
+                    if (errCode == 0) {
+                        succList = data.succList;
+                        failList = data.failList;
+                    }
+                    callback(errCode,succList,failList)
                 }.bind(this));
             }
             BK.MQQ.SsoRequest.send(data, cmd);
@@ -624,13 +653,14 @@ BK.QQ = (function () {
         this.listenGameEventMaximize = function (obj, callback) {
             var cmd = "sc.game_maximize.local";
             if (callback) {
+                BK.MQQ.SsoRequest.removeListener(cmd, obj);
                 BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
             }
         }
 
         //监听游戏界面最小化
         this.listenGameEventMinimize = function (obj, callback) {
-            var cmd = "sc.game_maximize.local";
+            var cmd = "sc.game_minimize.local";
             if (callback) {
                 BK.MQQ.SsoRequest.removeListener(cmd, obj);
                 BK.MQQ.SsoRequest.addListener(cmd, obj, callback);
@@ -998,6 +1028,7 @@ BK.Room = function () {
     this.leaveRoomCallBack;
     this.startGameCallBack;
     this.broadcastDataCallBack;
+    this.sensitiveWordCallBack;
     this.setUserDataCallBack;
     this.getUserDataCallBack;
     this.sendSyncOptCallBack;
@@ -1437,6 +1468,32 @@ BK.Room = function () {
         buff.writeBuffer(st);
         buff.writeBuffer(body);
 
+        return buff;
+    }
+
+    this.setSensitiveWordCallBack = function (callback) {
+        this.sensitiveWordCallBack = callback;
+    }
+
+    this.sendSensitiveWordData = function (buff) {
+        var funObj = new Object();
+        funObj.cmd = 0x32;
+        funObj.arg0 = buff;
+        this.reqArray.push(funObj);
+    }
+
+    this.requestSendSendSensitiveWordData = function (buf) {
+        var bufLen = buf.capacity ? buf.capacity : buf.bufferLength();
+        var body = new BK.Buffer(fixedHeaderLen + bufLen, 1);
+        this.addFixedHeader(body, 0x32, this.gameId, this.roomId, this.mId);
+        body.writeBuffer(buf);
+        var st = BK.Security.getST();
+        BK.Security.encrypt(body);
+        var stlen = st.bufferLength();
+        var buff = new BK.Buffer(HeaderLen + body.bufferLength() + stlen, 1);
+        this.addHeader(buff, body.bufferLength(), stlen);
+        buff.writeBuffer(st);
+        buff.writeBuffer(body);
         return buff;
     }
 
@@ -2022,6 +2079,9 @@ BK.Room = function () {
             case 0x1:
                 this.broadcastDataCallBack(fixedHeader.fromId, null);
                 break;
+            case 0x33:
+                this.sensitiveWordCallBack(fixedHeader.ret,fixedHeader.fromId, null);
+                break;
             case 0x21:
                 this.setUserDataCallBack(fixedHeader.ret);
                 break;
@@ -2125,6 +2185,10 @@ BK.Room = function () {
                 var buf = body.readBuffer(body.bufferLength() - fixedHeaderLen);
                 this.broadcastDataCallBack(fixedHeader.fromId, buf, fixedHeader.toId);
                 break;
+            case 0x33:
+                var buf = body.readBuffer(body.bufferLength() - fixedHeaderLen);
+                this.sensitiveWordCallBack(fixedHeader.ret,fixedHeader.fromId, buf, fixedHeader.toId);
+                break;
             case 0x21:
                 var buf = body.readBuffer(body.bufferLength() - fixedHeaderLen);
                 this.setUserDataCallBack(fixedHeader.ret);
@@ -2184,6 +2248,9 @@ BK.Room = function () {
                 break;
             case 0x1:
                 buff = this.requestsendBroadcastData(funObj.arg0);
+                break;
+            case 0x32:
+                buff = this.requestSendSendSensitiveWordData(funObj.arg0);
                 break;
             case 0x20:
                 buff = this.requestSetUserData(funObj.arg0);

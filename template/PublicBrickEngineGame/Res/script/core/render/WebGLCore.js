@@ -3,16 +3,74 @@ var gl;
 function bkWebGLGetInstance(){
     if(!gl){
         gl = new BK.WebGL();
-        attachMethod();
         attatchConst();
+        attachMethod();
         gl.viewport(0, 0, BK.Director.screenPixelSize.width,BK.Director.screenPixelSize.height);
     }
-    renderTicker.paused = true;
+    renderTicker && (renderTicker.paused = true);
+    BK.Director.ticker && (BK.Director.ticker.paused = true);
     return gl;
 }
 
-
-
+function __TypedArrayGetData(array)
+{
+    if (Object.prototype.hasOwnProperty.call(array, '__rawBKData')) {
+        return array.__rawBKData;
+    } else if (Object.prototype.hasOwnProperty.call(array, '__nativeObj')) {
+        return array.__nativeObj;
+    }
+    /*if (array instanceof Int8Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeInt8Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Uint8Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeUint8Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Int16Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeInt16Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Uint16Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeUint16Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Int32Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeInt32Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Uint32Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeUint32Buffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof Float32Array == true) {
+        var buf = new BK.Buffer(128, false);
+        for (var i = 0; i < array.length; i++) {
+            buf.writeFloatBuffer(array[i]);
+        }
+        return buf;
+    } else if (array instanceof ArrayBuffer == true) {
+        var buf = new BK.Buffer(array.byteLength, false);
+        var dataView = new DataView(array);
+        for (var i = 0; i < array.byteLength; i++) {
+            buf.writeUint8Buffer(dataView.getUint8(i));
+        }
+        return buf;
+    }*/
+    return array;
+}
 
 function activeTexture(texture){
     gl.glActiveTexture(texture);
@@ -67,36 +125,11 @@ function bufferData(target,size,usage){
 }
 
 function bufferData(target,data,usage){
-    var buf = new BK.Buffer(64, false);
-    var ot = Object.prototype.toString.call(data);
-    if (ot == '[object Float32Array]') {
-        for (var i = 0; i < data.length; i++)
-            buf.writeFloatBuffer(data[i]);
-           gl.glBufferData(target,buf,usage);
-    } else if (ot == '[object Uint16Array]') {
-        for (var i = 0; i < data.length; i++)
-            buf.writeUint16Buffer(data[i]);
-           gl.glBufferData(target,buf,usage);
-    } else if (ot == '[object Number]'){
-         gl.glBufferData(target,data,usage);
-    }
- 
+    gl.glBufferData(target, __TypedArrayGetData(data), usage);
 }
 
 function bufferSubData(target,offset,data){
-    var buf = new BK.Buffer(64, false);
-    var ot = Object.prototype.toString.call(data);
-    if (ot == '[object Float32Array]') {
-        for (var i = 0; i < data.length; i++)
-            buf.writeFloatBuffer(data[i]);
-    } else if (ot == '[object Uint16Array]') {
-        for (var i = 0; i < data.length; i++)
-            buf.writeUint16Buffer(data[i]);
-    } else if(ot == '[object Buffer]'){
-        gl.glBufferSubData(target,offset,data);
-        return;
-    }
-    gl.glBufferSubData(target,offset,buf);
+    gl.glBufferSubData(target, offset, __TypedArrayGetData(data));
 }
 
 function checkFramebufferStatus(target){
@@ -360,7 +393,6 @@ function scissor(x,y,width,height){
 }
 
 function shaderSource(shader,source){
-    BK.Script.log(1,1,"xxxxx shader="+source);
     gl.glShaderSource(shader,source);
 }
 
@@ -388,12 +420,30 @@ function stencilOpSeparate(face,fail,zfail,zpass){
     gl.glStencilOpSeparate(face,fail,zfail,zpass);
 }
 
-function texImage2D(target,level,internalformat,width,height,border,format,type,pixels){
-    gl.glTexImage2D(target,level,internalformat,width,height,border,format,type,pixels);
-}
-
-function texImage2D(target,level,internalformat,format,type,source){
-    gl.glTexImage2D(target,level,internalformat,format,type,source);
+function texImage2D(target,level,internalformat/*, ...*/){
+    switch (arguments.length) {
+        case 6: {/*format,type,source*/
+            var format = arguments[3];
+            var type = arguments[4];
+            var source = arguments[5];
+            if (Object.prototype.hasOwnProperty.call(source, '__nativeObj')) {
+                gl.glTexImage2D(target,level,internalformat,format,type,source.__nativeObj);
+            } else {
+                gl.glTexImage2D(target,level,internalformat,format,type,source);
+            }
+            break;
+        }
+        case 9: {/*width,height,border,format,type,pixels*/
+            var width = arguments[3];
+            var height = arguments[4];
+            var border = arguments[5];
+            var format = arguments[6];
+            var type = arguments[7];
+            var pixels = arguments[8];
+            gl.glTexImage2D(target,level,internalformat,width,height,border,format,type,pixels);
+            break;
+        }
+    }
 }
 
 function texParameterf(target,pname,param){
@@ -404,12 +454,30 @@ function texParameteri(target,pname,param){
     gl.glTexParameteri(target,pname,param);
 }
 
-function texSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels){
-    gl.glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels);
-}
-
-function texSubImage2D(target,level,xoffset,yoffset,format,type,source){
-    gl.glTexSubImage2D(target,level,xoffset,yoffset,format,type,source);
+function texSubImage2D(target,level,xoffset,yoffset/*...*/){
+    
+    switch (arguments.length) {
+        case 7: {/*format,type,source*/
+            var format = arguments[4];
+            var type = arguments[5];
+            var source = arguments[6];
+            if (Object.prototype.hasOwnProperty.call(source, '__nativeObj')) {
+                gl.glTexSubImage2D(target,level,xoffset,yoffset,format,type,source.__nativeObj);
+            } else {
+                gl.glTexSubImage2D(target,level,xoffset,yoffset,format,type,source);
+            }
+            break;
+        }
+        case 9: {/*width,height,format,type,pixels*/
+            var width = arguments[4];
+            var height = arguments[5];
+            var format = arguments[6];
+            var type = arguments[7];
+            var pixels = arguments[8];
+            gl.glTexSubImage2D(target,level,xoffset,yoffset,width,height,format,type,pixels);
+            break;
+        }
+    }
 }
 
 function uniform1f(location,x){
@@ -445,47 +513,48 @@ function uniform4i(location,x,y,z,w){
 }
 
 function uniform1fv(location,v){
-    gl.glUniform1fv(location,v);
+    gl.glUniform1fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform2fv(location,v){
-    gl.glUniform2fv(location,v);
+    gl.glUniform2fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform3fv(location,v){
-    gl.glUniform3fv(location,v);
+    gl.glUniform3fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform4fv(location,v){
-    gl.glUniform4fv(location,v);
+    gl.glUniform4fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform1iv(location,v){
-    gl.glUniform1iv(location,v);
+    gl.glUniform1iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform2iv(location,v){
-    gl.glUniform2iv(location,v);
+    gl.glUniform2iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform3iv(location,v){
-    gl.glUniform3iv(location,v);
+    gl.glUniform3iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniform4iv(location,v){
-    gl.glUniform4iv(location,v);
+    gl.glUniform4iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
 }
 
 function uniformMatrix2fv(location,transpose,value){
-    gl.glUniformMatrix2fv(location,transpose,value);
+    BK.Script.log(0, 0, "uniform = " + value.toString());
+    gl.glUniformMatrix2fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
 }
 
 function uniformMatrix3fv(location,transpose,value){
-    gl.glUniformMatrix3fv(location,transpose,value);
+    gl.glUniformMatrix3fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
 }
 
 function uniformMatrix4fv(location,transpose,value){
-    gl.glUniformMatrix4fv(location,transpose,value);
+    gl.glUniformMatrix4fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
 }
 
 function useProgram(program){
@@ -513,19 +582,19 @@ function vertexAttrib4f(index,x,y,z,w){
 }
 
 function vertexAttrib1fv(index,values){
-    gl.glVertexAttrib1fv(index,values);
+    gl.glVertexAttrib1fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
 }
 
 function vertexAttrib2fv(index,values){
-    gl.glVertexAttrib2fv(index,values);
+    gl.glVertexAttrib2fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
 }
 
 function vertexAttrib3fv(index,values){
-    gl.glVertexAttrib3fv(index,values);
+    gl.glVertexAttrib3fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
 }
 
 function vertexAttrib4fv(index,values){
-    gl.glVertexAttrib4fv(index,values);
+    gl.glVertexAttrib4fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
 }
 
 function vertexAttribPointer(index,size,type,normalized,stride,offset){
@@ -574,6 +643,143 @@ function getTexParameter(target,pname){
 
 function getVertexAttrib(index,pname){
 	return gl.glGetVertexAttrib(index,pname);
+}
+
+function getUniform(program,location){
+    return gl.glGetUniform(program,location);
+}
+
+function getParameter(pname){
+    switch (pname) {
+        case gl.ACTIVE_TEXTURE:
+        case gl.ALPHA_BITS:
+        case gl.ARRAY_BUFFER_BINDING:
+        case gl.BLUE_BITS:
+        case gl.CULL_FACE_MODE:
+        case gl.CURRENT_PROGRAM:
+        case gl.DEPTH_BITS:
+        case gl.DEPTH_FUNC:
+        case gl.ELEMENT_ARRAY_BUFFER_BINDING:
+        case gl.FRAMEBUFFER_BINDING:
+        case gl.FRONT_FACE:
+        case gl.GENERATE_MIPMAP_HINT:
+        case gl.GREEN_BITS:
+        case gl.IMPLEMENTATION_COLOR_READ_FORMAT:
+        case gl.IMPLEMENTATION_COLOR_READ_TYPE:
+        case gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS:
+        case gl.MAX_CUBE_MAP_TEXTURE_SIZE:
+        case gl.MAX_FRAGMENT_UNIFORM_VECTORS:
+        case gl.MAX_RENDERBUFFER_SIZE:
+        case gl.MAX_TEXTURE_IMAGE_UNITS:
+        case gl.MAX_TEXTURE_SIZE:
+        case gl.MAX_VARYING_VECTORS:
+        case gl.MAX_VERTEX_ATTRIBS:
+        case gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS:
+        case gl.MAX_VERTEX_UNIFORM_VECTORS:
+        case gl.MAX_VIEWPORT_DIMS:
+        case gl.NUM_COMPRESSED_TEXTURE_FORMATS:
+        case gl.NUM_SHADER_BINARY_FORMATS:
+        case gl.PACK_ALIGNMENT:
+        case gl.RED_BITS:
+        case gl.RENDERBUFFER_BINDING:
+        case gl.SAMPLE_BUFFERS:
+        case gl.SAMPLES:
+        case gl.STENCIL_BACK_FAIL:
+        case gl.STENCIL_BACK_FUNC:
+        case gl.STENCIL_BACK_PASS_DEPTH_FAIL:
+        case gl.STENCIL_BACK_PASS_DEPTH_PASS:
+        case gl.STENCIL_BACK_REF:
+        case gl.STENCIL_BACK_VALUE_MASK:
+        case gl.STENCIL_BACK_WRITEMASK:
+        case gl.STENCIL_BITS:
+        case gl.STENCIL_CLEAR_VALUE:
+        case gl.STENCIL_FAIL:
+        case gl.STENCIL_FUNC:
+        case gl.STENCIL_PASS_DEPTH_FAIL:
+        case gl.STENCIL_PASS_DEPTH_PASS:
+        case gl.STENCIL_REF:
+        case gl.STENCIL_VALUE_MASK:
+        case gl.STENCIL_WRITEMASK:
+        case gl.SUBPIXEL_BITS:
+        case gl.TEXTURE_BINDING_2D:
+        case gl.TEXTURE_BINDING_CUBE_MAP:
+        case gl.UNPACK_ALIGNMENT:
+        case gl.BLEND_DST_ALPHA:
+        case gl.BLEND_DST_RGB:
+        case gl.BLEND_EQUATION_ALPHA:
+        case gl.BLEND_EQUATION_RGB:
+        case gl.BLEND_SRC_ALPHA:
+        case gl.BLEND_SRC_RGB:
+        {
+            return gl.glGetParameterInt(pname,1);
+            break;
+        }
+        case gl.ALIASED_LINE_WIDTH_RANGE:
+        case gl.ALIASED_POINT_SIZE_RANGE:
+        case gl.DEPTH_RANGE:
+        case gl.MAX_VIEWPORT_DIMS:
+        {
+            return gl.glGetParameterFloat(pname,2);
+            break;
+        }
+        case gl.BLEND:
+        case gl.CULL_FACE:
+        case gl.DEPTH_TEST:
+        case gl.DEPTH_WRITEMASK:
+        case gl.DITHER:
+        case gl.POLYGON_OFFSET_FILL:
+        case gl.SAMPLE_ALPHA_TO_COVERAGE:
+        case gl.SAMPLE_COVERAGE:
+        case gl.SAMPLE_COVERAGE_INVERT:
+        case gl.SCISSOR_TEST:
+        case gl.SHADER_COMPILER:
+        case gl.STENCIL_TEST:
+        {
+            return gl.glGetParameterBool(pname,1);
+            break;
+        }
+        case gl.BLEND_COLOR:
+        case gl.COLOR_CLEAR_VALUE:
+        {
+            return gl.glGetParameterFloat(pname,4);
+            break;
+        }
+        case gl.SCISSOR_BOX:
+        case gl.VIEWPORT:
+        {
+            return gl.glGetParameterInt(pname,4);
+            break;
+        }
+        case gl.COLOR_WRITEMASK:
+        {
+            return gl.glGetParameterBool(pname,4);
+            break;
+        }
+        case gl.POLYGON_OFFSET_FACTOR:
+        case gl.POLYGON_OFFSET_UNITS:
+        case gl.SAMPLE_COVERAGE_VALUE:
+        {
+            return gl.glGetParameterFloat(pname,1);
+            break;
+        }
+        case gl.SHADER_BINARY_FORMATS:
+        {
+            var len = gl.glGetParameterInt(gl.NUM_SHADER_BINARY_FORMATS,1);
+            BK.Script.log(1,1,"eeee len="+len);
+            return gl.glGetParameterInt(pname,len);
+            break;
+        }
+        case gl.COMPRESSED_TEXTURE_FORMATS:
+        {
+            var len = gl.glGetParameterInt(gl.NUM_COMPRESSED_TEXTURE_FORMATS,1);
+            return gl.glGetParameterInt(pname,len);
+            break;
+        }
+
+            
+        default:
+            break;
+    }
 }
 
 function attachMethod(){
@@ -663,11 +869,9 @@ function attachMethod(){
     gl.stencilOp = stencilOp;
     gl.stencilOpSeparate = stencilOpSeparate;
     gl.texImage2D = texImage2D;
-    gl.texImage2D = texImage2D;
+    gl.texSubImage2D = texSubImage2D;
     gl.texParameterf = texParameterf;
     gl.texParameteri = texParameteri;
-    gl.texSubImage2D = texSubImage2D;
-    gl.texSubImage2D = texSubImage2D;
     gl.uniform1f = uniform1f;
     gl.uniform2f = uniform2f;
     gl.uniform3f = uniform3f;
@@ -709,6 +913,8 @@ function attachMethod(){
     gl.getShaderParameter = getShaderParameter;
     gl.getTexParameter = getTexParameter;
     gl.getVertexAttrib = getVertexAttrib;
+    gl.getParameter = getParameter;
+    gl.getUniform = getUniform;
 }
 
 function attatchConst(){
@@ -1129,5 +1335,9 @@ function attatchConst(){
     gl.CONTEXT_LOST_WEBGL             = 0x9242;
     gl.UNPACK_COLORSPACE_CONVERSION_WEBGL = 0x9243;
     gl.BROWSER_DEFAULT_WEBGL          = 0x9244;
+    
+    gl.SHADER_BINARY_FORMATS          = 0x8DF8;       
+    gl.NUM_SHADER_BINARY_FORMATS      = 0x8DF9;
+    gl.NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2;
 }
 

@@ -114,7 +114,7 @@ var QAVView = (function () {
     function QAVView(identifier, width, height, autoAddMgr, parent, position, zOrder) {
         if (autoAddMgr === void 0) { autoAddMgr = true; }
         this.identifier = identifier;
-        this.__nativeObj = new BK.Sprite(width, height, null, 0, 0, 1, 1);
+        this.__nativeObj = new BK.Sprite(width, height, {}, 0, 0, 1, 1);
         this._innerBindMethods4NativeObj();
         if (position)
             (this).position = position;
@@ -149,6 +149,16 @@ var QAVView = (function () {
     QAVView.prototype.addChild = function (node) {
         if (this.__nativeObj)
             this.__nativeObj.addChild(node);
+    };
+    QAVView.prototype._restartRenderTimer = function () {
+        if (this.__renderTimeoutCallback && this.__renderTimeoutThreshold > 0) {
+            BK.Director.ticker.removeTimeout(this);
+            BK.Director.ticker.setTimeout(function (ts, dt, obj) {
+                if (this.__renderTimeoutCallback) {
+                    this.__renderTimeoutCallback.call(this);
+                }
+            }, this.__renderTimeoutThreshold, this);
+        }
     };
     QAVView.prototype._innerUseRGBA = function (width, height) {
         if (!this.__bitmap) {
@@ -248,6 +258,7 @@ var QAVView = (function () {
         var width = frameData.frameDesc.width;
         var height = frameData.frameDesc.height;
         if (this.__nativeObj) {
+            this._restartRenderTimer();
             switch (frameData.frameDesc.rotate) {
                 case 0 /* AV_ROTATE_NONE */: {
                     if (this.cameraPos &&
@@ -400,7 +411,9 @@ var QAVView = (function () {
         return buffer;
     };
     QAVView.prototype.renderAsTexture = function () {
-        return this.__nativeObj.renderAsTexture();
+        var renderTexture = new BK.RenderTexture(this.__nativeObj.size.width, this.__nativeObj.size.height, 6 /* COLOR_RGBA8888 */);
+        BK.Render.renderToTexture(this.__nativeObj, renderTexture);
+        return renderTexture;
     };
     QAVView.prototype.hittest = function (pt) {
         return this.__nativeObj.hittest(pt);
@@ -408,6 +421,13 @@ var QAVView = (function () {
     QAVView.prototype.removeFromParent = function () {
         if (this.__nativeObj) {
             this.__nativeObj.removeFromParent();
+        }
+    };
+    QAVView.prototype.setRenderTimeout = function (timeout, callback) {
+        this.__renderTimeoutCallback = callback;
+        this.__renderTimeoutThreshold = timeout;
+        if (this.__renderTimeoutThreshold > 0) {
+            this._restartRenderTimer();
         }
     };
     return QAVView;

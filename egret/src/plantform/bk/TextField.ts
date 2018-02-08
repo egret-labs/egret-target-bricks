@@ -2115,9 +2115,8 @@ namespace egret {
         defaultStyle.fontSize = size;
         defaultStyle.bold = bold ? 1 : 0;
         defaultStyle.italic = italic ? 1 : 0;
-        defaultText.updateText(defaultStyle, text);
-
-        return defaultText.width;
+        let textSize: { height: number, width: number, contentHeight: number, contentWidth: number } = defaultText.measureTextSize(defaultStyle, text);
+        return textSize.contentWidth;
     }
 
     sys.measureText = bkMeasureText as any;

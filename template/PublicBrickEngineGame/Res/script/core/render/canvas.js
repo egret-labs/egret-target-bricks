@@ -1,11 +1,12 @@
-
-
 function Canvas()
 {
     var argumentLength = arguments.length;
     this._shadowColor = {r:0,g:0,b:0,a:0};
     this._shadowOffset = {x:0,y:0};
     this._shadowRadius = 0;
+    this._textBaseLine = 0;
+    this._textAlign = 0;
+    this._useH5Mode = 0;
     if (argumentLength == 2){
         this.__nativeObj =  new BK.CanvasNode(arguments[0],arguments[1]);
     }
@@ -13,10 +14,11 @@ function Canvas()
     {
         return undefined;
     }
+    this.setFlipXY(0,1);
     var names = Object.getOwnPropertyNames(this.__nativeObj);
     names.forEach(function(element) {
         var key = element;
-        if(key != "scale")
+        if(key != "scale" && key != "contentSize" && key != "size")
                   {
                   Object.defineProperty(this,key,{
                                         get:function () {
@@ -29,22 +31,110 @@ function Canvas()
                   }
     }, this);
     
-    Object.defineProperty(Canvas.prototype, "lineWidth", {
+    
+    
+    Object.defineProperty(Canvas.prototype, "contentSize", {
+                          get: function () {
+                          return this.__nativeObj["contentSize"];
+                          },
+                          set: function (obj) {
+                          this.__nativeObj["contentSize"] = obj;
+                          this.__nativeObj.resetCanvas();
+                          },
+                          enumerable: true,
+                          configurable: true
+                          });
+    
+    Object.defineProperty(Canvas.prototype, "size", {
+                          get: function () {
+                          return this.__nativeObj["size"];
+                          },
+                          set: function (obj) {
+                          this.__nativeObj["size"] = obj;
+                          this.__nativeObj.resetCanvas();
+                          },
+                          enumerable: true,
+                          configurable: true
+                          });
+
+    
+    Object.defineProperty(Canvas.prototype, "textBaseLine", {
         get: function () {
-            return this.__nativeObj.lineWidth;
+            return this._textBaseLine;
         },
         set: function (value) {
-            this.__nativeObj.lineWidth = value;
+              switch(value)
+              {
+                  case 0:
+                  case 1:
+                  case 2:
+                          this._textBaseLine = value;
+                          break;
+                  case 'bottom':
+                  case 'Bottom':
+                      this._textBaseLine = 0;
+                      break;
+                  case 'Middle':
+                  case 'middle':
+                      this._textBaseLine = 1;
+                      break;
+                  case 'Top':
+                  case 'top':
+                      this._textBaseLine = 2;
+                      break;
+              }
         },
         enumerable: true,
         configurable: true
     });
+    
+    Object.defineProperty(Canvas.prototype, "textAlign", {
+                          get: function () {
+                          return this._textAlign;
+                          },
+                          set: function (value) {
+                          switch(value)
+                          {
+                          case 0:
+                          case 1:
+                          case 2:
+                          this._textAlign = value;
+                          break;
+                          case 'left':
+                          this._textAlign = 0;
+                          break;
+                          case 'center':
+                          this._textAlign = 1;
+                          break;
+                          case 'right':
+                          this._textAlign = 2;
+                          break;
+                          }
+                          this.__nativeObj.setTextAlign(this._textAlign);
+                          },
+                          enumerable: true,
+                          configurable: true
+                          });
+    
+    
+    Object.defineProperty(Canvas.prototype, "lineWidth", {
+                          get: function () {
+                          return this.__nativeObj.lineWidth;
+                          },
+                          set: function (value) {
+                          this.__nativeObj.lineWidth = value;
+                          },
+                          enumerable: true,
+                          configurable: true
+                          });
 
     Object.defineProperty(Canvas.prototype, "globalAlpha", {
         get: function () {
             return this.__nativeObj.globalAlpha;
         },
         set: function (value) {
+                          value = Math.min(1,value);
+                          value = Math.max(0,value);
             this.__nativeObj.globalAlpha = value;
         },
         enumerable: true,
@@ -128,7 +218,7 @@ Canvas.prototype.setTexture = function(texture)
 
 Canvas.prototype.setFlipXY = function(flipx,flipy)
 {
-    this.__nativeObj.setFlipXY(flipx,flipy);
+    this.__nativeObj.setUVFlip(flipx,flipy);
 }
 
 Canvas.prototype.setUVFlip = function(flipu,flipv)
@@ -274,12 +364,13 @@ Canvas.prototype.setAtlas = function(jsonUrl,name)
 
 Canvas.prototype.useH5Mode = function()
 {
-    
     if(this.__nativeObj)
     {
+        this._useH5Mode = 1;
         var argumentLength = arguments.length;
         if(argumentLength == 1){
-        return this.__nativeObj.useH5Mode(arguments[0]);
+            this._useH5Mode = arguments[0];
+            return this.__nativeObj.useH5Mode(arguments[0]);
         }
         else
         {
@@ -483,10 +574,46 @@ Canvas.prototype.restore = function()
 
 Canvas.prototype.fillText = function()
 {
-    if(this.__nativeObj)
-    {
-        return this.__nativeObj.fillText(arguments[0],arguments[1],arguments[2]);
+    var argumentLength = arguments.length;
+    if (argumentLength == 3){
+        var maxWidth = 2048;
+        var maxHeight = 1024;
+        var measureSize = this.measureText(arguments[0],maxWidth,maxHeight);
+        var x = arguments[1];
+        var y = arguments[2];
+        var baseLineType = this._useH5Mode == 1 ? 2-this._textBaseLine: this._textBaseLine;
+        switch(baseLineType)
+        {
+            case 1:
+                y = y - measureSize.height * 0.5;
+                break;
+            case 2:
+                y = y - measureSize.height * 1;
+                break;
+                
+            case 0:
+            default:
+                break;
+        }
+        
+        BK.Script.log(0,0,"filltext baseLineType " + baseLineType);
+        switch(this._textAlign)
+        {
+            case 1:
+                x = x - measureSize.width * 0.5;
+                break;
+            case 2:
+                x = x - measureSize.width * 1;
+                break;
+            case 0:
+            default:
+                break;
+        }
+        
+        
+        return this.__nativeObj.fillText(arguments[0],x,y,Math.min(maxWidth,measureSize.width),Math.min(maxHeight,measureSize.height));
     }
+
     return 0;
 }
 
@@ -612,7 +739,24 @@ Canvas.prototype.setTextAlign = function()
 {
     if(this.__nativeObj)
     {
-        return this.__nativeObj.setTextAlign(arguments[0]);
+        switch(arguments[0])
+        {
+            case 0:
+            case 1:
+            case 2:
+                this._textAlign = arguments[0];
+                break;
+            case 'left':
+                this._textAlign = 0;
+                break;
+            case 'center':
+                this._textAlign = 1;
+                break;
+            case 'right':
+                this._textAlign = 2;
+                break;
+        }
+        return this.__nativeObj.setTextAlign(this._textAlign);
     }
     return null;
 }

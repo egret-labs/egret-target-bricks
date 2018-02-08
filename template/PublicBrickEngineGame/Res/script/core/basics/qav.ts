@@ -60,6 +60,7 @@ interface QQAVCallbackConfig {
   eventNoMediaFileCallback?: (evnetId: QQAVRoomEventID, data: any) => void,
   eventNewSpeakCallback?: (evnetId: QQAVRoomEventID, data: any) => void,
   eventOldStopSpeakCallback?: (evnetId: QQAVRoomEventID, data: any) => void,
+  eventRoomDisconnectCallback?: (data: any) => void
 }
 const enum QAVCategory {
   QAVCategoryRealTime = 0, //0代表实时场景
@@ -99,6 +100,7 @@ class QAV {
   constructor() {
     this._callbackQueue = [];
     //监听用户数据
+    BK.MQQ.SsoRequest.addListener("cs.audioRoom_disconnect.local", this, this.__handleRoomDisconnect.bind(this));
     BK.MQQ.SsoRequest.addListener("cs.audioRoom_update_userinfo.local", this, this.__handleUserUpdate.bind(this));
   }
 
@@ -620,6 +622,12 @@ class QAV {
           this.eventCallbackConfig.eventOldStopSpeakCallback(data.eventId, data);
         }
       }
+    }
+  }
+
+  private __handleRoomDisconnect(errCode: number, cmd: string, data: any) {
+    if (this.eventCallbackConfig && this.eventCallbackConfig.eventRoomDisconnectCallback) {
+      this.eventCallbackConfig.eventRoomDisconnectCallback(data); // {reason: %d, errorInfo: %s}
     }
   }
 }

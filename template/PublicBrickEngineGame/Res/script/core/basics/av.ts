@@ -186,6 +186,8 @@ class QAVView implements IAVView {
     private __cacheTexture: BK.RenderTexture;
     private __yuvMaterial: BK.Render.Material;
     private __nativeObj: BK.Sprite;
+    private __renderTimeoutCallback: ()=>void;
+    private __renderTimeoutThreshold: number;
 
     private _innerBindMethods4NativeObj(skipList?: any) {
         var _this = this;
@@ -214,7 +216,7 @@ class QAVView implements IAVView {
 
     constructor(identifier: string, width: number, height: number, autoAddMgr: boolean = true, parent?: BK.Node, position?: any, zOrder?: number) {
         this.identifier = identifier;
-        this.__nativeObj = new BK.Sprite(width, height, null, 0, 0, 1, 1);
+        this.__nativeObj = new BK.Sprite(width, height, {}, 0, 0, 1, 1);
         this._innerBindMethods4NativeObj();
 
         if (position)
@@ -230,6 +232,17 @@ class QAVView implements IAVView {
 
         if (autoAddMgr == true)
             QAVManager.Instance.addView(this);
+    }
+
+    private _restartRenderTimer(): void {
+        if (this.__renderTimeoutCallback && this.__renderTimeoutThreshold > 0) {
+            BK.Director.ticker.removeTimeout(this);
+            BK.Director.ticker.setTimeout(function(ts: number, dt: number, obj: any) {
+                if (this.__renderTimeoutCallback) {
+                    this.__renderTimeoutCallback.call(this);
+                }
+            }, this.__renderTimeoutThreshold, this);
+        }
     }
 
     private _innerUseRGBA(width: number, height: number) {
@@ -327,6 +340,7 @@ class QAVView implements IAVView {
         let width: number = frameData.frameDesc.width;
         let height: number = frameData.frameDesc.height;
         if (this.__nativeObj) {
+            this._restartRenderTimer();
             switch (frameData.frameDesc.rotate) {
                 case BK_AV_ROTATE.AV_ROTATE_NONE: {
                     if (this.cameraPos &&
@@ -482,7 +496,9 @@ class QAVView implements IAVView {
     }
 
     renderAsTexture(): BK.RenderTexture {
-        return this.__nativeObj.renderAsTexture();
+        let renderTexture:any = new BK.RenderTexture(this.__nativeObj.size.width, this.__nativeObj.size.height, BK_COLOR_FORMAT.COLOR_RGBA8888);
+        BK.Render.renderToTexture(this.__nativeObj, renderTexture);
+        return renderTexture;
     }
 
     hittest(pt): boolean {
@@ -492,6 +508,14 @@ class QAVView implements IAVView {
     removeFromParent(): void {
         if (this.__nativeObj) {
             this.__nativeObj.removeFromParent();
+        }
+    }
+
+    setRenderTimeout(timeout:number, callback:()=>void): void {
+        this.__renderTimeoutCallback = callback;
+        this.__renderTimeoutThreshold = timeout;
+        if (this.__renderTimeoutThreshold > 0) {
+            this._restartRenderTimer();
         }
     }
 };

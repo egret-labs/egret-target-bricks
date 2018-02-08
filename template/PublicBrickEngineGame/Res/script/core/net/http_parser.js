@@ -2,7 +2,7 @@
 var CRLF = '\r\n';
 var CR = 13;
 var LF = 10;
-
+var MAX_CHUNK_SIZE = 512 * 1024;
 var MAX_HEADER_BYTES = 80 * 1024;
 
 var RE_STATUS_LINE = /^HTTP\/1\.([01]) ([0-9]{3})(?: ((?:[\x21-\x7E](?:[\t ]+[\x21-\x7E])*)*))?$/;

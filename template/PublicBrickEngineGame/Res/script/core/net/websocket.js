@@ -1,4 +1,4 @@
-"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,6 +9,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 BK.Script.loadlib("GameRes://script/core/net/dns.js");
 BK.Script.loadlib("GameRes://script/core/net/url.js");
 BK.Script.loadlib("GameRes://script/core/net/http_parser.js");
@@ -373,10 +374,11 @@ var WebSocketData = (function () {
 }());
 var KWebSocket = (function (_super) {
     __extends(KWebSocket, _super);
-    function KWebSocket(ip, port, host, path) {
+    function KWebSocket(ip, port, host, path, query) {
         var _this = _super.call(this, ip, port) || this;
         _this.path = path ? path : "/";
         _this.host = host;
+        _this.query = query;
         _this.httpVer = 1.1;
         _this.httpParser = new HTTPParser(HTTPParser.RESPONSE);
         _this.version = 13;
@@ -611,7 +613,17 @@ var KWebSocket = (function (_super) {
         var r16 = this.randomN(16);
         var s64 = BK.Misc.encodeBase64FromBuffer(r16);
         s = s.concat("Sec-WebSocket-Key:" + s64 + "\r\n");
-        s = s.concat("Sec-WebSocket-Version:" + this.version + "\r\n\r\n");
+        s = s.concat("Sec-WebSocket-Version:" + this.version + "\r\n");
+        if (this.query) {
+            var qa = this.query.split('&');
+            for (var i = 0; i < qa.length; i++) {
+                var kv = qa[i].split('=');
+                if (kv.length > 0) {
+                    s = s.concat(kv[0] + ":" + kv[1] + "\r\n");
+                }
+            }
+        }
+        s = s.concat("\r\n");
         //BK.Script.log(1, 0, 'BK.WebSocket.doHandshakePhase! Request Message = ' + s);
         var sha = BK.Misc.sha1(s64.concat("258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
         this.handshakeSig = BK.Misc.encodeBase64FromBuffer(sha);
@@ -974,7 +986,13 @@ var KWebSocket = (function (_super) {
                 }
             }
             if (17 /* FRAME_PAYLOAD_DATA */ == this.parseState) {
-                this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                var relen = (data.length - data.pointer);
+                if (relen <= this.rxbuflen) {
+                    this.rxbuf.writeBuffer(data.readBuffer(relen));
+                }
+                else {
+                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                }
                 if (this.rxbuf.length == this.rxbuflen) {
                     this.rxSegCount = this.rxSegCount + 1;
                     this.parseState = 0 /* NEW_DATA */;
@@ -1032,7 +1050,12 @@ var KWebSocket = (function (_super) {
             this.sendCloseFrame(this.errcode, this.message);
         }
         else if (1 /* CLOSING */ == this.state) {
-            this.startPhaseTimeout(6 /* NO_PENDING_TIMEOUT */);
+            BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!normal closed");
+            this.close();
+            this.state = 0 /* CLOSED */;
+            if (this.delegate.onClose) {
+                this.delegate.onClose(this);
+            }
         }
     };
     KWebSocket.prototype.handlePingFrame = function () {
@@ -1157,7 +1180,7 @@ var KWebSocket = (function (_super) {
         if (4 /* ESTABLISHED */ != this.state)
             return false;
         var data = new BK.Buffer(128, true);
-        data.writeAsString(text, true);
+        data.writeAsString(text, false);
         data.rewind();
         return this.__sendBinaryFrame(data, 1 /* TEXT_FRAME */);
     };
@@ -1167,6 +1190,9 @@ var KWebSocket = (function (_super) {
         return this.__sendBinaryFrame(data, 2 /* BINARY_FRAME */);
     };
     KWebSocket.prototype.sendCloseFrame = function (code, reason) {
+        if (this.isSendClose)
+            return;
+        this.isSendClose = true;
         var buf = new BK.Buffer(reason.length + 1, false);
         var data = new BK.Buffer(3 + reason.length, false);
         if (KWebSocket.isLittleEndian) {
@@ -1325,13 +1351,14 @@ var WebSocket = (function () {
         this.scheme = res.protocol;
         this.port = res.port;
         this.path = res.path;
+        this.query = res.query;
         this.host = res.hostname;
         BK.DNS.queryIPAddress(res.hostname, function (reason, af, iplist) {
             switch (reason) {
                 case 0: {
                     BK.Script.log(1, 0, "BK.WebSocket.queryIPAddress!iplist = " + JSON.stringify(iplist));
                     _this.iplist = iplist;
-                    _this.__nativeObj = new KWebSocket(iplist[0], _this.port, _this.host, _this.path);
+                    _this.__nativeObj = new KWebSocket(iplist[0], _this.port, _this.host, _this.path, _this.query);
                     if (_this.scheme == "wss") {
                         _this.__nativeObj.enableSSL(true);
                     }

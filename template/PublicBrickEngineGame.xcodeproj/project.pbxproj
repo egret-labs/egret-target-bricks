@@ -16,6 +16,8 @@
 		6F53F4AF1EA4A25100941825 /* libPublicBrick.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F53F4AE1EA4A25100941825 /* libPublicBrick.a */; };
 		6F53F78A1EA4A2D600941825 /* Res in Resources */ = {isa = PBXBuildFile; fileRef = 6F53F7891EA4A2D600941825 /* Res */; };
 		6F9650541FCC04AA00B51028 /* preload in Resources */ = {isa = PBXBuildFile; fileRef = 6F9650531FCC04A900B51028 /* preload */; };
+		B5EB48CD202AFBB500091CEC /* BKNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5EB48CA202AFBB500091CEC /* BKNavigationController.m */; };
+		B5EB48D0202AFCC800091CEC /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5EB48CF202AFCC800091CEC /* CoreMotion.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,10 @@
 		6F53F4B01EA4A26400941825 /* bkGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bkGLView.h; sourceTree = "<group>"; };
 		6F53F7891EA4A2D600941825 /* Res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Res; sourceTree = "<group>"; };
 		6F9650531FCC04A900B51028 /* preload */ = {isa = PBXFileReference; lastKnownFileType = folder; path = preload; sourceTree = "<group>"; };
+		B5EB48CA202AFBB500091CEC /* BKNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKNavigationController.m; sourceTree = "<group>"; };
+		B5EB48CB202AFBB500091CEC /* DemoGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoGLView.h; sourceTree = "<group>"; };
+		B5EB48CC202AFBB500091CEC /* BKNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKNavigationController.h; sourceTree = "<group>"; };
+		B5EB48CF202AFCC800091CEC /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5EB48D0202AFCC800091CEC /* CoreMotion.framework in Frameworks */,
 				6F53F4AF1EA4A25100941825 /* libPublicBrick.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +59,7 @@
 			children = (
 				6F53F4961EA4A23B00941825 /* PublicBrickEngineGame */,
 				6F53F4951EA4A23B00941825 /* Products */,
+				B5EB48CE202AFCC800091CEC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -70,6 +78,9 @@
 				6F53F7891EA4A2D600941825 /* Res */,
 				6F53F4B01EA4A26400941825 /* bkGLView.h */,
 				6F53F4AE1EA4A25100941825 /* libPublicBrick.a */,
+				B5EB48CC202AFBB500091CEC /* BKNavigationController.h */,
+				B5EB48CA202AFBB500091CEC /* BKNavigationController.m */,
+				B5EB48CB202AFBB500091CEC /* DemoGLView.h */,
 				6F53F49A1EA4A23B00941825 /* AppDelegate.h */,
 				6F53F49B1EA4A23B00941825 /* AppDelegate.m */,
 				6F53F49D1EA4A23B00941825 /* ViewController.h */,
@@ -89,6 +100,14 @@
 				6F53F4981EA4A23B00941825 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B5EB48CE202AFCC800091CEC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B5EB48CF202AFCC800091CEC /* CoreMotion.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,6 +184,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5EB48CD202AFBB500091CEC /* BKNavigationController.m in Sources */,
 				6F53F49F1EA4A23B00941825 /* ViewController.m in Sources */,
 				6F53F49C1EA4A23B00941825 /* AppDelegate.m in Sources */,
 				6F53F4991EA4A23B00941825 /* main.m in Sources */,

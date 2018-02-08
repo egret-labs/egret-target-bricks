@@ -11,6 +11,7 @@ var QAV = (function () {
         this._hasStartQAVRoomFlag = false;
         this._callbackQueue = [];
         //监听用户数据
+        BK.MQQ.SsoRequest.addListener("cs.audioRoom_disconnect.local", this, this.__handleRoomDisconnect.bind(this));
         BK.MQQ.SsoRequest.addListener("cs.audioRoom_update_userinfo.local", this, this.__handleUserUpdate.bind(this));
     }
     QAV.prototype.log = function (str) {
@@ -504,6 +505,11 @@ var QAV = (function () {
                     this.eventCallbackConfig.eventOldStopSpeakCallback(data.eventId, data);
                 }
             }
+        }
+    };
+    QAV.prototype.__handleRoomDisconnect = function (errCode, cmd, data) {
+        if (this.eventCallbackConfig && this.eventCallbackConfig.eventRoomDisconnectCallback) {
+            this.eventCallbackConfig.eventRoomDisconnectCallback(data); // {reason: %d, errorInfo: %s}
         }
     };
     return QAV;

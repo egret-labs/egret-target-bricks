@@ -197,6 +197,15 @@ Sprite.prototype.setAtlas = function(jsonUrl,name)
     }
     return 0;
 }
+Sprite.prototype.getTexture = function()
+{
+    if(this.__nativeObj)
+    {
+        return this.__nativeObj.getTexture();
+    }
+    return null;
+}
+
 
 //resign to BK object
 BK.Sprite = Sprite;

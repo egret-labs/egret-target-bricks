@@ -13,7 +13,7 @@ interface ISocket {
     connect(): number;
     update(): BK_SOCKET_STATE;
     isEnableSSL(): boolean;
-    enableSSL(ssl:boolean): void;
+    enableSSL(ssl: boolean): void;
 }
 
 interface ISocketEvent {
@@ -30,7 +30,7 @@ class SocketEventMgr {
     public static readonly Instance: SocketEventMgr = new SocketEventMgr();
     private _wsArray: ISocket[] = [];
     private constructor() {
-        BK.Director.ticker.add(function(ts:number, duration:number) {
+        BK.Director.ticker.add(function (ts: number, duration: number) {
             SocketEventMgr.Instance.dispatchEvent();
         })
     }
@@ -41,7 +41,7 @@ class SocketEventMgr {
     }
 
     del(so: ISocket): void {
-        let idx:number = this._wsArray.indexOf(so, 0);
+        let idx: number = this._wsArray.indexOf(so, 0);
         if (idx >= 0) {
             this._wsArray.splice(idx, 1);
             BK.Script.log(1, 0, "SocketEventMgr.del!so = " + so);
@@ -49,7 +49,7 @@ class SocketEventMgr {
     }
 
     dispatchEvent(): void {
-        this._wsArray.forEach(function(so:ISocket, index:number, array:ISocket[]){
+        this._wsArray.forEach(function (so: ISocket, index: number, array: ISocket[]) {
             if (so) {
                 so.update();
             }
@@ -110,8 +110,8 @@ class KSocket implements ISocket, ISocketEvent {
 
     protected __internalConnect(): number {
         if (this.__nativeObj) {
-            let ret:number = this.__nativeObj.connect(this.ip, this.port);
-            let curNetStat:BK_NET_STATE = this.curNetState();
+            let ret: number = this.__nativeObj.connect(this.ip, this.port);
+            let curNetStat: BK_NET_STATE = this.curNetState();
             switch (this.prevNetState) {
                 case BK_NET_STATE.DISCONNECTED:
                     this.onReconnectEvent(this);
@@ -166,19 +166,19 @@ class KSocket implements ISocket, ISocketEvent {
     }
 
     protected __internalUpdateSSL(): BK_SOCKET_STATE {
-        let state:BK_SOCKET_STATE = this.__internalUpdate();
-        let curNetStat:BK_NET_STATE = this.curNetState();
+        let state: BK_SOCKET_STATE = this.__internalUpdate();
+        let curNetStat: BK_NET_STATE = this.curNetState();
         if (BK_SOCKET_STATE.FAIL != state) {
             switch (this.prevNetState) {
                 case BK_NET_STATE.CONNECTING: {
                     switch (curNetStat) {
                         case BK_NET_STATE.CONNECTED: {
-                            BK.Script.log(1, 0, "BK.Socket.update.ssl!connected, ip = " + this.ip + ", port = " + this.port);    
+                            BK.Script.log(1, 0, "BK.Socket.update.ssl!connected, ip = " + this.ip + ", port = " + this.port);
                             break;
                         }
                         default: {
-                            let curTs:number = BK.Time.clock;
-                            let diffT:number = BK.Time.diffTime(this.prevConnTs, curTs);
+                            let curTs: number = BK.Time.clock;
+                            let diffT: number = BK.Time.diffTime(this.prevConnTs, curTs);
                             if (diffT * 1000 >= this.curConnTimeout) {
                                 this.curConnRetrys = this.curConnRetrys + 1;
                                 if (this.curConnRetrys < this.options.ConnectRetryCount) {
@@ -210,8 +210,8 @@ class KSocket implements ISocket, ISocketEvent {
                             break;
                         }
                         default: {
-                            let curTs:number = BK.Time.clock;
-                            let diffT:number = BK.Time.diffTime(this.prevConnTs, curTs);
+                            let curTs: number = BK.Time.clock;
+                            let diffT: number = BK.Time.diffTime(this.prevConnTs, curTs);
                             if (diffT * 1000 >= this.curConnTimeout) {
                                 this.curConnRetrys = this.curConnRetrys + 1;
                                 if (this.curConnRetrys < this.options.ConnectRetryCount) {
@@ -260,8 +260,8 @@ class KSocket implements ISocket, ISocketEvent {
     }
 
     protected __internalUpdateNoSSL(): BK_SOCKET_STATE {
-        let state:BK_SOCKET_STATE = this.__internalUpdate();
-        let curNetStat:BK_NET_STATE = this.curNetState();
+        let state: BK_SOCKET_STATE = this.__internalUpdate();
+        let curNetStat: BK_NET_STATE = this.curNetState();
         //BK.Script.log(1, 0, "BK.Socket.update!prevNetStat = " + this.prevNetState + ", curNetStat = " + curNetStat);
         if (BK_SOCKET_STATE.FAIL != state) {
             switch (this.prevNetState) {
@@ -281,8 +281,8 @@ class KSocket implements ISocket, ISocketEvent {
                             break;
                         }
                         default: {
-                            let curTs:number = BK.Time.clock;
-                            let diffT:number = BK.Time.diffTime(this.prevConnTs, curTs);
+                            let curTs: number = BK.Time.clock;
+                            let diffT: number = BK.Time.diffTime(this.prevConnTs, curTs);
                             if (diffT * 1000 >= this.curConnTimeout) {
                                 this.curConnRetrys = this.curConnRetrys + 1;
                                 if (this.curConnRetrys < this.options.ConnectRetryCount) {
@@ -332,7 +332,7 @@ class KSocket implements ISocket, ISocketEvent {
     }
 
     close(): number {
-        let ret:number = this.__internalClose();
+        let ret: number = this.__internalClose();
         if (!ret)
             this.prevNetState = BK_NET_STATE.UNCONNECT;
         SocketEventMgr.Instance.del(<ISocket>(this));
@@ -340,7 +340,7 @@ class KSocket implements ISocket, ISocketEvent {
     }
 
     send(data: BK.Buffer): number {
-        let ret:number = this.__internalSend(data);
+        let ret: number = this.__internalSend(data);
         return ret;
     }
 
@@ -360,10 +360,10 @@ class KSocket implements ISocket, ISocketEvent {
     }
 
     connect(): number {
-        let stat:BK_NET_STATE = this.curNetState();
+        let stat: BK_NET_STATE = this.curNetState();
         if (BK_NET_STATE.UNCONNECT == stat ||
             BK_NET_STATE.DISCONNECTED == stat) {
-            let ret:number = this.__internalConnect();
+            let ret: number = this.__internalConnect();
             if (!ret) {
                 SocketEventMgr.Instance.add(<ISocket>(this));
             }
@@ -376,7 +376,7 @@ class KSocket implements ISocket, ISocketEvent {
         return this.__internalIsEnableSSL();
     }
 
-    enableSSL(ssl:boolean): void {
+    enableSSL(ssl: boolean): void {
         this.__internalEnableSSL(ssl);
     }
 
@@ -413,70 +413,71 @@ class KSocket implements ISocket, ISocketEvent {
 
 
 const enum BK_WS_PARSE_STATE {
-    NEW_DATA           = 0,
-    FRAME_HDR_1        = 1,
-    FRAME_HDR_LEN      = 2,
-    FRAME_HDR_LEN16_2  = 3,
-    FRAME_HDR_LEN16_1  = 4,
-    FRAME_HDR_LEN64_8  = 5,
-    FRAME_HDR_LEN64_7  = 6,
-    FRAME_HDR_LEN64_6  = 7,
-    FRAME_HDR_LEN64_5  = 8,
-    FRAME_HDR_LEN64_4  = 9,
-    FRAME_HDR_LEN64_3  = 10,
-    FRAME_HDR_LEN64_2  = 11,
-    FRAME_HDR_LEN64_1  = 12,
-    FRAME_MASK_KEY_1   = 13,
-    FRAME_MASK_KEY_2   = 14,
-    FRAME_MASK_KEY_3   = 15,
-    FRAME_MASK_KEY_4   = 16,
+    NEW_DATA = 0,
+    FRAME_HDR_1 = 1,
+    FRAME_HDR_LEN = 2,
+    FRAME_HDR_LEN16_2 = 3,
+    FRAME_HDR_LEN16_1 = 4,
+    FRAME_HDR_LEN64_8 = 5,
+    FRAME_HDR_LEN64_7 = 6,
+    FRAME_HDR_LEN64_6 = 7,
+    FRAME_HDR_LEN64_5 = 8,
+    FRAME_HDR_LEN64_4 = 9,
+    FRAME_HDR_LEN64_3 = 10,
+    FRAME_HDR_LEN64_2 = 11,
+    FRAME_HDR_LEN64_1 = 12,
+    FRAME_MASK_KEY_1 = 13,
+    FRAME_MASK_KEY_2 = 14,
+    FRAME_MASK_KEY_3 = 15,
+    FRAME_MASK_KEY_4 = 16,
     FRAME_PAYLOAD_DATA = 17
 }
 
 const enum BK_WS_OPCODE {
-    CONTINOUS     = 0x0,
-    TEXT_FRAME    = 0x1,
-    BINARY_FRAME  = 0x2,
-    CLOSE         = 0x8,
-    PING          = 0x9,
-    PONG          = 0xA
+    CONTINOUS = 0x0,
+    TEXT_FRAME = 0x1,
+    BINARY_FRAME = 0x2,
+    CLOSE = 0x8,
+    PING = 0x9,
+    PONG = 0xA
 }
 
 const enum BK_WS_PHASE_TIMEOUT {
-    HANDSHAKE_REQUEST    = 0x1,
-    HANDSHAKE_RESPONE    = 0x2,
-    CLOSE_ACK            = 0x3, 
+    HANDSHAKE_REQUEST = 0x1,
+    HANDSHAKE_RESPONE = 0x2,
+    CLOSE_ACK = 0x3,
     CHECK_PONG_SEND_PING = 0x4,
-    NO_PENDING_TIMEOUT   = 0x6
+    NO_PENDING_TIMEOUT = 0x6
 }
 
 class WebSocketData {
-    public data:BK.Buffer;
-    public readonly isBinary:boolean;
-    constructor(data:BK.Buffer, isBinary:boolean) {
+    public data: BK.Buffer;
+    public readonly isBinary: boolean;
+    constructor(data: BK.Buffer, isBinary: boolean) {
         this.data = data;
         this.isBinary = isBinary;
     }
 }
 
 interface IKWebSocketDelegate {
-    onOpen: (kws:KWebSocket) => void;
-    onClose: (kws:KWebSocket) => void;
-    onError: (kws:KWebSocket) => void;
-    onMessage: (kws:KWebSocket, data:WebSocketData) => void;
-    onSendComplete: (kws:KWebSocket) => void;
+    onOpen: (kws: KWebSocket) => void;
+    onClose: (kws: KWebSocket) => void;
+    onError: (kws: KWebSocket) => void;
+    onMessage: (kws: KWebSocket, data: WebSocketData) => void;
+    onSendComplete: (kws: KWebSocket) => void;
 }
 
 class KWebSocket extends KSocket {
-    private static readonly isLittleEndian:boolean = BK.Misc.isLittleEndian();
-    private path:string;
-    private host:string;
-    private httpVer:number;
-    private httpParser:HTTPParser;
-    private version:number;
+    private static readonly isLittleEndian: boolean = BK.Misc.isLittleEndian();
+    private path: string;
+    private host: string;
+    private query: string;
+    private httpVer: number;
+    private httpParser: HTTPParser;
+    private version: number;
     private protocols: string[];
     private extensions: string[];
-    private handshakeSig:string;
+    private handshakeSig: string;
     private mask4: BK.Buffer;
     private txbuf: BK.Buffer;
     private rxbuf: BK.Buffer;
@@ -499,6 +500,7 @@ class KWebSocket extends KSocket {
     private inPartialTxbuf: boolean;
     private inPingFrame: boolean;
     private inPongFrame: boolean;
+    private isSendClose: boolean;
     private txPingData: BK.Buffer;
     private rxPongData: BK.Buffer;
     private prevPhaseTickCount: number;
@@ -508,10 +510,11 @@ class KWebSocket extends KSocket {
     private phaseTimeout: BK_WS_PHASE_TIMEOUT;
     private pingpongTimer: BK_WS_PHASE_TIMEOUT;
     delegate: IKWebSocketDelegate;
-    constructor(ip: string, port: number, host:string, path?:string) {
+    constructor(ip: string, port: number, host: string, path?: string, query?: string) {
         super(ip, port);
-        this.path = path ? path: "/";
+        this.path = path ? path : "/";
         this.host = host;
+        this.query = query;
         this.httpVer = 1.1;
         this.httpParser = new HTTPParser(HTTPParser.RESPONSE);
         this.version = 13;
@@ -571,16 +574,16 @@ class KWebSocket extends KSocket {
         return this.message;
     }
 
-    randomN(n:number): BK.Buffer {
-        let b:BK.Buffer = new BK.Buffer(n, false);
+    randomN(n: number): BK.Buffer {
+        let b: BK.Buffer = new BK.Buffer(n, false);
         for (let i = 0; i < n; i++) {
-            let r:number = Math.round(Math.random() * 65535);
+            let r: number = Math.round(Math.random() * 65535);
             b.writeUint8Buffer(r);
-        } 
+        }
         return b;
     }
 
-    toHex(c:number):string {
+    toHex(c: number): string {
         if (c >= 0 && c <= 9) return c.toString();
         switch (c) {
             case 10: return 'A';
@@ -593,11 +596,11 @@ class KWebSocket extends KSocket {
         return 'u';
     }
 
-    bufferToHexString(buf:BK.Buffer): string {
-        let s:string = "";
+    bufferToHexString(buf: BK.Buffer): string {
+        let s: string = "";
         buf.rewind();
         while (!buf.eof) {
-            let c:number = buf.readUint8Buffer();
+            let c: number = buf.readUint8Buffer();
             s = s.concat('x' + this.toHex((c & 0xF0) >> 4) + this.toHex((c & 0x0F)) + ' ');
         }
         return s;
@@ -650,10 +653,10 @@ class KWebSocket extends KSocket {
 
     handlePhaseTimeout(): void {
         if (this.phaseTimeout == BK_WS_PHASE_TIMEOUT.NO_PENDING_TIMEOUT)
-            return ;
-        let interval:number = BK.Time.diffTime(this.prevPhaseTickCount, BK.Time.clock);
+            return;
+        let interval: number = BK.Time.diffTime(this.prevPhaseTickCount, BK.Time.clock);
         switch (this.phaseTimeout) {
-             case BK_WS_PHASE_TIMEOUT.HANDSHAKE_REQUEST: {
+            case BK_WS_PHASE_TIMEOUT.HANDSHAKE_REQUEST: {
                 if (interval * 1000 > this.options.HandleShakeRequestTimeout) {
                     BK.Script.log(1, 0, "BK.WebSocket.handlePhaseTimeout!handshake request timeout");
                     this.prevPhaseTickCount = BK.Time.clock;
@@ -720,7 +723,7 @@ class KWebSocket extends KSocket {
     handlePingPongTimer(): void {
         if (BK_WS_STATE.ESTABLISHED == this.state &&
             this.options.PingPongInterval > 0) {
-            let interval:number = BK.Time.diffTime(this.prevPingPongTickCount, BK.Time.clock);
+            let interval: number = BK.Time.diffTime(this.prevPingPongTickCount, BK.Time.clock);
             if (interval * 1000 > this.options.PingPongInterval) {
                 this.inPingFrame = false;
                 this.txPingData = this.randomN(16);
@@ -731,7 +734,7 @@ class KWebSocket extends KSocket {
     }
 
     doHandshakePhase(): void {
-        let s:string = "";
+        let s: string = "";
         /* 
             example:
             GET /chat HTTP/1.1
@@ -754,20 +757,32 @@ class KWebSocket extends KSocket {
         s = s.concat("Upgrade:websocket\r\n");
         s = s.concat("Connection:Upgrade\r\n");
 
-        let r16:BK.Buffer = this.randomN(16);
-        let s64:string = BK.Misc.encodeBase64FromBuffer(r16);
+        let r16: BK.Buffer = this.randomN(16);
+        let s64: string = BK.Misc.encodeBase64FromBuffer(r16);
         s = s.concat("Sec-WebSocket-Key:" + s64 + "\r\n");
 
-        s = s.concat("Sec-WebSocket-Version:" + this.version + "\r\n\r\n");
+        s = s.concat("Sec-WebSocket-Version:" + this.version + "\r\n");
+
+        if (this.query) {
+            let qa = this.query.split('&');
+            for (let i = 0; i < qa.length; i++) {
+                let kv = qa[i].split('=');
+                if (kv.length > 0) {
+                    s =s .concat(kv[0] + ":" + kv[1] + "\r\n");
+                }
+            }
+        }
+
+        s = s.concat("\r\n");
 
         //BK.Script.log(1, 0, 'BK.WebSocket.doHandshakePhase! Request Message = ' + s);
 
-        let sha:BK.Buffer = BK.Misc.sha1(s64.concat("258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
+        let sha: BK.Buffer = BK.Misc.sha1(s64.concat("258EAFA5-E914-47DA-95CA-C5AB0DC85B11"));
         this.handshakeSig = BK.Misc.encodeBase64FromBuffer(sha);
 
         //BK.Script.log(1, 0, "BK.WebSocket.doHandshakePhase!handshakeSig = " + this.handshakeSig);
 
-        let data:BK.Buffer = new BK.Buffer(s.length, false);
+        let data: BK.Buffer = new BK.Buffer(s.length, false);
         data.writeAsString(s, false);
 
         super.send(data);
@@ -775,7 +790,7 @@ class KWebSocket extends KSocket {
         this.startPhaseTimeout(BK_WS_PHASE_TIMEOUT.HANDSHAKE_REQUEST);
     }
 
-    doSvrHandshakePhase1(resp:string): void {
+    doSvrHandshakePhase1(resp: string): void {
         if (!resp)
             return;
         //BK.Script.log(1, 0, "doSvrHandshakePhase1! Response Message = " + resp);
@@ -836,12 +851,12 @@ class KWebSocket extends KSocket {
                 }
                 if (undefined == this.httpParser.headers["sec-websocket-accept"]) {
                     this.state = BK_WS_STATE.FAILED;
-                    BK.Script.log(1, 0, "BK.WebSocket.doSvrHandshakePhase2!missing \'sec-websocket-accept\' header"); 
+                    BK.Script.log(1, 0, "BK.WebSocket.doSvrHandshakePhase2!missing \'sec-websocket-accept\' header");
                     return false;
                 }
                 if (this.handshakeSig != this.httpParser.headers["sec-websocket-accept"]) {
                     this.state = BK_WS_STATE.FAILED;
-                    BK.Script.log(1, 0, "BK.WebSocket.doSvrHandshakePhase2!error \'sec-websocket-accept\' header"); 
+                    BK.Script.log(1, 0, "BK.WebSocket.doSvrHandshakePhase2!error \'sec-websocket-accept\' header");
                     return false;
                 }
 
@@ -856,7 +871,7 @@ class KWebSocket extends KSocket {
         return false;
     }
 
-    doFrameDataPhase(data:BK.Buffer, opCode:number, moreSegs:boolean = false): BK.Buffer {
+    doFrameDataPhase(data: BK.Buffer, opCode: number, moreSegs: boolean = false): BK.Buffer {
         /*
             WebSocket Frame Format:
             0                   1                   2                   3
@@ -878,18 +893,18 @@ class KWebSocket extends KSocket {
             |                     Payload Data continued ...                |
             +---------------------------------------------------------------+
         */
-        let total:number = 6;
-        let length:number = data.length;
-        
+        let total: number = 6;
+        let length: number = data.length;
+
         if (this.extensions.length > 0) {
-            
+
         }
 
         total = total + length;
 
-        let buf:BK.Buffer = new BK.Buffer(total, false);
-        let bitMask:number = 0;
-        let isMask:boolean = false;
+        let buf: BK.Buffer = new BK.Buffer(total, false);
+        let bitMask: number = 0;
+        let isMask: boolean = false;
         switch (this.version) {
             case 13: {
                 isMask = true;
@@ -898,7 +913,7 @@ class KWebSocket extends KSocket {
             }
         }
 
-        let fin:boolean = true;
+        let fin: boolean = true;
         switch (opCode) {
             case BK_WS_OPCODE.TEXT_FRAME:
             case BK_WS_OPCODE.BINARY_FRAME: {
@@ -931,11 +946,11 @@ class KWebSocket extends KSocket {
             if (length < 65536) {
                 buf.writeUint8Buffer(bitMask | 126);
                 if (KWebSocket.isLittleEndian) {
-                    buf.writeUint8Buffer((0x0000FF00 & length)>>8);
+                    buf.writeUint8Buffer((0x0000FF00 & length) >> 8);
                     buf.writeUint8Buffer((0x000000FF & length));
                 } else {
                     buf.writeUint8Buffer((0x000000FF & length));
-                    buf.writeUint8Buffer((0x0000FF00 & length)>>8);
+                    buf.writeUint8Buffer((0x0000FF00 & length) >> 8);
                 }
             } else {
                 //buf.writeUint8Buffer(bitMask | 127);
@@ -944,7 +959,7 @@ class KWebSocket extends KSocket {
         }
 
         if (isMask) {
-            let mask:BK.Buffer = this.randomN(4);
+            let mask: BK.Buffer = this.randomN(4);
             BK.Misc.encodeBufferXorMask4(data, mask);
             buf.writeBuffer(mask);
         }
@@ -953,7 +968,7 @@ class KWebSocket extends KSocket {
         return buf;
     }
 
-    doSvrFrameDataPhase(data:BK.Buffer): boolean {
+    doSvrFrameDataPhase(data: BK.Buffer): boolean {
         if (!data)
             return true;
         while (!data.eof) {
@@ -967,7 +982,7 @@ class KWebSocket extends KSocket {
                     this.parseState = BK_WS_PARSE_STATE.FRAME_HDR_1;
                 }
                 case BK_WS_PARSE_STATE.FRAME_HDR_1: {
-                    let hdr1:number = data.readUint8Buffer();
+                    let hdr1: number = data.readUint8Buffer();
                     if ((hdr1 & 0x00000080)) {
                         this.isFinalSeg = true;
                     } else {
@@ -1003,7 +1018,7 @@ class KWebSocket extends KSocket {
                             break;
                         default: {
                             if (!this.isFinalSeg) {
-                                if (this.opcode != BK_WS_OPCODE.TEXT_FRAME && 
+                                if (this.opcode != BK_WS_OPCODE.TEXT_FRAME &&
                                     this.opcode != BK_WS_OPCODE.BINARY_FRAME) {
                                     this.errcode = BK_WS_ERR_CODE.UNSUPPORTED_DATA;
                                     this.message = "unsupported data";
@@ -1027,7 +1042,7 @@ class KWebSocket extends KSocket {
                         return true;
                 }
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN: {
-                    let hdrLen:number = data.readUint8Buffer();
+                    let hdrLen: number = data.readUint8Buffer();
                     this.maskBit = ((0x00000080 & hdrLen) >> 7);
                     switch ((0x0000007F & hdrLen)) {
                         case 126: {
@@ -1058,7 +1073,7 @@ class KWebSocket extends KSocket {
             }
             switch (this.parseState) {
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN16_2: {
-                    let n:number = data.readUint8Buffer();
+                    let n: number = data.readUint8Buffer();
                     if (KWebSocket.isLittleEndian) {
                         this.rxbuflen |= ((0x000000FF & n) << 8);
                     } else {
@@ -1068,7 +1083,7 @@ class KWebSocket extends KSocket {
                         return true;
                 }
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN16_1: {
-                    let n:number = data.readUint8Buffer();
+                    let n: number = data.readUint8Buffer();
                     if (KWebSocket.isLittleEndian) {
                         this.rxbuflen |= (0x000000FF & n);
                     } else {
@@ -1084,9 +1099,9 @@ class KWebSocket extends KSocket {
                     }
                     break;
                 }
-                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_8: 
-                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_7: 
-                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_6: 
+                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_8:
+                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_7:
+                case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_6:
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_5:
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_4:
                 case BK_WS_PARSE_STATE.FRAME_HDR_LEN64_3:
@@ -1125,7 +1140,12 @@ class KWebSocket extends KSocket {
                 }
             }
             if (BK_WS_PARSE_STATE.FRAME_PAYLOAD_DATA == this.parseState) {
-                this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                let relen: number = (data.length - data.pointer);
+                if (relen <= this.rxbuflen) {
+                    this.rxbuf.writeBuffer(data.readBuffer(relen));
+                } else {
+                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                }
                 if (this.rxbuf.length == this.rxbuflen) {
                     this.rxSegCount = this.rxSegCount + 1;
                     this.parseState = BK_WS_PARSE_STATE.NEW_DATA;
@@ -1169,8 +1189,8 @@ class KWebSocket extends KSocket {
     handleCloseFrame(): void {
         this.peerClosed = true;
         if (BK_WS_STATE.ESTABLISHED == this.state) {
-            let errcode:number = this.rxbuf.readUint16Buffer();
-            let msgbuff:BK.Buffer = this.rxbuf.readBuffer(this.rxbuflen - 2);
+            let errcode: number = this.rxbuf.readUint16Buffer();
+            let msgbuff: BK.Buffer = this.rxbuf.readBuffer(this.rxbuflen - 2);
             if (!errcode) {
                 this.errcode = BK_WS_ERR_CODE.NO_STATUS_RECV;
                 this.message = "no status recv";
@@ -1181,7 +1201,12 @@ class KWebSocket extends KSocket {
             BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!errcode = " + this.errcode + ", msg = " + this.message);
             this.sendCloseFrame(this.errcode, this.message);
         } else if (BK_WS_STATE.CLOSING == this.state) {
-            this.startPhaseTimeout(BK_WS_PHASE_TIMEOUT.NO_PENDING_TIMEOUT);
+            BK.Script.log(1, 0, "BK.WebSocket.handleCloseFrame!normal closed");
+            this.close();
+            this.state = BK_WS_STATE.CLOSED;
+            if (this.delegate.onClose) {
+                this.delegate.onClose(this);
+            }
         }
     }
 
@@ -1204,23 +1229,23 @@ class KWebSocket extends KSocket {
 
     handlePongFrame(): void {
         if (BK_WS_STATE.ESTABLISHED == this.state) {
-            let data:BK.Buffer = new BK.Buffer(this.rxbuflen, true);
+            let data: BK.Buffer = new BK.Buffer(this.rxbuflen, true);
             data.writeBuffer(this.rxbuf.readBuffer(this.rxbuflen));
             this.startPhaseTimeout(BK_WS_PHASE_TIMEOUT.NO_PENDING_TIMEOUT);
             BK.Script.log(0, 0, "BK.WebSocket.handlePongFrame!pong data = " + this.bufferToHexString(data));
         }
     }
 
-    sendFrameFromTxQ(t:BK_WS_OPCODE): boolean {
+    sendFrameFromTxQ(t: BK_WS_OPCODE): boolean {
         if (BK_WS_STATE.ESTABLISHED != this.state)
             return;
         if (this.inPartialTxbuf) { // first handle partial buf
-            let txBytes:number = super.send(this.txbuf);
+            let txBytes: number = super.send(this.txbuf);
             if (txBytes > 0) {
                 this.restartPingPongTimer();
                 if (txBytes < this.txbuf.length) {
-                    let cap:number = this.txbuf.length - txBytes;
-                    let buf:BK.Buffer = new BK.Buffer(cap, false);
+                    let cap: number = this.txbuf.length - txBytes;
+                    let buf: BK.Buffer = new BK.Buffer(cap, false);
                     this.txbuf.rewind();
                     this.txbuf.jumpBytes(txBytes);
                     buf.writeBuffer(this.txbuf.readBuffer(cap));
@@ -1234,13 +1259,13 @@ class KWebSocket extends KSocket {
             }
         }
 
-        let succ:boolean = true;
-        let n:number = Math.min(this.options.DrainSegmentCount, this.txbufQue.length);
+        let succ: boolean = true;
+        let n: number = Math.min(this.options.DrainSegmentCount, this.txbufQue.length);
         for (; n > 0; n--) {
-            let data:BK.Buffer = this.txbufQue.shift();
-            let moreSegs:boolean = (this.txbufQue.length > 0);
-            let frameData:BK.Buffer = this.doFrameDataPhase(data, t, moreSegs);
-            let txBytes:number = super.send(frameData);
+            let data: BK.Buffer = this.txbufQue.shift();
+            let moreSegs: boolean = (this.txbufQue.length > 0);
+            let frameData: BK.Buffer = this.doFrameDataPhase(data, t, moreSegs);
+            let txBytes: number = super.send(frameData);
             if (txBytes > 0) {
                 this.restartPingPongTimer();
                 if (txBytes < frameData.length) {// partial send
@@ -1269,24 +1294,24 @@ class KWebSocket extends KSocket {
         return succ;
     }
 
-    recvFrameFromRxQ(t:BK_WS_OPCODE): void {
-        let isBinary:boolean = (t == BK_WS_OPCODE.BINARY_FRAME);
-        let udata:BK.Buffer = new BK.Buffer(128, true);
+    recvFrameFromRxQ(t: BK_WS_OPCODE): void {
+        let isBinary: boolean = (t == BK_WS_OPCODE.BINARY_FRAME);
+        let udata: BK.Buffer = new BK.Buffer(128, true);
         while (this.rxbufQue.length > 0) {
-            let rxbuf:BK.Buffer = this.rxbufQue.shift();
+            let rxbuf: BK.Buffer = this.rxbufQue.shift();
             udata.writeBuffer(rxbuf);
         }
         udata.rewind();
         this.udataQue.push(new WebSocketData(udata, isBinary));
     }
 
-    __sendBinaryFrame(data:BK.Buffer, frameType:BK_WS_OPCODE): boolean {
-        let totLen:number = data.length;
-        let segLen:number = this.options.DefaultSegmentSize;
+    __sendBinaryFrame(data: BK.Buffer, frameType: BK_WS_OPCODE): boolean {
+        let totLen: number = data.length;
+        let segLen: number = this.options.DefaultSegmentSize;
         let offset = 0;
         data.rewind();
         while (totLen > segLen) {
-            let buf:BK.Buffer = new BK.Buffer(segLen, false);
+            let buf: BK.Buffer = new BK.Buffer(segLen, false);
             data.rewind();
             data.jumpBytes(offset);
             buf.writeBuffer(data.readBuffer(segLen));
@@ -1297,7 +1322,7 @@ class KWebSocket extends KSocket {
             //BK.Script.log(1, 0, "BK.WebSocket.__sendBinaryFrame!offset = " + offset + ", totLen = " + totLen);
         }
         if (totLen > 0) {
-            let buf:BK.Buffer = new BK.Buffer(totLen, false);
+            let buf: BK.Buffer = new BK.Buffer(totLen, false);
             data.rewind();
             data.jumpBytes(offset);
             buf.writeBuffer(data.readBuffer(totLen));
@@ -1308,57 +1333,61 @@ class KWebSocket extends KSocket {
         return this.sendFrameFromTxQ(frameType);
     }
 
-    sendTextFrame(text:string): boolean {
+    sendTextFrame(text: string): boolean {
         if (BK_WS_STATE.ESTABLISHED != this.state)
             return false;
-        let data:BK.Buffer = new BK.Buffer(128, true);
-        data.writeAsString(text, true);
+        let data: BK.Buffer = new BK.Buffer(128, true);
+        data.writeAsString(text, false);
         data.rewind();
         return this.__sendBinaryFrame(data, BK_WS_OPCODE.TEXT_FRAME);
     }
 
-    sendBinaryFrame(data:BK.Buffer): boolean {
+    sendBinaryFrame(data: BK.Buffer): boolean {
         if (BK_WS_STATE.ESTABLISHED != this.state)
             return;
         return this.__sendBinaryFrame(data, BK_WS_OPCODE.BINARY_FRAME);
     }
 
-    sendCloseFrame(code:number, reason:string): void {
-        let buf:BK.Buffer = new BK.Buffer(reason.length + 1, false);
-        let data:BK.Buffer = new BK.Buffer(3 + reason.length, false);
-        
+    sendCloseFrame(code: number, reason: string): void {
+        if (this.isSendClose)
+            return;
+        this.isSendClose = true;
+
+        let buf: BK.Buffer = new BK.Buffer(reason.length + 1, false);
+        let data: BK.Buffer = new BK.Buffer(3 + reason.length, false);
+
         if (KWebSocket.isLittleEndian) {
-            data.writeUint8Buffer((0x0000FF00 & code)>>8);
+            data.writeUint8Buffer((0x0000FF00 & code) >> 8);
             data.writeUint8Buffer((0x000000FF & code));
         } else {
             data.writeUint8Buffer((0x000000FF & code));
-            data.writeUint8Buffer((0x0000FF00 & code)>>8);
+            data.writeUint8Buffer((0x0000FF00 & code) >> 8);
         }
 
         buf.writeAsString(reason, true);
         data.writeBuffer(buf);
 
-        let frameData:BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.CLOSE);
+        let frameData: BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.CLOSE);
         super.send(frameData);
         this.state = BK_WS_STATE.CLOSING;
         this.startPhaseTimeout(BK_WS_PHASE_TIMEOUT.CLOSE_ACK);
         BK.Script.log(1, 0, "BK.WebSocket.sendCloseFrame!code = " + code + ", reason = " + reason);
     }
 
-    sendPingFrame(data:BK.Buffer): void {
+    sendPingFrame(data: BK.Buffer): void {
         if (this.inPingFrame)
             return;
         BK.Script.log(0, 0, "BK.WebSocket.sendPingFrame!ping data = " + this.bufferToHexString(data));
-        let frameData:BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.PING);
+        let frameData: BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.PING);
         super.send(frameData);
         this.inPingFrame = true;
         this.startPhaseTimeout(BK_WS_PHASE_TIMEOUT.CHECK_PONG_SEND_PING);
     }
 
-    sendPongFrame(data:BK.Buffer): void {
+    sendPongFrame(data: BK.Buffer): void {
         if (this.inPongFrame)
             return;
-        let frameData:BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.PONG);
+        let frameData: BK.Buffer = this.doFrameDataPhase(data, BK_WS_OPCODE.PONG);
         super.send(frameData);
         this.inPongFrame = true;
         //BK.Script.log(0, 0, "BK.WebSocket.sendPongFrame!");
@@ -1413,9 +1442,9 @@ class KWebSocket extends KSocket {
         switch (this.state) {
             case BK_WS_STATE.HANDSHAKE_REQ:
             case BK_WS_STATE.HANDSHAKE_RESP: {
-                let rlen:number = so.canRecvLength();
+                let rlen: number = so.canRecvLength();
                 if (rlen > 0) {
-                    let buf:BK.Buffer = this.recv(rlen);
+                    let buf: BK.Buffer = this.recv(rlen);
                     if (undefined != buf) {
                         this.doSvrHandshakePhase1(buf.readAsString(true));
                     }
@@ -1424,7 +1453,7 @@ class KWebSocket extends KSocket {
                 break;
             }
             case BK_WS_STATE.ESTABLISHED: {
-                let rlen:number = so.canRecvLength();
+                let rlen: number = so.canRecvLength();
                 if (rlen > 0 &&
                     !this.doSvrFrameDataPhase(this.recv(rlen))) {
                     this.sendCloseFrame(this.errcode, this.message);
@@ -1434,7 +1463,7 @@ class KWebSocket extends KSocket {
                 } else {
                     if (this.delegate.onMessage) {
                         while (this.udataQue.length > 0) {
-                            let udata:WebSocketData = this.udataQue.shift();
+                            let udata: WebSocketData = this.udataQue.shift();
                             this.delegate.onMessage(this, udata);
                         }
                     }
@@ -1450,12 +1479,12 @@ class KWebSocket extends KSocket {
                 break;
             }
             case BK_WS_STATE.CLOSING: {
-                let rlen:number = so.canRecvLength();
+                let rlen: number = so.canRecvLength();
                 if (rlen > 0 &&
                     this.doSvrFrameDataPhase(this.recv(rlen))) {
                     if (this.delegate.onMessage) {
                         while (this.udataQue.length > 0) {
-                            let udata:WebSocketData = this.udataQue.shift();
+                            let udata: WebSocketData = this.udataQue.shift();
                             this.delegate.onMessage(this, udata);
                         }
                     }
@@ -1488,12 +1517,13 @@ class WebSocket implements BK.IWebSocket {
     private iplist: Array<string>;
     private host: string;
     private path: string;
+    private query: string;
     private scheme: string;
-    onOpen: (ws:BK.IWebSocket) => void;
-    onClose: (ws:BK.IWebSocket) => void;
-    onError: (ws:BK.IWebSocket) => void;
-    onMessage: (ws:BK.IWebSocket, data:WebSocketData) => void;
-    constructor(url:string) {
+    onOpen: (ws: BK.IWebSocket) => void;
+    onClose: (ws: BK.IWebSocket) => void;
+    onError: (ws: BK.IWebSocket) => void;
+    onMessage: (ws: BK.IWebSocket, data: WebSocketData) => void;
+    constructor(url: string) {
         this.options = null;
         this.inTrans = false;
         this.isPendingConn = true;
@@ -1503,13 +1533,14 @@ class WebSocket implements BK.IWebSocket {
         this.scheme = res.protocol;
         this.port = res.port;
         this.path = res.path;
+        this.query = res.query;
         this.host = res.hostname;
-        BK.DNS.queryIPAddress(res.hostname, (reason:number, af:number, iplist:Array<string>)=>{
+        BK.DNS.queryIPAddress(res.hostname, (reason: number, af: number, iplist: Array<string>) => {
             switch (reason) {
                 case 0: {
                     BK.Script.log(1, 0, "BK.WebSocket.queryIPAddress!iplist = " + JSON.stringify(iplist));
                     this.iplist = iplist;
-                    this.__nativeObj = new KWebSocket(iplist[0], this.port, this.host, this.path);
+                    this.__nativeObj = new KWebSocket(iplist[0], this.port, this.host, this.path, this.query);
                     if (this.scheme == "wss") {
                         this.__nativeObj.enableSSL(true);
                     }
@@ -1521,7 +1552,7 @@ class WebSocket implements BK.IWebSocket {
                         this.connect();
                         this.isPendingConn = false;
                     }
-                    this.__nativeObj.delegate.onOpen = (kws:KWebSocket)=>{
+                    this.__nativeObj.delegate.onOpen = (kws: KWebSocket) => {
                         if (this.txdataQ.length > 0) {
                             this.send(this.txdataQ.shift());
                         }
@@ -1529,22 +1560,22 @@ class WebSocket implements BK.IWebSocket {
                             this.onOpen(this);
                         }
                     }
-                    this.__nativeObj.delegate.onClose = (kws:KWebSocket)=>{
+                    this.__nativeObj.delegate.onClose = (kws: KWebSocket) => {
                         if (this.onClose) {
                             this.onClose(this);
                         }
                     }
-                    this.__nativeObj.delegate.onError = (kws:KWebSocket)=>{
+                    this.__nativeObj.delegate.onError = (kws: KWebSocket) => {
                         if (this.onError) {
                             this.onError(this);
                         }
                     }
-                    this.__nativeObj.delegate.onMessage = (kws:KWebSocket, data:WebSocketData)=>{
+                    this.__nativeObj.delegate.onMessage = (kws: KWebSocket, data: WebSocketData) => {
                         if (this.onMessage) {
                             this.onMessage(this, data);
                         }
                     }
-                    this.__nativeObj.delegate.onSendComplete = (kws:KWebSocket)=>{
+                    this.__nativeObj.delegate.onSendComplete = (kws: KWebSocket) => {
                         if (this.txdataQ.length > 0) {
                             let txdata: TxData = this.txdataQ.shift();
                             if (!txdata.isBinary)
@@ -1584,7 +1615,7 @@ class WebSocket implements BK.IWebSocket {
     }
 
     close(): void {
-        let state:BK_WS_STATE = this.getReadyState();
+        let state: BK_WS_STATE = this.getReadyState();
         if (BK_WS_STATE.ESTABLISHED == state) {
             this.__nativeObj.sendCloseFrame(BK_WS_ERR_CODE.NORMAL_CLOSE, "see ya");
         }
@@ -1597,8 +1628,8 @@ class WebSocket implements BK.IWebSocket {
         return true;
     }
 
-    send(data:any): boolean {
-        let state:BK_WS_STATE = this.getReadyState();
+    send(data: any): boolean {
+        let state: BK_WS_STATE = this.getReadyState();
         if (BK_WS_STATE.CLOSING == state || BK_WS_STATE.CLOSED == state) {
             return false;
         }
@@ -1620,14 +1651,14 @@ class WebSocket implements BK.IWebSocket {
         return false;
     }
 
-    setOptions(options:any) {
+    setOptions(options: any) {
         if (!this.__nativeObj) {
             this.options = options;
             return;
         }
         if (options.DrainSegmentCount)
             this.__nativeObj.options.DrainSegmentCount = options.DrainSegmentCount;
-         if (options.DefaultSegmentSize)
+        if (options.DefaultSegmentSize)
             this.__nativeObj.options.DefaultSegmentSize = options.DefaultSegmentSize;
         if (options.PingPongInterval)
             this.__nativeObj.options.PingPongInterval = options.PingPongInterval;
