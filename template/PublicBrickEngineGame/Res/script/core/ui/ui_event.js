@@ -140,7 +140,6 @@ function TouchEventHandler ()
         for(var i=0;i<touchArr.length;i++){
             var x = touchArr[i].x;
             var y = touchArr[i].y;
-             BK.Script.log(0,0,"detectGesture ! idx:"+ i +" status:"+ touchArr[i].status +" id:"+ touchArr[i].id + " x:" + x + " y:"+y );
             
             //touch begin
             if(touchArr[i].status == 2 )

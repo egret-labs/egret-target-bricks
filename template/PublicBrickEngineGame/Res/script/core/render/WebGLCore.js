@@ -7,7 +7,7 @@ function bkWebGLGetInstance(){
         attachMethod();
         gl.viewport(0, 0, BK.Director.screenPixelSize.width,BK.Director.screenPixelSize.height);
     }
-    renderTicker && (renderTicker.paused = true);
+    Object.prototype.hasOwnProperty.call(this, 'renderTicker') && (renderTicker.paused = true);
     BK.Director.ticker && (BK.Director.ticker.paused = true);
     return gl;
 }
@@ -529,23 +529,22 @@ function uniform4fv(location,v){
 }
 
 function uniform1iv(location,v){
-    gl.glUniform1iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform1iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
 }
 
 function uniform2iv(location,v){
-    gl.glUniform2iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform2iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
 }
 
 function uniform3iv(location,v){
-    gl.glUniform3iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform3iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
 }
 
 function uniform4iv(location,v){
-    gl.glUniform4iv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform4iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
 }
 
 function uniformMatrix2fv(location,transpose,value){
-    BK.Script.log(0, 0, "uniform = " + value.toString());
     gl.glUniformMatrix2fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
 }
 

@@ -167,7 +167,7 @@ mainTicker.interval = 1;
 mainTicker.setTickerCallBack(function(ts, duration)
 {
     BK.Render.clear(1,1,1,1);
-    BK.Render.treeRender(BK.Director.root, duration);
+    BK.Render.treeRender( BK.Director.root, BK.Director.dt);
     BK.Render.commit();
 
 });
