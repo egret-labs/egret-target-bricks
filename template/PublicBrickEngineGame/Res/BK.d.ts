@@ -243,6 +243,7 @@ declare namespace BK
      export interface Position{
         x:number;
         y:number;
+        z?:number;
     }
 
     export interface Rotation{
@@ -333,6 +334,11 @@ declare namespace BK
          * 是否以网络序写入数据
          */
         netOrder:boolean;
+
+        /**
+         * 指针位置
+         */
+        pointer:number;
         /**
          * 
          * @param length buffer长度
@@ -2495,7 +2501,6 @@ declare namespace BK
 
 
     export var AVView;
-    export var AVCamera;
 
     namespace AI {
         export class FaceDetector {
@@ -2515,26 +2520,26 @@ declare namespace BK
         identifier:string,  //
         width:number,       //require
         height:number,      //require
-        cameraPos:number,   //option  0 front,1 back (default is 0)
-        zOrder:number,
-        parent:BK.Node,     //option  default is null
+        cameraPos?:number,   //option  0 front,1 back (default is 0)
+        zOrder?:number,
+        parent?:BK.Node,     //option  default is null
         position:BK.Position, //option default is 
-        volume:number,      //option  [0-100] 
-        enableMic:boolean,  //option  default is true
-        enableSpeaker:boolean,//option  default is true
-        beauty:number,        //option  [0-9] default is 0.
-        whitening:number,     //option  [0-9] default is 0.
-        scaleSample:number, //option default is 1. (onPrePreview/onPreProcess phase)
+        volume?:number,      //option  [0-100] 
+        enableMic?:boolean,  //option  default is true
+        enableSpeake?:boolean,//option  default is true
+        beauty?:number,        //option  [0-9] default is 0.
+        whitening?:number,     //option  [0-9] default is 0.
+        scaleSample?:number, //option default is 1. (onPrePreview/onPreProcess phase)
         needFaceTracker: boolean,
-        skipFaceTrackerNum:number,
-        onPrePreview:(frameData:any)=>void,
-        onPreProcess:(frameData:any)=>void,
-        onSwitchCamera:(errCode:number,cmd:string,data:any)=>void;
+        skipFaceTrackerNum?:number,
+        onPrePreview?:(frameData:any)=>void,
+        onPreProcess?:(frameData:any)=>void,
+        onSwitchCamera?:(errCode:number,cmd:string,data:any)=>void;
     }
     interface AVRoomManagerEventId{
 
     }
-    interface AVRoomManagerEvent{
+    export interface AVRoomManagerEvent{
         eventHasAudioCallback?:(eventId:AVRoomManagerEventId,data:any)=>void;
         eventNoAudioCallback?:(eventId:AVRoomManagerEventId,data:any)=>void;
         eventNewSpeakCallback?:(eventId:AVRoomManagerEventId,data:any)=>void;
@@ -2543,15 +2548,197 @@ declare namespace BK
         eventExitCallback?:(eventId:AVRoomManagerEventId,data:any)=>void;
     }
 
-    // class AVRoomManager
-    // {
-    //     // static startAVRoom(environment:number,callback:(errCode:number,cmd:string,data:any)=>void);
-    //     static exitRoom(callback:(errCode:number,cmd:string,data:any)=>void);
-    //     static setSpeaker(sw:boolean,callback:(errCode:number,cmd:string,data:any)=>void);
-    //     static setMic(sw:boolean,callback:(errCode:number,cmd:string,data:any)=>void);
-    //     static setEventCallbackConfig(eve:AVRoomManagerEvent):void;
-    // }
-    export var QQAVManager;
+    export interface QQAVConfig {
+        avRoleName?:string;  //角色名称
+    }
+    export interface QQAVRoomConfig {
+        "sdkAppId": number;
+        "accountType": number;
+        "avRoomId": number;
+        "gameRoomId": number;
+        "avKey"?: string;
+        "selfOpenId"?: string;
+        "avRoleName"?: string;
+    }
+    export const enum QQAVRoomEventID {
+        QAV_EVENT_ID_NONE = 0,
+        QAV_EVENT_ID_ENDPOINT_ENTER = 1,
+        QAV_EVENT_ID_ENDPOINT_EXIT = 2,
+        QAV_EVENT_ID_ENDPOINT_HAS_CAMERA_VIDEO = 3,
+        QAV_EVENT_ID_ENDPOINT_NO_CAMERA_VIDEO = 4,
+        QAV_EVENT_ID_ENDPOINT_HAS_AUDIO = 5,
+        QAV_EVENT_ID_ENDPOINT_NO_AUDIO = 6,
+        QAV_EVENT_ID_ENDPOINT_HAS_SCREEN_VIDEO = 7,
+        QAV_EVENT_ID_ENDPOINT_NO_SCREEN_VIDEO = 8,
+        QAV_EVENT_ID_ENDPOINT_HAS_MEDIA_FILE_VIDEO = 9,
+        QAV_EVENT_ID_ENDPOINT_NO_MEDIA_FILE_VIDEO = 10,
+        QAV_EVENT_ID_ENDPOINT_NEW_SPEAKING = 42,
+        QAV_EVENT_ID_ENDPOINT_OLD_STOP_SPEAKING = 43,
+    }
+    export interface QQAVRoomEventUserData {
+        openId: string;
+    }
+    export interface QAVRoomEventData {
+        eventId: QQAVRoomEventID;
+        userInfo: Array<QQAVRoomEventUserData>;
+    }
+    export interface QQAVCallbackConfig {
+        eventEnterCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventExitCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventHasCameraVideoCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventNoCameraVideoCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventHasAudioCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventNoAudioCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventHasScreenVideoCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventNoScreenVideoCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventHasMediaFileCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventNoMediaFileCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventNewSpeakCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventOldStopSpeakCallback?: (evnetId: QQAVRoomEventID, data: any) => void;
+        eventRoomDisconnectCallback?: (data: any) => void;
+    }
+    export const enum QAVCategory {
+        QAVCategoryRealTime = 0,
+        QAVCategoryLive = 1,
+        QAVCategoryWatch = 2,
+        QAVCategoryHighQuality = 3,
+    }
+
+    export class QAV {
+        /**
+         * 初始化
+         * @param cfg 
+         * @param callback 
+         */
+        initQAVRoom(cfg: QQAVRoomConfig, callback: (errCode: number, cmd: string, data: any) => void);
+        /**
+         * 进入房间
+         * @param cfg 
+         * @param callback 
+         */
+        enterQAVRoom(cfg: QQAVRoomConfig, callback: (errCode: number, cmd: string, data: any) => void);
+        /**
+         * 初始并加入房间
+         * @param cfg 
+         * @param callback 
+         */
+        initAndEnterRoom(cfg: QQAVRoomConfig, callback: (errCode: number, cmd: string, data: any) => void) ;
+        /**
+         * 退房间
+         * @param callbck 
+         */
+        exitRoom(callbck: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 设置配置
+         * @param cfg 
+         */
+        setQAVCfg(cfg: QQAVRoomConfig): void;
+        /**
+         * 设置时间回调
+         * @param callbackCfg 
+         */
+        setEventCallbackConfig(callbackCfg: QQAVCallbackConfig): void;
+        /**
+         * 设置麦克风
+         * @param sw 
+         * @param callback 
+         */
+        setMic(sw: boolean, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 设置扬声器
+         * @param sw 
+         * @param callback 
+         */
+        setSpeaker(sw: boolean, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 切换摄像头
+         * @param cameraPos 
+         * @param callback 
+         */
+        switchCamera(cameraPos: number, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 启用相机
+         * @param enable 
+         * @param callback 
+         */
+        enableCamera(enable: boolean, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 设置美颜
+         * @param beauty 
+         */
+        setBeauty(beauty: number): void;
+        /**
+         * 使能本地信号发送开关
+         * @param sw 
+         */
+        setLocalVideo(sw: boolean): void;
+        /**
+         * 请求接受远端数据信号
+         * @param openIdList 
+         */
+        watchRemoteVideo(openIdList: Array<string>): void;
+        /**
+         * 设置远程新型号
+         * @param sw 
+         */
+        setRemoteVideo(sw: boolean): void;
+        /**
+         * 获取
+         * @param callback 
+         */
+        getEndpointList(callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 是否前置摄像头
+         */
+        isFrontCamera(): boolean;
+        /**
+         * 获取流控参数
+         * @param data 
+         * @param callback 
+         */
+        getFluidCtrlCfg(data: any, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 切换音视频配置
+         * @param category 
+         * @param callback 
+         */
+        changeAudioCategory(category: QAVCategory, callback: (errCode: number, cmd: string, data: any) => void): void;
+        /**
+         * 切换角色
+         * @param role 
+         * @param callback 
+         */
+        changeQAVRole(role: string, callback: (errCode: number, cmd: string, data: any) => void): void;
+    }
+
+    var QQAVManager;
+
+    /**
+     * 视频展示view
+     */
+    export class QAVView {
+        /**
+         * 
+         * @param identifier 
+         * @param width 
+         * @param height 
+         * @param autoAddMgr 
+         * @param parent 
+         * @param position 
+         * @param zOrder 
+         */
+        constructor(identifier: string, width: number, height: number, autoAddMgr?:boolean, parent?: BK.Node, position?: any, zOrder?: number);
+    }
+
+    /**
+     * 摄像头view
+     */
+    export class AVCamera{ 
+        static start(options: BK.QAVCameraOption): AVCamera;
+        static configCamera(opts: BK.QAVCameraOption): void;
+    }
+
+
     export var SheetSprite;
     export var AVRoomManager;
 

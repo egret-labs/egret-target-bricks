@@ -135,10 +135,10 @@ class Main extends egret.DisplayObjectContainer {
         colorLabel.y = 80;
         container.addChild(colorLabel);
 
-        this.addChild(container);
+
 
         let textfield = new egret.TextField();
-        this.addChild(textfield);
+        container.addChild(textfield);
         textfield.alpha = 0;
         textfield.width = stageW - 172;
         textfield.textAlign = egret.HorizontalAlign.CENTER;
@@ -147,14 +147,16 @@ class Main extends egret.DisplayObjectContainer {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+        this.addChild(container);
 
         let renderTexture = new egret.RenderTexture();
-        let rectangle = new egret.Rectangle(100,33,icon.width,icon.height)
-        renderTexture.drawToTexture(container,rectangle);
+        let rectangle = new egret.Rectangle(300, 33, icon.width, icon.height)
+        renderTexture.drawToTexture(container, rectangle);
 
         egret.setTimeout(() => {
             let image = new egret.Bitmap();
             image.texture = renderTexture;
+            image.x = 300;
             image.y = 500;
             this.addChild(image);
         }, this, 3000)
