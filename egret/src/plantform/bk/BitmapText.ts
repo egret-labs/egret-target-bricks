@@ -478,7 +478,7 @@ namespace egret {
                     );
 
                     bkNode.size = { width: texture.$bitmapWidth, height: texture.$bitmapHeight };
-                    bkNode.position = { x: xPos, y: -yPos };
+                    bkNode.position = { x: xPos, y: -yPos - bitmapHeight };
                     nodeCount++;
 
                     xPos += (bitmapFont.getConfig(character, "xadvance") || texture.$getTextureWidth()) + self.$letterSpacing;

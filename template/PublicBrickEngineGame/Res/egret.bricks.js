@@ -2081,7 +2081,7 @@ var egret;
                     bkNode.setTexture(texture.$bitmapData.bkTexture);
                     bkNode.adjustTexturePosition(texture.$bitmapX, texture.$sourceHeight - (texture.$bitmapY + texture.$bitmapHeight), texture.$bitmapWidth, texture.$bitmapHeight, texture.$rotated);
                     bkNode.size = { width: texture.$bitmapWidth, height: texture.$bitmapHeight };
-                    bkNode.position = { x: xPos, y: -yPos };
+                    bkNode.position = { x: xPos, y: -yPos - bitmapHeight };
                     nodeCount++;
                     xPos += (bitmapFont.getConfig(character, "xadvance") || texture.$getTextureWidth()) + self.$letterSpacing;
                 }
