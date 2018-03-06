@@ -4418,6 +4418,8 @@ var egret;
             var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
             var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
             background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
+            background_node.size = { width: _this.stage.stageWidth, height: _this.stage.stageHeight };
+            background_node.position = { x: 0, y: -_this.stage.stageHeight };
             BK.Director.root.addChild(background_node);
             background_node.zOrder = 1;
             //
