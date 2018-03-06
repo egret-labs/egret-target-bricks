@@ -4410,6 +4410,16 @@ var egret;
             }, _this);
             _this.updateScreenSize();
             _this.updateMaxTouches();
+            //加入背景
+            var tex = new BK.Texture('GameRes://resource/pixel.png');
+            var background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1);
+            var rgb_str = options.background.toString(16);
+            var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
+            var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
+            var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
+            background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
+            BK.Director.root.addChild(background_node);
+            background_node.zOrder = 1;
             //
             var entryClassName = _this._options.entryClassName;
             var rootClass;

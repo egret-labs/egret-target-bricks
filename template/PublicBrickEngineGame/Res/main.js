@@ -134,7 +134,8 @@ var __extends = function (t, e) {
             contentHeight: 1136,
             entryClassName: "Main",
             scaleMode: "showAll",
-            orientation: "auto"
+            orientation: "auto",
+            background: 0x888888
         }
     );
 })();

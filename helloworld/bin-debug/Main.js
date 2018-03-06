@@ -157,7 +157,7 @@ var Main = (function (_super) {
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        debugger;
+        // debugger;
         var container = new egret.DisplayObjectContainer();
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
