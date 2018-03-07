@@ -22,7 +22,7 @@ namespace egret {
             if (!this.$texture) {
                 return;
             }
-            
+
             const matrix = this.$getMatrix();
             const bkMatrix = (this._bkNode.transform as any).matrix;
             let tx = matrix.tx;
@@ -59,8 +59,8 @@ namespace egret {
                 this.$bitmapData = <any>this.$texture.bitmapData as BKBitmapData;
                 if (this.$bitmapData.bkTexture) {
                     this._bkSprite.setTexture(this.$bitmapData.bkTexture);
-                    if(this.$bitmapData.isFlip)
-                    (this._bkSprite as BK.Sprite).setUVFlip(0,0);
+                    if (this.$bitmapData.isFlip)
+                        (this._bkSprite as BK.Sprite).setUVFlip(0, 0);
                     this._bkSprite.adjustTexturePosition(
                         this.$texture.$bitmapX,
                         this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight),

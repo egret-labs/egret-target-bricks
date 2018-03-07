@@ -68,8 +68,8 @@ namespace egret {
          * @language zh_CN
          */
         public constructor() {
-            // super(new (BK as any).ClipRectNode(0, -2048, 2048, 2048));
-            super(new BK.Node())
+            super(new (BK as any).ClipRectNode(0, -2048, 2048, 2048));
+            // super(new BK.Node())
             this._bkClipRectNode = this._bkNode;
             this._bkClipRectNode.enableClip = false;
             this.$children = [];

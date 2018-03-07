@@ -463,10 +463,9 @@ var egret;
          * @language zh_CN
          */
         function BKDisplayObjectContainer() {
-            var _this = 
-            // super(new (BK as any).ClipRectNode(0, -2048, 2048, 2048));
-            _super.call(this, new BK.Node()) || this;
+            var _this = _super.call(this, new BK.ClipRectNode(0, -2048, 2048, 2048)) || this;
             _this.$touchChildren = true;
+            // super(new BK.Node())
             _this._bkClipRectNode = _this._bkNode;
             _this._bkClipRectNode.enableClip = false;
             _this.$children = [];
