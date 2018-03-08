@@ -4,51 +4,15 @@
 import * as path from 'path';
 import { UglifyPlugin, IncrementCompilePlugin, CompilePlugin, ManifestPlugin, ExmlPlugin, EmitResConfigFilePlugin, TextureMergerPlugin } from 'built-in';
 import { WxgamePlugin } from './wxgame/wxgame';
-import { CustomPlugin } from './myplugin';
 import { BricksPlugin } from './bricks/bricks';
+import { CustomPlugin } from './myplugin';
 
 const config: ResourceManagerConfig = {
 
-    configPath: 'config.res.js',
-
-    resourceRoot: () => "resource",
 
     buildConfig: (params) => {
 
-
-
         const { target, command, projectName, version } = params;
-
-        if (target == 'bricks') {
-            const outputDir = `../${projectName}_bricks/PublicBrickEngineGame/Res`;
-            return {
-                outputDir,
-                commands: [
-                    new CompilePlugin({ libraryType: "debug" }),
-                    new ExmlPlugin('commonjs'), // 非 EUI 项目关闭此设置
-                    new ManifestPlugin({ output: 'manifest.json' }),
-                    new BricksPlugin()
-                ]
-            }
-        }
-
-        if (target == 'wxgame') {
-            const outputDir = `../${projectName}_wxgame`;
-            return {
-                outputDir,
-                commands: [
-                    new CompilePlugin({ libraryType: "release" }),
-                    new ExmlPlugin('commonjs'), // 非 EUI 项目关闭此设置
-                    new WxgamePlugin(),
-                    new UglifyPlugin([{
-                        sources: ["main.js"],
-                        target: "main.min.js"
-                    }
-                    ]),
-                    new ManifestPlugin({ output: 'manifest.js' })
-                ]
-            }
-        }
 
         if (command == 'build') {
             const outputDir = '.';
@@ -72,7 +36,7 @@ const config: ResourceManagerConfig = {
                 outputDir,
                 commands: [
                     new CustomPlugin(),
-                    new CompilePlugin({ libraryType: "release" }),
+                    new CompilePlugin({ libraryType: "release", defines: { DEBUG: false, RELEASE: true } }),
                     new ExmlPlugin('commonjs'), // 非 EUI 项目关闭此设置
                     new UglifyPlugin([{
                         sources: ["main.js"],

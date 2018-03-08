@@ -150,63 +150,65 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        debugger;
-        var container = new egret.DisplayObjectContainer();
-        var topMask = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, 172);
-        topMask.graphics.endFill();
-        topMask.y = 33;
-        container.addChild(topMask);
-        var icon = this.createBitmapByName("egret_icon_png");
-        container.addChild(icon);
-        icon.x = 26;
-        icon.y = 33;
-        var line = new egret.Shape();
-        line.graphics.lineStyle(2, 0xffffff);
-        line.graphics.moveTo(0, 0);
-        line.graphics.lineTo(0, 117);
-        line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
-        container.addChild(line);
-        var colorLabel = new egret.TextField();
-        colorLabel.textColor = 0xffffff;
-        colorLabel.width = stageW - 172;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
-        colorLabel.size = 24;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
-        container.addChild(colorLabel);
-        var textfield = new egret.TextField();
-        container.addChild(textfield);
-        textfield.alpha = 0;
-        textfield.width = stageW - 172;
-        textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
-        textfield.textColor = 0xffffff;
-        textfield.x = 172;
-        textfield.y = 135;
-        this.textfield = textfield;
-        this.addChild(container);
-        var renderTexture = new egret.RenderTexture();
-        var rectangle = new egret.Rectangle(300, 33, icon.width, icon.height);
-        renderTexture.drawToTexture(container, rectangle);
-        egret.setTimeout(function () {
-            var image = new egret.Bitmap();
-            image.texture = renderTexture;
-            image.x = 300;
-            image.y = 500;
-            _this.addChild(image);
-        }, this, 3000);
+        sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
+        var t = new egret.Timer(50);
+        t.addEventListener(egret.TimerEvent.TIMER, function () {
+            var rect = sky.scrollRect;
+            if (rect.x + rect.width >= sky.width) {
+                rect.width = 100;
+                rect.y += 20;
+                sky.y += 20;
+            }
+            if (rect.y + rect.height >= sky.height) {
+                rect.y = 0;
+                sky.y = 0;
+            }
+            rect.width += 20;
+        }, this);
+        t.start;
+        // let topMask = new egret.Shape();
+        // topMask.graphics.beginFill(0x000000, 0.5);
+        // topMask.graphics.drawRect(0, 0, stageW, 172);
+        // topMask.graphics.endFill();
+        // topMask.y = 33;
+        // this.addChild(topMask);
+        // let icon = this.createBitmapByName("egret_icon_png");
+        // this.addChild(icon);
+        // icon.x = 26;
+        // icon.y = 33;
+        // let line = new egret.Shape();
+        // line.graphics.lineStyle(2, 0xffffff);
+        // line.graphics.moveTo(0, 0);
+        // line.graphics.lineTo(0, 117);
+        // line.graphics.endFill();
+        // line.x = 172;
+        // line.y = 61;
+        // this.addChild(line);
+        // let colorLabel = new egret.TextField();
+        // colorLabel.textColor = 0xffffff;
+        // colorLabel.width = stageW - 172;
+        // colorLabel.textAlign = "center";
+        // colorLabel.text = "Hello Egret";
+        // colorLabel.size = 24;
+        // colorLabel.x = 172;
+        // colorLabel.y = 80;
+        // this.addChild(colorLabel);
+        // let textfield = new egret.TextField();
+        // this.addChild(textfield);
+        // textfield.alpha = 0;
+        // textfield.width = stageW - 172;
+        // textfield.textAlign = egret.HorizontalAlign.CENTER;
+        // textfield.size = 24;
+        // textfield.textColor = 0xffffff;
+        // textfield.x = 172;
+        // textfield.y = 135;
+        // this.textfield = textfield;
     };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
@@ -223,27 +225,26 @@ var Main = (function (_super) {
      * Description file loading is successful, start to play the animation
      */
     Main.prototype.startAnimation = function (result) {
-        var _this = this;
-        var parser = new egret.HtmlTextParser();
-        var textflowArr = result.map(function (text) { return parser.parse(text); });
-        var textfield = this.textfield;
-        var count = -1;
-        var change = function () {
-            count++;
-            if (count >= textflowArr.length) {
-                count = 0;
-            }
-            var textFlow = textflowArr[count];
-            // 切换描述内容
-            // Switch to described content
-            textfield.textFlow = textFlow;
-            var tw = egret.Tween.get(textfield);
-            tw.to({ "alpha": 1 }, 200);
-            tw.wait(2000);
-            tw.to({ "alpha": 0 }, 200);
-            tw.call(change, _this);
-        };
-        change();
+        // let parser = new egret.HtmlTextParser();
+        // let textflowArr = result.map(text => parser.parse(text));
+        // let textfield = this.textfield;
+        // let count = -1;
+        // let change = () => {
+        //     count++;
+        //     if (count >= textflowArr.length) {
+        //         count = 0;
+        //     }
+        //     let textFlow = textflowArr[count];
+        //     // 切换描述内容
+        //     // Switch to described content
+        //     textfield.textFlow = textFlow;
+        //     let tw = egret.Tween.get(textfield);
+        //     tw.to({ "alpha": 1 }, 200);
+        //     tw.wait(2000);
+        //     tw.to({ "alpha": 0 }, 200);
+        //     tw.call(change, this);
+        // };
+        // change();
     };
     return Main;
 }(egret.DisplayObjectContainer));

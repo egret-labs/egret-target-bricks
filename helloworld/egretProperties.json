@@ -1,10 +1,10 @@
 {
-  "engineVersion": "5.1.2",
-  "compilerVersion": "5.1.2",
+  "engineVersion": "5.1.5",
+  "compilerVersion": "5.1.5",
+  "template": {},
   "target": {
     "current": "web"
   },
-  "template": {},
   "modules": [
     {
       "name": "egret"

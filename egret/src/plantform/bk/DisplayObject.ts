@@ -346,6 +346,48 @@ namespace egret {
             // MD
             this._transformDirty = true;
         }
+
+
+        // /**
+        //  * @override
+        //  */
+        // public get scrollRect(): Rectangle {
+        //     return this.$scrollRect;
+        // }
+
+        // /**
+        //  * @override
+        //  */
+        // public set scrollRect(value: Rectangle) {
+        //     this.setScrollRect(value);
+        // }
+
+        // private scrollRectNode: BK.Node;
+
+        // setScrollRect(value: Rectangle): void {
+        //     // debugger;
+
+        //     // if (value) {
+        //     //     super['$setScrollRect'].call(this, value);
+        //     //     let rect = this.$scrollRect;
+        //     //     if (this.scrollRectNode) {
+        //     //         let clipRectNode = this.scrollRectNode.parent;
+        //     //         // clipRectNode.
+        //     //     }
+
+
+        //     // } else {
+
+        //     // }
+
+
+        // }
+
+
+
+
+
+
         /**
          * @override
          */

@@ -319,6 +319,27 @@ var egret;
             // MD
             this._transformDirty = true;
         };
+        Object.defineProperty(BKDisplayObject.prototype, "scrollRect", {
+            /**
+             * @override
+             */
+            get: function () {
+                return this.$scrollRect;
+            },
+            /**
+             * @override
+             */
+            set: function (value) {
+                this.setScrollRect(value);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        BKDisplayObject.prototype.setScrollRect = function (value) {
+            debugger;
+            _super.prototype['$setScrollRect'].call(this, value);
+            var rect = this.$scrollRect;
+        };
         /**
          * @override
          */
