@@ -768,7 +768,7 @@ class KWebSocket extends KSocket {
             for (let i = 0; i < qa.length; i++) {
                 let kv = qa[i].split('=');
                 if (kv.length > 0) {
-                    s =s .concat(kv[0] + ":" + kv[1] + "\r\n");
+                    s = s.concat(kv[0] + ":" + kv[1] + "\r\n");
                 }
             }
         }
@@ -1509,6 +1509,7 @@ class TxData {
 
 class WebSocket implements BK.IWebSocket {
     private __nativeObj: KWebSocket;
+    private __url: string;
     private options: Map<number>;
     private inTrans: boolean;
     private isPendingConn: boolean;
@@ -1523,7 +1524,51 @@ class WebSocket implements BK.IWebSocket {
     onClose: (ws: BK.IWebSocket) => void;
     onError: (ws: BK.IWebSocket) => void;
     onMessage: (ws: BK.IWebSocket, data: WebSocketData) => void;
+    onopen: (ws: BK.IWebSocket) => void;
+    onclose: (ws: BK.IWebSocket) => void;
+    onerror: (ws: BK.IWebSocket) => void;
+    onmessage: (ws: BK.IWebSocket, data: WebSocketData) => void;
+
+    get url() { return this.__url; }
+    get readyState() { return this.getReadyState(); }
+    get bufferedAmount() {
+        let bufferdAmount: number = 0;
+        for (let i = 0; i < this.txdataQ.length; i++) {
+            bufferdAmount = bufferdAmount + this.txdataQ[i].data.length;
+        }
+        return bufferdAmount;
+    }
+
+    private __sendBinaryFrame(data: any) {
+        if (Object.prototype.hasOwnProperty.call(data, '__rawBKData')) {
+            return this.__nativeObj.sendBinaryFrame(data.__rawBKData);
+        }
+        if (data instanceof Int8Array == true ||
+            data instanceof Uint8Array == true ||
+            data instanceof Int16Array == true ||
+            data instanceof Uint16Array == true ||
+            data instanceof Int32Array == true ||
+            data instanceof Uint32Array == true ||
+            data instanceof Float32Array == true) {
+            var bf = new BK.Buffer(data.byteLength);
+            var da = new DataView(data.buffer);
+            for (var i = 0; i < data.byteLength; i++) {
+                bf.writeUint8Buffer(da.getUint8(i));
+            }
+            return this.__nativeObj.sendBinaryFrame(bf);
+        } else if (data instanceof ArrayBuffer == true) {
+            var bf = new BK.Buffer(data.byteLength);
+            var da = new DataView(data);
+            for (var i = 0; i < data.byteLength; i++) {
+                bf.writeUint8Buffer(da.getUint8(i));
+            }
+            return this.__nativeObj.sendBinaryFrame(bf);
+        }
+        return this.__nativeObj.sendBinaryFrame(data);
+    }
+
     constructor(url: string) {
+        this.__url = url;
         this.options = null;
         this.inTrans = false;
         this.isPendingConn = true;
@@ -1558,21 +1603,29 @@ class WebSocket implements BK.IWebSocket {
                         }
                         if (this.onOpen) {
                             this.onOpen(this);
+                        } else if (this.onopen) {
+                            this.onopen(this);
                         }
                     }
                     this.__nativeObj.delegate.onClose = (kws: KWebSocket) => {
                         if (this.onClose) {
                             this.onClose(this);
+                        } else if (this.onclose) {
+                            this.onclose(this);
                         }
                     }
                     this.__nativeObj.delegate.onError = (kws: KWebSocket) => {
                         if (this.onError) {
                             this.onError(this);
+                        } else if (this.onerror) {
+                            this.onerror(this);
                         }
                     }
                     this.__nativeObj.delegate.onMessage = (kws: KWebSocket, data: WebSocketData) => {
                         if (this.onMessage) {
                             this.onMessage(this, data);
+                        } else if (this.onmessage) {
+                            this.onmessage(this, data);
                         }
                     }
                     this.__nativeObj.delegate.onSendComplete = (kws: KWebSocket) => {
@@ -1581,7 +1634,7 @@ class WebSocket implements BK.IWebSocket {
                             if (!txdata.isBinary)
                                 this.__nativeObj.sendTextFrame(txdata.data);
                             else
-                                this.__nativeObj.sendBinaryFrame(txdata.data);
+                                this.__sendBinaryFrame(txdata.data);
                             this.inTrans = true;
                         } else {
                             this.inTrans = false;
@@ -1645,7 +1698,7 @@ class WebSocket implements BK.IWebSocket {
                 this.txdataQ.push(new TxData(data, true));
             } else {
                 this.inTrans = true;
-                return this.__nativeObj.sendBinaryFrame(<BK.Buffer>data);
+                return this.__sendBinaryFrame(data);
             }
         }
         return false;

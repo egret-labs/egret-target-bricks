@@ -1343,6 +1343,7 @@ var TxData = (function () {
 var WebSocket = (function () {
     function WebSocket(url) {
         var _this = this;
+        this.__url = url;
         this.options = null;
         this.inTrans = false;
         this.isPendingConn = true;
@@ -1377,20 +1378,32 @@ var WebSocket = (function () {
                         if (_this.onOpen) {
                             _this.onOpen(_this);
                         }
+                        else if (_this.onopen) {
+                            _this.onopen(_this);
+                        }
                     };
                     _this.__nativeObj.delegate.onClose = function (kws) {
                         if (_this.onClose) {
                             _this.onClose(_this);
+                        }
+                        else if (_this.onclose) {
+                            _this.onclose(_this);
                         }
                     };
                     _this.__nativeObj.delegate.onError = function (kws) {
                         if (_this.onError) {
                             _this.onError(_this);
                         }
+                        else if (_this.onerror) {
+                            _this.onerror(_this);
+                        }
                     };
                     _this.__nativeObj.delegate.onMessage = function (kws, data) {
                         if (_this.onMessage) {
                             _this.onMessage(_this, data);
+                        }
+                        else if (_this.onmessage) {
+                            _this.onmessage(_this, data);
                         }
                     };
                     _this.__nativeObj.delegate.onSendComplete = function (kws) {
@@ -1399,7 +1412,7 @@ var WebSocket = (function () {
                             if (!txdata.isBinary)
                                 _this.__nativeObj.sendTextFrame(txdata.data);
                             else
-                                _this.__nativeObj.sendBinaryFrame(txdata.data);
+                                _this.__sendBinaryFrame(txdata.data);
                             _this.inTrans = true;
                         }
                         else {
@@ -1411,6 +1424,55 @@ var WebSocket = (function () {
             }
         });
     }
+    Object.defineProperty(WebSocket.prototype, "url", {
+        get: function () { return this.__url; },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(WebSocket.prototype, "readyState", {
+        get: function () { return this.getReadyState(); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(WebSocket.prototype, "bufferedAmount", {
+        get: function () {
+            var bufferdAmount = 0;
+            for (var i = 0; i < this.txdataQ.length; i++) {
+                bufferdAmount = bufferdAmount + this.txdataQ[i].data.length;
+            }
+            return bufferdAmount;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    WebSocket.prototype.__sendBinaryFrame = function (data) {
+        if (Object.prototype.hasOwnProperty.call(data, '__rawBKData')) {
+            return this.__nativeObj.sendBinaryFrame(data.__rawBKData);
+        }
+        if (data instanceof Int8Array == true ||
+            data instanceof Uint8Array == true ||
+            data instanceof Int16Array == true ||
+            data instanceof Uint16Array == true ||
+            data instanceof Int32Array == true ||
+            data instanceof Uint32Array == true ||
+            data instanceof Float32Array == true) {
+            var bf = new BK.Buffer(data.byteLength);
+            var da = new DataView(data.buffer);
+            for (var i = 0; i < data.byteLength; i++) {
+                bf.writeUint8Buffer(da.getUint8(i));
+            }
+            return this.__nativeObj.sendBinaryFrame(bf);
+        }
+        else if (data instanceof ArrayBuffer == true) {
+            var bf = new BK.Buffer(data.byteLength);
+            var da = new DataView(data);
+            for (var i = 0; i < data.byteLength; i++) {
+                bf.writeUint8Buffer(da.getUint8(i));
+            }
+            return this.__nativeObj.sendBinaryFrame(bf);
+        }
+        return this.__nativeObj.sendBinaryFrame(data);
+    };
     WebSocket.prototype.getReadyState = function () {
         if (this.__nativeObj) {
             return this.__nativeObj.getReadyState();
@@ -1461,7 +1523,7 @@ var WebSocket = (function () {
             }
             else {
                 this.inTrans = true;
-                return this.__nativeObj.sendBinaryFrame(data);
+                return this.__sendBinaryFrame(data);
             }
         }
         return false;

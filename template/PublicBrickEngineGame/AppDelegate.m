@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
+#import "BKNavigationController.h"
 
 @interface AppDelegate ()
 
@@ -22,7 +23,7 @@
     self.window.frame = [[UIScreen mainScreen] bounds];
     [self.window makeKeyAndVisible];
     
-    UINavigationController * navi = [[UINavigationController alloc]init];
+    BKNavigationController * navi = [[BKNavigationController alloc]init];
     
     ViewController * vc = [[ViewController alloc]init];
     [navi pushViewController:vc animated:NO];
@@ -58,5 +59,8 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(nullable UIWindow *)window {
+    return UIInterfaceOrientationMaskAll;
+}
 
 @end

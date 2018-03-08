@@ -8,4 +8,8 @@
 
 #include "bkGLView.h"
 @interface DemoGLView : bkGLView
+
+@property (nonatomic, assign) UIInterfaceOrientation gameOritation;
+- (void)changeScreenWithMode:(int)screenMode;
+
 @end

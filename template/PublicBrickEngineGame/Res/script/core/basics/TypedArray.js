@@ -1,10 +1,15 @@
 (function (global) {
     function __bkIsSupportTypedArray() {
-        return true;
+        var info = BK.Director.queryDeviceInfo();
+        var vers = info.version.split('.');
+        if (info.platform == 'ios' && Number(vers[0]) >= 10) {
+            return true;
+        }
+        BK.Script.log(1, 0, "Current Device dont supoort TypedArray.[info = " + JSON.stringify(info) + "]");
+        return false;
     }
     if (__bkIsSupportTypedArray())
         return;
-    BK.Script.log(0, 0, "use cmshow TypedArray");
     (function (global, factory) {
         if (typeof global === 'object') {
             //暂时仅支持UMD。此处预留AMD与CMD能力
@@ -93,7 +98,7 @@
                 }
                 if (length > 0) {
                     this.__jump(offset);
-                    this._buffer.expandToBytes(length);
+                    this._buffer.expandToBytes(offset + length);
                     var buf = this._buffer.readBuffer(length);
                     return new ArrayBuffer(buf);
                 }
@@ -307,8 +312,9 @@
         }());
         var Int8Array = (function () {
             function Int8Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Int8Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -338,13 +344,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 1; },
                     enumerable: true,
                     configurable: true
                 });
@@ -506,10 +515,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Int8Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Int8Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Int8Array.set: Out of range");
                     }
-                    for (var i_9 = offset, j_1 = 0; j_1 < array.length; i_9++, j_1++) {
+                    for (var i_9 = _offset, j_1 = 0; j_1 < array.length; i_9++, j_1++) {
                         this._dataView.setInt8(i_9 * Int8Array.BYTES_PER_ELEMENT, array[j_1]);
                     }
                 }
@@ -533,8 +543,9 @@
         Int8Array.BYTES_PER_ELEMENT = 1;
         var Uint8Array = (function () {
             function Uint8Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Uint8Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -564,11 +575,9 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
                     enumerable: true,
@@ -576,6 +585,11 @@
                 });
                 Object.defineProperty(this, "buffer", {
                     get: function () { return this._dataView.buffer; },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 1; },
                     enumerable: true,
                     configurable: true
                 });
@@ -732,10 +746,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Uint8Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Uint8Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Uint8Array.set: Out of range");
                     }
-                    for (var i_19 = offset, j_2 = 0; j_2 < array.length; i_19++, j_2++) {
+                    for (var i_19 = _offset, j_2 = 0; j_2 < array.length; i_19++, j_2++) {
                         this._dataView.setUint8(i_19 * Uint8Array.BYTES_PER_ELEMENT, array[j_2]);
                     }
                 }
@@ -759,8 +774,9 @@
         Uint8Array.BYTES_PER_ELEMENT = 1;
         var Int16Array = (function () {
             function Int16Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Int16Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -790,13 +806,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 2; },
                     enumerable: true,
                     configurable: true
                 });
@@ -958,10 +977,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Int16Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Int16Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Int16Array.set: Out of range");
                     }
-                    for (var i_29 = offset, j_3 = 0; j_3 < array.length; i_29++, j_3++) {
+                    for (var i_29 = _offset, j_3 = 0; j_3 < array.length; i_29++, j_3++) {
                         this._dataView.setInt16(i_29 * Int16Array.BYTES_PER_ELEMENT, array[j_3], true);
                     }
                 }
@@ -985,8 +1005,9 @@
         Int16Array.BYTES_PER_ELEMENT = 2;
         var Uint16Array = (function () {
             function Uint16Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Uint16Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -1016,13 +1037,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 2; },
                     enumerable: true,
                     configurable: true
                 });
@@ -1184,10 +1208,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Uint16Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Uint16Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Uint16Array.set: Out of range");
                     }
-                    for (var i_39 = offset, j_4 = 0; j_4 < array.length; i_39++, j_4++) {
+                    for (var i_39 = _offset, j_4 = 0; j_4 < array.length; i_39++, j_4++) {
                         this._dataView.setUint16(i_39 * Uint16Array.BYTES_PER_ELEMENT, array[j_4], true);
                     }
                 }
@@ -1211,8 +1236,9 @@
         Uint16Array.BYTES_PER_ELEMENT = 2;
         var Int32Array = (function () {
             function Int32Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Int32Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -1242,13 +1268,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 4; },
                     enumerable: true,
                     configurable: true
                 });
@@ -1410,10 +1439,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Int32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Int32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Int32Array.set: Out of range");
                     }
-                    for (var i_49 = offset, j_5 = 0; j_5 < array.length; i_49++, j_5++) {
+                    for (var i_49 = _offset, j_5 = 0; j_5 < array.length; i_49++, j_5++) {
                         this._dataView.setInt32(i_49 * Int32Array.BYTES_PER_ELEMENT, array[j_5], true);
                     }
                 }
@@ -1437,8 +1467,9 @@
         Int32Array.BYTES_PER_ELEMENT = 4;
         var Uint32Array = (function () {
             function Uint32Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Uint32Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -1468,13 +1499,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 4; },
                     enumerable: true,
                     configurable: true
                 });
@@ -1636,10 +1670,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Uint32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Uint32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Uint32Array.set: Out of range");
                     }
-                    for (var i_59 = offset, j_6 = 0; j_6 < array.length; i_59++, j_6++) {
+                    for (var i_59 = _offset, j_6 = 0; j_6 < array.length; i_59++, j_6++) {
                         this._dataView.setUint32(i_59 * Uint32Array.BYTES_PER_ELEMENT, array[j_6], true);
                     }
                 }
@@ -1663,8 +1698,9 @@
         Uint32Array.BYTES_PER_ELEMENT = 4;
         var Float32Array = (function () {
             function Float32Array(object, byteOffset, length) {
-                if (typeof object == 'number') {
-                    this._length = object;
+                var typeofobj = typeof object;
+                if (typeofobj == 'number' || typeofobj == 'undefined') {
+                    this._length = (object == undefined) ? 256 : object;
                     var arrayBuffer = new ArrayBuffer(this._length * Float32Array.BYTES_PER_ELEMENT);
                     this._dataView = new DataView(arrayBuffer);
                 }
@@ -1694,13 +1730,16 @@
                 }
                 Object.defineProperty(this, "__rawBKData", {
                     get: function () {
-                        if (!this.__rawData) {
-                            var begin = this._dataView.byteOffset;
-                            var end = this._dataView.byteOffset + this._dataView.byteLength;
-                            this.__rawData = this._dataView.buffer.slice(begin, end);
-                        }
+                        var begin = this._dataView.byteOffset;
+                        var end = this._dataView.byteOffset + this._dataView.byteLength;
+                        this.__rawData = this._dataView.buffer.slice(begin, end);
                         return this.__rawData.__nativeObj;
                     },
+                    enumerable: true,
+                    configurable: true
+                });
+                Object.defineProperty(this, "BYTES_PER_ELEMENT", {
+                    get: function () { return 4; },
                     enumerable: true,
                     configurable: true
                 });
@@ -1862,10 +1901,11 @@
                     array instanceof Int32Array == true ||
                     array instanceof Uint32Array == true ||
                     array instanceof Float32Array == true) {
-                    if ((array.length - offset + 1) * Float32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
+                    var _offset = (offset == undefined) ? 0 : offset;
+                    if ((array.length - _offset) * Float32Array.BYTES_PER_ELEMENT > this._dataView.byteLength) {
                         throw new TypeError("Float32Array.set: Out of range");
                     }
-                    for (var i_69 = offset, j_7 = 0; j_7 < array.length; i_69++, j_7++) {
+                    for (var i_69 = _offset, j_7 = 0; j_7 < array.length; i_69++, j_7++) {
                         this._dataView.setFloat32(i_69 * Float32Array.BYTES_PER_ELEMENT, array[j_7], true);
                     }
                 }

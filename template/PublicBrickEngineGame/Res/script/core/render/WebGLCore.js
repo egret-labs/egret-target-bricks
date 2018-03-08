@@ -5,10 +5,10 @@ function bkWebGLGetInstance(){
         gl = new BK.WebGL();
         attatchConst();
         attachMethod();
+        gl.OpenOptMode = OpenOptMode;
         gl.viewport(0, 0, BK.Director.screenPixelSize.width,BK.Director.screenPixelSize.height);
     }
     Object.prototype.hasOwnProperty.call(this, 'renderTicker') && (renderTicker.paused = true);
-    BK.Director.ticker && (BK.Director.ticker.paused = true);
     return gl;
 }
 
@@ -135,6 +135,7 @@ function bufferSubData(target,offset,data){
 function checkFramebufferStatus(target){
     return  gl.glCheckFramebufferStatus(target);
 }
+
 
 function clear(mask){
     gl.glClear(mask);
@@ -308,6 +309,10 @@ function getError(){
 
 }
 
+function getShaderPrecisionFormat(shadertype,precisiontype){
+	return gl.glGetShaderPrecisionFormat(shadertype,precisiontype);
+}
+
 function getProgramInfoLog(program){
     return  gl.glGetProgramInfoLog(program);
 }
@@ -369,6 +374,8 @@ function linkProgram(program){
 }
 
 function pixelStorei(pname,param){
+    if (gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL == pname)
+        return;
     gl.glPixelStorei(pname,param);
 }
 
@@ -513,47 +520,47 @@ function uniform4i(location,x,y,z,w){
 }
 
 function uniform1fv(location,v){
-    gl.glUniform1fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform1fv(location,__TypedArrayGetData((v instanceof Array == true)? new Float32Array(v) : v));
 }
 
 function uniform2fv(location,v){
-    gl.glUniform2fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform2fv(location,__TypedArrayGetData((v instanceof Array == true)? new Float32Array(v) : v));
 }
 
 function uniform3fv(location,v){
-    gl.glUniform3fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform3fv(location,__TypedArrayGetData((v instanceof Array == true)? new Float32Array(v) : v));
 }
 
 function uniform4fv(location,v){
-    gl.glUniform4fv(location,__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    gl.glUniform4fv(location,__TypedArrayGetData((v instanceof Array == true)? new Float32Array(v) : v));
 }
 
 function uniform1iv(location,v){
-    gl.glUniform1iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    gl.glUniform1iv(location,__TypedArrayGetData((v instanceof Array == true)? new Int32Array(v) : v));
 }
 
 function uniform2iv(location,v){
-    gl.glUniform2iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    gl.glUniform2iv(location,__TypedArrayGetData((v instanceof Array == true)? new Int32Array(v) : v));
 }
 
 function uniform3iv(location,v){
-    gl.glUniform3iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    gl.glUniform3iv(location,__TypedArrayGetData((v instanceof Array == true)? new Int32Array(v) : v));
 }
 
 function uniform4iv(location,v){
-    gl.glUniform4iv(location,__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    gl.glUniform4iv(location,__TypedArrayGetData((v instanceof Array == true)? new Int32Array(v) : v));
 }
 
 function uniformMatrix2fv(location,transpose,value){
-    gl.glUniformMatrix2fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    gl.glUniformMatrix2fv(location,transpose,__TypedArrayGetData((value instanceof Array == true)? new Float32Array(value) : value));
 }
 
 function uniformMatrix3fv(location,transpose,value){
-    gl.glUniformMatrix3fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    gl.glUniformMatrix3fv(location,transpose,__TypedArrayGetData((value instanceof Array == true)? new Float32Array(value) : value));
 }
 
 function uniformMatrix4fv(location,transpose,value){
-    gl.glUniformMatrix4fv(location,transpose,__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    gl.glUniformMatrix4fv(location,transpose,__TypedArrayGetData((value instanceof Array == true)? new Float32Array(value) : value));
 }
 
 function useProgram(program){
@@ -581,19 +588,19 @@ function vertexAttrib4f(index,x,y,z,w){
 }
 
 function vertexAttrib1fv(index,values){
-    gl.glVertexAttrib1fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    gl.glVertexAttrib1fv(index,__TypedArrayGetData((values instanceof Array == true)? new Float32Array(values) : values));
 }
 
 function vertexAttrib2fv(index,values){
-    gl.glVertexAttrib2fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    gl.glVertexAttrib2fv(index,__TypedArrayGetData((values instanceof Array == true)? new Float32Array(values) : values));
 }
 
 function vertexAttrib3fv(index,values){
-    gl.glVertexAttrib3fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    gl.glVertexAttrib3fv(index,__TypedArrayGetData((values instanceof Array == true)? new Float32Array(values) : values));
 }
 
 function vertexAttrib4fv(index,values){
-    gl.glVertexAttrib4fv(index,__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    gl.glVertexAttrib4fv(index,__TypedArrayGetData((values instanceof Array == true)? new Float32Array(values) : values));
 }
 
 function vertexAttribPointer(index,size,type,normalized,stride,offset){
@@ -764,7 +771,6 @@ function getParameter(pname){
         case gl.SHADER_BINARY_FORMATS:
         {
             var len = gl.glGetParameterInt(gl.NUM_SHADER_BINARY_FORMATS,1);
-            BK.Script.log(1,1,"eeee len="+len);
             return gl.glGetParameterInt(pname,len);
             break;
         }
@@ -780,6 +786,9 @@ function getParameter(pname){
             break;
     }
 }
+
+
+
 
 function attachMethod(){
 	gl.activeTexture = activeTexture;
@@ -914,6 +923,7 @@ function attachMethod(){
     gl.getVertexAttrib = getVertexAttrib;
     gl.getParameter = getParameter;
     gl.getUniform = getUniform;
+    gl.getShaderPrecisionFormat = getShaderPrecisionFormat;
 }
 
 function attatchConst(){
@@ -1340,3 +1350,2391 @@ function attatchConst(){
     gl.NUM_COMPRESSED_TEXTURE_FORMATS = 0x86A2;
 }
 
+
+
+var ACTIVETEXTURE = 0;
+var ATTACHSHADER = 1;
+var BINDATTRIBLOCATION = 2;
+var BINDBUFFER = 3;
+var BINDFRAMEBUFFER = 4;
+var BINDRENDERBUFFER = 5;
+var BINDTEXTURE = 6;
+var BLENDCOLOR = 7;
+var BLENDEQUATION = 8;
+var BLENDEQUATIONSEPARATE = 9;
+var BLENDFUNC = 10;
+var BLENDFUNCSEPARATE = 11;
+var BUFFERDATA = 12;
+var BUFFERDATA = 13;
+var BUFFERSUBDATA = 14;
+var CHECKFRAMEBUFFERSTATUS = 15;
+var CLEAR = 16;
+var CLEARCOLOR = 17;
+var CLEARDEPTH = 18;
+var CLEARSTENCIL = 19;
+var COLORMASK = 20;
+var COMPILESHADER = 21;
+var COMPRESSEDTEXIMAGE2D = 22;
+var COMPRESSEDTEXSUBIMAGE2D = 23;
+var COPYTEXIMAGE2D = 24;
+var COPYTEXSUBIMAGE2D = 25;
+var CREATEBUFFER = 26;
+var CREATEFRAMEBUFFER = 27;
+var CREATEPROGRAM = 28;
+var CREATERENDERBUFFER = 29;
+var CREATESHADER = 30;
+var CREATETEXTURE = 31;
+var CULLFACE = 32;
+var DELETEBUFFER = 33;
+var DELETEFRAMEBUFFER = 34;
+var DELETEPROGRAM = 35;
+var DELETERENDERBUFFER = 36;
+var DELETESHADER = 37;
+var DELETETEXTURE = 38;
+var DEPTHFUNC = 39;
+var DEPTHMASK = 40;
+var DEPTHRANGE = 41;
+var DETACHSHADER = 42;
+var DISABLE = 43;
+var DISABLEVERTEXATTRIBARRAY = 44;
+var DRAWARRAYS = 45;
+var DRAWELEMENTS = 46;
+var ENABLE = 47;
+var ENABLEVERTEXATTRIBARRAY = 48;
+var FINISH = 49;
+var FLUSH = 50;
+var FRAMEBUFFERRENDERBUFFER = 51;
+var FRAMEBUFFERTEXTURE2D = 52;
+var FRONTFACE = 53;
+var GENERATEMIPMAP = 54;
+var GETACTIVEATTRIB = 55;
+var GETACTIVEUNIFORM = 56;
+var GETATTACHEDSHADERS = 57;
+var GETATTRIBLOCATION = 58;
+var GETBUFFERPARAMETER = 59;
+var GETPARAMETER = 60;
+var GETERROR = 61;
+var GETFRAMEBUFFERATTACHMENTPARAMETER = 62;
+var GETPROGRAMPARAMETER = 63;
+var GETPROGRAMINFOLOG = 64;
+var GETRENDERBUFFERPARAMETER = 65;
+var GETSHADERPARAMETER = 66;
+var GETSHADERPRECISIONFORMAT = 67;
+var GETSHADERINFOLOG = 68;
+var GETSHADERSOURCE = 69;
+var GETTEXPARAMETER = 70;
+var GETUNIFORM = 71;
+var GETUNIFORMLOCATION = 72;
+var GETVERTEXATTRIB = 73;
+var GETVERTEXATTRIBOFFSET = 74;
+var HINT = 75;
+var ISBUFFER = 76;
+var ISENABLED = 77;
+var ISFRAMEBUFFER = 78;
+var ISPROGRAM = 79;
+var ISRENDERBUFFER = 80;
+var ISSHADER = 81;
+var ISTEXTURE = 82;
+var LINEWIDTH = 83;
+var LINKPROGRAM = 84;
+var PIXELSTOREI = 85;
+var POLYGONOFFSET = 86;
+var READPIXELS = 87;
+var RENDERBUFFERSTORAGE = 88;
+var SAMPLECOVERAGE = 89;
+var SCISSOR = 90;
+var SHADERSOURCE = 91;
+var STENCILFUNC = 92;
+var STENCILFUNCSEPARATE = 93;
+var STENCILMASK = 94;
+var STENCILMASKSEPARATE = 95;
+var STENCILOP = 96;
+var STENCILOPSEPARATE = 97;
+var TEXIMAGE2D = 98;
+var TEXIMAGE2D = 99;
+var TEXPARAMETERF = 100;
+var TEXPARAMETERI = 101;
+var TEXSUBIMAGE2D = 102;
+var TEXSUBIMAGE2D = 103;
+var UNIFORM1F = 104;
+var UNIFORM2F = 105;
+var UNIFORM3F = 106;
+var UNIFORM4F = 107;
+var UNIFORM1I = 108;
+var UNIFORM2I = 109;
+var UNIFORM3I = 110;
+var UNIFORM4I = 111;
+var UNIFORM1FV = 112;
+var UNIFORM2FV = 113;
+var UNIFORM3FV = 114;
+var UNIFORM4FV = 115;
+var UNIFORM1IV = 116;
+var UNIFORM2IV = 117;
+var UNIFORM3IV = 118;
+var UNIFORM4IV = 119;
+var UNIFORMMATRIX2FV = 120;
+var UNIFORMMATRIX3FV = 121;
+var UNIFORMMATRIX4FV = 122;
+var USEPROGRAM = 123;
+var VALIDATEPROGRAM = 124;
+var VERTEXATTRIB1F = 125;
+var VERTEXATTRIB2F = 126;
+var VERTEXATTRIB3F = 127;
+var VERTEXATTRIB4F = 128;
+var VERTEXATTRIB1FV = 129;
+var VERTEXATTRIB2FV = 130;
+var VERTEXATTRIB3FV = 131;
+var VERTEXATTRIB4FV = 132;
+var VERTEXATTRIBPOINTER = 133;
+var VIEWPORT = 134;
+
+var insIds = new Array();
+var datas = new Array;
+var dataLen = new Array();
+
+
+function glCommitOpt(){
+	if(insIds.length <= 0){
+		return;
+	}
+	var bufferSize = 0;
+	for(var j=0;j<dataLen.length;j++){
+		bufferSize = bufferSize + dataLen[j];
+	}
+    var bufSize = 2+bufferSize+insIds.length*2+insIds.length*2;
+	var insBuffer = new ArrayBuffer(bufSize);
+	var bufferView = new DataView(insBuffer);
+	var pointer = 0;
+	bufferView.setUint16(pointer,insIds.length,true);
+	pointer = pointer + 2;
+	var dataPointer = 0;
+	for(var i=0;i<insIds.length;i++){
+		var ins = insIds[i];
+		bufferView.setUint16(pointer,ins,true);
+		pointer = pointer + 2;
+		bufferView.setUint16(pointer,dataLen[i],true);
+		pointer = pointer + 2;
+
+		switch(ins){
+			case ACTIVETEXTURE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case ATTACHSHADER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BINDBUFFER:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BINDFRAMEBUFFER:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BINDRENDERBUFFER:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BINDTEXTURE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BLENDCOLOR:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BLENDEQUATION:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BLENDEQUATIONSEPARATE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BLENDFUNC:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case BLENDFUNCSEPARATE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			// case BUFFERDATA:{
+			//     bufferView.setUint32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//     bufferView.setInt32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//     bufferView.setUint32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//     break;
+			// }
+			// case BUFFERDATA:{
+			//     bufferView.setUint32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//  xxxxx
+			//     bufferView.setUint32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//     break;
+			// }
+			// case BUFFERSUBDATA:{
+			//     bufferView.setUint32(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 4;
+			//     dataPointer = dataPointer + 1;
+			//     bufferView.setInt64(pointer,datas[dataPointer],true);
+			//     pointer = pointer + 8;
+			//     dataPointer = dataPointer + 1;
+			//  xxxxx
+			//     break;
+			// }
+			case CHECKFRAMEBUFFERSTATUS:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case CLEAR:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case CLEARCOLOR:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case CLEARDEPTH:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case CLEARSTENCIL:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case COLORMASK:{
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case COMPILESHADER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case COPYTEXIMAGE2D:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case COPYTEXSUBIMAGE2D:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+
+
+			case CULLFACE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETEBUFFER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETEFRAMEBUFFER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETEPROGRAM:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETERENDERBUFFER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETESHADER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DELETETEXTURE:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DEPTHFUNC:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DEPTHMASK:{
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DEPTHRANGE:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DETACHSHADER:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DISABLE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DISABLEVERTEXATTRIBARRAY:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DRAWARRAYS:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case DRAWELEMENTS:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat64(pointer,datas[dataPointer],true);
+			    pointer = pointer + 8;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case ENABLE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case ENABLEVERTEXATTRIBARRAY:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case FINISH:{
+			    break;
+			}
+
+			case FLUSH:{
+			    break;
+			}
+
+			case FRAMEBUFFERRENDERBUFFER:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case FRAMEBUFFERTEXTURE2D:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case FRONTFACE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case GENERATEMIPMAP:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+
+			case HINT:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case LINEWIDTH:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case LINKPROGRAM:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case PIXELSTOREI:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case POLYGONOFFSET:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case RENDERBUFFERSTORAGE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case SAMPLECOVERAGE:{
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case SCISSOR:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case STENCILFUNC:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case STENCILFUNCSEPARATE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case STENCILMASK:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case STENCILMASKSEPARATE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case STENCILOP:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case STENCILOPSEPARATE:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case TEXPARAMETERF:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case TEXPARAMETERI:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+			case UNIFORM1F:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM2F:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM3F:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM4F:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM1I:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM2I:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM3I:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM4I:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM1FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM2FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM3FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM4FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM1IV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setInt32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM2IV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setInt32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM3IV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setInt32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORM4IV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setInt32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORMMATRIX2FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORMMATRIX3FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case UNIFORMMATRIX4FV:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case USEPROGRAM:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VALIDATEPROGRAM:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB1F:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB2F:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB3F:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB4F:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB1FV:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB2FV:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB3FV:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIB4FV:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+				datas[dataPointer].forEach(function(element, index, array){
+			    	bufferView.setFloat32(pointer,element,true);
+			    	pointer = pointer + 4;
+			    });
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VERTEXATTRIBPOINTER:{
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setUint8(pointer,datas[dataPointer],true);
+			    pointer = pointer + 1;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setFloat64(pointer,datas[dataPointer],true);
+			    pointer = pointer + 8;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+			case VIEWPORT:{
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    bufferView.setInt32(pointer,datas[dataPointer],true);
+			    pointer = pointer + 4;
+			    dataPointer = dataPointer + 1;
+			    break;
+			}
+
+		}
+	}
+
+	gl.glInsRun(insBuffer);
+	
+	insIds = [];
+	datas = [];
+	dataLen = [];
+
+}
+
+function activeTextureOpt(texture){
+    insIds.push(ACTIVETEXTURE);
+    datas.push(texture);
+    dataLen.push(4);
+}
+
+function attachShaderOpt(program,shader){
+    insIds.push(ATTACHSHADER);
+    datas.push(program);
+    datas.push(shader);
+    dataLen.push(8);
+}
+
+function bindAttribLocationOpt(program,index,name){
+	glCommitOpt();
+	bindAttribLocation(program,index,name);
+
+}
+
+function bindBufferOpt(target,buffer){
+    insIds.push(BINDBUFFER);
+    datas.push(target);
+    datas.push(buffer);
+    dataLen.push(8);
+}
+
+function bindFramebufferOpt(target,framebuffer){
+    insIds.push(BINDFRAMEBUFFER);
+    datas.push(target);
+    datas.push(framebuffer);
+    dataLen.push(8);
+}
+
+function bindRenderbufferOpt(target,renderbuffer){
+    insIds.push(BINDRENDERBUFFER);
+    datas.push(target);
+    datas.push(renderbuffer);
+    dataLen.push(8);
+}
+
+function bindTextureOpt(target,texture){
+    insIds.push(BINDTEXTURE);
+    datas.push(target);
+    datas.push(texture);
+    dataLen.push(8);
+}
+
+function blendColorOpt(red,green,blue,alpha){
+    insIds.push(BLENDCOLOR);
+    datas.push(red);
+    datas.push(green);
+    datas.push(blue);
+    datas.push(alpha);
+    dataLen.push(16);
+}
+
+function blendEquationOpt(mode){
+    insIds.push(BLENDEQUATION);
+    datas.push(mode);
+    dataLen.push(4);
+}
+
+function blendEquationSeparateOpt(modeRGB,modeAlpha){
+    insIds.push(BLENDEQUATIONSEPARATE);
+    datas.push(modeRGB);
+    datas.push(modeAlpha);
+    dataLen.push(8);
+}
+
+function blendFuncOpt(sfactor,dfactor){
+    insIds.push(BLENDFUNC);
+    datas.push(sfactor);
+    datas.push(dfactor);
+    dataLen.push(8);
+}
+
+function blendFuncSeparateOpt(srcRGB,dstRGB,srcAlpha,dstAlpha){
+    insIds.push(BLENDFUNCSEPARATE);
+    datas.push(srcRGB);
+    datas.push(dstRGB);
+    datas.push(srcAlpha);
+    datas.push(dstAlpha);
+    dataLen.push(16);
+}
+
+// function bufferDataOpt(target,size,usage){
+//     insIds.push(BUFFERDATA);
+//     datas.push(target);
+//     datas.push(size);
+//     datas.push(usage);
+//     dataLen.push(12);
+
+// }
+
+function bufferDataOpt(target,data,usage){
+	glCommitOpt();
+	bufferData(target,data,usage);
+    // insIds.push(BUFFERDATA);
+    // datas.push(target);
+    // datas.push(__TypedArrayGetData(data));
+    // datas.push(usage);
+    // dataLen.push(8+data.byteLength);
+}
+
+function bufferSubDataOpt(target,offset,data){
+	glCommitOpt();
+	bufferSubData(target,offset,data);
+    // insIds.push(BUFFERSUBDATA);
+    // datas.push(target);
+    // datas.push(offset);
+    // datas.push(__TypedArrayGetData(data));
+    // dataLen.push(12+data.byteLength);
+}
+
+function checkFramebufferStatusOpt(target){
+    insIds.push(CHECKFRAMEBUFFERSTATUS);
+    datas.push(target);
+    dataLen.push(4);
+}
+
+function clearOpt(mask){
+    insIds.push(CLEAR);
+    datas.push(mask);
+    dataLen.push(4);
+
+}
+
+function clearColorOpt(red,green,blue,alpha){
+    insIds.push(CLEARCOLOR);
+    datas.push(red);
+    datas.push(green);
+    datas.push(blue);
+    datas.push(alpha);
+    dataLen.push(16);
+}
+
+function clearDepthOpt(depth){
+    insIds.push(CLEARDEPTH);
+    datas.push(depth);
+    dataLen.push(4);
+}
+
+function clearStencilOpt(s){
+    insIds.push(CLEARSTENCIL);
+    datas.push(s);
+    dataLen.push(4);
+
+}
+
+function colorMaskOpt(red,green,blue,alpha){
+    insIds.push(COLORMASK);
+    datas.push(red);
+    datas.push(green);
+    datas.push(blue);
+    datas.push(alpha);
+    dataLen.push(4);
+
+}
+
+function compileShaderOpt(shader){
+    insIds.push(COMPILESHADER);
+    datas.push(shader);
+    dataLen.push(4);
+}
+
+function compressedTexImage2DOpt(target,level,internalformat,width,height,border,data){
+	glCommitOpt();
+	compressedTexImage2D(target,level,internalformat,width,height,border,data);
+    // insIds.push(COMPRESSEDTEXIMAGE2D);
+    // datas.push(target);
+    // datas.push(level);
+    // datas.push(internalformat);
+    // datas.push(width);
+    // datas.push(height);
+    // datas.push(border);
+    // datas.push(data);
+    // dataLen.push(100023);
+}
+
+function compressedTexSubImage2DOpt(target,level,xoffset,yoffset,width,height,format,data){
+	glCommitOpt();
+	compressedTexImage2D(target,level,xoffset,yoffset,width,height,format,data);
+    // insIds.push(COMPRESSEDTEXSUBIMAGE2D);
+    // datas.push(target);
+    // datas.push(level);
+    // datas.push(xoffset);
+    // datas.push(yoffset);
+    // datas.push(width);
+    // datas.push(height);
+    // datas.push(format);
+    // datas.push(data);
+    // dataLen.push(100027);
+}
+
+function copyTexImage2DOpt(target,level,internalformat,x,y,width,height,border){
+    insIds.push(COPYTEXIMAGE2D);
+    datas.push(target);
+    datas.push(level);
+    datas.push(internalformat);
+    datas.push(x);
+    datas.push(y);
+    datas.push(width);
+    datas.push(height);
+    datas.push(border);
+    dataLen.push(32);
+}
+
+function copyTexSubImage2DOpt(target,level,xoffset,yoffset,x,y,width,height){
+    insIds.push(COPYTEXSUBIMAGE2D);
+    datas.push(target);
+    datas.push(level);
+    datas.push(xoffset);
+    datas.push(yoffset);
+    datas.push(x);
+    datas.push(y);
+    datas.push(width);
+    datas.push(height);
+    dataLen.push(32);
+}
+
+function createBufferOpt(){
+	glCommitOpt();
+	return createBuffer();
+    //insIds.push(CREATEBUFFER);
+}
+
+function createFramebufferOpt(){
+	glCommitOpt();
+	return createFramebuffer();
+}
+
+function createProgramOpt(){
+	glCommitOpt();
+	return createProgram();
+}
+
+function createRenderbufferOpt(){
+	glCommitOpt();
+	return createRenderbuffer();
+}
+
+function createShaderOpt(type){
+	glCommitOpt();
+	return createShader(type);
+}
+
+function createTextureOpt(){
+	glCommitOpt();
+	return createTexture();
+}
+
+function cullFaceOpt(mode){
+    insIds.push(CULLFACE);
+    datas.push(mode);
+    dataLen.push(4);
+}
+
+function deleteBufferOpt(buffer){
+    insIds.push(DELETEBUFFER);
+    datas.push(buffer);
+    dataLen.push(4);
+}
+
+function deleteFramebufferOpt(framebuffer){
+    insIds.push(DELETEFRAMEBUFFER);
+    datas.push(framebuffer);
+    dataLen.push(4);
+}
+
+function deleteProgramOpt(program){
+    insIds.push(DELETEPROGRAM);
+    datas.push(program);
+    dataLen.push(4);
+}
+
+function deleteRenderbufferOpt(renderbuffer){
+    insIds.push(DELETERENDERBUFFER);
+    datas.push(renderbuffer);
+    dataLen.push(4);
+}
+
+function deleteShaderOpt(shader){
+    insIds.push(DELETESHADER);
+    datas.push(shader);
+    dataLen.push(4);
+}
+
+function deleteTextureOpt(texture){
+    insIds.push(DELETETEXTURE);
+    datas.push(texture);
+    dataLen.push(4);
+}
+
+function depthFuncOpt(func){
+    insIds.push(DEPTHFUNC);
+    datas.push(func);
+    dataLen.push(4);
+}
+
+function depthMaskOpt(flag){
+    insIds.push(DEPTHMASK);
+    datas.push(flag);
+    dataLen.push(1);
+}
+
+function depthRangeOpt(zNear,zFar){
+    insIds.push(DEPTHRANGE);
+    datas.push(zNear);
+    datas.push(zFar);
+    dataLen.push(8);
+}
+
+function detachShaderOpt(program,shader){
+    insIds.push(DETACHSHADER);
+    datas.push(program);
+    datas.push(shader);
+    dataLen.push(8);
+}
+
+function disableOpt(cap){
+    insIds.push(DISABLE);
+    datas.push(cap);
+    dataLen.push(4);
+}
+
+function disableVertexAttribArrayOpt(index){
+    insIds.push(DISABLEVERTEXATTRIBARRAY);
+    datas.push(index);
+    dataLen.push(4);
+}
+
+function drawArraysOpt(mode,first,count){
+    insIds.push(DRAWARRAYS);
+    datas.push(mode);
+    datas.push(first);
+    datas.push(count);
+    dataLen.push(12);
+}
+
+function drawElementsOpt(mode,count,type,offset){
+    insIds.push(DRAWELEMENTS);
+    datas.push(mode);
+    datas.push(count);
+    datas.push(type);
+    datas.push(offset);
+    dataLen.push(20);
+}
+
+function enableOpt(cap){
+    insIds.push(ENABLE);
+    datas.push(cap);
+    dataLen.push(4);
+}
+
+function enableVertexAttribArrayOpt(index){
+    insIds.push(ENABLEVERTEXATTRIBARRAY);
+    datas.push(index);
+    dataLen.push(4);
+}
+
+function finishOpt(){
+    insIds.push(FINISH);
+}
+
+function flushOpt(){
+    insIds.push(FLUSH);
+}
+
+function framebufferRenderbufferOpt(target,attachment,renderbuffertarget,renderbuffer){
+    insIds.push(FRAMEBUFFERRENDERBUFFER);
+    datas.push(target);
+    datas.push(attachment);
+    datas.push(renderbuffertarget);
+    datas.push(renderbuffer);
+    dataLen.push(16);
+}
+
+function framebufferTexture2DOpt(target,attachment,textarget,texture,level){
+    insIds.push(FRAMEBUFFERTEXTURE2D);
+    datas.push(target);
+    datas.push(attachment);
+    datas.push(textarget);
+    datas.push(texture);
+    datas.push(level);
+    dataLen.push(20);
+}
+
+function frontFaceOpt(mode){
+    insIds.push(FRONTFACE);
+    datas.push(mode);
+    dataLen.push(4);
+}
+
+function generateMipmapOpt(target){
+    insIds.push(GENERATEMIPMAP);
+    datas.push(target);
+    dataLen.push(4);
+}
+
+function getActiveAttribOpt(program,index){
+	glCommitOpt();
+	return getActiveAttrib(program,index);
+    // insIds.push(GETACTIVEATTRIB);
+    // datas.push(program);
+    // datas.push(index);
+    // dataLen.push(8);
+}
+
+function getActiveUniformOpt(program,index){
+	glCommitOpt();
+	return getActiveUniform(program,index);
+    // insIds.push(GETACTIVEUNIFORM);
+    // datas.push(program);
+    // datas.push(index);
+    // dataLen.push(8);
+
+}
+
+function getAttachedShadersOpt(program){
+	glCommitOpt();
+	return getAttachedShaders(program);
+    // insIds.push(GETATTACHEDSHADERS);
+    // datas.push(program);
+    // dataLen.push(4);
+}
+
+function getAttribLocationOpt(program,name){
+	glCommitOpt();
+	return getAttribLocation(program,name);
+    // insIds.push(GETATTRIBLOCATION);
+    // datas.push(program);
+    // datas.push(name);
+    // dataLen.push(4+name.length);
+}
+
+function getBufferParameterOpt(target,pname){
+	glCommitOpt();
+	return getBufferParameter(target,pname);
+    // insIds.push(GETBUFFERPARAMETER);
+    // datas.push(target);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function getParameterOpt(pname){
+	glCommitOpt();
+	return getParameter(pname);
+    // insIds.push(GETPARAMETER);
+    // datas.push(pname);
+    // dataLen.push(4);
+}
+
+function getErrorOpt(){
+	glCommitOpt();
+	return getError();
+   // insIds.push(GETERROR);
+}
+
+function getFramebufferAttachmentParameterOpt(target,attachment,pname){
+	glCommitOpt();
+	return getFramebufferAttachmentParameter(target,attachment,pname);
+    // insIds.push(GETFRAMEBUFFERATTACHMENTPARAMETER);
+    // datas.push(target);
+    // datas.push(attachment);
+    // datas.push(pname);
+    // dataLen.push(12);
+}
+
+function getProgramParameterOpt(program,pname){
+	glCommitOpt();
+	return getProgramParameter(program,pname);
+	    // insIds.push(GETPROGRAMPARAMETER);
+    // datas.push(program);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function getProgramInfoLogOpt(program){
+	glCommitOpt();
+	return getProgramInfoLog(program);
+    // insIds.push(GETPROGRAMINFOLOG);
+    // datas.push(program);
+    // dataLen.push(4);
+}
+
+function getRenderbufferParameterOpt(target,pname){
+	glCommitOpt();
+	return getRenderbufferParameter(target,name);
+    // insIds.push(GETRENDERBUFFERPARAMETER);
+    // datas.push(target);
+    // datas.push(pname);
+    // dataLen.push(8);
+
+}
+
+function getShaderParameterOpt(shader,pname){
+	glCommitOpt();
+	return getShaderParameter(shader,pname);
+    // insIds.push(GETSHADERPARAMETER);
+    // datas.push(shader);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function getShaderPrecisionFormatOpt(shadertype,precisiontype){
+	glCommitOpt();
+	return getShaderPrecisionFormat(shadertype,precisiontype);
+    // insIds.push(GETSHADERPRECISIONFORMAT);
+    // datas.push(shadertype);
+    // datas.push(precisiontype);
+    // dataLen.push(8);
+}
+
+function getShaderInfoLogOpt(shader){
+	glCommitOpt();
+	return getShaderInfoLog(shader);
+    // insIds.push(GETSHADERINFOLOG);
+    // datas.push(shader);
+    // dataLen.push(4);
+}
+
+function getShaderSourceOpt(shader){
+	glCommitOpt();
+	return getShaderSource(shader);
+    // insIds.push(GETSHADERSOURCE);
+    // datas.push(shader);
+    // dataLen.push(4);
+}
+
+function getTexParameterOpt(target,pname){
+	glCommitOpt();
+	return getTexParameter(target,pname);
+    // insIds.push(GETTEXPARAMETER);
+    // datas.push(target);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function getUniformOpt(program,location){
+	glCommitOpt();
+	return getUniform(program,location);
+    // insIds.push(GETUNIFORM);
+    // datas.push(program);
+    // datas.push(location);
+    // dataLen.push(8);
+}
+
+function getUniformLocationOpt(program,name){
+	glCommitOpt();
+	return getUniformLocation(program,name);
+    // insIds.push(GETUNIFORMLOCATION);
+    // datas.push(program);
+    // datas.push(name);
+    // dataLen.push(4+name.length);
+}
+
+function getVertexAttribOpt(index,pname){
+	glCommitOpt();
+	return getVertexAttrib(index,pname);
+    // insIds.push(GETVERTEXATTRIB);
+    // datas.push(index);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function getVertexAttribOffsetOpt(index,pname){
+	glCommitOpt();
+	return getVertexAttribOffset(index,pname);
+    // insIds.push(GETVERTEXATTRIBOFFSET);
+    // datas.push(index);
+    // datas.push(pname);
+    // dataLen.push(8);
+}
+
+function hintOpt(target,mode){
+    insIds.push(HINT);
+    datas.push(target);
+    datas.push(mode);
+    dataLen.push(8);
+}
+
+function isBufferOpt(buffer){
+	glCommitOpt();
+	return isBuffer(buffer);
+    // insIds.push(ISBUFFER);
+    // datas.push(buffer);
+    // dataLen.push(4);
+}
+
+function isEnabledOpt(cap){
+	glCommitOpt();
+	return isEnabled(cap);
+    // insIds.push(ISENABLED);
+    // datas.push(cap);
+    // dataLen.push(4);
+}
+
+function isFramebufferOpt(framebuffer){
+	glCommitOpt();
+	return isFramebuffer(framebuffer);
+}
+
+function isProgramOpt(program){
+	glCommitOpt();
+	return isProgram(program);
+    // insIds.push(ISPROGRAM);
+    // datas.push(program);
+    // dataLen.push(4);
+}
+
+function isRenderbufferOpt(renderbuffer){
+	glCommitOpt();
+	return isRenderbuffer(renderbuffer);
+    // insIds.push(ISRENDERBUFFER);
+    // datas.push(renderbuffer);
+    // dataLen.push(4);
+}
+
+function isShaderOpt(shader){
+	glCommitOpt();
+	return isShader(shader);
+    // insIds.push(ISSHADER);
+    // datas.push(shader);
+    // dataLen.push(4);
+}
+
+function isTextureOpt(texture){
+	glCommitOpt();
+	return isTexture(texture);
+    // insIds.push(ISTEXTURE);
+    // datas.push(texture);
+    // dataLen.push(4);
+}
+
+function lineWidthOpt(width){
+    insIds.push(LINEWIDTH);
+    datas.push(width);
+    dataLen.push(4);
+}
+
+function linkProgramOpt(program){
+    insIds.push(LINKPROGRAM);
+    datas.push(program);
+    dataLen.push(4);
+}
+
+function pixelStoreiOpt(pname,param){
+    insIds.push(PIXELSTOREI);
+    datas.push(pname);
+    datas.push(param);
+    dataLen.push(8);
+}
+
+function polygonOffsetOpt(factor,units){
+    insIds.push(POLYGONOFFSET);
+    datas.push(factor);
+    datas.push(units);
+    dataLen.push(8);
+}
+
+function readPixelsOpt(x,y,width,height,format,type,pixels){
+	glCommitOpt();
+	readPixels(x,y,width,height,format,type,pixels);
+    // insIds.push(READPIXELS);
+    // datas.push(x);
+    // datas.push(y);
+    // datas.push(width);
+    // datas.push(height);
+    // datas.push(format);
+    // datas.push(type);
+    // datas.push(pixels);
+    // dataLen.push(100023);
+}
+
+function renderbufferStorageOpt(target,internalformat,width,height){
+    insIds.push(RENDERBUFFERSTORAGE);
+    datas.push(target);
+    datas.push(internalformat);
+    datas.push(width);
+    datas.push(height);
+    dataLen.push(16);
+}
+
+function sampleCoverageOpt(value,invert){
+    insIds.push(SAMPLECOVERAGE);
+    datas.push(value);
+    datas.push(invert);
+    dataLen.push(5);
+
+}
+
+function scissorOpt(x,y,width,height){
+    insIds.push(SCISSOR);
+    datas.push(x);
+    datas.push(y);
+    datas.push(width);
+    datas.push(height);
+    dataLen.push(16);
+}
+
+function shaderSourceOpt(shader,source){
+	glCommitOpt();
+	shaderSource(shader,source);
+    // insIds.push(SHADERSOURCE);
+    // datas.push(shader);
+    // datas.push(source);
+    // dataLen.push(4+source.length);
+}
+
+function stencilFuncOpt(func,ref,mask){
+    insIds.push(STENCILFUNC);
+    datas.push(func);
+    datas.push(ref);
+    datas.push(mask);
+    dataLen.push(12);
+}
+
+function stencilFuncSeparateOpt(face,func,ref,mask){
+    insIds.push(STENCILFUNCSEPARATE);
+    datas.push(face);
+    datas.push(func);
+    datas.push(ref);
+    datas.push(mask);
+    dataLen.push(16);
+}
+
+function stencilMaskOpt(mask){
+    insIds.push(STENCILMASK);
+    datas.push(mask);
+    dataLen.push(4);
+}
+
+function stencilMaskSeparateOpt(face,mask){
+    insIds.push(STENCILMASKSEPARATE);
+    datas.push(face);
+    datas.push(mask);
+    dataLen.push(8);
+}
+
+function stencilOpOpt(fail,zfail,zpass){
+    insIds.push(STENCILOP);
+    datas.push(fail);
+    datas.push(zfail);
+    datas.push(zpass);
+    dataLen.push(12);
+}
+
+function stencilOpSeparateOpt(face,fail,zfail,zpass){
+    insIds.push(STENCILOPSEPARATE);
+    datas.push(face);
+    datas.push(fail);
+    datas.push(zfail);
+    datas.push(zpass);
+    dataLen.push(16);
+}
+
+
+function texImage2DOpt(target,level,internalformat/*, ...*/){
+	//insIds.push(TEXIMAGE2D);
+	glCommitOpt();
+     switch (arguments.length) {
+        case 6: {/*format,type,source*/
+            var format = arguments[3];
+            var type = arguments[4];
+            var source = arguments[5];
+            if (Object.prototype.hasOwnProperty.call(source, '__nativeObj')) {
+                gl.glTexImage2D(target,level,internalformat,format,type,source.__nativeObj);
+            } else {
+                gl.glTexImage2D(target,level,internalformat,format,type,source);
+            }
+            break;
+        }
+        case 9: {/*width,height,border,format,type,pixels*/
+            var width = arguments[3];
+            var height = arguments[4];
+            var border = arguments[5];
+            var format = arguments[6];
+            var type = arguments[7];
+            var pixels = arguments[8];
+            gl.glTexImage2D(target,level,internalformat,width,height,border,format,type,pixels);
+            break;
+        }
+    }
+}
+
+
+function texParameterfOpt(target,pname,param){
+    insIds.push(TEXPARAMETERF);
+    datas.push(target);
+    datas.push(pname);
+    datas.push(param);
+    dataLen.push(12);
+
+}
+
+function texParameteriOpt(target,pname,param){
+    insIds.push(TEXPARAMETERI);
+    datas.push(target);
+    datas.push(pname);
+    datas.push(param);
+    dataLen.push(12);
+}
+
+function texSubImage2DOpt(target,level,xoffset,yoffset,width,height,format,type,pixels){
+    insIds.push(TEXSUBIMAGE2D);
+    datas.push(target);
+    datas.push(level);
+    datas.push(xoffset);
+    datas.push(yoffset);
+    datas.push(width);
+    datas.push(height);
+    datas.push(format);
+    datas.push(type);
+    datas.push(pixels);
+    dataLen.push(100031);
+}
+
+function texSubImage2DOpt(target,level,xoffset,yoffset,format,type,source){
+    // insIds.push(TEXSUBIMAGE2D);
+    // datas.push(target);
+    // datas.push(level);
+    // datas.push(xoffset);
+    // datas.push(yoffset);
+    // datas.push(format);
+    // datas.push(type);
+    // datas.push(source);
+    // dataLen.push(24);
+    glCommitOpt();
+    texSubImage2D(target,level,xoffset,yoffset,format,type,source);
+}
+
+function uniform1fOpt(location,x){
+    insIds.push(UNIFORM1F);
+    datas.push(location);
+    datas.push(x);
+    dataLen.push(8);
+}
+
+function uniform2fOpt(location,x,y){
+    insIds.push(UNIFORM2F);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    dataLen.push(12);
+}
+
+function uniform3fOpt(location,x,y,z){
+    insIds.push(UNIFORM3F);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    dataLen.push(16);
+}
+
+function uniform4fOpt(location,x,y,z,w){
+    insIds.push(UNIFORM4F);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    datas.push(w);
+    dataLen.push(20);
+}
+
+function uniform1iOpt(location,x){
+    insIds.push(UNIFORM1I);
+    datas.push(location);
+    datas.push(x);
+    dataLen.push(8);
+}
+
+function uniform2iOpt(location,x,y){
+    insIds.push(UNIFORM2I);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    dataLen.push(12);
+}
+
+function uniform3iOpt(location,x,y,z){
+    insIds.push(UNIFORM3I);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    dataLen.push(16);
+}
+
+function uniform4iOpt(location,x,y,z,w){
+    insIds.push(UNIFORM4I);
+    datas.push(location);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    datas.push(w);
+    dataLen.push(20);
+}
+
+function uniform1fvOpt(location,v){
+    insIds.push(UNIFORM1FV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform2fvOpt(location,v){
+    insIds.push(UNIFORM2FV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform3fvOpt(location,v){
+    insIds.push(UNIFORM3FV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform4fvOpt(location,v){
+    insIds.push(UNIFORM4FV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Float32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform1ivOpt(location,v){
+    insIds.push(UNIFORM1IV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform2ivOpt(location,v){
+    insIds.push(UNIFORM2IV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform3ivOpt(location,v){
+    insIds.push(UNIFORM3IV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniform4ivOpt(location,v){
+    insIds.push(UNIFORM4IV);
+    datas.push(location);
+    datas.push(__TypedArrayGetData(v instanceof Array? new Int32Array(v) : v));
+    dataLen.push(4+v.byteLength);
+}
+
+function uniformMatrix2fvOpt(location,transpose,value){
+    insIds.push(UNIFORMMATRIX2FV);
+    datas.push(location);
+    datas.push(transpose);
+    datas.push(__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    dataLen.push(5+value.byteLength);
+}
+
+function uniformMatrix3fvOpt(location,transpose,value){
+    insIds.push(UNIFORMMATRIX3FV);
+    datas.push(location);
+    datas.push(transpose);
+    datas.push(__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    dataLen.push(5+value.byteLength);
+}
+
+function uniformMatrix4fvOpt(location,transpose,value){
+    insIds.push(UNIFORMMATRIX4FV);
+    datas.push(location);
+    datas.push(transpose);
+    datas.push(__TypedArrayGetData(value instanceof Array? new Float32Array(value) : value));
+    dataLen.push(5+value.byteLength);
+}
+
+function useProgramOpt(program){
+    insIds.push(USEPROGRAM);
+    datas.push(program);
+    dataLen.push(4);
+}
+
+function validateProgramOpt(program){
+    insIds.push(VALIDATEPROGRAM);
+    datas.push(program);
+    dataLen.push(4);
+}
+
+function vertexAttrib1fOpt(index,x){
+    insIds.push(VERTEXATTRIB1F);
+    datas.push(index);
+    datas.push(x);
+    dataLen.push(8);
+}
+
+function vertexAttrib2fOpt(index,x,y){
+    insIds.push(VERTEXATTRIB2F);
+    datas.push(index);
+    datas.push(x);
+    datas.push(y);
+    dataLen.push(12);
+}
+
+function vertexAttrib3fOpt(index,x,y,z){
+    insIds.push(VERTEXATTRIB3F);
+    datas.push(index);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    dataLen.push(16);
+
+}
+
+function vertexAttrib4fOpt(index,x,y,z,w){
+    insIds.push(VERTEXATTRIB4F);
+    datas.push(index);
+    datas.push(x);
+    datas.push(y);
+    datas.push(z);
+    datas.push(w);
+    dataLen.push(20);
+}
+
+function vertexAttrib1fvOpt(index,values){
+    insIds.push(VERTEXATTRIB1FV);
+    datas.push(index);
+    datas.push(__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    dataLen.push(4+values.byteLength);
+}
+
+function vertexAttrib2fvOpt(index,values){
+    insIds.push(VERTEXATTRIB2FV);
+    datas.push(index);
+    datas.push(__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    dataLen.push(4+values.byteLength);
+}
+
+function vertexAttrib3fvOpt(index,values){
+    insIds.push(VERTEXATTRIB3FV);
+    datas.push(index);
+    datas.push(__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    dataLen.push(4+values.byteLength);
+}
+
+function vertexAttrib4fvOpt(index,values){
+    insIds.push(VERTEXATTRIB4FV);
+    datas.push(index);
+    datas.push(__TypedArrayGetData(values instanceof Array? new Float32Array(values) : values));
+    dataLen.push(4+values.byteLength);
+}
+
+function vertexAttribPointerOpt(index,size,type,normalized,stride,offset){
+    insIds.push(VERTEXATTRIBPOINTER);
+    datas.push(index);
+    datas.push(size);
+    datas.push(type);
+    datas.push(normalized);
+    datas.push(stride);
+    datas.push(offset);
+    dataLen.push(25);
+}
+
+function viewportOpt(x,y,width,heigh){
+    insIds.push(VIEWPORT);
+    datas.push(x);
+    datas.push(y);
+    datas.push(width);
+    datas.push(heigh);
+    dataLen.push(16);
+}
+
+function OpenOptMode(){
+	attachMethodOpt();
+}
+
+
+function attachMethodOpt(){
+	gl.activeTexture = activeTextureOpt;
+    gl.attachShader = attachShaderOpt;
+    gl.bindAttribLocation = bindAttribLocationOpt;
+    gl.bindBuffer = bindBufferOpt;
+    gl.bindFramebuffer = bindFramebufferOpt;
+    gl.bindRenderbuffer = bindRenderbufferOpt;
+    gl.bindTexture = bindTextureOpt;
+    gl.blendColor = blendColorOpt;
+    gl.blendEquation = blendEquationOpt;
+    gl.blendEquationSeparate = blendEquationSeparateOpt;
+    gl.blendFunc = blendFuncOpt;
+    gl.blendFuncSeparate = blendFuncSeparateOpt;
+    gl.bufferData = bufferDataOpt;
+    gl.bufferData = bufferDataOpt;
+    gl.bufferSubData = bufferSubDataOpt;
+    gl.checkFramebufferStatus = checkFramebufferStatusOpt;
+    gl.clear = clearOpt;
+    gl.clearColor = clearColorOpt;
+    gl.clearDepth = clearDepthOpt;
+    gl.clearStencil = clearStencilOpt;
+    gl.colorMask = colorMaskOpt;
+    gl.compileShader = compileShaderOpt;
+    gl.compressedTexImage2D = compressedTexImage2DOpt;
+    gl.compressedTexSubImage2D = compressedTexSubImage2DOpt;
+    gl.copyTexImage2D = copyTexImage2DOpt;
+    gl.copyTexSubImage2D = copyTexSubImage2DOpt;
+    gl.createBuffer = createBufferOpt;
+    gl.createFramebuffer = createFramebufferOpt;
+    gl.createProgram = createProgramOpt;
+    gl.createRenderbuffer = createRenderbufferOpt;
+    gl.createShader = createShaderOpt;
+    gl.createTexture = createTextureOpt;
+    gl.cullFace = cullFaceOpt;
+    gl.deleteBuffer = deleteBufferOpt;
+    gl.deleteFramebuffer = deleteFramebufferOpt;
+    gl.deleteProgram = deleteProgramOpt;
+    gl.deleteRenderbuffer = deleteRenderbufferOpt;
+    gl.deleteShader = deleteShaderOpt;
+    gl.deleteTexture = deleteTextureOpt;
+    gl.depthFunc = depthFuncOpt;
+    gl.depthMask = depthMaskOpt;
+    gl.depthRange = depthRangeOpt;
+    gl.detachShader = detachShaderOpt;
+    gl.disable = disableOpt;
+    gl.disableVertexAttribArray = disableVertexAttribArrayOpt;
+    gl.drawArrays = drawArraysOpt;
+    gl.drawElements = drawElementsOpt;
+    gl.enable = enableOpt;
+    gl.enableVertexAttribArray = enableVertexAttribArrayOpt;
+    gl.finish = finishOpt;
+    gl.flush = flushOpt;
+    gl.framebufferRenderbuffer = framebufferRenderbufferOpt;
+    gl.framebufferTexture2D = framebufferTexture2DOpt;
+    gl.frontFace = frontFaceOpt;
+    gl.generateMipmap = generateMipmapOpt;
+    gl.getActiveAttrib = getActiveAttribOpt;
+    gl.getActiveUniform = getActiveUniformOpt;
+    gl.getAttachedShaders = getAttachedShadersOpt;
+    gl.getAttribLocation = getAttribLocationOpt;
+    gl.getBufferParameter = getBufferParameterOpt;
+    gl.getParameter = getParameterOpt;
+    gl.getError = getErrorOpt;
+    gl.getFramebufferAttachmentParameter = getFramebufferAttachmentParameterOpt;
+    gl.getProgramParameter = getProgramParameterOpt;
+    gl.getProgramInfoLog = getProgramInfoLogOpt;
+    gl.getRenderbufferParameter = getRenderbufferParameterOpt;
+    gl.getShaderParameter = getShaderParameterOpt;
+    gl.getShaderPrecisionFormat = getShaderPrecisionFormatOpt;
+    gl.getShaderInfoLog = getShaderInfoLogOpt;
+    gl.getShaderSource = getShaderSourceOpt;
+    gl.getTexParameter = getTexParameterOpt;
+    gl.getUniform = getUniformOpt;
+    gl.getUniformLocation = getUniformLocationOpt;
+    gl.getVertexAttrib = getVertexAttribOpt;
+    gl.getVertexAttribOffset = getVertexAttribOffsetOpt;
+    gl.hint = hintOpt;
+    gl.isBuffer = isBufferOpt;
+    gl.isEnabled = isEnabledOpt;
+    gl.isFramebuffer = isFramebufferOpt;
+    gl.isProgram = isProgramOpt;
+    gl.isRenderbuffer = isRenderbufferOpt;
+    gl.isShader = isShaderOpt;
+    gl.isTexture = isTextureOpt;
+    gl.lineWidth = lineWidthOpt;
+    gl.linkProgram = linkProgramOpt;
+    gl.pixelStorei = pixelStoreiOpt;
+    gl.polygonOffset = polygonOffsetOpt;
+    gl.readPixels = readPixelsOpt;
+    gl.renderbufferStorage = renderbufferStorageOpt;
+    gl.sampleCoverage = sampleCoverageOpt;
+    gl.scissor = scissorOpt;
+    gl.shaderSource = shaderSourceOpt;
+    gl.stencilFunc = stencilFuncOpt;
+    gl.stencilFuncSeparate = stencilFuncSeparateOpt;
+    gl.stencilMask = stencilMaskOpt;
+    gl.stencilMaskSeparate = stencilMaskSeparateOpt;
+    gl.stencilOp = stencilOpOpt;
+    gl.stencilOpSeparate = stencilOpSeparateOpt;
+    gl.texImage2D = texImage2DOpt;
+    gl.texImage2D = texImage2DOpt;
+    gl.texParameterf = texParameterfOpt;
+    gl.texParameteri = texParameteriOpt;
+    gl.texSubImage2D = texSubImage2DOpt;
+    gl.texSubImage2D = texSubImage2DOpt;
+    gl.uniform1f = uniform1fOpt;
+    gl.uniform2f = uniform2fOpt;
+    gl.uniform3f = uniform3fOpt;
+    gl.uniform4f = uniform4fOpt;
+    gl.uniform1i = uniform1iOpt;
+    gl.uniform2i = uniform2iOpt;
+    gl.uniform3i = uniform3iOpt;
+    gl.uniform4i = uniform4iOpt;
+    gl.uniform1fv = uniform1fvOpt;
+    gl.uniform2fv = uniform2fvOpt;
+    gl.uniform3fv = uniform3fvOpt;
+    gl.uniform4fv = uniform4fvOpt;
+    gl.uniform1iv = uniform1ivOpt;
+    gl.uniform2iv = uniform2ivOpt;
+    gl.uniform3iv = uniform3ivOpt;
+    gl.uniform4iv = uniform4ivOpt;
+    gl.uniformMatrix2fv = uniformMatrix2fvOpt;
+    gl.uniformMatrix3fv = uniformMatrix3fvOpt;
+    gl.uniformMatrix4fv = uniformMatrix4fvOpt;
+    gl.useProgram = useProgramOpt;
+    gl.validateProgram = validateProgramOpt;
+    gl.vertexAttrib1f = vertexAttrib1fOpt;
+    gl.vertexAttrib2f = vertexAttrib2fOpt;
+    gl.vertexAttrib3f = vertexAttrib3fOpt;
+    gl.vertexAttrib4f = vertexAttrib4fOpt;
+    gl.vertexAttrib1fv = vertexAttrib1fvOpt;
+    gl.vertexAttrib2fv = vertexAttrib2fvOpt;
+    gl.vertexAttrib3fv = vertexAttrib3fvOpt;
+    gl.vertexAttrib4fv = vertexAttrib4fvOpt;
+    gl.vertexAttribPointer = vertexAttribPointerOpt;
+    gl.viewport = viewportOpt;
+
+}

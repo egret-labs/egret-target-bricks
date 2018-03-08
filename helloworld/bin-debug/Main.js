@@ -157,7 +157,7 @@ var Main = (function (_super) {
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
-        // debugger;
+        debugger;
         var container = new egret.DisplayObjectContainer();
         var topMask = new egret.Shape();
         topMask.graphics.beginFill(0x000000, 0.5);
@@ -186,9 +186,8 @@ var Main = (function (_super) {
         colorLabel.x = 172;
         colorLabel.y = 80;
         container.addChild(colorLabel);
-        this.addChild(container);
         var textfield = new egret.TextField();
-        this.addChild(textfield);
+        container.addChild(textfield);
         textfield.alpha = 0;
         textfield.width = stageW - 172;
         textfield.textAlign = egret.HorizontalAlign.CENTER;
@@ -197,12 +196,14 @@ var Main = (function (_super) {
         textfield.x = 172;
         textfield.y = 135;
         this.textfield = textfield;
+        this.addChild(container);
         var renderTexture = new egret.RenderTexture();
-        var rectangle = new egret.Rectangle(100, 33, icon.width, icon.height);
+        var rectangle = new egret.Rectangle(300, 33, icon.width, icon.height);
         renderTexture.drawToTexture(container, rectangle);
         egret.setTimeout(function () {
             var image = new egret.Bitmap();
             image.texture = renderTexture;
+            image.x = 300;
             image.y = 500;
             _this.addChild(image);
         }, this, 3000);

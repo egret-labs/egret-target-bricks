@@ -185,6 +185,10 @@ BK.QQ = (function () {
     return new function () {
         this.gameCfg = clone_(GameStatusInfo);
         this.gameCfg.gameId = parseInt(this.gameCfg.gameId);
+        ///
+        this.gameCfg.gameMode = 0; //GameMode调整 默认情况下gamemode为0。0--实时PK
+        GameStatusInfo.gameMode = 0;
+        //
 
         this.arkData = {
             "modeWording": "",          //等待加入时展示的wording, 如：计时模式，关卡-4等
@@ -228,6 +232,7 @@ BK.QQ = (function () {
             var isAndroid = GameStatusInfo.platform == "android" ? 1 : 2;
             if (isAndroid == 1) {
                 BK.Script.renderMode = 0;
+                renderTicker.paused = true;
                 currentRenderMode = 0;
             }
 
@@ -237,6 +242,7 @@ BK.QQ = (function () {
             var isAndroid = GameStatusInfo.platform == "android" ? 1 : 2;
             if (isAndroid == 1) {
                 BK.Script.renderMode = 1;
+                renderTicker.paused = false;
                 currentRenderMode = 1;
             }
 
@@ -297,14 +303,45 @@ BK.QQ = (function () {
                     var succList = [];
                     var failList = [];
                     if (errCode == 0) {
-                        succList = data.succList;
-                        failList = data.failList;
+                        succList = data.data.succList;
+                        failList = data.data.failList;
                     }
                     callback(errCode,succList,failList)
                 }.bind(this));
             }
             BK.MQQ.SsoRequest.send(data, cmd);
         }
+
+        /**
+         * 回滚道具
+         * @param {*} itemList 
+         * @param {*} callback 
+         */
+        this.rollbackGameItems = function(itemList,callback){
+            var cmd = "apollo_game_item.rollback_game_items";
+            var data = {
+                "cmd" : cmd,
+                "from": GameStatusInfo.platform,
+                "gameId": GameStatusInfo.gameId,
+                "openId": GameStatusInfo.openId,
+                "items": itemList
+            }
+            if (callback) {
+                BK.MQQ.SsoRequest.removeListener(cmd, this);
+                BK.MQQ.SsoRequest.addListener(cmd, this, function (errCode, cmd, data) {
+                    var succList = [];
+                    var failList = [];
+                    if (errCode == 0) {
+                        succList = data.data.succList;
+                        failList = data.data.failList;
+                    }
+                    callback(errCode,succList,failList)
+                }.bind(this));
+            }
+            BK.MQQ.SsoRequest.send(data, cmd);
+        }
+
+        
 
         //分享游戏至手Q
         this.shareToMQQ = function (title, summary, detailUrl, picUrl) {
@@ -1002,6 +1039,8 @@ BK.QQ = (function () {
             }
         }
 
+
+         
         BK.MQQ.SsoRequest.addListener(CMSHOW_SC_CMD_PUSH_MSG, this, this._event4PushMsg.bind(this));
         BK.MQQ.SsoRequest.addListener(CMSHOW_SC_CMD_STOP_GAME, this, this._event4StopGame.bind(this));
     }
@@ -1048,7 +1087,9 @@ BK.Room = function () {
     this.gameStatusInfo = GameStatusInfo;
     this.serverConnected;
     this._isDebug = false;
-    this._environment = NETWORK_ENVIRONMENT_QQ_RELEASE;
+    this._environment = GameStatusInfo.isWhiteUser;
+    BK.Script.log(1,0,"environment: "+ GameStatusInfo.isWhiteUser);
+    BK.Script.log(1,0,"environment: "+ this._environment);
     this.headerVersion = 0x0301;
     this.recommandRoomSvrHost = NormalRecommandRoomSvrHost;
     this.recommandRoomSvrPort = NormalRecommandRoomSvrPort;
@@ -1168,6 +1209,10 @@ BK.Room = function () {
     this.matchGame = function (gameId, openId, callback) {
         this.mId = openId;
         this.gameId = parseInt(gameId);
+        ///
+        BK.QQ.gameCfg.gameMode = 6; //GameMode调整 开始陌生人匹配后。将gameMode修改为6陌生人匹配
+        GameStatusInfo.gameMode = 6;
+        //
         var con = this.socket.connect(this.recommandRoomSvrHost, this.recommandRoomSvrPort);
         BK.Script.log(0, 0, "socket con =" + con);
         if (con == -1) {
@@ -1952,6 +1997,7 @@ BK.Room = function () {
 
             var userDataArr = new Array();
             while (len > 0) {
+                debugger;
                 BK.Script.log(0, 0, "push frameNo=" + this.lastFrame);
 
                 var dataLen = frameData[i].readUint16Buffer();
@@ -2089,7 +2135,7 @@ BK.Room = function () {
                 this.getUserDataCallBack(fixedHeader.ret, null);
                 break;
             case 0xf:
-                this.sendSyncOptCallBack();
+                this.sendSyncOptCallBack(fixedHeader.ret,null);
                 break;
             case 0x10:
                 break;
@@ -2200,7 +2246,7 @@ BK.Room = function () {
             case 0xf:
                 var ack = body.readUint32Buffer();
                 this.ackSeq = ack;
-                this.sendSyncOptCallBack();
+                this.sendSyncOptCallBack(fixedHeader.ret,ack);
                 break;
             case 0x10:
                 this.recvPushFrameSync(body, body.bufferLength() - fixedHeaderLen);
@@ -2685,26 +2731,12 @@ BK.Room = function () {
             return this._environment;
         },
         set: function (obj) {
-            //手Q测试环境，使用加密，测试服务器
-            if (obj == NETWORK_ENVIRONMENT_QQ_DEBUG) {
-                this.headerVersion = 0x0301;
-                this.recommandRoomSvrHost = DebugRecommandRoomSvrHost;
-                this.recommandRoomSvrPort = DebugRecommandRoomSvrPort;
-            }
-            //开发环境，使用非加密，测试服务器
-            else if (obj == NETWORK_ENVIRONMENT_DEMO_DEV) {
-                this.addDebugFunctions();
-                this.headerVersion = 0x101;//非加密
-                this.recommandRoomSvrHost = DebugRecommandRoomSvrHost;
-                this.recommandRoomSvrPort = DebugRecommandRoomSvrPort;
-                this._isDebug = true;
-            }
-            this._environment = obj;
+            BK.Script.log(0,0,"do not allow to set environment");
         }
     });
-    ///
-    ///DEBUG ENVIRMONET END
-    ///
+    
+    
+
 }
 
 

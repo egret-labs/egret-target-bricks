@@ -139,11 +139,10 @@ function calcElapsedTime(duration)
     } else {
         if (!BK.Director.prevClock) {
             BK.Director.prevClock = BK.Time.clock;
-        } else {
-            var curClock = BK.Time.clock;
-            BK.Director.dt = BK.Time.diffTime(BK.Director.prevClock, curClock);
-            BK.Director.prevClock = curClock;
-        }       
+        }
+        var curClock = BK.Time.clock;
+        BK.Director.dt = BK.Time.diffTime(BK.Director.prevClock, curClock);
+        BK.Director.prevClock = curClock;
     }
 }
 
@@ -151,7 +150,7 @@ function _tickerCallback_(ts, dt)
 {
     calcElapsedTime(dt);
     
-    TickerManager.Instance.update(ts, dt);
+    TickerManager.Instance.update(ts, BK.Director.dt);
 
     updateFPS(BK.Director.dt);
     if (BK.Director.showDiagnosticsUI) {
@@ -161,14 +160,24 @@ function _tickerCallback_(ts, dt)
     }
 }
 
+// init render ticker
+var renderTicker = new BK.Ticker();
+renderTicker.interval = 1;
+renderTicker.setTickerCallBack(function(ts, duration)
+{
+    //BK.Render.clear(0,0,0,0);
+    //BK.Render.treeRender( BK.Director.root, duration);
+    BK.Director.renderAllCameras(duration);
+    BK.Render.commit();
+
+});
+
 // init main ticker
 var mainTicker = new BK.Ticker();
 mainTicker.interval = 1;
 mainTicker.setTickerCallBack(function(ts, duration)
 {
-    BK.Render.clear(1,1,1,1);
-    BK.Render.treeRender( BK.Director.root, BK.Director.dt);
-    BK.Render.commit();
+
 
 });
 

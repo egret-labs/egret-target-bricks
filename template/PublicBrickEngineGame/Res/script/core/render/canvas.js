@@ -58,7 +58,7 @@ function Canvas()
                           });
 
     
-    Object.defineProperty(Canvas.prototype, "textBaseLine", {
+    Object.defineProperty(Canvas.prototype, "textBaseline", {
         get: function () {
             return this._textBaseLine;
         },
@@ -790,6 +790,24 @@ Canvas.prototype.measureText = function()
 }
 
 
+Canvas.prototype.updateCanvasTexture = function()
+{
+    if(this.__nativeObj)
+    {
+        return this.__nativeObj.updateCanvasTexture();
+    }
+    return null;
+}
+
+Canvas.prototype.saveTo = function()
+{
+    var argumentLength = arguments.length;
+    if(this.__nativeObj && argumentLength == 1)
+    {
+        this.__nativeObj.saveTo(arguments[0]);
+    }
+    return null;
+}
 
 BK.Canvas = Canvas;
 BK.Script.log(0,0,"Load Canvas.js succeed.");
