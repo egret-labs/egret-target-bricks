@@ -27,6 +27,7 @@ var egret;
              * @internal
              */
             _this._color = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
+            _this.scrollRectNode = null;
             _this._bkNode = bkNode || new BK.Node();
             return _this;
         }
@@ -336,9 +337,42 @@ var egret;
             configurable: true
         });
         BKDisplayObject.prototype.setScrollRect = function (value) {
-            debugger;
-            _super.prototype['$setScrollRect'].call(this, value);
-            var rect = this.$scrollRect;
+            if (value) {
+                _super.prototype['$setScrollRect'].call(this, value);
+                var rect = this.$scrollRect;
+                if (this.scrollRectNode) {
+                    var clipRectNode = this._bkNode;
+                    clipRectNode.clipRegion = { x: 0, y: this.height + 1, width: rect.width, height: -rect.height - 1 };
+                    this.scrollRectNode.position = { x: rect.x, y: rect.y };
+                    this._transformDirty = true;
+                }
+                else {
+                    var parent_1 = this._bkNode.parent;
+                    this.scrollRectNode = this._bkNode;
+                    this._bkNode.removeFromParent();
+                    var clipRectNode = new BK.ClipRectNode(0, this.height + 1, rect.width, -rect.height - 1);
+                    if (parent_1) {
+                        parent_1.addChild(clipRectNode);
+                    }
+                    clipRectNode.addChild(this.scrollRectNode);
+                    this._bkNode = clipRectNode;
+                    this.scrollRectNode.position = { x: rect.x, y: rect.y };
+                    this._transformDirty = true;
+                }
+            }
+            else {
+                if (this.scrollRectNode) {
+                    var scrollRectNode = this.scrollRectNode;
+                    var parent_2 = this._bkNode.parent;
+                    scrollRectNode.removeFromParent();
+                    this._bkNode.removeFromParent();
+                    scrollRectNode.position = { x: this._bkNode.position.x, y: this._bkNode.position.y };
+                    parent_2.addChild(scrollRectNode);
+                    this._bkNode = scrollRectNode;
+                    this.scrollRectNode = null;
+                    this._transformDirty = true;
+                }
+            }
         };
         /**
          * @override
@@ -1373,7 +1407,7 @@ var egret;
                 //增加裁切节点，渲染贴图后再去掉
                 var clipNode = new BK.ClipRectNode(0, 0, bounds.width, bounds.height);
                 clipNode.position = { x: 0, y: 0 };
-                var parent_1 = bkNode.parent;
+                var parent_3 = bkNode.parent;
                 bkNode.removeFromParent();
                 clipNode.addChild(bkNode);
                 //裁切
@@ -1381,7 +1415,7 @@ var egret;
                 BK.Render.renderToTexture(clipNode, subBKTexture);
                 //还原
                 bkNode.removeFromParent();
-                parent_1.addChild(bkNode);
+                parent_3.addChild(bkNode);
                 displayObject.$setMatrix(old_matrix);
                 displayObject.$getRenderNode();
                 bitmapData = new egret.BKBitmapData(subBKTexture, true);

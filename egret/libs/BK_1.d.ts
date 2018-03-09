@@ -150,6 +150,21 @@ declare namespace BK {
         addChild(sprite: BK.Sprite);
     }
 
+    export class ClipRectNode extends BK.Node {
+        /**
+         * 裁切区域
+         *
+         */
+        clipRegion: { x: number, y: number, width: number, height: number };
+
+        /**
+         * 是否开启裁切，默认为true
+         */
+        enableClip: boolean;
+
+        constructor(x: number, y: number, width: number, height: number);
+    }
+
     export interface SpriteSheetCache {
         /**
          * 根据图集文件中某个文件的名字获取sprite

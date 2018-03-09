@@ -100,6 +100,10 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
+        // egret.setTimeout(()=>{
+        //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
+        // },this,3000);
+
 
         sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
         let t = new egret.Timer(50);
@@ -115,8 +119,18 @@ class Main extends egret.DisplayObjectContainer {
                 sky.y = 0;
             }
             rect.width += 20;
+
+            sky.scrollRect = rect;
         }, this);
-        t.start
+        t.start();
+
+
+        egret.setTimeout(()=>{
+            t.stop();
+            sky.scrollRect = null;
+        },this,10000)
+
+
 
         // let topMask = new egret.Shape();
         // topMask.graphics.beginFill(0x000000, 0.5);

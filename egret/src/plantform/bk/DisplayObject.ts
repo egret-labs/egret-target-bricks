@@ -348,40 +348,58 @@ namespace egret {
         }
 
 
-        // /**
-        //  * @override
-        //  */
-        // public get scrollRect(): Rectangle {
-        //     return this.$scrollRect;
-        // }
+        /**
+         * @override
+         */
+        public get scrollRect(): Rectangle {
+            return this.$scrollRect;
+        }
 
-        // /**
-        //  * @override
-        //  */
-        // public set scrollRect(value: Rectangle) {
-        //     this.setScrollRect(value);
-        // }
+        /**
+         * @override
+         */
+        public set scrollRect(value: Rectangle) {
+            this.setScrollRect(value);
+        }
 
-        // private scrollRectNode: BK.Node;
+        private scrollRectNode: BK.Node = null;
 
-        // setScrollRect(value: Rectangle): void {
-        //     // debugger;
-
-        //     // if (value) {
-        //     //     super['$setScrollRect'].call(this, value);
-        //     //     let rect = this.$scrollRect;
-        //     //     if (this.scrollRectNode) {
-        //     //         let clipRectNode = this.scrollRectNode.parent;
-        //     //         // clipRectNode.
-        //     //     }
-
-
-        //     // } else {
-
-        //     // }
-
-
-        // }
+        setScrollRect(value: Rectangle): void {
+            if (value) {
+                super['$setScrollRect'].call(this, value);
+                let rect = this.$scrollRect;
+                if (this.scrollRectNode) {
+                    let clipRectNode: BK.ClipRectNode = this._bkNode as any;
+                    clipRectNode.clipRegion = { x: 0, y: this.height + 1, width: rect.width, height: -rect.height - 1 };
+                    this.scrollRectNode.position = { x: rect.x, y: rect.y };
+                    this._transformDirty = true;
+                } else {
+                    let parent = this._bkNode.parent;
+                    this.scrollRectNode = this._bkNode;
+                    this._bkNode.removeFromParent();
+                    let clipRectNode = new BK.ClipRectNode(0, this.height + 1, rect.width, -rect.height - 1);
+                    if (parent) {
+                        parent.addChild(clipRectNode);
+                    }
+                    clipRectNode.addChild(this.scrollRectNode);
+                    this._bkNode = clipRectNode;
+                    this.scrollRectNode.position = { x: rect.x, y: rect.y };
+                    this._transformDirty = true;
+                }
+            } else {
+                if (this.scrollRectNode) {
+                    let scrollRectNode = this.scrollRectNode;
+                    let parent = this._bkNode.parent;
+                    scrollRectNode.removeFromParent();
+                    this._bkNode.removeFromParent();
+                    scrollRectNode.position = { x: this._bkNode.position.x, y: this._bkNode.position.y };
+                    parent.addChild(scrollRectNode);
+                    this._bkNode = scrollRectNode;
+                    this.scrollRectNode = null;
+                    this._transformDirty = true;
+                }
+            }
+        }
 
 
 
