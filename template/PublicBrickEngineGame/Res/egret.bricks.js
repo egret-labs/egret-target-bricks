@@ -1501,6 +1501,7 @@ var egret;
             _this.$explicitBitmapWidth = NaN;
             _this.$explicitBitmapHeight = NaN;
             _this._size = { width: 0, height: 0 };
+            _this.hasScale9Grid = false;
             /**
              * @internal
              */
@@ -1556,6 +1557,11 @@ var egret;
                     this._size.width = this.$getWidth(); //this.$texture.$bitmapWidth;
                     this._size.height = this.$getHeight(); //this.$texture.$bitmapHeight;
                     this._bkSprite.size = this._size;
+                    if (this.$texture['scale9Grid'] && !this.hasScale9Grid) {
+                        var rectangle = new egret.Rectangle();
+                        rectangle.setTo(this.$texture['scale9Grid'].x, this.$texture['scale9Grid'].y, this.$texture['scale9Grid'].width, this.$texture['scale9Grid'].height);
+                        this.$setScale9Grid(rectangle);
+                    }
                 }
                 else {
                     this.$bitmapData = null;
@@ -1597,6 +1603,7 @@ var egret;
                 this._bkSprite = new egret.BKSprite9();
                 this._replaceNode(this._bkSprite);
                 this._bkSprite.setScale9Grid(value);
+                this.hasScale9Grid = true;
                 this.$setTexture(this.$texture);
             }
             this._bkSprite.size = this._size;

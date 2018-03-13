@@ -4,6 +4,7 @@ namespace egret {
         protected $explicitBitmapHeight: number = NaN;
         protected readonly _size: Size = { width: 0, height: 0 };
         private _bkSprite: BK.Sprite | BKSprite9;
+        private hasScale9Grid = false;
         /**
          * @internal
          */
@@ -71,6 +72,12 @@ namespace egret {
                     this._size.width = this.$getWidth()//this.$texture.$bitmapWidth;
                     this._size.height = this.$getHeight()//this.$texture.$bitmapHeight;
                     this._bkSprite.size = this._size;
+
+                    if (this.$texture['scale9Grid'] && !this.hasScale9Grid) {
+                        let rectangle = new egret.Rectangle();
+                        rectangle.setTo(this.$texture['scale9Grid'].x, this.$texture['scale9Grid'].y, this.$texture['scale9Grid'].width, this.$texture['scale9Grid'].height);
+                        this.$setScale9Grid(rectangle);
+                    }
                 }
                 else {
                     this.$bitmapData = null;
@@ -111,6 +118,7 @@ namespace egret {
                 this._bkSprite = new BKSprite9();
                 this._replaceNode(this._bkSprite as any);
                 this._bkSprite.setScale9Grid(value);
+                this.hasScale9Grid = true;
                 this.$setTexture(this.$texture);
             }
 
