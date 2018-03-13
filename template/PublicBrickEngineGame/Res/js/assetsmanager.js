@@ -1047,7 +1047,6 @@ var RES;
                             case 0: return [4 /*yield*/, host.load(resource, 'text')];
                             case 1:
                                 text = _a.sent();
-                                f = new Function('require', 'exports', text);
                                 require = function () { };
                                 exports = {};
                                 try {
