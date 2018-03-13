@@ -40,7 +40,7 @@ namespace egret {
          * @internal
          */
         public readonly _displayList: DisplayObject[] = [];
-        private _options: runEgretOptions;
+        private _options: BKRunEgretOptions;
 
         public constructor(options: BKRunEgretOptions) {
             super();
@@ -174,7 +174,7 @@ namespace egret {
         }
     }
 
-    type BKRunEgretOptions = {
+    export type BKRunEgretOptions = {
         renderMode?: string;
         audioType?: number;
         screenAdapter?: sys.IScreenAdapter;

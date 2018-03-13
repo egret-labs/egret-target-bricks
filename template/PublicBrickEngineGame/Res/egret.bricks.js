@@ -7461,8 +7461,17 @@ var egret;
 (function (egret) {
     var BKSprite9 = (function () {
         function BKSprite9() {
+            /**
+             * 贴图实际宽度
+             */
             this._contentWidth = 0;
+            /**
+             * 贴图实际高度
+             */
             this._contentHeight = 0;
+            /**
+             * 逻辑大小
+             */
             this._size = { width: 0.0, height: 0.0 };
             this._rawGrid = new egret.Rectangle();
             /**
@@ -7491,11 +7500,17 @@ var egret;
             this.__nativeObj.addChild(this._centerBottom);
             this.__nativeObj.addChild(this._rightBottom);
         }
+        /**
+         * 根据传入的Rectangle的大小得到9点位置数据
+         */
         BKSprite9.prototype._updateGrid = function () {
+            /**
+             * _rawGrid为逻辑大小，用逻辑大小进行运算
+             */
             this._grid.x = this._rawGrid.x;
             this._grid.y = this._rawGrid.y;
-            this._grid.width = this._contentWidth - this._rawGrid.x - this._rawGrid.width;
-            this._grid.height = this._contentHeight - this._rawGrid.y - this._rawGrid.height;
+            this._grid.width = this.size.width - this._rawGrid.x - this._rawGrid.width;
+            this._grid.height = this.size.height - this._rawGrid.y - this._rawGrid.height;
         };
         BKSprite9.prototype.dispose = function () {
             this.__nativeObj.dispose();
@@ -7515,35 +7530,47 @@ var egret;
             this._rawGrid.setTo(value.x, value.y, value.width, value.height);
             this._updateGrid();
         };
-        BKSprite9.prototype.adjustTexturePosition = function (offsetX, offsetY, contentWidth, contentHeight, rotated) {
-            this._contentWidth = contentWidth;
-            this._contentHeight = contentHeight;
+        BKSprite9.prototype.adjustTexturePosition = function (offsetX, offsetY, _textureWidth, _textureHeight, rotated) {
+            this._contentWidth = _textureWidth;
+            this._contentHeight = _textureHeight;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.rotated = rotated;
             this._updateGrid();
+            /**
+             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示逻辑点9大小
+             * 下面是相对于逻辑的大小的9点size
+             */
             var ltW = this._grid.x;
             var ltH = this._grid.y;
             var rbW = this._grid.width;
             var rbH = this._grid.height;
-            var centerWidth = contentWidth - ltW - rbW;
-            var centerHeight = contentHeight - ltH - rbH;
+            var centerWidth = this._contentWidth - ltW - rbW;
+            var centerHeight = this._contentHeight - ltH - rbH;
             if (rotated === true) {
                 // TODO
             }
             else {
+                /**
+                 * offset是相对于贴图的，ltw等数据需要相对于宽高作出变化
+                 */
+                var scaleX = _textureWidth / this._contentWidth;
+                var scaleY = _textureHeight / this._contentHeight;
                 var x1 = offsetX;
-                var x2 = offsetX + ltW;
-                var x3 = offsetX + (contentWidth - rbW);
+                var x2 = offsetX + ltW * scaleX;
+                var x3 = offsetX + (_textureWidth - rbW * scaleX);
                 var y1 = offsetY;
-                var y2 = offsetY + rbH;
-                var y3 = offsetY + (contentHeight - ltH);
-                this._leftTop.adjustTexturePosition(x1, y3, ltW, ltH);
-                this._centerTop.adjustTexturePosition(x2, y3, centerWidth, ltH);
-                this._rightTop.adjustTexturePosition(x3, y3, rbW, ltH);
-                this._leftCenter.adjustTexturePosition(x1, y2, ltW, centerHeight);
-                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth, centerHeight);
-                this._rightCenter.adjustTexturePosition(x3, y2, rbW, centerHeight);
-                this._leftBottom.adjustTexturePosition(x1, y1, ltW, rbH);
-                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth, rbH);
-                this._rightBottom.adjustTexturePosition(x3, y1, rbW, rbH);
+                var y2 = offsetY + rbH * scaleY;
+                var y3 = offsetY + (_textureHeight - ltH * scaleY);
+                this._leftTop.adjustTexturePosition(x1, y3, ltW * scaleX, ltH * scaleY);
+                this._centerTop.adjustTexturePosition(x2, y3, centerWidth * scaleX, ltH * scaleY);
+                this._rightTop.adjustTexturePosition(x3, y3, rbW * scaleX, ltH * scaleY);
+                this._leftCenter.adjustTexturePosition(x1, y2, ltW * scaleX, centerHeight * scaleY);
+                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth * scaleX, centerHeight * scaleY);
+                this._rightCenter.adjustTexturePosition(x3, y2, rbW * scaleX, centerHeight * scaleY);
+                this._leftBottom.adjustTexturePosition(x1, y1, ltW * scaleX, rbH * scaleY);
+                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth * scaleX, rbH * scaleY);
+                this._rightBottom.adjustTexturePosition(x3, y1, rbW * scaleX, rbH * scaleY);
             }
         };
         Object.defineProperty(BKSprite9.prototype, "size", {
@@ -7553,6 +7580,7 @@ var egret;
             set: function (value) {
                 var contentWidth = this._size.width = value.width;
                 var contentHeight = this._size.height = value.height;
+                this._updateGrid();
                 var ltW = this._grid.x;
                 var ltH = this._grid.y;
                 var rbW = this._grid.width;
@@ -7587,6 +7615,7 @@ var egret;
                 this._leftBottom.size = { width: ltW + 1, height: rbH };
                 this._centerBottom.size = { width: centerWidth + 1, height: rbH };
                 this._rightBottom.size = { width: rbW, height: rbH };
+                this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
             },
             enumerable: true,
             configurable: true
@@ -7885,14 +7914,19 @@ var egret;
          * 连接
          */
         BKSocket.prototype.connect = function (host, port) {
-            var url = host + ":" + port;
-            this.connectByUrl(url);
+            // let url = host + ":" + port
+            // this.connectByUrl(url);
         };
         /**
          * 连接
          */
         BKSocket.prototype.connectByUrl = function (url) {
-            this.$websocket = new BK.WebSocket(url);
+            // this.$websocket = new BK.WebSocket(url);
+            // this.$websocket.connect();
+            // this._bindEvent();
+        };
+        BKSocket.prototype.BKSocketConnect = function (BKWebSocket) {
+            this.$websocket = BKWebSocket;
             this.$websocket.connect();
             this._bindEvent();
         };

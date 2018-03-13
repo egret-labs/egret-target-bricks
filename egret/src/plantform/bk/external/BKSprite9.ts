@@ -1,9 +1,22 @@
 namespace egret {
     export class BKSprite9 {
+        /**
+         * 贴图实际宽度
+         */
         private _contentWidth: number = 0;
+        /**
+         * 贴图实际高度
+         */
         private _contentHeight: number = 0;
-        private readonly _size: Size = { width: 0.0, height: 0.0 };
+        /**
+         * 逻辑大小
+         */
+        private _size: Size = { width: 0.0, height: 0.0 };
         private readonly _rawGrid: egret.Rectangle = new egret.Rectangle();
+
+        private offsetX: number;
+        private offsetY: number;
+        private rotated: boolean;
         /**
          * x y 描述左上角size，width height 描述右下角size
          */
@@ -34,11 +47,17 @@ namespace egret {
             this.__nativeObj.addChild(this._rightBottom);
         }
 
+        /**
+         * 根据传入的Rectangle的大小得到9点位置数据
+         */
         private _updateGrid(): void {
+            /**
+             * _rawGrid为逻辑大小，用逻辑大小进行运算
+             */
             this._grid.x = this._rawGrid.x;
             this._grid.y = this._rawGrid.y;
-            this._grid.width = this._contentWidth - this._rawGrid.x - this._rawGrid.width;
-            this._grid.height = this._contentHeight - this._rawGrid.y - this._rawGrid.height;
+            this._grid.width = this.size.width - this._rawGrid.x - this._rawGrid.width;
+            this._grid.height = this.size.height - this._rawGrid.y - this._rawGrid.height;
         }
 
         public dispose(): void {
@@ -66,38 +85,50 @@ namespace egret {
             this._updateGrid();
         }
 
-        public adjustTexturePosition(offsetX: number, offsetY: number, contentWidth: number, contentHeight: number, rotated: boolean): void {
-            this._contentWidth = contentWidth;
-            this._contentHeight = contentHeight;
+        public adjustTexturePosition(offsetX: number, offsetY: number, _textureWidth: number, _textureHeight: number, rotated: boolean): void {
+            this._contentWidth = _textureWidth;
+            this._contentHeight = _textureHeight;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.rotated = rotated;
             this._updateGrid();
-
+            /**
+             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示逻辑点9大小
+             * 下面是相对于逻辑的大小的9点size
+             */
             const ltW = this._grid.x;
             const ltH = this._grid.y;
             const rbW = this._grid.width;
             const rbH = this._grid.height;
-            const centerWidth = contentWidth - ltW - rbW;
-            const centerHeight = contentHeight - ltH - rbH;
+            const centerWidth = this._contentWidth - ltW - rbW;
+            const centerHeight = this._contentHeight - ltH - rbH;
 
             if (rotated === true) {
                 // TODO
             }
             else {
-                const x1 = offsetX;
-                const x2 = offsetX + ltW;
-                const x3 = offsetX + (contentWidth - rbW);
-                const y1 = offsetY;
-                const y2 = offsetY + rbH;
-                const y3 = offsetY + (contentHeight - ltH);
+                /**
+                 * offset是相对于贴图的，ltw等数据需要相对于宽高作出变化
+                 */
+                const scaleX = _textureWidth / this._contentWidth;
+                const scaleY = _textureHeight / this._contentHeight;
 
-                this._leftTop.adjustTexturePosition(x1, y3, ltW, ltH);
-                this._centerTop.adjustTexturePosition(x2, y3, centerWidth, ltH);
-                this._rightTop.adjustTexturePosition(x3, y3, rbW, ltH);
-                this._leftCenter.adjustTexturePosition(x1, y2, ltW, centerHeight);
-                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth, centerHeight);
-                this._rightCenter.adjustTexturePosition(x3, y2, rbW, centerHeight);
-                this._leftBottom.adjustTexturePosition(x1, y1, ltW, rbH);
-                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth, rbH);
-                this._rightBottom.adjustTexturePosition(x3, y1, rbW, rbH);
+                const x1 = offsetX;
+                const x2 = offsetX + ltW * scaleX;
+                const x3 = offsetX + (_textureWidth - rbW * scaleX);
+                const y1 = offsetY;
+                const y2 = offsetY + rbH * scaleY;
+                const y3 = offsetY + (_textureHeight - ltH * scaleY);
+
+                this._leftTop.adjustTexturePosition(x1, y3, ltW * scaleX, ltH * scaleY);
+                this._centerTop.adjustTexturePosition(x2, y3, centerWidth * scaleX, ltH * scaleY);
+                this._rightTop.adjustTexturePosition(x3, y3, rbW * scaleX, ltH * scaleY);
+                this._leftCenter.adjustTexturePosition(x1, y2, ltW * scaleX, centerHeight * scaleY);
+                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth * scaleX, centerHeight * scaleY);
+                this._rightCenter.adjustTexturePosition(x3, y2, rbW * scaleX, centerHeight * scaleY);
+                this._leftBottom.adjustTexturePosition(x1, y1, ltW * scaleX, rbH * scaleY);
+                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth * scaleX, rbH * scaleY);
+                this._rightBottom.adjustTexturePosition(x3, y1, rbW * scaleX, rbH * scaleY);
             }
         }
 
@@ -108,6 +139,7 @@ namespace egret {
         public set size(value: Size) {
             const contentWidth = this._size.width = value.width;
             const contentHeight = this._size.height = value.height;
+            this._updateGrid();
             let ltW = this._grid.x;
             let ltH = this._grid.y;
             let rbW = this._grid.width;
@@ -147,6 +179,7 @@ namespace egret {
             this._leftBottom.size = { width: ltW + 1, height: rbH };
             this._centerBottom.size = { width: centerWidth + 1, height: rbH };
             this._rightBottom.size = { width: rbW, height: rbH };
+            this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
         }
     }
 }

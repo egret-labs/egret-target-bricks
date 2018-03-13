@@ -71,7 +71,7 @@ namespace egret {
      * @private
      * 网页加载完成，实例化页面中定义的Egret标签
      */
-    function runEgret(options?: runEgretOptions): void {
+    function runEgret(options?: BKRunEgretOptions): void {
         if (isRunning) {
             return;
         }
@@ -81,7 +81,7 @@ namespace egret {
         modifyEgret();
 
         if (!options) {
-            options = {};
+            options = {} as any;
         }
 
         if (options.screenAdapter) {
