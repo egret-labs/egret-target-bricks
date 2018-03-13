@@ -7509,8 +7509,8 @@ var egret;
              */
             this._grid.x = this._rawGrid.x;
             this._grid.y = this._rawGrid.y;
-            this._grid.width = this.size.width - this._rawGrid.x - this._rawGrid.width;
-            this._grid.height = this.size.height - this._rawGrid.y - this._rawGrid.height;
+            this._grid.width = this._contentWidth - this._rawGrid.x - this._rawGrid.width;
+            this._grid.height = this._contentHeight - this._rawGrid.y - this._rawGrid.height;
         };
         BKSprite9.prototype.dispose = function () {
             this.__nativeObj.dispose();
@@ -7538,8 +7538,8 @@ var egret;
             this.rotated = rotated;
             this._updateGrid();
             /**
-             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示逻辑点9大小
-             * 下面是相对于逻辑的大小的9点size
+             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示贴图九宫大小
+             * 下面是相对于贴图的大小的9点size
              */
             var ltW = this._grid.x;
             var ltH = this._grid.y;
@@ -7554,23 +7554,21 @@ var egret;
                 /**
                  * offset是相对于贴图的，ltw等数据需要相对于宽高作出变化
                  */
-                var scaleX = _textureWidth / this._contentWidth;
-                var scaleY = _textureHeight / this._contentHeight;
                 var x1 = offsetX;
-                var x2 = offsetX + ltW * scaleX;
-                var x3 = offsetX + (_textureWidth - rbW * scaleX);
+                var x2 = offsetX + ltW;
+                var x3 = offsetX + (_textureWidth - rbW);
                 var y1 = offsetY;
-                var y2 = offsetY + rbH * scaleY;
-                var y3 = offsetY + (_textureHeight - ltH * scaleY);
-                this._leftTop.adjustTexturePosition(x1, y3, ltW * scaleX, ltH * scaleY);
-                this._centerTop.adjustTexturePosition(x2, y3, centerWidth * scaleX, ltH * scaleY);
-                this._rightTop.adjustTexturePosition(x3, y3, rbW * scaleX, ltH * scaleY);
-                this._leftCenter.adjustTexturePosition(x1, y2, ltW * scaleX, centerHeight * scaleY);
-                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth * scaleX, centerHeight * scaleY);
-                this._rightCenter.adjustTexturePosition(x3, y2, rbW * scaleX, centerHeight * scaleY);
-                this._leftBottom.adjustTexturePosition(x1, y1, ltW * scaleX, rbH * scaleY);
-                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth * scaleX, rbH * scaleY);
-                this._rightBottom.adjustTexturePosition(x3, y1, rbW * scaleX, rbH * scaleY);
+                var y2 = offsetY + rbH;
+                var y3 = offsetY + (_textureHeight - ltH);
+                this._leftTop.adjustTexturePosition(x1, y3, ltW, ltH);
+                this._centerTop.adjustTexturePosition(x2, y3, centerWidth, ltH);
+                this._rightTop.adjustTexturePosition(x3, y3, rbW, ltH);
+                this._leftCenter.adjustTexturePosition(x1, y2, ltW, centerHeight);
+                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth, centerHeight);
+                this._rightCenter.adjustTexturePosition(x3, y2, rbW, centerHeight);
+                this._leftBottom.adjustTexturePosition(x1, y1, ltW, rbH);
+                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth, rbH);
+                this._rightBottom.adjustTexturePosition(x3, y1, rbW, rbH);
             }
         };
         Object.defineProperty(BKSprite9.prototype, "size", {
@@ -7578,25 +7576,25 @@ var egret;
                 return this._size;
             },
             set: function (value) {
-                var contentWidth = this._size.width = value.width;
-                var contentHeight = this._size.height = value.height;
+                this._size.width = value.width;
+                this._size.height = value.height;
                 this._updateGrid();
                 var ltW = this._grid.x;
                 var ltH = this._grid.y;
                 var rbW = this._grid.width;
                 var rbH = this._grid.height;
-                if (contentWidth < ltW + rbW) {
-                    var dW = (ltW + rbW - contentWidth) * 0.5;
-                    ltW -= dW;
-                    rbW -= dW;
+                if (this._size.width < ltW + rbW && this._size.width !== 0) {
+                    ltW = this._size.width * ltW / (this._contentWidth);
+                    rbW = this._size.width * rbW / (this._contentWidth);
                 }
-                if (contentHeight < ltH + rbH) {
-                    var dH = (ltH + rbH - contentHeight) * 0.5;
-                    ltH -= dH;
-                    rbH -= dH;
+                if (this._size.height < ltH + rbH && this._size.height !== 0) {
+                    ltH = this._size.height * ltH / (this._contentHeight);
+                    rbH = this._size.height * rbH / (this._contentHeight);
                 }
-                var centerWidth = contentWidth - ltW - rbW;
-                var centerHeight = contentHeight - ltH - rbH;
+                var offsetX = 1;
+                var offsetY = 1;
+                var centerWidth = this._size.width - ltW - rbW;
+                var centerHeight = this._size.height - ltH - rbH;
                 this._leftTop.position = { x: 0.0, y: rbH + centerHeight };
                 this._centerTop.position = { x: ltW, y: rbH + centerHeight };
                 this._rightTop.position = { x: ltW + centerWidth, y: rbH + centerHeight };
@@ -7606,16 +7604,16 @@ var egret;
                 this._leftBottom.position = { x: 0.0, y: 0.0 };
                 this._centerBottom.position = { x: ltW, y: 0.0 };
                 this._rightBottom.position = { x: ltW + centerWidth, y: 0.0 };
-                this._leftTop.size = { width: ltW + 1, height: ltH + 1 };
-                this._centerTop.size = { width: centerWidth + 1, height: ltH + 1 };
-                this._rightTop.size = { width: rbW, height: ltH + 1 };
-                this._leftCenter.size = { width: ltW + 1, height: centerHeight + 1 };
-                this._centerCenter.size = { width: centerWidth + 1, height: centerHeight + 1 };
-                this._rightCenter.size = { width: rbW, height: centerHeight + 1 };
-                this._leftBottom.size = { width: ltW + 1, height: rbH };
-                this._centerBottom.size = { width: centerWidth + 1, height: rbH };
-                this._rightBottom.size = { width: rbW, height: rbH };
-                this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
+                this._leftTop.size = { width: ltW + offsetX, height: ltH };
+                this._centerTop.size = { width: centerWidth + offsetX, height: ltH };
+                this._rightTop.size = { width: rbW, height: ltH };
+                this._leftCenter.size = { width: ltW + offsetX, height: centerHeight + offsetY };
+                this._centerCenter.size = { width: centerWidth + offsetX, height: centerHeight + offsetY };
+                this._rightCenter.size = { width: rbW, height: centerHeight + offsetY };
+                this._leftBottom.size = { width: ltW + offsetX, height: rbH + offsetY };
+                this._centerBottom.size = { width: centerWidth + offsetX, height: rbH + offsetY };
+                this._rightBottom.size = { width: rbW, height: rbH + offsetY };
+                // this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
             },
             enumerable: true,
             configurable: true
