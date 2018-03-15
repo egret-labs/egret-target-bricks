@@ -2453,7 +2453,11 @@ console.warn = console.log = function () {
             str += " " + other;
         }
     }
-    BK.Script.log(0, 0, str);
+    /**
+     * BK.Script.log
+     * 第一个参数为测试级别，0为debug级别，发布版本不输出。1为关键级别，可在发布版本输出（手Q环境）
+     */
+    BK.Script.log(1, 0, str);
 };
 console.assert = function (c) {
     var others = [];
@@ -7919,16 +7923,16 @@ var egret;
          * 连接
          */
         BKSocket.prototype.connect = function (host, port) {
-            // let url = host + ":" + port
-            // this.connectByUrl(url);
+            var url = host + ":" + port;
+            this.connectByUrl(url);
         };
         /**
          * 连接
          */
         BKSocket.prototype.connectByUrl = function (url) {
-            // this.$websocket = new BK.WebSocket(url);
-            // this.$websocket.connect();
-            // this._bindEvent();
+            this.$websocket = new BK.WebSocket(url);
+            this.$websocket.connect();
+            this._bindEvent();
         };
         BKSocket.prototype.BKSocketConnect = function (BKWebSocket) {
             this.$websocket = BKWebSocket;

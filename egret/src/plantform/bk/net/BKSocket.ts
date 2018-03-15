@@ -28,17 +28,17 @@ namespace egret {
          * 连接
          */
         connect(host: string, port: number): void {
-            // let url = host + ":" + port
-            // this.connectByUrl(url);
+            let url = host + ":" + port
+            this.connectByUrl(url);
         }
 
         /**
          * 连接
          */
         connectByUrl(url: string): void {
-            // this.$websocket = new BK.WebSocket(url);
-            // this.$websocket.connect();
-            // this._bindEvent();
+            this.$websocket = new BK.WebSocket(url);
+            this.$websocket.connect();
+            this._bindEvent();
         }
 
         BKSocketConnect(BKWebSocket: any) {

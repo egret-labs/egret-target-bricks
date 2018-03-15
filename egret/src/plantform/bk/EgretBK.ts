@@ -35,8 +35,12 @@ console.warn = console.log = function (...others: any[]): void {
             str += " " + other;
         }
     }
+    /**
+     * BK.Script.log 
+     * 第一个参数为测试级别，0为debug级别，发布版本不输出。1为关键级别，可在发布版本输出（手Q环境）
+     */
 
-    BK.Script.log(0, 0, str);
+    BK.Script.log(1, 0, str);
 };
 console.assert = function (c: boolean, ...others: any[]): void {
     if (!c) {
