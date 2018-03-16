@@ -164,9 +164,12 @@ var egret;
                             value.$maskedObject.mask = null;
                         }
                         value.$maskedObject = self;
+                        value._updateBKNodeMatrix();
                         self.$mask = value;
                         var clipNode = new BK.ClipNode(value._bkNode);
                         clipNode.zOrder = this._bkNode.zOrder;
+                        clipNode.alphaThreshold = 0.5;
+                        clipNode.inverted = false;
                         if (this._bkNode.parent) {
                             this._bkNode.parent.addChild(clipNode, this.parent.getChildIndex(this));
                             this._bkNode.parent.removeChild(this._bkNode);
