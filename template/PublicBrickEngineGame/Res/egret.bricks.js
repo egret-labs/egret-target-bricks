@@ -1403,22 +1403,22 @@ var egret;
             displayObject.$setMatrix(matrix);
             displayObject.$getRenderNode();
             if (clipBounds) {
-                // var bGraphics = new BK.Graphics();
-                // bGraphics.drawTexture(bkTexture, clipBounds.x, clipBounds.y, clipBounds.width, clipBounds.height); // scale
-                // var subBKTexture = BK.Texture.createTexture(clipBounds.width, clipBounds.height);
-                // BK.Render.renderToTexture(bGraphics, subBKTexture);
                 //增加裁切节点，渲染贴图后再去掉
                 var clipNode = new BK.ClipRectNode(0, 0, bounds.width, bounds.height);
                 clipNode.position = { x: 0, y: 0 };
                 var parent_3 = bkNode.parent;
-                bkNode.removeFromParent();
+                if (parent_3) {
+                    bkNode.removeFromParent();
+                }
                 clipNode.addChild(bkNode);
                 //裁切
                 var subBKTexture = BK.Texture.createTexture(bounds.width, bounds.height);
                 BK.Render.renderToTexture(clipNode, subBKTexture);
                 //还原
                 bkNode.removeFromParent();
-                parent_3.addChild(bkNode);
+                if (parent_3) {
+                    parent_3.addChild(bkNode);
+                }
                 displayObject.$setMatrix(old_matrix);
                 displayObject.$getRenderNode();
                 bitmapData = new egret.BKBitmapData(subBKTexture, true);
