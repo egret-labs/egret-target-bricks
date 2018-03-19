@@ -150,12 +150,12 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        // let sky = this.createBitmapByName("bg_jpg");
-        // this.addChild(sky);
-        // let stageW = this.stage.stageWidth;
-        // let stageH = this.stage.stageHeight;
-        // sky.width = stageW;
-        // sky.height = stageH;
+        var sky = this.createBitmapByName("bg_jpg");
+        this.addChild(sky);
+        var stageW = this.stage.stageWidth;
+        var stageH = this.stage.stageHeight;
+        sky.width = stageW;
+        sky.height = stageH;
         // egret.setTimeout(()=>{
         //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
         // },this,3000);
@@ -180,14 +180,16 @@ var Main = (function (_super) {
         //     t.stop();
         //     sky.scrollRect = null;
         // },this,10000)
-        var mask = this.createBitmapByName("egret_icon_png");
-        var sprite = this.createBitmapByName("bg_jpg");
-        mask.x = mask.y = 500;
-        this.addChild(sprite);
-        egret.setTimeout(function () {
-            debugger;
-            sprite.mask = mask;
-        }, this, 3000);
+        // let mask = this.createBitmapByName("egret_icon_png");
+        // let sprite = this.createBitmapByName("bg_jpg");
+        // mask.x = mask.y = 500;
+        // this.addChild(sprite);
+        //   egret.setTimeout(()=>{
+        //       debugger
+        //     sprite.mask = mask;
+        // },this,3000)
+        var audio = RES.getRes('race_background_mp3');
+        audio.play(0, 1);
         // let topMask = new egret.Shape();
         // topMask.graphics.beginFill(0x000000, 0.5);
         // topMask.graphics.drawRect(0, 0, stageW, 172);

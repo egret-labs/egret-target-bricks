@@ -1086,10 +1086,7 @@ BK.Room = function () {
     this.isCreator = (GameStatusInfo.isMaster == 1) ? true : false;
     this.gameStatusInfo = GameStatusInfo;
     this.serverConnected;
-    this._isDebug = false;
     this._environment = GameStatusInfo.isWhiteUser;
-    BK.Script.log(1,0,"environment: "+ GameStatusInfo.isWhiteUser);
-    BK.Script.log(1,0,"environment: "+ this._environment);
     this.headerVersion = 0x0301;
     this.recommandRoomSvrHost = NormalRecommandRoomSvrHost;
     this.recommandRoomSvrPort = NormalRecommandRoomSvrPort;
@@ -1102,7 +1099,12 @@ BK.Room = function () {
     this.setRoomVol = function (roomVol) {
         BK.QQ.roomVol = roomVol;
     }
-
+    
+    if(this._environment == 2)
+    {
+        this.addDebugFunctions();
+    }
+    
     this.read32BytesToString = function (buff) {
         var str = ""
         for (var i = 0; i < 32; i++) {
@@ -2711,20 +2713,6 @@ BK.Room = function () {
         }
     }
 
-    Object.defineProperty(this, "isDebug", {
-        get: function () {
-            return this._isDebug;
-        },
-        set: function (obj) {
-            if (obj == true) {
-                this.addDebugFunctions();
-                this.headerVersion = 0x101;//非加密
-                this.recommandRoomSvrHost = DebugRecommandRoomSvrHost;
-                this.recommandRoomSvrPort = DebugRecommandRoomSvrPort;
-            }
-            this._isDebug = obj;
-        }
-    });
 
     Object.defineProperty(this, "environment", {
         get: function () {

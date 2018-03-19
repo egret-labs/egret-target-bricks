@@ -22,6 +22,9 @@ function buttonClickcb (node)
         {
             var texture = selector.getTexture();
             sp.setTexture(texture);
+//            var size = selector.imageSize;
+//            sp.size = size;
+            
             var textureData = selector.getTextureData();
         }
         BK.Script.log(1,1,"ImageSelector callBack status: "+status);

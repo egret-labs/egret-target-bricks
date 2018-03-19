@@ -93,12 +93,12 @@ class Main extends egret.DisplayObjectContainer {
      * Create a game scene
      */
     private createGameScene() {
-        // let sky = this.createBitmapByName("bg_jpg");
-        // this.addChild(sky);
-        // let stageW = this.stage.stageWidth;
-        // let stageH = this.stage.stageHeight;
-        // sky.width = stageW;
-        // sky.height = stageH;
+        let sky = this.createBitmapByName("bg_jpg");
+        this.addChild(sky);
+        let stageW = this.stage.stageWidth;
+        let stageH = this.stage.stageHeight;
+        sky.width = stageW;
+        sky.height = stageH;
 
         // egret.setTimeout(()=>{
         //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
@@ -130,14 +130,17 @@ class Main extends egret.DisplayObjectContainer {
         //     sky.scrollRect = null;
         // },this,10000)
 
-        let mask = this.createBitmapByName("egret_icon_png");
-        let sprite = this.createBitmapByName("bg_jpg");
-        mask.x = mask.y = 500;
-        this.addChild(sprite);
-          egret.setTimeout(()=>{
-              debugger
-            sprite.mask = mask;
-        },this,3000)
+        // let mask = this.createBitmapByName("egret_icon_png");
+        // let sprite = this.createBitmapByName("bg_jpg");
+        // mask.x = mask.y = 500;
+        // this.addChild(sprite);
+        //   egret.setTimeout(()=>{
+        //       debugger
+        //     sprite.mask = mask;
+        // },this,3000)
+
+        let audio = RES.getRes('race_background_mp3');
+        (audio as egret.Sound).play(0,1) 
 
 
 

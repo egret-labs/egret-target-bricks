@@ -987,11 +987,11 @@ var KWebSocket = (function (_super) {
             }
             if (17 /* FRAME_PAYLOAD_DATA */ == this.parseState) {
                 var relen = (data.length - data.pointer);
-                if (relen <= this.rxbuflen) {
+                if (relen <= this.rxbuflen - this.rxbuf.length) {
                     this.rxbuf.writeBuffer(data.readBuffer(relen));
                 }
                 else {
-                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen - this.rxbuf.length));
                 }
                 if (this.rxbuf.length == this.rxbuflen) {
                     this.rxSegCount = this.rxSegCount + 1;
@@ -1229,6 +1229,9 @@ var KWebSocket = (function (_super) {
         //BK.Script.log(0, 0, "BK.WebSocket.sendPongFrame!");
     };
     KWebSocket.prototype.onErrorEvent = function (so) {
+        if (this.state == 0 /* CLOSED */ ||
+            this.state == 1 /* CLOSING */)
+            return;
         _super.prototype.onErrorEvent.call(this, so);
         this.state = -1 /* FAILED */;
         this.errcode = 1006 /* ABNORMAL_CLOSE */;
@@ -1286,29 +1289,33 @@ var KWebSocket = (function (_super) {
             }
             case 4 /* ESTABLISHED */: {
                 var rlen = so.canRecvLength();
-                if (rlen > 0 &&
-                    !this.doSvrFrameDataPhase(this.recv(rlen))) {
-                    this.sendCloseFrame(this.errcode, this.message);
-                    if (this.delegate.onError) {
-                        this.delegate.onError(this);
-                    }
-                }
-                else {
-                    if (this.delegate.onMessage) {
-                        while (this.udataQue.length > 0) {
-                            var udata = this.udataQue.shift();
-                            this.delegate.onMessage(this, udata);
+                if (rlen > 0) {
+                    var rbuf = this.recv(rlen);
+                    while (!rbuf.eof) {
+                        if (!this.doSvrFrameDataPhase(rbuf)) {
+                            this.sendCloseFrame(this.errcode, this.message);
+                            if (this.delegate.onError) {
+                                this.delegate.onError(this);
+                            }
+                        }
+                        else {
+                            if (this.delegate.onMessage) {
+                                while (this.udataQue.length > 0) {
+                                    var udata = this.udataQue.shift();
+                                    this.delegate.onMessage(this, udata);
+                                }
+                            }
+                            if (this.txbufQue.length > 0) {
+                                this.sendFrameFromTxQ(this.txFrameType);
+                            }
+                            else if (this.delegate.onSendComplete) {
+                                this.delegate.onSendComplete(this);
+                            }
+                            this.inPongFrame = false;
+                            this.handlePhaseTimeout();
+                            this.handlePingPongTimer();
                         }
                     }
-                    if (this.txbufQue.length > 0) {
-                        this.sendFrameFromTxQ(this.txFrameType);
-                    }
-                    else if (this.delegate.onSendComplete) {
-                        this.delegate.onSendComplete(this);
-                    }
-                    this.inPongFrame = false;
-                    this.handlePhaseTimeout();
-                    this.handlePingPongTimer();
                 }
                 break;
             }
@@ -1379,7 +1386,7 @@ var WebSocket = (function () {
                             _this.onOpen(_this);
                         }
                         else if (_this.onopen) {
-                            _this.onopen(_this);
+                            _this.onopen.call(_this);
                         }
                     };
                     _this.__nativeObj.delegate.onClose = function (kws) {
@@ -1387,7 +1394,7 @@ var WebSocket = (function () {
                             _this.onClose(_this);
                         }
                         else if (_this.onclose) {
-                            _this.onclose(_this);
+                            _this.onclose.call(_this);
                         }
                     };
                     _this.__nativeObj.delegate.onError = function (kws) {
@@ -1395,15 +1402,25 @@ var WebSocket = (function () {
                             _this.onError(_this);
                         }
                         else if (_this.onerror) {
-                            _this.onerror(_this);
+                            _this.onerror.call(_this);
                         }
                     };
-                    _this.__nativeObj.delegate.onMessage = function (kws, data) {
+                    _this.__nativeObj.delegate.onMessage = function (kws, event) {
                         if (_this.onMessage) {
-                            _this.onMessage(_this, data);
+                            _this.onMessage(_this, event);
                         }
                         else if (_this.onmessage) {
-                            _this.onmessage(_this, data);
+                            if (event.isBinary == true) {
+                                var buf = event.data;
+                                buf.rewind();
+                                var ab = new ArrayBuffer(buf.length);
+                                var da = new DataView(ab);
+                                while (!buf.eof) {
+                                    da.setUint8(buf.pointer, buf.readUint8Buffer());
+                                }
+                                event.data = ab;
+                            }
+                            _this.onmessage.call(_this, event);
                         }
                     };
                     _this.__nativeObj.delegate.onSendComplete = function (kws) {

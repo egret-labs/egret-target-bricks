@@ -5,7 +5,7 @@ var masterOpenId = "123456789012345678901234567890AB";
 var joinerOpenId = "012345678901234567891234567890AB";
 
 //每个游戏唯一标示符
-var gameId = 2;
+var gameId = 2003;
 
 //广播通知给所有在线用户。广播的消息不保存。
 function sendBroadcastData(game) {
@@ -33,6 +33,26 @@ function broadcastCallback(fromId,buff)
      var data = buff.readStringBuffer()
      BK.Script.log(0,0,"broadcastCallback :"+ buff.bufferLength());
      BK.Script.log(0,0,"broadcastCallback str:"+ data);
+}
+
+function sendSensitiveWordData(game,req) {
+    BK.Script.log(0,0,"sendSensitiveWordData :"+ req.length);
+    var data = new BK.Buffer(req.length);
+    data.writeAsString(req);
+    game.sendSensitiveWordData(data);
+}
+
+function sensitiveWordCallBack(ret,fromId,buff,toId) {
+    if (ret == 0) {
+        var data = buff.readAsString()
+        BK.Script.log(0,0,"sensitiveWordCallBack str:"+ data+" fromId:"+fromId+" toId:"+toId);
+    }
+    //脏词被过滤
+    else if (ret == 3020){
+        BK.Script.log(0,0,"脏词被过滤");
+    }else{
+        BK.Script.log(0,0,"其他错误");
+    }
 }
 
 //发送帧同步事件
@@ -209,6 +229,10 @@ game.createAndJoinRoom(gameId,masterOpenId,function (statusCode,room) {
         game.setBroadcastDataCallBack(broadcastCallback);
         //发送广播事件
         sendBroadcastData(game);
+
+        //发送敏感词过滤消息
+        game.setSensitiveWordCallBack(sensitiveWordCallBack);
+        sendSensitiveWordData(game,"fuck");
         
         //设置云端存储玩家数据
         var dataInfo = "this is a message";
@@ -268,10 +292,8 @@ game.createAndJoinRoom(gameId,masterOpenId,function (statusCode,room) {
     }
 })
 
-BK.QQ.SendGameMsg()
 
 
-/*.
  // 参加者加入房间流程
  // roomId 真实手Q环境中，由手Q提供，此处暂时hardcode
  var game2 = new BK.Room();
@@ -288,17 +310,26 @@ game2.environment = NETWORK_ENVIRONMENT_DEMO_DEV;
  //PS:. 房主在参加者加入房前 ，不能startGame,否则无法加入房间
  game2.queryAndJoinRoom(gameId,roomId,joinerOpenId,function(statusCode,room){
      if(statusCode == 0){
-         BK.Script.log(0,0,"queryAndJoinRoom statusCode:"+ statusCode);
-        BK.Script.log(0,0,"当前玩家：");
-        room.currentPlayers.forEach(function(player) {
-                                    BK.Script.log(1,1,"recvJoinRoom opeid:"+player["openId"] );
-                                    BK.Script.log(1,1,"recvJoinRoom joinTs:"+player["joinTs"] );
-                                    BK.Script.log(1,1,"recvJoinRoom status:"+player["status"] );
-                                }, this);
-        
-        game2.leaveRoom();
+
      }else{
-         BK.Script.log(0,0,"加入房间失败。statusCode:"+statusCode);
+         //1，已创建未开始的有效游戏房间；2，已经开始游戏的房间；
+         if (room.status == 2) {
+            
+         }
      }
+
+    //  if(statusCode == 0){
+    //      BK.Script.log(0,0,"queryAndJoinRoom statusCode:"+ statusCode);
+    //     BK.Script.log(0,0,"当前玩家：");
+    //     room.currentPlayers.forEach(function(player) {
+    //                                 BK.Script.log(1,1,"recvJoinRoom opeid:"+player["openId"] );
+    //                                 BK.Script.log(1,1,"recvJoinRoom joinTs:"+player["joinTs"] );
+    //                                 BK.Script.log(1,1,"recvJoinRoom status:"+player["status"] );
+    //                             }, this);
+        
+    //     game2.leaveRoom();
+    //  }else{
+    //      BK.Script.log(0,0,"加入房间失败。statusCode:"+statusCode);
+    //  }
  });
- */
+ /*.*/

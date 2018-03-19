@@ -1141,10 +1141,10 @@ class KWebSocket extends KSocket {
             }
             if (BK_WS_PARSE_STATE.FRAME_PAYLOAD_DATA == this.parseState) {
                 let relen: number = (data.length - data.pointer);
-                if (relen <= this.rxbuflen) {
+                if (relen <= this.rxbuflen - this.rxbuf.length) {
                     this.rxbuf.writeBuffer(data.readBuffer(relen));
                 } else {
-                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen));
+                    this.rxbuf.writeBuffer(data.readBuffer(this.rxbuflen - this.rxbuf.length));
                 }
                 if (this.rxbuf.length == this.rxbuflen) {
                     this.rxSegCount = this.rxSegCount + 1;
@@ -1394,6 +1394,9 @@ class KWebSocket extends KSocket {
     }
 
     onErrorEvent(so: ISocket): void {
+        if (this.state == BK_WS_STATE.CLOSED ||
+            this.state == BK_WS_STATE.CLOSING)
+            return;
         super.onErrorEvent(so);
         this.state = BK_WS_STATE.FAILED;
         this.errcode = BK_WS_ERR_CODE.ABNORMAL_CLOSE;
@@ -1454,27 +1457,31 @@ class KWebSocket extends KSocket {
             }
             case BK_WS_STATE.ESTABLISHED: {
                 let rlen: number = so.canRecvLength();
-                if (rlen > 0 &&
-                    !this.doSvrFrameDataPhase(this.recv(rlen))) {
-                    this.sendCloseFrame(this.errcode, this.message);
-                    if (this.delegate.onError) {
-                        this.delegate.onError(this);
-                    }
-                } else {
-                    if (this.delegate.onMessage) {
-                        while (this.udataQue.length > 0) {
-                            let udata: WebSocketData = this.udataQue.shift();
-                            this.delegate.onMessage(this, udata);
+                if (rlen > 0) {
+                    let rbuf: BK.Buffer = this.recv(rlen);
+                    while (!rbuf.eof) {
+                        if (!this.doSvrFrameDataPhase(rbuf)) {
+                            this.sendCloseFrame(this.errcode, this.message);
+                            if (this.delegate.onError) {
+                                this.delegate.onError(this);
+                            }
+                        } else {
+                            if (this.delegate.onMessage) {
+                                while (this.udataQue.length > 0) {
+                                    let udata: WebSocketData = this.udataQue.shift();
+                                    this.delegate.onMessage(this, udata);
+                                }
+                            }
+                            if (this.txbufQue.length > 0) {
+                                this.sendFrameFromTxQ(this.txFrameType);
+                            } else if (this.delegate.onSendComplete) {
+                                this.delegate.onSendComplete(this);
+                            }
+                            this.inPongFrame = false;
+                            this.handlePhaseTimeout();
+                            this.handlePingPongTimer();
                         }
                     }
-                    if (this.txbufQue.length > 0) {
-                        this.sendFrameFromTxQ(this.txFrameType);
-                    } else if (this.delegate.onSendComplete) {
-                        this.delegate.onSendComplete(this);
-                    }
-                    this.inPongFrame = false;
-                    this.handlePhaseTimeout();
-                    this.handlePingPongTimer();
                 }
                 break;
             }
@@ -1604,28 +1611,38 @@ class WebSocket implements BK.IWebSocket {
                         if (this.onOpen) {
                             this.onOpen(this);
                         } else if (this.onopen) {
-                            this.onopen(this);
+                            this.onopen.call(this);
                         }
                     }
                     this.__nativeObj.delegate.onClose = (kws: KWebSocket) => {
                         if (this.onClose) {
                             this.onClose(this);
                         } else if (this.onclose) {
-                            this.onclose(this);
+                            this.onclose.call(this);
                         }
                     }
                     this.__nativeObj.delegate.onError = (kws: KWebSocket) => {
                         if (this.onError) {
                             this.onError(this);
                         } else if (this.onerror) {
-                            this.onerror(this);
+                            this.onerror.call(this);
                         }
                     }
-                    this.__nativeObj.delegate.onMessage = (kws: KWebSocket, data: WebSocketData) => {
+                    this.__nativeObj.delegate.onMessage = (kws: KWebSocket, event: WebSocketData) => {
                         if (this.onMessage) {
-                            this.onMessage(this, data);
+                            this.onMessage(this, event);
                         } else if (this.onmessage) {
-                            this.onmessage(this, data);
+                            if (event.isBinary == true) {
+                                let buf = event.data;
+                                buf.rewind();
+                                let ab = new ArrayBuffer(buf.length);
+                                let da = new DataView(ab);
+                                while (!buf.eof) {
+                                    da.setUint8(buf.pointer, buf.readUint8Buffer());
+                                }
+                                event.data = <any>ab;
+                            }
+                            this.onmessage.call(this, event);
                         }
                     }
                     this.__nativeObj.delegate.onSendComplete = (kws: KWebSocket) => {

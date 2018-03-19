@@ -31,9 +31,9 @@ namespace egret {
                     break;
             }
             let loops = this.$loops === 0 ? -1 : this.$loops;
-            let musicPath = "GameRes://" + this.$url;
+            let musicPath = this.$url.indexOf("GameRes://") >= 0 ? this.$url : "GameRes://" + this.$url;
             // BK.Audio.switch = true;
-            this._bkAudio = new BK.Audio(_type, musicPath, loops,0);
+            this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             this._bkAudio.startMusic();
         }
 

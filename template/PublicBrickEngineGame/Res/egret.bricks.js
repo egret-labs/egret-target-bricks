@@ -4897,7 +4897,7 @@ var egret;
                     break;
             }
             var loops = this.$loops === 0 ? -1 : this.$loops;
-            var musicPath = "GameRes://" + this.$url;
+            var musicPath = this.$url.indexOf("GameRes://") >= 0 ? this.$url : "GameRes://" + this.$url;
             // BK.Audio.switch = true;
             this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             this._bkAudio.startMusic();

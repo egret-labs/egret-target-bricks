@@ -3,8 +3,8 @@
  */
 
 //1.厘米秀 spine 
-var jsonPath = BK.Script.pathForResource("GameRes://resource/spine/suit/default/role/role", 'json');
-var atlasPath = BK.Script.pathForResource("GameRes://resource/spine/suit/default/role/role", 'atlas');
+var jsonPath = BK.Script.pathForResource("GameRes://resource/spine/suit/default/role/role.json");
+var atlasPath = BK.Script.pathForResource("GameRes://resource/spine/suit/default/role/role.atlas");
     
 function startCB(animName,trackId,skeletonAnimation)
 {

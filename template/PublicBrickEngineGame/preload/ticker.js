@@ -1,4 +1,4 @@
-"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -78,7 +78,13 @@ var Ticker = (function () {
     };
     Ticker.prototype.remove = function (target) {
         for (var i = 0; i < MAX_TICKER_FUNCTORS_LEVEL; i++) {
-            this.functors[i] = this.functors[i].filter(function (functor) { return functor.target != target; });
+            for (var j = 0; j < this.functors[i].length; j++) {
+                if (this.functors[i][j] != null) {
+                    if (this.functors[i][j].target == target) {
+                        this.functors[i][j] = null;
+                    }
+                }
+            }
         }
     };
     Ticker.prototype.__getLevel = function (t) {
@@ -131,8 +137,9 @@ var Ticker = (function () {
         }
     };
     Ticker.prototype.__timeoutFunctorUpdate = function (idx, ts, dt) {
-        while (this.functors[idx].length > 0) {
-            var functor = (this.functors[idx][0]);
+        var functors = this.functors[idx].slice(0);
+        while (functors.length > 0) {
+            var functor = (functors[0]);
             var total = functor.startTS + functor.timeout;
             if (functor.startTS + functor.timeout > ts) {
                 break;
@@ -143,11 +150,13 @@ var Ticker = (function () {
             else {
                 functor.callback(ts, dt, functor.target);
             }
-            this.functors[idx].shift();
+            functors.shift();
         }
+        this.functors[idx] = functors;
     };
     Ticker.prototype.__intervalFunctorUpdate = function (idx, ts, dt) {
-        this.intervals[idx].forEach(function (functor) {
+        var intervals = this.intervals[idx].slice(0);
+        intervals.forEach(function (functor) {
             var intervalFunctor = (functor);
             if (intervalFunctor.startTS + intervalFunctor.interval <= ts) {
                 if (!intervalFunctor.target) {
@@ -168,13 +177,23 @@ var Ticker = (function () {
             this.callback(ts, dt);
         }
         this.functors[0].forEach(function (functor) {
-            if (!functor.target) {
-                functor.callback(ts, dt);
-            }
-            else {
-                functor.callback(ts, dt, functor.target);
+            if (functor) {
+                if (!functor.target) {
+                    functor.callback(ts, dt);
+                }
+                else {
+                    functor.callback(ts, dt, functor.target);
+                }
             }
         });
+        if (this.functors[0].length > 0) {
+            var functors = [];
+            for (var i = 0; i < this.functors[0].length; i++) {
+                if (this.functors[0][i] != null)
+                    functors.push(this.functors[0][i]);
+            }
+            this.functors[0] = functors;
+        }
         for (var i = 1; i < MAX_TICKER_FUNCTORS_LEVEL; i++) {
             this.__timeoutFunctorUpdate(i, ts, dt);
         }
@@ -204,7 +223,7 @@ var TickerManager = (function () {
         this.tickers.forEach(function (ticker) {
             ticker.callTime++;
             ticker.totalDt += dt;
-            if (ticker.callTime >= ticker.interval) {
+            if (ticker.totalDt >= ticker.interval * 0.016) {
                 ticker.update(ts, ticker.totalDt);
                 ticker.totalDt = 0;
                 ticker.callTime = 0;

@@ -1,5 +1,7 @@
+BK.Script.loadlib('GameRes://script/core/basics/TypedArray.js');
 BK.Script.loadlib('GameRes://script/core/render/WebGLCore.js');
 BK.Script.loadlib('GameRes://script/core/render/gl_matrix.js');
+
 
 var cubeRotation = 0.0;
 function main() {

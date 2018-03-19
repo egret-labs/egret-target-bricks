@@ -8,7 +8,9 @@ function bkWebGLGetInstance(){
         gl.OpenOptMode = OpenOptMode;
         gl.viewport(0, 0, BK.Director.screenPixelSize.width,BK.Director.screenPixelSize.height);
     }
-    Object.prototype.hasOwnProperty.call(this, 'renderTicker') && (renderTicker.paused = true);
+    Object.prototype.hasOwnProperty.call(this, 'renderTicker') && (renderTicker.setTickerCallBack(function(ts, duration)
+                                                                                                  {
+                                                                                                  }));
     return gl;
 }
 

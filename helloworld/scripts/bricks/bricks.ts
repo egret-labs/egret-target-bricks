@@ -35,6 +35,12 @@ export class BricksPlugin implements plugins.Command {
             }
             file.path = file.dirname + '/manifest.js'
             file.contents = new Buffer(content);
+        } else if (filename == 'main.js') {
+            const content = file.contents.toString();
+            let result = content.replace(/RES\.loadConfig\("resource\/default\.res\.json", "resource\/"\)/gm, 'RES.loadConfig("GameRes://resource/default.res.json", "GameRes://resource/")');
+            result = result.replace(/eui\.Theme\("resource\/default\.thm\.json", _this\.stage\)/gm, 'eui.Theme("GameRes://resource/default.thm.json", _this.stage)');
+            file.path = file.dirname + '/main.js'
+            file.contents = new Buffer(result);
         }
         return file;
     }

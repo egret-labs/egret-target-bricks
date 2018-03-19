@@ -77,7 +77,13 @@ class Ticker {
 
     remove(target): void {
         for (let i = 0; i < MAX_TICKER_FUNCTORS_LEVEL; i++) {
-            this.functors[i] = this.functors[i].filter(functor => functor.target != target);
+            for (let j = 0; j < this.functors[i].length; j++) {
+                if (this.functors[i][j] != null) {
+                    if (this.functors[i][j].target == target) {
+                        this.functors[i][j] = null;
+                    }
+                }
+            }
         }
     }
 
@@ -131,8 +137,9 @@ class Ticker {
     }
 
     private __timeoutFunctorUpdate(idx: number, ts: number, dt: number): void {
-        while (this.functors[idx].length > 0) {
-            let functor = <TimeoutTickerFunctor>(this.functors[idx][0]);
+        let functors = this.functors[idx].slice(0);
+        while (functors.length > 0) {
+            let functor = <TimeoutTickerFunctor>(functors[0]);
             let total = functor.startTS + functor.timeout;
             if (functor.startTS + functor.timeout > ts) {
                 break;
@@ -142,12 +149,14 @@ class Ticker {
             } else {
                 functor.callback(ts, dt, functor.target);
             }
-            this.functors[idx].shift();
+            functors.shift();
         }
+        this.functors[idx] = functors;
     }
 
     private __intervalFunctorUpdate(idx: number, ts: number, dt: number): void {
-        this.intervals[idx].forEach(function(functor: TickerFunctor) {
+        let intervals = this.intervals[idx].slice(0);
+        intervals.forEach(function(functor: TickerFunctor) {
             let intervalFunctor = <IntervalTickerFunctor>(functor);
             if (intervalFunctor.startTS + intervalFunctor.interval <= ts) {
                 if (!intervalFunctor.target) {
@@ -170,12 +179,23 @@ class Ticker {
         }
 
         this.functors[0].forEach(function (functor: TickerFunctor) {
-            if (!functor.target) {
-                functor.callback(ts, dt);
-            } else {
-                functor.callback(ts, dt, functor.target);
+            if (functor) {
+                if (!functor.target) {
+                    functor.callback(ts, dt);
+                } else {
+                    functor.callback(ts, dt, functor.target);
+                }
             }
         });
+
+        if (this.functors[0].length > 0) {
+            let functors = [];
+            for (let i = 0; i < this.functors[0].length; i++) {
+                if (this.functors[0][i] != null) 
+                    functors.push(this.functors[0][i]);
+            }
+            this.functors[0] = functors;
+        }
 
         for (let i = 1; i < MAX_TICKER_FUNCTORS_LEVEL; i++) {
             this.__timeoutFunctorUpdate(i, ts, dt);
@@ -213,7 +233,7 @@ class TickerManager {
         this.tickers.forEach(function (ticker: Ticker) {
             ticker.callTime++;
             ticker.totalDt += dt;
-            if (ticker.callTime >= ticker.interval) {
+            if (ticker.totalDt >= ticker.interval * 0.016) {
                 ticker.update(ts, ticker.totalDt);
                 ticker.totalDt = 0;
                 ticker.callTime = 0;

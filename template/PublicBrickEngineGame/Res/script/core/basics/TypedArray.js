@@ -2,7 +2,7 @@
     function __bkIsSupportTypedArray() {
         var info = BK.Director.queryDeviceInfo();
         var vers = info.version.split('.');
-        if (info.platform == 'ios' && Number(vers[0]) >= 10) {
+        if ((info.platform == 'ios' && Number(vers[0]) >= 10) || info.platform == 'android') {
             return true;
         }
         BK.Script.log(1, 0, "Current Device dont supoort TypedArray.[info = " + JSON.stringify(info) + "]");
