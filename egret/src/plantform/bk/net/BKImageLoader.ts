@@ -19,12 +19,18 @@ namespace egret {
         }
 
         public load(url: string): void {
-            if (BK.FileUtil.isFileExist(url)) {
-                this.data = new egret.BitmapData(url);
-                $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
-            }
-            else {
-                $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+            if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
+                //动态加载
+                
+
+            } else {
+                if (BK.FileUtil.isFileExist(url)) {
+                    this.data = new egret.BitmapData(url);
+                    $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+                }
+                else {
+                    $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                }
             }
         }
     }

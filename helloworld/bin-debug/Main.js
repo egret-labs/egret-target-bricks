@@ -150,12 +150,35 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var sky = this.createBitmapByName("bg_jpg");
+        debugger;
+        var skyTexture = RES.getRes("bg_jpg");
+        var sky = new egret.Bitmap();
+        sky.texture = skyTexture;
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
         sky.width = stageW;
         sky.height = stageH;
+        // let texture = RES.getResByUrl("http://10.0.11.131:8080/resource/assets/Slider/thumb.png", (data) => {
+        //     debugger;
+        //     console.log(data)
+        //     let result = new egret.Bitmap();
+        //     result.texture = data;
+        //     this.addChild(result);
+        // }, this, RES.ResourceItem.TYPE_IMAGE);
+        //测试跨域加载2
+        //  var imgLoadHandler = (evt: egret.Event)=> {
+        //      debugger;
+        //     var Loader: egret.ImageLoader = evt.currentTarget;
+        //     var bmData: egret.BitmapData = Loader.data;　　//应该默认是以二进制数据来传输
+        //     let texture = new egret.Texture();
+        //     texture.bitmapData = bmData;
+        //     var bMap: egret.Bitmap = new egret.Bitmap(texture);
+        //     this.addChild(bMap);
+        // }
+        //     var imgLoader: egret.ImageLoader = new egret.ImageLoader();
+        //     imgLoader.once(egret.Event.COMPLETE, imgLoadHandler, this);
+        //     imgLoader.load("http://10.0.11.131:8080/resource/assets/Slider/thumb.png");
         // egret.setTimeout(()=>{
         //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
         // },this,3000);
