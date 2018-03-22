@@ -487,7 +487,7 @@ namespace egret {
             // let strokePath = this.strokePath;
             // fillPath && fillPath.lineTo(x, y);
             // strokePath && strokePath.lineTo(x, y);
-            
+
             // this.$renderNode.dirtyRender = true;
         }
 
@@ -779,5 +779,7 @@ namespace egret {
 
     }
 
-    egret.Graphics = BKGraphics as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.Graphics = egret.BKGraphics as any;
+    }
 }

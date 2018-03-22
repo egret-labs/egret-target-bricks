@@ -68,6 +68,7 @@ var VERTEX_SHADER_SOURCE =
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        debugger
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         var u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
         gl.uniform1i(u_Sampler, 0);

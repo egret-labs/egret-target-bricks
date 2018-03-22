@@ -2120,6 +2120,7 @@ namespace egret {
     }
 
     sys.measureText = bkMeasureText as any;
-
-    egret.TextField = BKTextField as any;
+    if (window['renderMode'] != 'webgl') {  
+        egret.TextField = egret.BKTextField as any;
+    }
 }

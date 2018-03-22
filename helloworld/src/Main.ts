@@ -94,7 +94,7 @@ class Main extends egret.DisplayObjectContainer {
      */
     private createGameScene() {
         debugger
-        let skyTexture = RES.getRes("bg_jpg");
+        let skyTexture = RES.getRes("icon_png");
         let sky = new egret.Bitmap();
         sky.texture = skyTexture;
 

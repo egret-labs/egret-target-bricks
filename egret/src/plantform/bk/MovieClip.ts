@@ -822,5 +822,7 @@ namespace egret {
             }
         }
     }
-    egret.MovieClip = BKMovieClip as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.MovieClip = BKMovieClip as any;
+    }
 }

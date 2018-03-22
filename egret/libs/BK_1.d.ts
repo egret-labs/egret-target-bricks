@@ -380,4 +380,14 @@ declare namespace BK {
          */
         clearRect(x: number, y: number, width: number, height: number);
     }
+
+    export class Image {
+        /**
+         * 根据地址获取图片资源
+         * 第二个参数为format
+         * COLOR_RGBA8888 = 6
+         */
+        static loadImage(path: string, format?: number)
+    }
+
 }

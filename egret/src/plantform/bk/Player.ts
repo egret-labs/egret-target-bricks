@@ -96,7 +96,7 @@ namespace egret {
             }
             if (rootClass) {
                 let rootContainer: any = new rootClass();
-                if (rootContainer instanceof egret.DisplayObject) {
+                if (rootContainer.addChild) {
                     this.stage.addChild(rootContainer);
                 }
                 else {

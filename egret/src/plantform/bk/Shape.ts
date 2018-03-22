@@ -114,5 +114,7 @@ namespace egret {
         }
     }
 
-    egret.Shape = BKShape as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.Shape = egret.BKShape as any;
+    }
 }

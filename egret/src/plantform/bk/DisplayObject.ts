@@ -170,7 +170,7 @@ namespace egret {
                         value.$maskedObject.mask = null;
                     }
                     value.$maskedObject = self;
-                    (value as any )._updateBKNodeMatrix();
+                    (value as any)._updateBKNodeMatrix();
                     self.$mask = value;
 
                     const clipNode = new BK.ClipNode(value._bkNode as BK.Sprite);
@@ -496,5 +496,7 @@ namespace egret {
         }
     }
 
-    egret.DisplayObject = BKDisplayObject;
+    if (window['renderMode'] != 'webgl') {
+        egret.DisplayObject = egret.BKDisplayObject;
+    }
 }

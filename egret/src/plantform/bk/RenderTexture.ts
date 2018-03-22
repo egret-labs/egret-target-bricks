@@ -204,5 +204,7 @@ namespace egret {
         }
     }
 
-    egret.RenderTexture = BKRenderTexture as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.RenderTexture = egret.BKRenderTexture as any;
+    }
 }

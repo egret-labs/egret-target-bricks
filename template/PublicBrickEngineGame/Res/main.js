@@ -109,6 +109,11 @@
 // BK.Script.loadlib("GameRes://script/demo/render/rederToTexture_demo.js");
 
 
+
+// BK.Script.loadlib("GameRes://script/demo/render/webgl_demo.js")
+
+
+
 var window = this;
 var global = global || this;
 global.bricks = {};
@@ -121,14 +126,17 @@ var __extends = function (t, e) {
     for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
     r.prototype = e.prototype, t.prototype = new r();
 };
+window.renderMode = 'bricks';
 // Egret
 (function () {
     BK.Script.loadlib('GameRes://script/core/render/canvas.js');
     BK.Script.loadlib("GameRes://script/core/net/websocket.js");
+    BK.Script.loadlib('GameRes://script/core/render/WebGLCore.js');
     BK.Script.loadlib("GameRes://manifest.js");
     debugger;
     egret.runEgret(
         {
+            renderMode: window.renderMode,
             frameRate: 30,
             contentWidth: 640,
             contentHeight: 1136,
@@ -139,4 +147,5 @@ var __extends = function (t, e) {
         }
     );
 })();
+
 

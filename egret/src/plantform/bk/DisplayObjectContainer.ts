@@ -878,5 +878,7 @@ namespace egret {
         }
     }
     // MD
-    egret.DisplayObjectContainer = BKDisplayObjectContainer as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.DisplayObjectContainer = egret.BKDisplayObjectContainer as any;
+    }
 }

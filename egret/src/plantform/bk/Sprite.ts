@@ -154,5 +154,7 @@ namespace egret {
         }
     }
 
-    egret.Sprite = BKSprite as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.Sprite = egret.BKSprite as any;
+    }
 }

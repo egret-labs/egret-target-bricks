@@ -163,6 +163,8 @@ namespace egret {
             this._bkMesh.setVerticesAndIndices(bkVertices, meshNode.indices); // 需要提供更加高性能的接口
         }
     }
-
-    egret.Mesh = BKMesh as any;
+    //MD
+    if (window['renderMode'] != 'webgl') {
+        egret.Mesh = egret.BKMesh as any;
+    }
 }

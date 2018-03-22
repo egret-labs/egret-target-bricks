@@ -4,9 +4,9 @@ namespace egret {
         public readonly height: number = 0;
         public readonly source: string | any = ""; // url 或 render node
         public readonly bkTexture: BK.Texture | null = null;
-        public readonly isFlip:boolean;
+        public readonly isFlip: boolean;
 
-        constructor(source: string | BK.Texture,isFlip:boolean = false) {
+        constructor(source: string | BK.Texture, isFlip: boolean = false) {
             super();
 
             this.source = source;
@@ -26,6 +26,7 @@ namespace egret {
 
         }
     }
-
-    egret.BitmapData = BKBitmapData as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.BitmapData = egret.BKBitmapData as any;
+    }
 }

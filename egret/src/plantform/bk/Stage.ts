@@ -337,5 +337,7 @@ namespace egret {
         egret.$markCannotUse(Stage, "matrix", null);
     }
 
-    egret.Stage = BKStage as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.Stage = egret.BKStage as any;
+    }
 }

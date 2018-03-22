@@ -769,6 +769,7 @@ namespace egret {
 
         return spriteNode;
     }
-
-    egret.BitmapText = BKBitmapText as any;
+    if (window['renderMode'] != 'webgl') {
+        egret.BitmapText = egret.BKBitmapText as any;
+    }
 }

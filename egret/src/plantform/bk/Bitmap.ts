@@ -189,6 +189,8 @@ namespace egret {
             }
         }
     }
+    if (window['renderMode'] != 'webgl') {
+        egret.Bitmap = egret.BKBitmap as any;
+    }
 
-    egret.Bitmap = BKBitmap as any;
 }

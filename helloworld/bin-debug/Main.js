@@ -151,7 +151,7 @@ var Main = (function (_super) {
      */
     Main.prototype.createGameScene = function () {
         debugger;
-        var skyTexture = RES.getRes("bg_jpg");
+        var skyTexture = RES.getRes("icon_png");
         var sky = new egret.Bitmap();
         sky.texture = skyTexture;
         this.addChild(sky);
