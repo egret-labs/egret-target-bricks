@@ -7,13 +7,13 @@ namespace egret.web {
      */
     export class BKWebPlayer extends egret.HashObject implements egret.sys.Screen {
 
-        public constructor(options: runEgretOptions) {
+        public constructor(options: BKRunEgretOptions) {
             super();
             this.init(options);
             // this.initOrientation();
         }
 
-        private init(options: runEgretOptions): void {
+        private init(options: BKRunEgretOptions): void {
             let option = this.readOption(options);
             let stage = new egret.Stage();
             stage.$screen = this;
@@ -22,6 +22,20 @@ namespace egret.web {
             stage.$maxTouches = option.maxTouches;
             stage.frameRate = option.frameRate;
             stage.textureScaleFactor = option.textureScaleFactor;
+
+            //加入背景
+            let tex = new BK.Texture('GameRes://resource/pixel.png');
+            let background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1)
+            let rgb_str = options.background.toString(16);
+            let red = parseInt(rgb_str.substring(0, 2), 16) / 255;
+            var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
+            var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
+            background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
+            background_node.size = { width: this.stage.stageWidth, height: this.stage.stageHeight };
+            background_node.position = { x: 0, y: -this.stage.stageHeight }
+            BK.Director.root.addChild(background_node);
+            background_node.zOrder = 1;
+
             let buffer = new sys.RenderBuffer(undefined, undefined, true);
             lifecycle.stage = stage;
             this.playerOption = option;
