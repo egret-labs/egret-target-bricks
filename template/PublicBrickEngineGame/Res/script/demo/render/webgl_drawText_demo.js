@@ -236,9 +236,16 @@ function loadTexture(gl, url) {
     canvas.setTextItalic(1)
     canvas.drawText("你好,hello,canvas,webGL", 0, 0, 200, 100);
     
+
+
+//////////////////////////////////////////核心////////////////////////////////////////
+
     var textureID = canvas.getTexture().renderTarget;
     gl.bindTexture(gl.TEXTURE_2D, textureID);
     return textureID;
+
+
+
 }
 
 function isPowerOf2(value) {

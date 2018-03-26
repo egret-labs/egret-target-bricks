@@ -14,7 +14,6 @@ namespace egret.web {
         }
 
         private init(options: runEgretOptions): void {
-            debugger
             let option = this.readOption(options);
             let stage = new egret.Stage();
             stage.$screen = this;

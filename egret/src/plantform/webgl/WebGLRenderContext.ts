@@ -140,14 +140,7 @@ namespace egret.web {
          */
         private uploadVerticesArray(array: any): void {
             let gl: any = this.context;
-            /**
-             * BK.webglContext.bufferData只支持BK的buffer传入数据。
-             */
-            let verticesData = new BK.Buffer(array.length, false);
-            for (var i = 0; i < array.length; i++) {
-                verticesData.writeFloatBuffer(array[i]);
-            }
-            gl.bufferData(gl.ARRAY_BUFFER, verticesData, gl.STREAM_DRAW);
+            gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
             // gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
             // gl.bufferSubData(gl.ARRAY_BUFFER, 0, array);
         }
@@ -157,13 +150,6 @@ namespace egret.web {
          */
         private uploadIndicesArray(array: any): void {
             let gl: any = this.context;
-            /**
-             * BK.webglContext.bufferData只支持BK的buffer传入数据。
-             */
-            let indicesData = new BK.Buffer(array.length, false);
-            for (var i = 0; i < array.length; i++) {
-                indicesData.writeFloatBuffer(array[i]);
-            }
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, array, gl.STATIC_DRAW);
             this.bindIndices = true;
         }
@@ -377,18 +363,51 @@ namespace egret.web {
             return texture;
         }
 
+        /**
+         * 创建一个来自canvas的text_Texture
+         * 传入的是BK.Canvas
+         */
+        public createTextureByCanvas(canvas: any): WebGLTexture {
+            debugger
+            let gl: any = this.context;
+            let textureID = canvas.getTexture().renderTarget
+            // let texture = gl.createTexture();
+
+            // if (!texture) {
+            //     //先创建texture失败,然后lost事件才发出来..
+            //     this.contextLost = true;
+            //     return;
+            // }
+
+            // texture.glContext = gl;
+
+            gl.bindTexture(gl.TEXTURE_2D, textureID);
+            // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+            // let image = bitmapData.source;
+            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+            return textureID;
+        }
+
         private createTextureFromCompressedData(data, width, height, levels, internalFormat): WebGLTexture {
             return null;
         }
 
         /**
          * 更新材质的bitmapData
+         * 传入
          */
-        public updateTexture(texture: WebGLTexture, bitmapData: BitmapData): void {
+        public updateTexture(texture: WebGLTexture, canvas: any): void {
             let gl: any = this.context;
+            // let textureID = canvas.getTexture().renderTarget
             gl.bindTexture(gl.TEXTURE_2D, texture);
-            let buffer = bitmapData.source.buffer;
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
+            // let buffer = bitmapData.source.buffer;
+            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
         }
 
         /**

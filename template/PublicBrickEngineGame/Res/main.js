@@ -126,7 +126,16 @@ var __extends = function (t, e) {
     for (var i in e) e.hasOwnProperty(i) && (t[i] = e[i]);
     r.prototype = e.prototype, t.prototype = new r();
 };
+
+
+/**
+ * 渲染模式
+ * 现支持原生模式‘bricks’和WebGL模式‘webgl’
+ */
 window.renderMode = 'bricks';
+
+
+
 // Egret
 (function () {
     BK.Script.loadlib('GameRes://script/core/render/canvas.js');

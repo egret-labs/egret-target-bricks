@@ -75,7 +75,8 @@ namespace egret.web {
 
         public constructor(width?: number, height?: number, root?: boolean) {
             this.surface = { width: width, height: height }//createCanvas(width, height);
-            this.context = new BK.Canvas(width,height)//{}//this.surface.getContext("2d");
+            this.context = new BK.Canvas(width, height)//{}//this.surface.getContext("2d");
+            // this.last_matrix = new egret.Matrix();
             if (this.context) {
                 this.context.$offsetX = 0;
                 this.context.$offsetY = 0;
@@ -90,6 +91,13 @@ namespace egret.web {
          * 呈现最终绘图结果的画布
          */
         public surface: any;//HTMLCanvasElement;
+
+
+        // /**
+        //  * BK
+        //  * 上一次的变换矩阵
+        //  */
+        // public last_matrix: egret.Matrix;
 
         /**
          * 渲染缓冲的宽度，以像素为单位。
@@ -128,7 +136,7 @@ namespace egret.web {
                 //尺寸没有变化时,将绘制属性重置
                 if (!change) {
                     this.context.globalCompositeOperation = "source-over";
-                    this.context.setTransform(1, 0, 0, 1, 0, 0);
+                    this.context_setTransform(1, 0, 0, 1, 0, 0);
                     this.context.globalAlpha = 1;
                 }
             }
@@ -141,6 +149,29 @@ namespace egret.web {
                 }
             }
             this.clear();
+        }
+        /**
+         * BK新增
+         * 操作context进行矩阵变化
+         */
+        public context_setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number) {
+            debugger
+            // //获取当前矩阵,将context重制到初始位置
+            // let last_matrix = this.last_matrix.clone();
+            // last_matrix.invert();
+            // this.context.transforms(last_matrix.a, last_matrix.b, last_matrix.c, last_matrix.d, last_matrix.tx, last_matrix.ty);
+            // //进行当前矩阵变化
+            this.context.transforms(a, b, c, d, tx, ty);
+            // this.last_matrix.setTo(a, b, c, d, tx, ty);
+
+            // let orign_matrix = this.context.transform.matrix;
+            // orign_matrix.set(a, b, c, d, tx, ty);
+            // let matrix = new egret.Matrix();
+            // matrix.invert();
+            // //使其归为单位矩阵
+            // this.context.transforms(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            // //矩阵变换
+            // this.context.transforms(a, b, c, d, tx, ty);
         }
 
         /**
@@ -162,7 +193,7 @@ namespace egret.web {
          * 清空缓冲区数据
          */
         public clear(): void {
-            this.context.setTransform(1, 0, 0, 1, 0, 0);
+            this.context_setTransform(1, 0, 0, 1, 0, 0);
             this.context.clearRect(0, 0, this.surface.width, this.surface.height);
         }
 
