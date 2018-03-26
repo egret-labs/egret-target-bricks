@@ -1,5 +1,5 @@
 namespace egret {
-    
+
     let CAPS_STYLES = { none: 'butt', square: 'square', round: 'round' };
 
 
@@ -154,6 +154,44 @@ namespace egret {
             }
         }
 
+
+
+        public drawNodeToBuffer(node: sys.RenderNode, buffer: sys.RenderBuffer, matrix: Matrix, forHitTest?: boolean): void {
+            let context: any = buffer.context;
+            context.transforms(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            this.renderNode(node, context, forHitTest);
+        }
+
+        private renderNode(node: sys.RenderNode, context: CanvasRenderingContext2D, forHitTest?: boolean): number {
+            let drawCalls = 0;
+            // switch (node.type) {
+            //     case sys.RenderNodeType.BitmapNode:
+            //         drawCalls = this.renderBitmap(<sys.BitmapNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.TextNode:
+            //         drawCalls = 1;
+            //         this.renderText(<sys.TextNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.GraphicsNode:
+            if (node.type == sys.RenderNodeType.GraphicsNode) {
+                drawCalls = this.renderGraphics(<sys.GraphicsNode>node, context, forHitTest);
+            }else{
+                throw error('CanvasRenderer  renderNode 使用了未知的node类型');
+            }
+            // break;
+            //     case sys.RenderNodeType.GroupNode:
+            //         drawCalls = this.renderGroup(<sys.GroupNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.MeshNode:
+            //         drawCalls = this.renderMesh(<sys.MeshNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.NormalBitmapNode:
+            //         drawCalls += this.renderNormalBitmap(<sys.NormalBitmapNode>node, context);
+            //         break;
+            // }
+            return drawCalls;
+        }
+
     }
 
 
@@ -193,6 +231,6 @@ namespace egret {
     }
 
     if (window['renderMode'] == 'webgl') {
-        egret.CanvasRenderer = BKCanvasRenderer;
+        egret.CanvasRenderer = BKCanvasRenderer as any;
     }
 }

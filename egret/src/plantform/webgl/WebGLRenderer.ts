@@ -891,6 +891,9 @@ namespace egret.web {
                     ty = -y;
                 }
                 buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
+            } else if (canvasScaleX != 1 || canvasScaleY != 1) {
+                tx = 0;
+                ty = 0;
             }
             // else if (canvasScaleX != 1 || canvasScaleY != 1) {
             //     // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
@@ -938,7 +941,7 @@ namespace egret.web {
          * @private
          */
         private renderGraphics(node: sys.GraphicsNode, buffer: WebGLRenderBuffer, forHitTest?: boolean): void {
-            debugger
+            // debugger
             let width = node.width;
             let height = node.height;
             if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {
@@ -971,22 +974,12 @@ namespace egret.web {
             if (node.dirtyRender || forHitTest) {
                 let canvasRenderBuffer = new CanvasRenderBuffer(width, height);
                 node['canvasRenderBuffer'] = canvasRenderBuffer;
-                // this.canvasRenderBuffer.resize(width, height);
             }
             let canvasRenderBuffer = node['canvasRenderBuffer'];
 
-            // if (!this.canvasRenderBuffer.context) {
-            //     return;
-            // }
-            let scaleX: number = 1,
-                scaleY: number = 1,
-                tx: number = 0,
-                ty: number = 0;
 
             if (canvasScaleX != 1 || canvasScaleY != 1) {
-                // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                scaleX = canvasScaleX;
-                scaleY = canvasScaleY;
+                canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
             }
             if (node.x || node.y) {
                 if (node.dirtyRender || forHitTest) {
@@ -1007,7 +1000,7 @@ namespace egret.web {
 
                     // 拷贝canvas到texture
                     let texture = node.$texture;
-                    
+
                     // if (!texture) {
                     texture = buffer.context.createTextureByCanvas(context);
                     node.$texture = texture;

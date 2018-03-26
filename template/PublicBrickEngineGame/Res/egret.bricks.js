@@ -1583,18 +1583,6 @@ var egret;
         BK.Director.ticker.removeTimeout(object);
     }
     egret.clearTimeout = clearTimeout;
-    // function updateAllScreens(): void {
-    //     if (!isRunning) {
-    //         return;
-    //     }
-    //     let containerList = document.querySelectorAll(".egret-player");
-    //     let length = containerList.length;
-    //     for (let i = 0; i < length; i++) {
-    //         let container = containerList[i];
-    //         let player = <WebPlayer>container["egret-player"];
-    //         player.updateScreenSize();
-    //     }
-    // }
     var isRunning = false;
     var player;
     var webPlayer;
@@ -1676,8 +1664,6 @@ var egret;
      * 将当前渲染模式变为BK-Webgl模式
      */
     function modifyEgretToBKWebgl(options) {
-        // Html5Capatibility._audioType = options.audioType;
-        // Html5Capatibility.$init();
         // WebGL上下文参数自定义
         if (options.renderMode == "webgl") {
             // WebGL抗锯齿默认关闭，提升PC及某些平台性能
@@ -1716,25 +1702,8 @@ var egret;
         else if (!egret.sys.screenAdapter) {
             egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
         }
-        // let list = document.querySelectorAll(".egret-player");
-        // let length = list.length;
-        // for (let i = 0; i < length; i++) {
-        //     let container = list[i];
-        //     let player = new egret.web.WebPlayer(container, options);
-        //     container["egret-player"] = player;
-        // }
         webPlayer = new egret.web.BKWebPlayer(options);
-        // window.addEventListener("resize", function () {
-        //     if (isNaN(resizeTimer)) {
-        //         resizeTimer = window.setTimeout(doResize, 300);
-        //     }
-        // });
     }
-    // let resizeTimer: number = NaN;
-    // function doResize() {
-    //     resizeTimer = NaN;
-    //     egret.updateAllScreens();
-    // }
     /**
      * 设置渲染模式。"auto","webgl","canvas"
      * @param renderMode
@@ -1754,22 +1723,6 @@ var egret;
      * 启动心跳计时器。
      */
     function startTicker(ticker) {
-        // let requestAnimationFrame =
-        //     window["requestAnimationFrame"] ||
-        //     window["webkitRequestAnimationFrame"] ||
-        //     window["mozRequestAnimationFrame"] ||
-        //     window["oRequestAnimationFrame"] ||
-        //     window["msRequestAnimationFrame"];
-        // if (!requestAnimationFrame) {
-        //     requestAnimationFrame = function (callback) {
-        //         return window.setTimeout(callback, 1000 / 60);
-        //     };
-        // }
-        // requestAnimationFrame(onTick);
-        // function onTick(): void {
-        //     ticker.update();
-        //     requestAnimationFrame(onTick);
-        // }
         BK.Director.ticker.interval = 1;
         BK.Director.ticker.add(function (ts, duration) {
             ticker.update();
@@ -1777,17 +1730,6 @@ var egret;
     }
     egret.runEgret = runEgret;
 })(egret || (egret = {}));
-// // if (DEBUG) {
-// // }
-// if (window['renderMode']!= 'webgl') {
-//     /**
-//      * 修改部分组件
-//      */
-// } else {
-//     /**
-//      * 原生修改版渲染组件覆盖egret原组件
-//      */
-// } 
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -4433,11 +4375,8 @@ var egret;
             _this._displayList = [];
             BKPlayer.instance = _this;
             _this._options = options;
-            // BK.Director.root.addChild(this._root);
-            // this._root.addChild((<any>this.stage as BKStage)._bkNode);
             BK.Director.root.addChild(_this.stage._bkNode);
             egret.lifecycle.stage = _this.stage;
-            // lifecycle.addLifecycleListener(WebLifeCycleHandler); ?
             egret.sys.$TempStage = _this.stage;
             _this.stage.$screen = _this;
             _this.stage.maxTouches = 10;
@@ -8405,41 +8344,6 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        // /**
-        //  * 创建一个canvas。
-        //  */
-        // function createCanvas(width?:number, height?:number):HTMLCanvasElement {
-        //     let canvas:HTMLCanvasElement = document.createElement("canvas");
-        //     if (!isNaN(width) && !isNaN(height)) {
-        //         canvas.width = width;
-        //         canvas.height = height;
-        //     }
-        //     let context = canvas.getContext("2d");
-        //     if (context["imageSmoothingEnabled"] === undefined) {
-        //         let keys = ["webkitImageSmoothingEnabled", "mozImageSmoothingEnabled", "msImageSmoothingEnabled"];
-        //         let key:string;
-        //         for (let i = keys.length - 1; i >= 0; i--) {
-        //             key = keys[i];
-        //             if (context[key] !== void 0) {
-        //                 break;
-        //             }
-        //         }
-        //         try {
-        //             Object.defineProperty(context, "imageSmoothingEnabled", {
-        //                 get: function () {
-        //                     return this[key];
-        //                 },
-        //                 set: function (value) {
-        //                     this[key] = value;
-        //                 }
-        //             });
-        //         }
-        //         catch (e) {
-        //             context["imageSmoothingEnabled"] = context[key];
-        //         }
-        //     }
-        //     return canvas;
-        // }
         var sharedCanvas;
         /**
          * @private
@@ -8456,11 +8360,6 @@ var egret;
                 }
             }
             Object.defineProperty(CanvasRenderBuffer.prototype, "width", {
-                // /**
-                //  * BK
-                //  * 上一次的变换矩阵
-                //  */
-                // public last_matrix: egret.Matrix;
                 /**
                  * 渲染缓冲的宽度，以像素为单位。
                  * @readOnly
@@ -8522,30 +8421,17 @@ var egret;
              * 操作context进行矩阵变化
              */
             CanvasRenderBuffer.prototype.context_setTransform = function (a, b, c, d, tx, ty) {
-                debugger;
-                // //获取当前矩阵,将context重制到初始位置
-                // let last_matrix = this.last_matrix.clone();
-                // last_matrix.invert();
-                // this.context.transforms(last_matrix.a, last_matrix.b, last_matrix.c, last_matrix.d, last_matrix.tx, last_matrix.ty);
-                // //进行当前矩阵变化
                 this.context.transforms(a, b, c, d, tx, ty);
-                // this.last_matrix.setTo(a, b, c, d, tx, ty);
-                // let orign_matrix = this.context.transform.matrix;
-                // orign_matrix.set(a, b, c, d, tx, ty);
-                // let matrix = new egret.Matrix();
-                // matrix.invert();
-                // //使其归为单位矩阵
-                // this.context.transforms(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-                // //矩阵变换
-                // this.context.transforms(a, b, c, d, tx, ty);
             };
             /**
              * 获取指定区域的像素
+             * BK brick不支持像素颜色信息提取，
+             * 这里做一个简单处理，只要坐标在canvas内，就返回true；
              */
             CanvasRenderBuffer.prototype.getPixels = function (x, y, width, height) {
                 if (width === void 0) { width = 1; }
                 if (height === void 0) { height = 1; }
-                return this.context.getImageData(x, y, width, height).data;
+                // return <number[]><any>this.context.getImageData(x, y, width, height).data;
             };
             /**
              * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null
@@ -8709,6 +8595,41 @@ var egret;
                         break;
                 }
             }
+        };
+        BKCanvasRenderer.prototype.drawNodeToBuffer = function (node, buffer, matrix, forHitTest) {
+            var context = buffer.context;
+            context.transforms(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+            this.renderNode(node, context, forHitTest);
+        };
+        BKCanvasRenderer.prototype.renderNode = function (node, context, forHitTest) {
+            var drawCalls = 0;
+            // switch (node.type) {
+            //     case sys.RenderNodeType.BitmapNode:
+            //         drawCalls = this.renderBitmap(<sys.BitmapNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.TextNode:
+            //         drawCalls = 1;
+            //         this.renderText(<sys.TextNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.GraphicsNode:
+            if (node.type == 3 /* GraphicsNode */) {
+                drawCalls = this.renderGraphics(node, context, forHitTest);
+            }
+            else {
+                throw egret.error('CanvasRenderer  renderNode 使用了未知的node类型');
+            }
+            // break;
+            //     case sys.RenderNodeType.GroupNode:
+            //         drawCalls = this.renderGroup(<sys.GroupNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.MeshNode:
+            //         drawCalls = this.renderMesh(<sys.MeshNode>node, context);
+            //         break;
+            //     case sys.RenderNodeType.NormalBitmapNode:
+            //         drawCalls += this.renderNormalBitmap(<sys.NormalBitmapNode>node, context);
+            //         break;
+            // }
+            return drawCalls;
         };
         return BKCanvasRenderer;
     }(egret.CanvasRenderer));
@@ -9654,14 +9575,6 @@ var egret;
                             this.drawDataLen--;
                             continue;
                         }
-                        // 如果与上一次buffer操作重复，本次操作无效
-                        // if(data.type == DRAWABLE_TYPE.ACT_BUFFER) {
-                        //     if(data.buffer == buffer) {
-                        //         return;
-                        //     } else {
-                        //         break;
-                        //     }
-                        // }
                     }
                 }
                 var _data = this.drawData[this.drawDataLen] || {};
@@ -9717,6 +9630,65 @@ var egret;
         web.WebGLDrawCmdManager = WebGLDrawCmdManager;
         __reflect(WebGLDrawCmdManager.prototype, "egret.web.WebGLDrawCmdManager");
     })(web = egret.web || (egret.web = {}));
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var WebGlGraphics = (function (_super) {
+        __extends(WebGlGraphics, _super);
+        function WebGlGraphics() {
+            return _super.call(this) || this;
+        }
+        /**
+         * 为BK重新实现hittest
+         * stageX，stageY为在egret逻辑大小中实际点击的屏幕位置
+         */
+        WebGlGraphics.prototype.$hitTest = function (stageX, stageY) {
+            // debugger
+            //获取对象相对于自身的边界矩形
+            var target = this.$targetDisplay;
+            var rect = egret.Rectangle.create();
+            target.$measureContentBounds(rect);
+            //获取点击位置相对于对象的本地位置
+            var result = egret.Point.create(0, 0);
+            this.$targetDisplay.globalToLocal(stageX, stageY, result);
+            if (result.x >= rect.x
+                && result.x <= rect.x + rect.width
+                && result.y >= rect.y
+                && result.y <= rect.y + rect.height) {
+                return target;
+            }
+            else {
+                return null;
+            }
+            // let m = target.$getInvertedConcatenatedMatrix();
+            // let localX = m.a * stageX + m.c * stageY + m.tx;
+            // let localY = m.b * stageX + m.d * stageY + m.ty;
+            // let buffer = sys.canvasHitTestBuffer;
+            // buffer.resize(3, 3);
+            // let node = this.$renderNode;
+            // let matrix = Matrix.create();
+            // matrix.identity();
+            // matrix.translate(1 - localX, 1 - localY);
+            // sys.canvasRenderer.drawNodeToBuffer(node, buffer, matrix, true);
+            // Matrix.release(matrix);
+            // try {
+            //     let data = buffer.getPixels(1, 1);
+            //     if (data[3] === 0) {
+            //         return null;
+            //     }
+            // }
+            // catch (e) {
+            //     throw new Error(sys.tr(1039));
+            // }
+            // return target;
+        };
+        return WebGlGraphics;
+    }(egret.Graphics));
+    egret.WebGlGraphics = WebGlGraphics;
+    __reflect(WebGlGraphics.prototype, "egret.WebGlGraphics");
+    if (window['renderMode'] == 'webgl') {
+        egret.Graphics = egret.WebGlGraphics;
+    }
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -10258,18 +10230,6 @@ var egret;
                     stencil: true //设置可以使用模板（用于不规则遮罩）
                 };
                 var gl;
-                //todo 是否使用chrome源码names
-                //let contextNames = ["moz-webgl", "webkit-3d", "experimental-webgl", "webgl", "3d"];
-                // let names = ["webgl", "experimental-webgl"];
-                // for (let i = 0; i < names.length; i++) {
-                //     try {
-                //         gl = this.surface.getContext(names[i], options);
-                //     } catch (e) {
-                //     }
-                //     if (gl) {
-                //         break;
-                //     }
-                // }
                 gl = bkWebGLGetInstance();
                 if (!gl) {
                     egret.$error(1021);
@@ -10350,24 +10310,10 @@ var egret;
              * 传入的是BK.Canvas
              */
             WebGLRenderContext.prototype.createTextureByCanvas = function (canvas) {
-                debugger;
+                // debugger
                 var gl = this.context;
                 var textureID = canvas.getTexture().renderTarget;
-                // let texture = gl.createTexture();
-                // if (!texture) {
-                //     //先创建texture失败,然后lost事件才发出来..
-                //     this.contextLost = true;
-                //     return;
-                // }
-                // texture.glContext = gl;
                 gl.bindTexture(gl.TEXTURE_2D, textureID);
-                // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-                // let image = bitmapData.source;
-                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
                 return textureID;
             };
             WebGLRenderContext.prototype.createTextureFromCompressedData = function (data, width, height, levels, internalFormat) {
@@ -10379,10 +10325,7 @@ var egret;
              */
             WebGLRenderContext.prototype.updateTexture = function (texture, canvas) {
                 var gl = this.context;
-                // let textureID = canvas.getTexture().renderTarget
                 gl.bindTexture(gl.TEXTURE_2D, texture);
-                // let buffer = bitmapData.source.buffer;
-                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
             };
             /**
              * 获取一个WebGLTexture
@@ -11805,6 +11748,10 @@ var egret;
                     }
                     buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
                 }
+                else if (canvasScaleX != 1 || canvasScaleY != 1) {
+                    tx = 0;
+                    ty = 0;
+                }
                 // else if (canvasScaleX != 1 || canvasScaleY != 1) {
                 //     // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 // }
@@ -11844,7 +11791,7 @@ var egret;
              * @private
              */
             WebGLRenderer.prototype.renderGraphics = function (node, buffer, forHitTest) {
-                debugger;
+                // debugger
                 var width = node.width;
                 var height = node.height;
                 if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {
@@ -11875,17 +11822,10 @@ var egret;
                 if (node.dirtyRender || forHitTest) {
                     var canvasRenderBuffer_2 = new web.CanvasRenderBuffer(width, height);
                     node['canvasRenderBuffer'] = canvasRenderBuffer_2;
-                    // this.canvasRenderBuffer.resize(width, height);
                 }
                 var canvasRenderBuffer = node['canvasRenderBuffer'];
-                // if (!this.canvasRenderBuffer.context) {
-                //     return;
-                // }
-                var scaleX = 1, scaleY = 1, tx = 0, ty = 0;
                 if (canvasScaleX != 1 || canvasScaleY != 1) {
-                    // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
-                    scaleX = canvasScaleX;
-                    scaleY = canvasScaleY;
+                    canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 }
                 if (node.x || node.y) {
                     if (node.dirtyRender || forHitTest) {
@@ -12203,17 +12143,6 @@ var egret;
             return shader;
         };
         BKWebGLUtils.checkCanUseWebGL = function () {
-            // if (WebGLUtils.canUseWebGL == undefined) {
-            //     try {
-            //         let canvas = document.createElement("canvas");
-            //         WebGLUtils.canUseWebGL = !!window["WebGLRenderingContext"]
-            //             && !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
-            //     }
-            //     catch (e) {
-            //         WebGLUtils.canUseWebGL = false;
-            //     }
-            // }
-            // return WebGLUtils.canUseWebGL;
             return true;
         };
         BKWebGLUtils.deleteWebGLTexture = function (bitmapData) {
@@ -12539,13 +12468,13 @@ var egret;
             __extends(BKWebPlayer, _super);
             function BKWebPlayer(options) {
                 var _this = _super.call(this) || this;
-                // private webInput: egret.web.HTMLInput;
                 _this._mainTicker = BK.Director.ticker;
                 _this.init(options);
                 return _this;
                 // this.initOrientation();
             }
             BKWebPlayer.prototype.init = function (options) {
+                var _this = this;
                 var option = this.readOption(options);
                 var stage = new egret.Stage();
                 stage.$screen = this;
@@ -12555,44 +12484,50 @@ var egret;
                 stage.frameRate = option.frameRate;
                 stage.textureScaleFactor = option.textureScaleFactor;
                 var buffer = new egret.sys.RenderBuffer(undefined, undefined, true);
-                // let canvas = <HTMLCanvasElement>buffer.surface;
-                // this.attachCanvas(container, canvas);
-                // let webTouch = new WebTouchHandler(stage, canvas);
-                // let player = new egret.sys.Player(buffer, stage, option.entryClassName);
                 egret.lifecycle.stage = stage;
-                // lifecycle.addLifecycleListener(WebLifeCycleHandler);
-                // let webInput = new HTMLInput();
-                // if (option.showFPS || option.showLog) {
-                //     if (!egret.nativeRender) {
-                //         player.displayFPS(option.showFPS, option.showLog, option.logFilter, option.fpsStyles);
-                //     }
-                // }
                 this.playerOption = option;
-                // this.container = container;
-                // this.canvas = canvas;
                 this.stage = stage;
+                egret.sys.$TempStage = this.stage;
                 this._touches = new egret.sys.TouchHandler(this.stage);
-                // this.player = player;
-                // this.webTouchHandler = webTouch;
-                //原player内容
-                //
+                BK.Director.ticker.add(function (ts, duration) {
+                    _this._touchHandler();
+                });
                 this._entryClassName = option.entryClassName;
                 this.screenDisplayList = this.createDisplayList(stage, buffer);
-                // this.webInput = webInput;
-                // egret.web.$cacheTextAdapter(webInput, stage, container, canvas);
                 this.updateScreenSize();
                 this.updateMaxTouches();
                 this.start();
-                // player.start();
             };
-            // private initOrientation(): void {
-            //     let self = this;
-            //     window.addEventListener("orientationchange", function () {
-            //         window.setTimeout(function () {
-            //             egret.StageOrientationEvent.dispatchStageOrientationEvent(self.stage, StageOrientationEvent.ORIENTATION_CHANGE);
-            //         }, 350);
-            //     });
-            // }
+            /**
+             * 触摸处理器
+             */
+            BKWebPlayer.prototype._touchHandler = function () {
+                var touchEvents = BK.TouchEvent.getTouchEvent();
+                if (!touchEvents || touchEvents.length === 0) {
+                    return;
+                }
+                var screenH = BK.Director.screenPixelSize.height;
+                var canvasScaleX = egret.sys.DisplayList.$canvasScaleX;
+                var canvasScaleY = egret.sys.DisplayList.$canvasScaleY;
+                for (var _i = 0, touchEvents_2 = touchEvents; _i < touchEvents_2.length; _i++) {
+                    var touchEvent = touchEvents_2[_i];
+                    var touchID = touchEvent.id;
+                    var screenPixelSize = BK.Director.screenPixelSize;
+                    var touchPosition = BK.Director.root.convertToNodeSpace(touchEvent);
+                    var touchX = touchPosition.x / canvasScaleX;
+                    var touchY = (screenH - touchPosition.y) / canvasScaleY;
+                    if (touchEvent.status === 1) {
+                        this._touches.onTouchEnd(touchX, touchY, touchID);
+                    }
+                    else if (touchEvent.status === 2) {
+                        this._touches.onTouchBegin(touchX, touchY, touchID);
+                    }
+                    else if (touchEvent.status === 3) {
+                        this._touches.onTouchMove(touchX, touchY, touchID);
+                    }
+                }
+                BK.TouchEvent.updateTouchStatus();
+            };
             /**
              * 读取初始化参数
              */
@@ -12606,18 +12541,6 @@ var egret;
                 option.orientation = options.orientation || egret.OrientationMode.AUTO;
                 option.maxTouches = 10;
                 option.textureScaleFactor = 1;
-                // option.textureScaleFactor = +container.getAttribute("texture-scale-factor") || 1;
-                // option.showFPS = container.getAttribute("data-show-fps") == "true";
-                // let styleStr = container.getAttribute("data-show-fps-style") || "";
-                // let stylesArr = styleStr.split(",");
-                // let styles = {};
-                // for (let i = 0; i < stylesArr.length; i++) {
-                //     let tempStyleArr = stylesArr[i].split(":");
-                //     styles[tempStyleArr[0]] = tempStyleArr[1];
-                // }
-                // option.fpsStyles = styles;
-                // option.showLog = container.getAttribute("data-show-log") == "true";
-                // option.logFilter = container.getAttribute("data-log-filter");
                 return option;
             };
             /**
@@ -12649,33 +12572,17 @@ var egret;
                 var left = (screenWidth - displayWidth) / 2;
                 this.stage.$stageWidth = stageWidth;
                 this.stage.$stageHeight = stageHeight;
-                // BK.Director.root.position = { x: left, y: BK.Director.screenPixelSize.height - top };
-                // BK.Director.root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
-                // this._root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
-                // this._viewRect.setTo(left, top, stageWidth, stageHeight);
-                // BK.Director.renderSize = { width: stageWidth, height: stageHeight }; // can not work
                 var scalex = displayWidth / stageWidth, scaley = displayHeight / stageHeight;
                 var canvasScaleX = scalex * egret.sys.DisplayList.$canvasScaleFactor;
                 var canvasScaleY = scaley * egret.sys.DisplayList.$canvasScaleFactor;
                 egret.sys.DisplayList.$setCanvasScale(canvasScaleX, canvasScaleY);
                 this.updateStageSize(stageWidth, stageHeight);
-                // this.webTouchHandler.updateScaleMode(scalex, scaley, rotation);
-                // this.webInput.$updateSize();
-                // this.player.updateStageSize(stageWidth, stageHeight);
-                // // todo
-                // if(egret.nativeRender) {
-                //     canvas.width = stageWidth * canvasScaleX;
-                //     canvas.height = stageHeight * canvasScaleY;
-                // }
             };
             BKWebPlayer.prototype.updateStageSize = function (stageWidth, stageHeight) {
                 var stage = this.stage;
                 stage.$stageWidth = stageWidth;
                 stage.$stageHeight = stageHeight;
                 this.screenDisplayList.setClipRect(stageWidth, stageHeight);
-                // if (this.stageDisplayList) {
-                //     this.stageDisplayList.setClipRect(stageWidth, stageHeight);
-                // }
                 stage.dispatchEventWith(egret.Event.RESIZE);
             };
             BKWebPlayer.prototype.setContentSize = function (width, height) {
@@ -12716,239 +12623,13 @@ var egret;
              * 渲染屏幕
              */
             BKWebPlayer.prototype.$render = function (triggerByFrame, costTicker) {
-                // if (this.showFPS || this.showLog) {
-                //     this.stage.addChild(this.fps);
-                // }
                 var stage = this.stage;
-                // let t1 = egret.getTimer();
                 var drawCalls = stage.$displayList.drawToSurface();
-                // let t2 = egret.getTimer();
-                // if (triggerByFrame && this.showFPS) {
-                //     this.fps.update(drawCalls, t2 - t1, costTicker);
-                // }
             };
             return BKWebPlayer;
         }(egret.HashObject));
         web.BKWebPlayer = BKWebPlayer;
         __reflect(BKWebPlayer.prototype, "egret.web.BKWebPlayer", ["egret.sys.Screen"]);
-    })(web = egret.web || (egret.web = {}));
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided this the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-var egret;
-(function (egret) {
-    var web;
-    (function (web) {
-        /**
-         * @private
-         */
-        var WebTouchHandler = (function (_super) {
-            __extends(WebTouchHandler, _super);
-            /**
-             * @private
-             */
-            function WebTouchHandler(stage, canvas) {
-                var _this = _super.call(this) || this;
-                /**
-                 * @private
-                 */
-                _this.onTouchBegin = function (event) {
-                    var location = _this.getLocation(event);
-                    _this.touch.onTouchBegin(location.x, location.y, event.identifier);
-                };
-                _this.onMouseMove = function (event) {
-                    if (event.buttons == 0) {
-                        _this.onTouchEnd(event);
-                    }
-                    else {
-                        _this.onTouchMove(event);
-                    }
-                };
-                /**
-                 * @private
-                 */
-                _this.onTouchMove = function (event) {
-                    var location = _this.getLocation(event);
-                    _this.touch.onTouchMove(location.x, location.y, event.identifier);
-                };
-                /**
-                 * @private
-                 */
-                _this.onTouchEnd = function (event) {
-                    var location = _this.getLocation(event);
-                    _this.touch.onTouchEnd(location.x, location.y, event.identifier);
-                };
-                /**
-                 * @private
-                 */
-                _this.scaleX = 1;
-                /**
-                 * @private
-                 */
-                _this.scaleY = 1;
-                /**
-                 * @private
-                 */
-                _this.rotation = 0;
-                _this.canvas = canvas;
-                _this.touch = new egret.sys.TouchHandler(stage);
-                _this.addListeners();
-                return _this;
-            }
-            /**
-             * @private
-             * 添加事件监听
-             */
-            WebTouchHandler.prototype.addListeners = function () {
-                var _this = this;
-                if (window.navigator.msPointerEnabled) {
-                    this.canvas.addEventListener("MSPointerDown", function (event) {
-                        event.identifier = event.pointerId;
-                        _this.onTouchBegin(event);
-                        _this.prevent(event);
-                    }, false);
-                    this.canvas.addEventListener("MSPointerMove", function (event) {
-                        event.identifier = event.pointerId;
-                        _this.onTouchMove(event);
-                        _this.prevent(event);
-                    }, false);
-                    this.canvas.addEventListener("MSPointerUp", function (event) {
-                        event.identifier = event.pointerId;
-                        _this.onTouchEnd(event);
-                        _this.prevent(event);
-                    }, false);
-                }
-                else {
-                    if (!egret.Capabilities.isMobile) {
-                        this.addMouseListener();
-                    }
-                    this.addTouchListener();
-                }
-            };
-            /**
-             * @private
-             *
-             */
-            WebTouchHandler.prototype.addMouseListener = function () {
-                this.canvas.addEventListener("mousedown", this.onTouchBegin);
-                this.canvas.addEventListener("mousemove", this.onMouseMove);
-                this.canvas.addEventListener("mouseup", this.onTouchEnd);
-            };
-            /**
-             * @private
-             *
-             */
-            WebTouchHandler.prototype.addTouchListener = function () {
-                var _this = this;
-                this.canvas.addEventListener("touchstart", function (event) {
-                    var l = event.changedTouches.length;
-                    for (var i = 0; i < l; i++) {
-                        _this.onTouchBegin(event.changedTouches[i]);
-                    }
-                    _this.prevent(event);
-                }, false);
-                this.canvas.addEventListener("touchmove", function (event) {
-                    var l = event.changedTouches.length;
-                    for (var i = 0; i < l; i++) {
-                        _this.onTouchMove(event.changedTouches[i]);
-                    }
-                    _this.prevent(event);
-                }, false);
-                this.canvas.addEventListener("touchend", function (event) {
-                    var l = event.changedTouches.length;
-                    for (var i = 0; i < l; i++) {
-                        _this.onTouchEnd(event.changedTouches[i]);
-                    }
-                    _this.prevent(event);
-                }, false);
-                this.canvas.addEventListener("touchcancel", function (event) {
-                    var l = event.changedTouches.length;
-                    for (var i = 0; i < l; i++) {
-                        _this.onTouchEnd(event.changedTouches[i]);
-                    }
-                    _this.prevent(event);
-                }, false);
-            };
-            /**
-             * @private
-             */
-            WebTouchHandler.prototype.prevent = function (event) {
-                event.stopPropagation();
-                if (event["isScroll"] != true && !this.canvas['userTyping']) {
-                    event.preventDefault();
-                }
-            };
-            /**
-             * @private
-             */
-            WebTouchHandler.prototype.getLocation = function (event) {
-                event.identifier = +event.identifier || 0;
-                var doc = document.documentElement;
-                var box = this.canvas.getBoundingClientRect();
-                var left = box.left + window.pageXOffset - doc.clientLeft;
-                var top = box.top + window.pageYOffset - doc.clientTop;
-                var x = event.pageX - left, newx = x;
-                var y = event.pageY - top, newy = y;
-                if (this.rotation == 90) {
-                    newx = y;
-                    newy = box.width - x;
-                }
-                else if (this.rotation == -90) {
-                    newx = box.height - y;
-                    newy = x;
-                }
-                newx = newx / this.scaleX;
-                newy = newy / this.scaleY;
-                return egret.$TempPoint.setTo(Math.round(newx), Math.round(newy));
-            };
-            /**
-             * @private
-             * 更新屏幕当前的缩放比例，用于计算准确的点击位置。
-             * @param scaleX 水平方向的缩放比例。
-             * @param scaleY 垂直方向的缩放比例。
-             */
-            WebTouchHandler.prototype.updateScaleMode = function (scaleX, scaleY, rotation) {
-                this.scaleX = scaleX;
-                this.scaleY = scaleY;
-                this.rotation = rotation;
-            };
-            /**
-             * @private
-             * 更新同时触摸点的数量
-             */
-            WebTouchHandler.prototype.$updateMaxTouches = function () {
-                this.touch.$initMaxTouches();
-            };
-            return WebTouchHandler;
-        }(egret.HashObject));
-        web.WebTouchHandler = WebTouchHandler;
-        __reflect(WebTouchHandler.prototype, "egret.web.WebTouchHandler");
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 var egret;

@@ -107,6 +107,11 @@ class Main extends egret.DisplayObjectContainer {
         topMask.y = 33;
         this.addChild(topMask);
 
+        topMask.touchEnabled = true;
+        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
+            console.log("触摸mask")
+        }, this);
+
         let icon = this.createBitmapByName("egret_icon_png");
         this.addChild(icon);
         icon.x = 26;

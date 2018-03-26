@@ -259,19 +259,6 @@ namespace egret.web {
                 stencil: true//设置可以使用模板（用于不规则遮罩）
             };
             let gl: any;
-            //todo 是否使用chrome源码names
-            //let contextNames = ["moz-webgl", "webkit-3d", "experimental-webgl", "webgl", "3d"];
-            // let names = ["webgl", "experimental-webgl"];
-
-            // for (let i = 0; i < names.length; i++) {
-            //     try {
-            //         gl = this.surface.getContext(names[i], options);
-            //     } catch (e) {
-            //     }
-            //     if (gl) {
-            //         break;
-            //     }
-            // }
             gl = bkWebGLGetInstance();
             if (!gl) {
                 $error(1021);
@@ -368,29 +355,10 @@ namespace egret.web {
          * 传入的是BK.Canvas
          */
         public createTextureByCanvas(canvas: any): WebGLTexture {
-            debugger
+            // debugger
             let gl: any = this.context;
             let textureID = canvas.getTexture().renderTarget
-            // let texture = gl.createTexture();
-
-            // if (!texture) {
-            //     //先创建texture失败,然后lost事件才发出来..
-            //     this.contextLost = true;
-            //     return;
-            // }
-
-            // texture.glContext = gl;
-
             gl.bindTexture(gl.TEXTURE_2D, textureID);
-            // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-            // let image = bitmapData.source;
-            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
             return textureID;
         }
 
@@ -404,10 +372,7 @@ namespace egret.web {
          */
         public updateTexture(texture: WebGLTexture, canvas: any): void {
             let gl: any = this.context;
-            // let textureID = canvas.getTexture().renderTarget
             gl.bindTexture(gl.TEXTURE_2D, texture);
-            // let buffer = bitmapData.source.buffer;
-            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, buffer);
         }
 
         /**

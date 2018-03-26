@@ -22,57 +22,57 @@ namespace egret.web {
             stage.$maxTouches = option.maxTouches;
             stage.frameRate = option.frameRate;
             stage.textureScaleFactor = option.textureScaleFactor;
-
             let buffer = new sys.RenderBuffer(undefined, undefined, true);
-            // let canvas = <HTMLCanvasElement>buffer.surface;
-            // this.attachCanvas(container, canvas);
-
-            // let webTouch = new WebTouchHandler(stage, canvas);
-            // let player = new egret.sys.Player(buffer, stage, option.entryClassName);
-
             lifecycle.stage = stage;
-            // lifecycle.addLifecycleListener(WebLifeCycleHandler);
-
-            // let webInput = new HTMLInput();
-
-            // if (option.showFPS || option.showLog) {
-            //     if (!egret.nativeRender) {
-            //         player.displayFPS(option.showFPS, option.showLog, option.logFilter, option.fpsStyles);
-            //     }
-            // }
             this.playerOption = option;
-            // this.container = container;
-            // this.canvas = canvas;
             this.stage = stage;
+            sys.$TempStage = this.stage;
             this._touches = new sys.TouchHandler(this.stage);
-            // this.player = player;
-            // this.webTouchHandler = webTouch;
 
-            //原player内容
-            //
+            BK.Director.ticker.add((ts, duration) => {
+                this._touchHandler();
+            });
+
+
             this._entryClassName = option.entryClassName;
             this.screenDisplayList = this.createDisplayList(stage, buffer)
-
-
-            // this.webInput = webInput;
-
-            // egret.web.$cacheTextAdapter(webInput, stage, container, canvas);
-
             this.updateScreenSize();
             this.updateMaxTouches();
-
             this.start();
-            // player.start();
         }
 
-        // private initOrientation(): void {
-        //     let self = this;
-        //     window.addEventListener("orientationchange", function () {
-        //         window.setTimeout(function () {
-        //             egret.StageOrientationEvent.dispatchStageOrientationEvent(self.stage, StageOrientationEvent.ORIENTATION_CHANGE);
-        //         }, 350);
-        //     });
-        // }
+
+
+        /**
+         * 触摸处理器
+         */
+        private _touchHandler(): void {
+            const touchEvents = BK.TouchEvent.getTouchEvent();
+            if (!touchEvents || touchEvents.length === 0) {
+                return;
+            }
+            const screenH = BK.Director.screenPixelSize.height;
+            const canvasScaleX = egret.sys.DisplayList.$canvasScaleX;
+            const canvasScaleY = egret.sys.DisplayList.$canvasScaleY;
+            for (const touchEvent of touchEvents) {
+                const touchID = touchEvent.id;
+                const screenPixelSize = BK.Director.screenPixelSize;
+                const touchPosition = BK.Director.root.convertToNodeSpace(touchEvent);
+
+                const touchX = touchPosition.x / canvasScaleX;
+                const touchY = (screenH - touchPosition.y) / canvasScaleY;
+
+                if (touchEvent.status === 1) {
+                    this._touches.onTouchEnd(touchX, touchY, touchID);
+                } else if (touchEvent.status === 2) {
+                    this._touches.onTouchBegin(touchX, touchY, touchID);
+                } else if (touchEvent.status === 3) {
+                    this._touches.onTouchMove(touchX, touchY, touchID);
+                }
+            }
+
+            BK.TouchEvent.updateTouchStatus();
+        }
 
         /**
          * 读取初始化参数
@@ -87,21 +87,6 @@ namespace egret.web {
             option.orientation = options.orientation || egret.OrientationMode.AUTO;
             option.maxTouches = 10;
             option.textureScaleFactor = 1;
-            // option.textureScaleFactor = +container.getAttribute("texture-scale-factor") || 1;
-
-            // option.showFPS = container.getAttribute("data-show-fps") == "true";
-
-            // let styleStr = container.getAttribute("data-show-fps-style") || "";
-            // let stylesArr = styleStr.split(",");
-            // let styles = {};
-            // for (let i = 0; i < stylesArr.length; i++) {
-            //     let tempStyleArr = stylesArr[i].split(":");
-            //     styles[tempStyleArr[0]] = tempStyleArr[1];
-            // }
-            // option.fpsStyles = styles;
-
-            // option.showLog = container.getAttribute("data-show-log") == "true";
-            // option.logFilter = container.getAttribute("data-log-filter");
             return option;
         }
 
@@ -118,47 +103,14 @@ namespace egret.web {
         }
 
 
-        // /**
-        //  * @private
-        //  * 添加canvas到container。
-        //  */
-        // private attachCanvas(container: HTMLElement, canvas: HTMLCanvasElement): void {
-
-        //     let style = canvas.style;
-        //     style.cursor = "inherit";
-        //     style.position = "absolute";
-        //     style.top = "0";
-        //     style.bottom = "0";
-        //     style.left = "0";
-        //     style.right = "0";
-        //     container.appendChild(canvas);
-        //     style = container.style;
-        //     style.overflow = "hidden";
-        //     style.position = "absolute";
-        // }
-
         private playerOption: PlayerOption;
-
-        // /**
-        //  * @private
-        //  * 画布实例
-        //  */
-        // private canvas: HTMLCanvasElement;
-        // /**
-        //  * @private
-        //  * 播放器容器实例
-        //  */
-        // private container: HTMLElement;
-
         /**
          * @private
          * 舞台引用
          */
         public stage: Stage;
-
-        // private webTouchHandler: WebTouchHandler;
         private _touches: sys.TouchHandler;
-        // private webInput: egret.web.HTMLInput;
+
 
         private readonly _mainTicker: BK.MainTicker = BK.Director.ticker;
         private _entryClassName: string;
@@ -187,26 +139,12 @@ namespace egret.web {
             let left: number = (screenWidth - displayWidth) / 2;
             this.stage.$stageWidth = stageWidth;
             this.stage.$stageHeight = stageHeight;
-            // BK.Director.root.position = { x: left, y: BK.Director.screenPixelSize.height - top };
-            // BK.Director.root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
-            // this._root.scale = { x: displayWidth / stageWidth, y: displayHeight / stageHeight };
-            // this._viewRect.setTo(left, top, stageWidth, stageHeight);
-            // BK.Director.renderSize = { width: stageWidth, height: stageHeight }; // can not work
             let scalex = displayWidth / stageWidth,
                 scaley = displayHeight / stageHeight;
             let canvasScaleX = scalex * sys.DisplayList.$canvasScaleFactor;
             let canvasScaleY = scaley * sys.DisplayList.$canvasScaleFactor;
             sys.DisplayList.$setCanvasScale(canvasScaleX, canvasScaleY);
-            this.updateStageSize(stageWidth, stageHeight);            
-            // this.webTouchHandler.updateScaleMode(scalex, scaley, rotation);
-            // this.webInput.$updateSize();
-            // this.player.updateStageSize(stageWidth, stageHeight);
-
-            // // todo
-            // if(egret.nativeRender) {
-            //     canvas.width = stageWidth * canvasScaleX;
-            //     canvas.height = stageHeight * canvasScaleY;
-            // }
+            this.updateStageSize(stageWidth, stageHeight);
         }
 
         public updateStageSize(stageWidth: number, stageHeight: number): void {
@@ -215,10 +153,6 @@ namespace egret.web {
             stage.$stageHeight = stageHeight;
 
             this.screenDisplayList.setClipRect(stageWidth, stageHeight);
-            // if (this.stageDisplayList) {
-            //     this.stageDisplayList.setClipRect(stageWidth, stageHeight);
-            // }
-
             stage.dispatchEventWith(Event.RESIZE);
         }
 
@@ -267,17 +201,8 @@ namespace egret.web {
          * 渲染屏幕
          */
         $render(triggerByFrame: boolean, costTicker: number): void {
-
-            // if (this.showFPS || this.showLog) {
-            //     this.stage.addChild(this.fps);
-            // }
             let stage = this.stage;
-            // let t1 = egret.getTimer();
             let drawCalls = stage.$displayList.drawToSurface();
-            // let t2 = egret.getTimer();
-            // if (triggerByFrame && this.showFPS) {
-            //     this.fps.update(drawCalls, t2 - t1, costTicker);
-            // }
         }
     }
 

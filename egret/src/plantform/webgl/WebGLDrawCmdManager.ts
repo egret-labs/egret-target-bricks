@@ -224,15 +224,6 @@ namespace egret.web {
                         this.drawDataLen--;
                         continue;
                     }
-
-                    // 如果与上一次buffer操作重复，本次操作无效
-                    // if(data.type == DRAWABLE_TYPE.ACT_BUFFER) {
-                    //     if(data.buffer == buffer) {
-                    //         return;
-                    //     } else {
-                    //         break;
-                    //     }
-                    // }
                 }
             }
 

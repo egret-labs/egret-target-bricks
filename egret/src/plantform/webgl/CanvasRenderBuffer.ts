@@ -29,42 +29,6 @@
 
 namespace egret.web {
 
-    // /**
-    //  * 创建一个canvas。
-    //  */
-    // function createCanvas(width?:number, height?:number):HTMLCanvasElement {
-    //     let canvas:HTMLCanvasElement = document.createElement("canvas");
-    //     if (!isNaN(width) && !isNaN(height)) {
-    //         canvas.width = width;
-    //         canvas.height = height;
-    //     }
-    //     let context = canvas.getContext("2d");
-    //     if (context["imageSmoothingEnabled"] === undefined) {
-    //         let keys = ["webkitImageSmoothingEnabled", "mozImageSmoothingEnabled", "msImageSmoothingEnabled"];
-    //         let key:string;
-    //         for (let i = keys.length - 1; i >= 0; i--) {
-    //             key = keys[i];
-    //             if (context[key] !== void 0) {
-    //                 break;
-    //             }
-    //         }
-    //         try {
-    //             Object.defineProperty(context, "imageSmoothingEnabled", {
-    //                 get: function () {
-    //                     return this[key];
-    //                 },
-    //                 set: function (value) {
-    //                     this[key] = value;
-    //                 }
-    //             });
-    //         }
-    //         catch (e) {
-    //             context["imageSmoothingEnabled"] = context[key];
-    //         }
-    //     }
-    //     return canvas;
-    // }
-
     let sharedCanvas: HTMLCanvasElement;
 
     /**
@@ -92,12 +56,6 @@ namespace egret.web {
          */
         public surface: any;//HTMLCanvasElement;
 
-
-        // /**
-        //  * BK
-        //  * 上一次的变换矩阵
-        //  */
-        // public last_matrix: egret.Matrix;
 
         /**
          * 渲染缓冲的宽度，以像素为单位。
@@ -155,30 +113,17 @@ namespace egret.web {
          * 操作context进行矩阵变化
          */
         public context_setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number) {
-            debugger
-            // //获取当前矩阵,将context重制到初始位置
-            // let last_matrix = this.last_matrix.clone();
-            // last_matrix.invert();
-            // this.context.transforms(last_matrix.a, last_matrix.b, last_matrix.c, last_matrix.d, last_matrix.tx, last_matrix.ty);
-            // //进行当前矩阵变化
             this.context.transforms(a, b, c, d, tx, ty);
-            // this.last_matrix.setTo(a, b, c, d, tx, ty);
-
-            // let orign_matrix = this.context.transform.matrix;
-            // orign_matrix.set(a, b, c, d, tx, ty);
-            // let matrix = new egret.Matrix();
-            // matrix.invert();
-            // //使其归为单位矩阵
-            // this.context.transforms(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
-            // //矩阵变换
-            // this.context.transforms(a, b, c, d, tx, ty);
         }
 
         /**
          * 获取指定区域的像素
+         * BK brick不支持像素颜色信息提取，
+         * 这里做一个简单处理，只要坐标在canvas内，就返回true；
          */
         public getPixels(x: number, y: number, width: number = 1, height: number = 1): number[] {
-            return <number[]><any>this.context.getImageData(x, y, width, height).data;
+
+            // return <number[]><any>this.context.getImageData(x, y, width, height).data;
         }
 
         /**

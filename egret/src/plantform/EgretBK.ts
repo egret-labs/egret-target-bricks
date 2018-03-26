@@ -69,19 +69,7 @@ namespace egret {
         BK.Director.ticker.removeTimeout(object);
     }
 
-    // function updateAllScreens(): void {
-    //     if (!isRunning) {
-    //         return;
-    //     }
-    //     let containerList = document.querySelectorAll(".egret-player");
-    //     let length = containerList.length;
-    //     for (let i = 0; i < length; i++) {
-    //         let container = containerList[i];
-    //         let player = <WebPlayer>container["egret-player"];
-    //         player.updateScreenSize();
-    //     }
-    // }
-
+    
     let isRunning: boolean = false;
     let player: BKPlayer;
 
@@ -178,17 +166,12 @@ namespace egret {
      * 将当前渲染模式变为BK-Webgl模式
      */
     function modifyEgretToBKWebgl(options: BKRunEgretOptions): void {
-
-        // Html5Capatibility._audioType = options.audioType;
-        // Html5Capatibility.$init();
-
         // WebGL上下文参数自定义
         if (options.renderMode == "webgl") {
             // WebGL抗锯齿默认关闭，提升PC及某些平台性能
             let antialias = options.antialias;
             egret.web.WebGLRenderContext.antialias = !!antialias;
         }
-
 
         /**
          * 没有canvasbuffer
@@ -224,31 +207,8 @@ namespace egret {
         else if (!egret.sys.screenAdapter) {
             egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
         }
-
-        // let list = document.querySelectorAll(".egret-player");
-        // let length = list.length;
-        // for (let i = 0; i < length; i++) {
-        //     let container = list[i];
-        //     let player = new egret.web.WebPlayer(container, options);
-        //     container["egret-player"] = player;
-        // }
         webPlayer = new egret.web.BKWebPlayer(options);
-
-
-        // window.addEventListener("resize", function () {
-        //     if (isNaN(resizeTimer)) {
-        //         resizeTimer = window.setTimeout(doResize, 300);
-        //     }
-        // });
     }
-
-    // let resizeTimer: number = NaN;
-
-    // function doResize() {
-    //     resizeTimer = NaN;
-    //     egret.updateAllScreens();
-    // }
-
 
     /**
      * 设置渲染模式。"auto","webgl","canvas"
@@ -270,22 +230,6 @@ namespace egret {
      * 启动心跳计时器。
      */
     function startTicker(ticker: egret.sys.SystemTicker): void {
-        // let requestAnimationFrame =
-        //     window["requestAnimationFrame"] ||
-        //     window["webkitRequestAnimationFrame"] ||
-        //     window["mozRequestAnimationFrame"] ||
-        //     window["oRequestAnimationFrame"] ||
-        //     window["msRequestAnimationFrame"];
-        // if (!requestAnimationFrame) {
-        //     requestAnimationFrame = function (callback) {
-        //         return window.setTimeout(callback, 1000 / 60);
-        //     };
-        // }
-        // requestAnimationFrame(onTick);
-        // function onTick(): void {
-        //     ticker.update();
-        //     requestAnimationFrame(onTick);
-        // }
         BK.Director.ticker.interval = 1;
         BK.Director.ticker.add((ts, duration) => {
             ticker.update();
@@ -294,30 +238,3 @@ namespace egret {
 
     egret.runEgret = runEgret;
 }
-
-// // if (DEBUG) {
-// // }
-
-// if (window['renderMode']!= 'webgl') {
-//     /**
-//      * 修改部分组件
-//      */
-
-// } else {
-//     /**
-//      * 原生修改版渲染组件覆盖egret原组件
-//      */
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-// }

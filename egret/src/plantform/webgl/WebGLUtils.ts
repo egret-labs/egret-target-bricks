@@ -69,17 +69,6 @@ namespace egret {
         private static canUseWebGL: boolean;
 
         public static checkCanUseWebGL(): boolean {
-            // if (WebGLUtils.canUseWebGL == undefined) {
-            //     try {
-            //         let canvas = document.createElement("canvas");
-            //         WebGLUtils.canUseWebGL = !!window["WebGLRenderingContext"]
-            //             && !!(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
-            //     }
-            //     catch (e) {
-            //         WebGLUtils.canUseWebGL = false;
-            //     }
-            // }
-            // return WebGLUtils.canUseWebGL;
             return true;
         }
 

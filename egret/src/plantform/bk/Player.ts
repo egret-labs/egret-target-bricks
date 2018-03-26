@@ -48,13 +48,8 @@ namespace egret {
             BKPlayer.instance = this;
 
             this._options = options;
-
-            // BK.Director.root.addChild(this._root);
-            // this._root.addChild((<any>this.stage as BKStage)._bkNode);
             BK.Director.root.addChild((<any>this.stage as BKStage)._bkNode);
             lifecycle.stage = this.stage;
-            // lifecycle.addLifecycleListener(WebLifeCycleHandler); ?
-
             sys.$TempStage = this.stage;
             this.stage.$screen = this;
             this.stage.maxTouches = 10;
