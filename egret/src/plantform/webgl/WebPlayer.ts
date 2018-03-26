@@ -23,6 +23,22 @@ namespace egret.web {
             stage.frameRate = option.frameRate;
             stage.textureScaleFactor = option.textureScaleFactor;
 
+            let buffer = new sys.RenderBuffer(undefined, undefined, true);
+            lifecycle.stage = stage;
+            this.playerOption = option;
+            this.stage = stage;
+            sys.$TempStage = this.stage;
+            this._touches = new sys.TouchHandler(this.stage);
+
+            BK.Director.ticker.add((ts, duration) => {
+                this._touchHandler();
+            });
+
+            this._entryClassName = option.entryClassName;
+            this.screenDisplayList = this.createDisplayList(stage, buffer)
+            this.updateScreenSize();
+            this.updateMaxTouches();
+
             //加入背景
             let tex = new BK.Texture('GameRes://resource/pixel.png');
             let background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1)
@@ -35,23 +51,6 @@ namespace egret.web {
             background_node.position = { x: 0, y: -this.stage.stageHeight }
             BK.Director.root.addChild(background_node);
             background_node.zOrder = 1;
-
-            let buffer = new sys.RenderBuffer(undefined, undefined, true);
-            lifecycle.stage = stage;
-            this.playerOption = option;
-            this.stage = stage;
-            sys.$TempStage = this.stage;
-            this._touches = new sys.TouchHandler(this.stage);
-
-            BK.Director.ticker.add((ts, duration) => {
-                this._touchHandler();
-            });
-
-
-            this._entryClassName = option.entryClassName;
-            this.screenDisplayList = this.createDisplayList(stage, buffer)
-            this.updateScreenSize();
-            this.updateMaxTouches();
             this.start();
         }
 
