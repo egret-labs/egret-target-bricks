@@ -127,6 +127,9 @@ namespace egret.sys {
             if (!this.isStage) {//对非舞台画布要根据目标显示对象尺寸改变而改变。
                 this.changeSurfaceSize();
             }
+            //  else {
+            //     this.offsetMatrix.setTo(this.offsetMatrix.a, this.offsetMatrix.b, this.offsetMatrix.c, this.offsetMatrix.d, this.offsetX, this.offsetY)
+            // }
             let buffer = this.renderBuffer;
             buffer.clear();
             drawCalls = systemRenderer.render(this.root, buffer, this.offsetMatrix);

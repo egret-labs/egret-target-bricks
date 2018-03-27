@@ -131,8 +131,10 @@ class Main extends egret.DisplayObjectContainer {
         colorLabel.textColor = 0xffffff;
         colorLabel.width = stageW - 172;
         colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret";
+        colorLabel.text = "Hello Egret撒打算打算打算打算打算打算的直线擦拭名字，行，nmnvjahsdksjadlzxicuoiqwexzkljclvjz";
         colorLabel.size = 24;
+        colorLabel.width = 300;
+        colorLabel.height = 500;
         colorLabel.x = 172;
         colorLabel.y = 80;
         this.addChild(colorLabel);

@@ -192,7 +192,9 @@ namespace egret.web {
             this.projectionX = width / 2;
             this.projectionY = -height / 2;
             if (this.context) {
-                this.context.viewport(0, 0, width, height);
+                let left = BKWebPlayer._viewRect.x;
+                let top = BKWebPlayer._viewRect.y;
+                this.context.viewport(left, top, width, height);
             }
         }
 

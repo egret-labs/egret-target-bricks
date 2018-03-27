@@ -8242,6 +8242,9 @@ var egret;
                 if (!this.isStage) {
                     this.changeSurfaceSize();
                 }
+                //  else {
+                //     this.offsetMatrix.setTo(this.offsetMatrix.a, this.offsetMatrix.b, this.offsetMatrix.c, this.offsetMatrix.d, this.offsetX, this.offsetY)
+                // }
                 var buffer = this.renderBuffer;
                 buffer.clear();
                 drawCalls = sys.systemRenderer.render(this.root, buffer, this.offsetMatrix);
@@ -8505,7 +8508,7 @@ var egret;
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
                 // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
-                context.fillText(text, x + context.$offsetX, 0);
+                context.fillText(text, x + context.$offsetX, y + context.$offsetY - node.size / 2);
             }
         };
         BKCanvasRenderer.prototype.renderGraphics = function (node, context, forHitTest) {
@@ -10180,7 +10183,9 @@ var egret;
                 this.projectionX = width / 2;
                 this.projectionY = -height / 2;
                 if (this.context) {
-                    this.context.viewport(0, 0, width, height);
+                    var left = web.BKWebPlayer._viewRect.x;
+                    var top_1 = web.BKWebPlayer._viewRect.y;
+                    this.context.viewport(left, top_1, width, height);
                 }
             };
             /**
@@ -12496,18 +12501,20 @@ var egret;
                 this.screenDisplayList = this.createDisplayList(stage, buffer);
                 this.updateScreenSize();
                 this.updateMaxTouches();
-                //加入背景
-                var tex = new BK.Texture('GameRes://resource/pixel.png');
-                var background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1);
-                var rgb_str = options.background.toString(16);
-                var red = parseInt(rgb_str.substring(0, 2), 16) / 255;
-                var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
-                var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
-                background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
-                background_node.size = { width: this.stage.stageWidth, height: this.stage.stageHeight };
-                background_node.position = { x: 0, y: -this.stage.stageHeight };
-                BK.Director.root.addChild(background_node);
-                background_node.zOrder = 1;
+                // this.screenDisplayList.offsetX = this._viewRect.x;
+                // this.screenDisplayList.offsetY = -this._viewRect.y;
+                // //加入背景
+                // let tex = new BK.Texture('GameRes://resource/pixel.png');
+                // let background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1)
+                // let rgb_str = options.background.toString(16);
+                // let red = parseInt(rgb_str.substring(0, 2), 16) / 255;
+                // var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
+                // var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
+                // background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
+                // background_node.size = { width: this.stage.stageWidth, height: this.stage.stageHeight };
+                // background_node.position = { x: 0, y: -this.stage.stageHeight }
+                // BK.Director.root.addChild(background_node);
+                // background_node.zOrder = 1;
                 this.start();
             };
             /**
@@ -12527,7 +12534,7 @@ var egret;
                     var screenPixelSize = BK.Director.screenPixelSize;
                     var touchPosition = BK.Director.root.convertToNodeSpace(touchEvent);
                     var touchX = touchPosition.x / canvasScaleX;
-                    var touchY = (screenH - touchPosition.y) / canvasScaleY;
+                    var touchY = (screenH - touchPosition.y - BKWebPlayer._viewRect.y) / canvasScaleY;
                     if (touchEvent.status === 1) {
                         this._touches.onTouchEnd(touchX, touchY, touchID);
                     }
@@ -12585,6 +12592,7 @@ var egret;
                 this.stage.$stageWidth = stageWidth;
                 this.stage.$stageHeight = stageHeight;
                 var scalex = displayWidth / stageWidth, scaley = displayHeight / stageHeight;
+                BKWebPlayer._viewRect.setTo(left, top, stageWidth, stageHeight);
                 var canvasScaleX = scalex * egret.sys.DisplayList.$canvasScaleFactor;
                 var canvasScaleY = scaley * egret.sys.DisplayList.$canvasScaleFactor;
                 egret.sys.DisplayList.$setCanvasScale(canvasScaleX, canvasScaleY);
@@ -12638,6 +12646,8 @@ var egret;
                 var stage = this.stage;
                 var drawCalls = stage.$displayList.drawToSurface();
             };
+            // public _viewRect: Rectangle = new egret.Rectangle();
+            BKWebPlayer._viewRect = new egret.Rectangle();
             return BKWebPlayer;
         }(egret.HashObject));
         web.BKWebPlayer = BKWebPlayer;

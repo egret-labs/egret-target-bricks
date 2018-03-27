@@ -45,7 +45,7 @@ namespace egret {
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
                 // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
-                context.fillText(text, x + context.$offsetX, 0);
+                context.fillText(text, x + context.$offsetX, y + context.$offsetY - node.size / 2);
             }
         }
 
@@ -175,7 +175,7 @@ namespace egret {
             //     case sys.RenderNodeType.GraphicsNode:
             if (node.type == sys.RenderNodeType.GraphicsNode) {
                 drawCalls = this.renderGraphics(<sys.GraphicsNode>node, context, forHitTest);
-            }else{
+            } else {
                 throw error('CanvasRenderer  renderNode 使用了未知的node类型');
             }
             // break;
