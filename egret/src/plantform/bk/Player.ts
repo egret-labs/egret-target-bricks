@@ -85,6 +85,8 @@ namespace egret {
 
             //
             let entryClassName = this._options.entryClassName;
+
+            //获取主类，加入场景
             let rootClass: any;
             if (entryClassName) {
                 rootClass = egret.getDefinitionByName(entryClassName);

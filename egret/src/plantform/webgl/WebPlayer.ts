@@ -194,7 +194,7 @@ namespace egret.web {
 
         public start() {
 
-
+            //获取主类，加入场景
             let entryClassName = this._entryClassName;
             let rootClass: any;
             if (entryClassName) {
@@ -212,6 +212,7 @@ namespace egret.web {
             else {
                 DEBUG && $error(1001, entryClassName);
             }
+            
 
             ticker.$addPlayer(this as any);
         }

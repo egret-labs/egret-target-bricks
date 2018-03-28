@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "bg_jpg,egret_icon_png,description_json,bg_0_png,bg_Tile_png,bg2_png,equal1_s_png,equal1_png,flash_png,gameBar1_png,giveUp_down_png,giveUp_up_png,greenBar_bottom_png,greenBar_up_png,guessUwin_png,invite_down_png,invite_up_png,match_down_png,match_up_png,myAvatar_png,race_background_mp3,icon_png",
+			"keys": "bg_jpg,egret_icon_png,description_json,bg_0_png,bg_Tile_png,bg2_png,equal1_s_png,equal1_png,flash_png,gameBar1_png,giveUp_down_png,giveUp_up_png,greenBar_bottom_png,greenBar_up_png,guessUwin_png,invite_down_png,invite_up_png,match_down_png,match_up_png,myAvatar_png,race_background_mp3,icon_png,test_png,blackTest_png",
 			"name": "preload"
 		}
 	],
@@ -115,6 +115,16 @@
 			"name": "icon_png",
 			"type": "image",
 			"url": "texture/icon.png"
+		},
+		{
+			"name": "test_png",
+			"type": "image",
+			"url": "test.png"
+		},
+		{
+			"name": "blackTest_png",
+			"type": "image",
+			"url": "blackTest.png"
 		}
 	]
 }

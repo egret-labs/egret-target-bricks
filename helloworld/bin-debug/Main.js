@@ -150,7 +150,7 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var sky = this.createBitmapByName("bg_jpg");
+        var sky = this.createBitmapByName("test_png");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
         var stageH = this.stage.stageHeight;
@@ -160,45 +160,42 @@ var Main = (function (_super) {
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
-        topMask.y = 33;
+        topMask.y = 220;
         this.addChild(topMask);
         topMask.touchEnabled = true;
         topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
             console.log("触摸mask");
         }, this);
-        var icon = this.createBitmapByName("egret_icon_png");
-        this.addChild(icon);
-        icon.x = 26;
-        icon.y = 33;
-        var line = new egret.Shape();
-        line.graphics.lineStyle(2, 0xffffff);
-        line.graphics.moveTo(0, 0);
-        line.graphics.lineTo(0, 117);
-        line.graphics.endFill();
-        line.x = 172;
-        line.y = 61;
-        this.addChild(line);
+        // let icon1 = this.createBitmapByName("bg_jpg");
+        // this.addChild(icon1);
+        // icon1.x = 400;
+        // icon1.y = 220;
+        // let icon2 = this.createBitmapByName("bg_jpg");
+        // icon2.width = icon2.height = 180;
+        // this.addChild(icon2);
+        // icon2.x = 400;
+        // icon2.y = 220;
         var colorLabel = new egret.TextField();
-        colorLabel.textColor = 0xffffff;
         colorLabel.width = stageW - 172;
         colorLabel.textAlign = "center";
         colorLabel.text = "Hello Egret撒打算打算打算打算打算打算的直线擦拭名字，行，nmnvjahsdksjadlzxicuoiqwexzkljclvjz";
+        colorLabel.textColor = 0x000000;
         colorLabel.size = 24;
         colorLabel.width = 300;
         colorLabel.height = 500;
         colorLabel.x = 172;
         colorLabel.y = 80;
         this.addChild(colorLabel);
-        var textfield = new egret.TextField();
-        this.addChild(textfield);
-        textfield.alpha = 0;
-        textfield.width = stageW - 172;
-        textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
-        textfield.textColor = 0xffffff;
-        textfield.x = 172;
-        textfield.y = 135;
-        this.textfield = textfield;
+        // let textfield = new egret.TextField();
+        // this.addChild(textfield);
+        // textfield.alpha = 0;
+        // textfield.width = stageW - 172;
+        // textfield.textAlign = egret.HorizontalAlign.CENTER;
+        // textfield.size = 24;
+        // textfield.textColor = 0xffffff;
+        // textfield.x = 172;
+        // textfield.y = 135;
+        // this.textfield = textfield;
         // egret.setTimeout(()=>{
         //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
         // },this,3000);
