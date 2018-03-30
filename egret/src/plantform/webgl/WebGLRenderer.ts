@@ -864,10 +864,10 @@ namespace egret.web {
             // }
 
 
-            if (node.dirtyRender) {
-                let canvasRenderBuffer = new CanvasRenderBuffer(width, height);
-                node['canvasRenderBuffer'] = canvasRenderBuffer;
-            }
+            // if (node.dirtyRender) {
+            let canvasRenderBuffer = new CanvasRenderBuffer(width, height);
+            node['canvasRenderBuffer'] = canvasRenderBuffer;
+            // }
 
             // if (!this.canvasRenderBuffer.context) {
             //     return;
@@ -885,11 +885,11 @@ namespace egret.web {
             }
 
             if (x || y) {
-                if (node.dirtyRender) {
-                    // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
-                    tx = -x;
-                    ty = -y;
-                }
+                // if (node.dirtyRender) {
+                // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
+                tx = -x;
+                ty = -y;
+                // }
                 buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
             } else if (canvasScaleX != 1 || canvasScaleY != 1) {
                 tx = 0;
@@ -899,29 +899,29 @@ namespace egret.web {
             //     // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
 
             // }
-            let canvasRenderBuffer = node['canvasRenderBuffer'];
+            // let canvasRenderBuffer = node['canvasRenderBuffer'];
             if (canvasRenderBuffer)
                 canvasRenderBuffer.context_setTransform(scaleX, 0, 0, scaleY, tx, ty);
 
 
-            if (node.dirtyRender) {
-                let surface = canvasRenderBuffer.surface;
-                let context = canvasRenderBuffer.context;
-                this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
+            // if (node.dirtyRender) {
+            let surface = canvasRenderBuffer.surface;
+            let context = canvasRenderBuffer.context;
+            this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
 
-                // 拷贝canvas到texture
-                let texture = node.$texture;
-                // if (!texture) {
-                texture = buffer.context.createTextureByCanvas(context);
-                node.$texture = texture;
-                // } else {
-                //     // 重新拷贝新的图像
-                //     buffer.context.updateTexture(texture, context);
-                // }
-                // 保存材质尺寸
-                node.$textureWidth = surface.width;
-                node.$textureHeight = surface.height;
-            }
+            // 拷贝canvas到texture
+            let texture = node.$texture;
+            // if (!texture) {
+            texture = buffer.context.createTextureByCanvas(context);
+            node.$texture = texture;
+            // } else {
+            //     // 重新拷贝新的图像
+            //     buffer.context.updateTexture(texture, context);
+            // }
+            // 保存材质尺寸
+            node.$textureWidth = surface.width;
+            node.$textureHeight = surface.height;
+            // }
 
             let textureWidth = node.$textureWidth;
             let textureHeight = node.$textureHeight;

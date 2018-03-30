@@ -8029,6 +8029,27 @@ var egret;
         BKImageLoader.prototype.load = function (url) {
             if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
                 //动态加载
+                debugger;
+                //根据url存储缓存的图片到沙盒中
+                var sha1_1 = this._sha1FromUrl(url);
+                var buff = BK.FileUtil.readFile("GameSandBox://webcache/image" + sha1_1);
+                if (buff && buff.length > 0) {
+                    this._loadFromBuffer.call(this, buff);
+                }
+                else {
+                    var httpGet = new BK.HttpUtil(url);
+                    httpGet.setHttpMethod("get");
+                    httpGet.requestAsync(function (res, code) {
+                        if (code == 200) {
+                            BK.FileUtil.writeBufferToFile("GameSandBox://webcache/image" + sha1_1, res);
+                            this._loadFromBuffer.call(this, res);
+                        }
+                        else {
+                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                            egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                        }
+                    }.bind(this));
+                }
             }
             else {
                 if (BK.FileUtil.isFileExist(url)) {
@@ -8039,6 +8060,29 @@ var egret;
                     egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
                 }
             }
+        };
+        /**
+         * 将url通过sha1算法解析
+         * 返回sha1之后的url
+         */
+        BKImageLoader.prototype._sha1FromUrl = function (url) {
+            var bufSha = BK.Misc.sha1(url);
+            var sha1 = "";
+            for (var i = 0; i < bufSha.length; i++) {
+                var charCode = bufSha.readUint8Buffer();
+                sha1 += charCode.toString(16);
+            }
+            return sha1;
+        };
+        /**
+         * 通过buffer读取texture
+         */
+        BKImageLoader.prototype._loadFromBuffer = function (buffer) {
+            var texture = BK.Texture.createTextureWithBuffer(buffer);
+            this.data = new egret.BitmapData(texture);
+            egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+            // var circle = new BK.Sprite(375, 375, circleTex, 0, 1, 1, 1);
+            // BK.Director.root.addChild(circle);
         };
         BKImageLoader.crossOrigin = null;
         return BKImageLoader;
@@ -11769,10 +11813,10 @@ var egret;
                 // else if (node.dirtyRender) {
                 //     this.canvasRenderBuffer.resize(width, height);
                 // }
-                if (node.dirtyRender) {
-                    var canvasRenderBuffer_1 = new web.CanvasRenderBuffer(width, height);
-                    node['canvasRenderBuffer'] = canvasRenderBuffer_1;
-                }
+                // if (node.dirtyRender) {
+                var canvasRenderBuffer = new web.CanvasRenderBuffer(width, height);
+                node['canvasRenderBuffer'] = canvasRenderBuffer;
+                // }
                 // if (!this.canvasRenderBuffer.context) {
                 //     return;
                 // }
@@ -11783,11 +11827,11 @@ var egret;
                     scaleY = canvasScaleY;
                 }
                 if (x || y) {
-                    if (node.dirtyRender) {
-                        // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
-                        tx = -x;
-                        ty = -y;
-                    }
+                    // if (node.dirtyRender) {
+                    // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, -x, -y);
+                    tx = -x;
+                    ty = -y;
+                    // }
                     buffer.transform(1, 0, 0, 1, x / canvasScaleX, y / canvasScaleY);
                 }
                 else if (canvasScaleX != 1 || canvasScaleY != 1) {
@@ -11797,26 +11841,26 @@ var egret;
                 // else if (canvasScaleX != 1 || canvasScaleY != 1) {
                 //     // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 // }
-                var canvasRenderBuffer = node['canvasRenderBuffer'];
+                // let canvasRenderBuffer = node['canvasRenderBuffer'];
                 if (canvasRenderBuffer)
                     canvasRenderBuffer.context_setTransform(scaleX, 0, 0, scaleY, tx, ty);
-                if (node.dirtyRender) {
-                    var surface = canvasRenderBuffer.surface;
-                    var context = canvasRenderBuffer.context;
-                    this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
-                    // 拷贝canvas到texture
-                    var texture = node.$texture;
-                    // if (!texture) {
-                    texture = buffer.context.createTextureByCanvas(context);
-                    node.$texture = texture;
-                    // } else {
-                    //     // 重新拷贝新的图像
-                    //     buffer.context.updateTexture(texture, context);
-                    // }
-                    // 保存材质尺寸
-                    node.$textureWidth = surface.width;
-                    node.$textureHeight = surface.height;
-                }
+                // if (node.dirtyRender) {
+                var surface = canvasRenderBuffer.surface;
+                var context = canvasRenderBuffer.context;
+                this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
+                // 拷贝canvas到texture
+                var texture = node.$texture;
+                // if (!texture) {
+                texture = buffer.context.createTextureByCanvas(context);
+                node.$texture = texture;
+                // } else {
+                //     // 重新拷贝新的图像
+                //     buffer.context.updateTexture(texture, context);
+                // }
+                // 保存材质尺寸
+                node.$textureWidth = surface.width;
+                node.$textureHeight = surface.height;
+                // }
                 var textureWidth = node.$textureWidth;
                 var textureHeight = node.$textureHeight;
                 buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
@@ -11862,8 +11906,8 @@ var egret;
                     this.canvasRenderer = new egret.CanvasRenderer();
                 }
                 if (node.dirtyRender || forHitTest) {
-                    var canvasRenderBuffer_2 = new web.CanvasRenderBuffer(width, height);
-                    node['canvasRenderBuffer'] = canvasRenderBuffer_2;
+                    var canvasRenderBuffer_1 = new web.CanvasRenderBuffer(width, height);
+                    node['canvasRenderBuffer'] = canvasRenderBuffer_1;
                 }
                 var canvasRenderBuffer = node['canvasRenderBuffer'];
                 if (canvasScaleX != 1 || canvasScaleY != 1) {
