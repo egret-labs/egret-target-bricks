@@ -2116,11 +2116,13 @@ namespace egret {
         defaultStyle.bold = bold ? 1 : 0;
         defaultStyle.italic = italic ? 1 : 0;
         let textSize: { height: number, width: number, contentHeight: number, contentWidth: number } = defaultText.measureTextSize(defaultStyle, text);
-        return textSize.contentWidth;
+        //bk特殊处理
+        //新的库宽度小1，这里进行特殊处理
+        return textSize.contentWidth + 1;
     }
 
     sys.measureText = bkMeasureText as any;
-    if (window['renderMode'] != 'webgl') {  
+    if (window['renderMode'] != 'webgl') {
         egret.TextField = egret.BKTextField as any;
     }
 }

@@ -361,13 +361,25 @@ namespace egret {
 
         private addSprite(texture: BK.Texture, x: number, y: number, width: number, height: number, isCenter: boolean = false) {
             let rect = new BK.Sprite(width, height, texture, 0, 1, 1, 1);
-            rect.position = { x: x, y: y };
+
             rect.vertexColor = this.fillColor;
+            //bk特殊处理
+            //最新的bk库中sprite不包括anchor属性
+            // if (isCenter) {
+            //     rect.anchor = { x: 0.5, y: 0.5 };
+            // } else {
+            //     rect.anchor = { x: 0, y: 1 };
+            // }
             if (isCenter) {
-                rect.anchor = { x: 0.5, y: 0.5 };
+                // rect.anchor = { x: 0.5, y: 0.5 };
+                rect.position = { x: x - width / 2, y: y - height / 2 };
             } else {
-                rect.anchor = { x: 0, y: 1 };
+                // rect.anchor = { x: 0, y: 1 };
+                rect.position = { x: x, y: y - height };
             }
+
+
+
             let bkNode: BK.Node = this.targetDisplay['_bkNode']
             bkNode.addChild(rect);
         }

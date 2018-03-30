@@ -356,12 +356,13 @@ namespace egret.web {
          * 创建一个来自canvas的text_Texture
          * 传入的是BK.Canvas
          */
-        public createTextureByCanvas(canvas: any): WebGLTexture {
+        public createTextureByCanvas(canvas: any): { texture: any, canvas: any } {
             // debugger
             let gl: any = this.context;
             let textureID = canvas.getTexture().renderTarget
             gl.bindTexture(gl.TEXTURE_2D, textureID);
-            return textureID;
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+            return { texture: textureID, canvas: canvas };;
         }
 
         private createTextureFromCompressedData(data, width, height, levels, internalFormat): WebGLTexture {
@@ -690,7 +691,7 @@ namespace egret.web {
             /**
              * bk 提交gl
              */
-            (gl as any).glCommit();
+            (gl as any).commit();
         }
 
         /**
@@ -786,7 +787,12 @@ namespace egret.web {
                     }
                     break;
                 case DRAWABLE_TYPE.SMOOTHING:
-                    gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                    if (data.texture.texture) {
+                        gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+                        //  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas););
+                    } else {
+                        gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                    }
                     if (data.smoothing) {
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -854,7 +860,11 @@ namespace egret.web {
          **/
         private drawTextureElements(data: any, offset: number): number {
             let gl: any = this.context;
-            gl.bindTexture(gl.TEXTURE_2D, data.texture);
+            if (data.texture.texture) {
+                gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+            } else {
+                gl.bindTexture(gl.TEXTURE_2D, data.texture);
+            }
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
             return size;

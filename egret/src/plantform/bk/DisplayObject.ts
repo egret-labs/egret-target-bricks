@@ -378,7 +378,12 @@ namespace egret {
                 } else {
                     let parent = this._bkNode.parent;
                     this.scrollRectNode = this._bkNode;
-                    this._bkNode.removeFromParent();
+                    //bk.error
+                    //sprite9节点不支持removefromparent
+                    // this._bkNode.removeFromParent();
+                    if (this._bkNode.parent) {
+                        this._bkNode.parent.removeChild(this._bkNode);
+                    }
                     let clipRectNode = new BK.ClipRectNode(0, this.height + 1, rect.width, -rect.height - 1);
                     if (parent) {
                         parent.addChild(clipRectNode);
@@ -392,8 +397,16 @@ namespace egret {
                 if (this.scrollRectNode) {
                     let scrollRectNode = this.scrollRectNode;
                     let parent = this._bkNode.parent;
-                    scrollRectNode.removeFromParent();
-                    this._bkNode.removeFromParent();
+                    //bk.error
+                    //sprite9节点不支持removefromparent
+                    // scrollRectNode.removeFromParent();
+                    // this._bkNode.removeFromParent();
+                    if (scrollRectNode.parent) {
+                        scrollRectNode.parent.removeChild(scrollRectNode);
+                    }
+                    if (parent) {
+                        parent.removeChild(this._bkNode);
+                    }
                     scrollRectNode.position = { x: this._bkNode.position.x, y: this._bkNode.position.y };
                     parent.addChild(scrollRectNode);
                     this._bkNode = scrollRectNode;

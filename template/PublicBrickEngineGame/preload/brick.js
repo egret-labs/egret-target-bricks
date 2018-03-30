@@ -281,3 +281,9 @@ BK.Director.updateDiagnosticsUI = function()
     }
 }
 
+eval=function(){};
+var newFun = Function;
+Function = function(){BK.Script.log(1,1,"do not allow use new Function");};
+Function.prototype = newFun.prototype;
+newFun = undefined;
+

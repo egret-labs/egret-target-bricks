@@ -352,7 +352,12 @@ var egret;
                 else {
                     var parent_1 = this._bkNode.parent;
                     this.scrollRectNode = this._bkNode;
-                    this._bkNode.removeFromParent();
+                    //bk.error
+                    //sprite9节点不支持removefromparent
+                    // this._bkNode.removeFromParent();
+                    if (this._bkNode.parent) {
+                        this._bkNode.parent.removeChild(this._bkNode);
+                    }
                     var clipRectNode = new BK.ClipRectNode(0, this.height + 1, rect.width, -rect.height - 1);
                     if (parent_1) {
                         parent_1.addChild(clipRectNode);
@@ -367,8 +372,16 @@ var egret;
                 if (this.scrollRectNode) {
                     var scrollRectNode = this.scrollRectNode;
                     var parent_2 = this._bkNode.parent;
-                    scrollRectNode.removeFromParent();
-                    this._bkNode.removeFromParent();
+                    //bk.error
+                    //sprite9节点不支持removefromparent
+                    // scrollRectNode.removeFromParent();
+                    // this._bkNode.removeFromParent();
+                    if (scrollRectNode.parent) {
+                        scrollRectNode.parent.removeChild(scrollRectNode);
+                    }
+                    if (parent_2) {
+                        parent_2.removeChild(this._bkNode);
+                    }
                     scrollRectNode.position = { x: this._bkNode.position.x, y: this._bkNode.position.y };
                     parent_2.addChild(scrollRectNode);
                     this._bkNode = scrollRectNode;
@@ -2808,13 +2821,21 @@ var egret;
         BKGraphics.prototype.addSprite = function (texture, x, y, width, height, isCenter) {
             if (isCenter === void 0) { isCenter = false; }
             var rect = new BK.Sprite(width, height, texture, 0, 1, 1, 1);
-            rect.position = { x: x, y: y };
             rect.vertexColor = this.fillColor;
+            //bk特殊处理
+            //最新的bk库中sprite不包括anchor属性
+            // if (isCenter) {
+            //     rect.anchor = { x: 0.5, y: 0.5 };
+            // } else {
+            //     rect.anchor = { x: 0, y: 1 };
+            // }
             if (isCenter) {
-                rect.anchor = { x: 0.5, y: 0.5 };
+                // rect.anchor = { x: 0.5, y: 0.5 };
+                rect.position = { x: x - width / 2, y: y - height / 2 };
             }
             else {
-                rect.anchor = { x: 0, y: 1 };
+                // rect.anchor = { x: 0, y: 1 };
+                rect.position = { x: x, y: y - height };
             }
             var bkNode = this.targetDisplay['_bkNode'];
             bkNode.addChild(rect);
@@ -4409,6 +4430,7 @@ var egret;
             background_node.zOrder = 1;
             //
             var entryClassName = _this._options.entryClassName;
+            //获取主类，加入场景
             var rootClass;
             if (entryClassName) {
                 rootClass = egret.getDefinitionByName(entryClassName);
@@ -7554,7 +7576,9 @@ var egret;
         defaultStyle.bold = bold ? 1 : 0;
         defaultStyle.italic = italic ? 1 : 0;
         var textSize = defaultText.measureTextSize(defaultStyle, text);
-        return textSize.contentWidth;
+        //bk特殊处理
+        //新的库宽度小1，这里进行特殊处理
+        return textSize.contentWidth + 1;
     }
     egret.sys.measureText = bkMeasureText;
     if (window['renderMode'] != 'webgl') {
@@ -7626,7 +7650,7 @@ var egret;
                     this._bkSprite.adjustTexturePosition(this.$texture.$bitmapX, this.$texture.$sourceHeight - (this.$texture.$bitmapY + this.$texture.$bitmapHeight), this.$texture.$bitmapWidth, this.$texture.$bitmapHeight, this.$texture.$rotated);
                     this._size.width = this.$getWidth(); //this.$texture.$bitmapWidth;
                     this._size.height = this.$getHeight(); //this.$texture.$bitmapHeight;
-                    this._bkSprite.size = this._size;
+                    this._bkSprite.contentSize = this._size;
                     if (this.$texture['scale9Grid'] && !this.hasScale9Grid) {
                         var rectangle = new egret.Rectangle();
                         rectangle.setTo(this.$texture['scale9Grid'].x, this.$texture['scale9Grid'].y, this.$texture['scale9Grid'].width, this.$texture['scale9Grid'].height);
@@ -7676,7 +7700,7 @@ var egret;
                 this.hasScale9Grid = true;
                 this.$setTexture(this.$texture);
             }
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
             self.$scale9Grid = value;
             self.$renderDirty = true;
         };
@@ -7692,7 +7716,7 @@ var egret;
             // MD
             this._transformDirty = true;
             this._size.width = value;
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
             return true;
         };
         /**
@@ -7707,7 +7731,7 @@ var egret;
             // MD
             this._transformDirty = true;
             this._size.height = value;
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
             return true;
         };
         /**
@@ -10319,7 +10343,9 @@ var egret;
                 var gl = this.context;
                 var textureID = canvas.getTexture().renderTarget;
                 gl.bindTexture(gl.TEXTURE_2D, textureID);
-                return textureID;
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
+                return { texture: textureID, canvas: canvas };
+                ;
             };
             WebGLRenderContext.prototype.createTextureFromCompressedData = function (data, width, height, levels, internalFormat) {
                 return null;
@@ -10593,7 +10619,7 @@ var egret;
                 /**
                  * bk 提交gl
                  */
-                gl.glCommit();
+                gl.commit();
             };
             /**
              * 执行绘制命令
@@ -10683,7 +10709,13 @@ var egret;
                         }
                         break;
                     case 10 /* SMOOTHING */:
-                        gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                        if (data.texture.texture) {
+                            gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+                            //  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas););
+                        }
+                        else {
+                            gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                        }
                         if (data.smoothing) {
                             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -10748,7 +10780,12 @@ var egret;
              **/
             WebGLRenderContext.prototype.drawTextureElements = function (data, offset) {
                 var gl = this.context;
-                gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                if (data.texture.texture) {
+                    gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+                }
+                else {
+                    gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                }
                 var size = data.count * 3;
                 gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
                 return size;
@@ -12619,6 +12656,7 @@ var egret;
                 this._touches.$initMaxTouches();
             };
             BKWebPlayer.prototype.start = function () {
+                //获取主类，加入场景
                 var entryClassName = this._entryClassName;
                 var rootClass;
                 if (entryClassName) {

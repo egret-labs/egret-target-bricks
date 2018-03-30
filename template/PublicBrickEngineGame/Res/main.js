@@ -22,9 +22,10 @@ window.renderMode = 'bricks';
 
 // Egret
 (function () {
-    BK.Script.loadlib('GameRes://script/core/render/canvas.js');
-    BK.Script.loadlib("GameRes://script/core/net/websocket.js");
-    BK.Script.loadlib('GameRes://script/core/render/WebGLCore.js');
+    // BK.Script.loadlib('GameRes://script/core/render/canvas.js');
+    // BK.Script.loadlib("GameRes://script/core/net/websocket.js");
+    // BK.Script.loadlib('GameRes://script/core/render/WebGLCore.js');
+    BK.Script.loadlib('GameRes://qqPlayCore.js');
     BK.Script.loadlib("GameRes://manifest.js");
     debugger;
     egret.runEgret(

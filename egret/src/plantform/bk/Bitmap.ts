@@ -71,7 +71,7 @@ namespace egret {
                     );
                     this._size.width = this.$getWidth()//this.$texture.$bitmapWidth;
                     this._size.height = this.$getHeight()//this.$texture.$bitmapHeight;
-                    this._bkSprite.size = this._size;
+                    this._bkSprite.contentSize = this._size;
 
                     if (this.$texture['scale9Grid'] && !this.hasScale9Grid) {
                         let rectangle = new egret.Rectangle();
@@ -122,7 +122,7 @@ namespace egret {
                 this.$setTexture(this.$texture);
             }
 
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
             self.$scale9Grid = value;
             self.$renderDirty = true;
         }
@@ -139,7 +139,7 @@ namespace egret {
             // MD
             this._transformDirty = true;
             this._size.width = value;
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
 
             return true;
         }
@@ -156,7 +156,7 @@ namespace egret {
             // MD
             this._transformDirty = true;
             this._size.height = value;
-            this._bkSprite.size = this._size;
+            this._bkSprite.contentSize = this._size;
 
             return true;
         }
