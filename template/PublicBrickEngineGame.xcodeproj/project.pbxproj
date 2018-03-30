@@ -141,7 +141,7 @@
 				TargetAttributes = {
 					6F53F4931EA4A23B00941825 = {
 						CreatedOnToolsVersion = 8.3;
-						DevelopmentTeam = T77FF8PWWU;
+						DevelopmentTeam = HE7X5838QS;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -309,7 +309,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = T77FF8PWWU;
+				DEVELOPMENT_TEAM = HE7X5838QS;
 				INFOPLIST_FILE = PublicBrickEngineGame/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -317,7 +317,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PublicBrickEngineGame",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.PublicBrickEngineGame;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PublicBrickEngineGame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -326,7 +326,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = T77FF8PWWU;
+				DEVELOPMENT_TEAM = HE7X5838QS;
 				INFOPLIST_FILE = PublicBrickEngineGame/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -334,7 +334,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/PublicBrickEngineGame",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tencent.PublicBrickEngineGame;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PublicBrickEngineGame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

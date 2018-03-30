@@ -25,6 +25,10 @@ namespace egret {
         static $invalidate() {
 
         }
+
+        $dispose(){
+            
+        }
     }
     if (window['renderMode'] != 'webgl') {
         egret.BitmapData = egret.BKBitmapData as any;

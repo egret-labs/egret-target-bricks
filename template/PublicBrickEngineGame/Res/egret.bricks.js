@@ -1508,6 +1508,8 @@ var egret;
         }
         BKBitmapData.$invalidate = function () {
         };
+        BKBitmapData.prototype.$dispose = function () {
+        };
         return BKBitmapData;
     }(egret.HashObject));
     egret.BKBitmapData = BKBitmapData;
