@@ -4447,7 +4447,19 @@ var egret;
                 }
             }
             else {
-                true && egret.$error(1001, entryClassName);
+                rootClass = global.Main;
+                if (rootClass) {
+                    var rootContainer = new rootClass();
+                    if (rootContainer.addChild) {
+                        _this.stage.addChild(rootContainer);
+                    }
+                    else {
+                        true && egret.$error(1002, entryClassName);
+                    }
+                }
+                else {
+                    true && egret.$error(1001, entryClassName);
+                }
             }
             return _this;
         }
@@ -8578,7 +8590,7 @@ var egret;
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
                 // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
-                context.fillText(text, x + context.$offsetX, y + context.$offsetY - node.size / 2);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
             }
         };
         BKCanvasRenderer.prototype.renderGraphics = function (node, context, forHitTest) {
@@ -10665,7 +10677,7 @@ var egret;
                 /**
                  * bk 提交gl
                  */
-                gl.commit();
+                gl.glCommit();
             };
             /**
              * 执行绘制命令
@@ -12718,7 +12730,19 @@ var egret;
                     }
                 }
                 else {
-                    true && egret.$error(1001, entryClassName);
+                    rootClass = global.Main;
+                    if (rootClass) {
+                        var rootContainer = new rootClass();
+                        if (rootContainer.addChild) {
+                            this.stage.addChild(rootContainer);
+                        }
+                        else {
+                            true && egret.$error(1002, entryClassName);
+                        }
+                    }
+                    else {
+                        true && egret.$error(1001, entryClassName);
+                    }
                 }
                 egret.ticker.$addPlayer(this);
             };

@@ -101,7 +101,18 @@ namespace egret {
                 }
             }
             else {
-                DEBUG && $error(1001, entryClassName);
+                rootClass = global.Main;
+                if (rootClass) {
+                    let rootContainer: any = new rootClass();
+                    if (rootContainer.addChild) {
+                        this.stage.addChild(rootContainer);
+                    }
+                    else {
+                        DEBUG && $error(1002, entryClassName);
+                    }
+                } else {
+                    DEBUG && $error(1001, entryClassName);
+                }
             }
         }
 

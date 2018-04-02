@@ -45,7 +45,7 @@ namespace egret {
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
                 // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
-                context.fillText(text, x + context.$offsetX, y + context.$offsetY - node.size / 2);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
             }
         }
 

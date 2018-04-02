@@ -691,7 +691,7 @@ namespace egret.web {
             /**
              * bk 提交gl
              */
-            (gl as any).commit();
+            (gl as any).glCommit();
         }
 
         /**
