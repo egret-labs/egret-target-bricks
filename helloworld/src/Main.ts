@@ -148,8 +148,26 @@ class Main extends egret.DisplayObjectContainer {
 
 
 
+        //加载网络资源
+        // //bricks 原声
+        // let buffer;
+        // let BKtexture = new BK.Texture(buffer, width, height);
+        // let bitmapData = new egret.BitmapData(BKtexture);
+        // let egretTexture = new egret.Texture();
+        // egretTexture.bitmapData = bitmapData;
+        // let bitmap = new egret.Bitmap();
+        // bitmap.texture = egretTexture;
+        // this.addChild(bitmap);
 
-
+        // //webgl
+        // let buffer;
+        // (BK.FileUtil as any).writeBufferToFile("GameSandBox://image1", buffer);
+        // let bitmapData = new egret.BitmapData("GameSandBox://image1.png");
+        // let egretTexture = new egret.Texture();
+        // egretTexture.bitmapData = bitmapData;
+        // let bitmap = new egret.Bitmap();
+        // bitmap.texture = egretTexture;
+        // this.addChild(bitmap);
 
 
 
