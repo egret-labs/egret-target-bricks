@@ -8607,8 +8607,11 @@ var egret;
                         var fill_red = parseInt(fill_str.substring(0, 2), 16) / 255;
                         var fill_green = parseInt(fill_str.substring(2, 4), 16) / 255;
                         var fill_blue = parseInt(fill_str.substring(4, 6), 16) / 255;
+                        //MD
+                        //BK通过drawStyle确定是fill还是stroke，0为fill，1为stroke
                         context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: fillPath.fillAlpha };
-                        this._renderPath(path, context);
+                        context.drawStyle = 0;
+                        this._renderPath(path, context, node.height);
                         if (this._renderingMask) {
                             context.clip();
                         }
@@ -8621,7 +8624,8 @@ var egret;
                         // context.fillStyle = forHitTest ? BLACK_COLOR : getGradient(context, g.gradientType, g.colors, g.alphas, g.ratios, g.matrix);
                         context.save();
                         var m = g.matrix;
-                        this._renderPath(path, context);
+                        context.drawStyle = 0;
+                        this._renderPath(path, context, node.height);
                         context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
                         context.fill();
                         context.restore();
@@ -8635,7 +8639,8 @@ var egret;
                         var stroke_red = parseInt(stroke_str.substring(0, 2), 16) / 255;
                         var stroke_green = parseInt(stroke_str.substring(2, 4), 16) / 255;
                         var stroke_blue = parseInt(stroke_str.substring(4, 6), 16) / 255;
-                        context.fillColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: strokeFill.lineAlpha };
+                        context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: strokeFill.lineAlpha };
+                        context.drawStyle = 1;
                         context.lineCap = CAPS_STYLES[strokeFill.caps];
                         context.lineJoin = strokeFill.joints;
                         context.miterLimit = strokeFill.miterLimit;
@@ -8647,7 +8652,7 @@ var egret;
                         if (isSpecialCaseWidth) {
                             context.translate(0.5, 0.5);
                         }
-                        this._renderPath(path, context);
+                        this._renderPath(path, context, node.height);
                         context.stroke();
                         if (isSpecialCaseWidth) {
                             context.translate(-0.5, -0.5);
@@ -8657,7 +8662,7 @@ var egret;
             }
             return length == 0 ? 0 : 1;
         };
-        BKCanvasRenderer.prototype._renderPath = function (path, context) {
+        BKCanvasRenderer.prototype._renderPath = function (path, context, height) {
             context.beginPath();
             var data = path.$data;
             var commands = path.$commands;
@@ -8665,18 +8670,45 @@ var egret;
             var pos = 0;
             for (var commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 var command = commands[commandIndex];
+                var x1 = void 0;
+                var y1 = void 0;
+                var x2 = data[pos++];
+                var y2 = data[pos++];
+                var x3 = void 0;
+                var y3 = void 0;
                 switch (command) {
                     case 4 /* CubicCurveTo */:
-                        context.bezierCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        x2 = data[pos++];
+                        y2 = data[pos++];
+                        height = Math.max(height, y2);
+                        x3 = data[pos++];
+                        y3 = data[pos++];
+                        height = Math.max(y3, height);
+                        context.bezierCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY, x3 + context.$offsetX, height - y3 - context.$offsetY);
                         break;
                     case 3 /* CurveTo */:
-                        context.quadraticCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        x2 = data[pos++];
+                        y2 = data[pos++];
+                        height = Math.max(height, y2);
+                        context.quadraticCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY);
                         break;
                     case 2 /* LineTo */:
-                        context.lineTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        context.lineTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
                         break;
                     case 1 /* MoveTo */:
-                        context.moveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        context.moveTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
                         break;
                 }
             }

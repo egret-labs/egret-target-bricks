@@ -9,6 +9,7 @@ namespace egret {
         }
 
 
+
         public renderText(node: sys.TextNode, context: any): void {
             context.textAlign = "left";
             context.textBaseLine = "middle";
@@ -60,16 +61,17 @@ namespace egret {
                 switch (path.type) {
                     case sys.PathType.Fill:
                         let fillPath = <sys.FillPath>path;
-
-
                         // context.fillStyle = forHitTest ? BLACK_COLOR : getRGBAString(fillPath.fillColor, fillPath.fillAlpha);
                         let fill_str = refitColorString(fillPath.fillColor, 6);
                         let fill_red: number = parseInt(fill_str.substring(0, 2), 16) / 255;
                         let fill_green: number = parseInt(fill_str.substring(2, 4), 16) / 255;
                         let fill_blue: number = parseInt(fill_str.substring(4, 6), 16) / 255;
-                        context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: fillPath.fillAlpha };
 
-                        this._renderPath(path, context);
+                        //MD
+                        //BK通过drawStyle确定是fill还是stroke，0为fill，1为stroke
+                        context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: fillPath.fillAlpha };
+                        context.drawStyle = 0;
+                        this._renderPath(path, context, node.height);
                         if (this._renderingMask) {
                             context.clip();
                         }
@@ -79,14 +81,11 @@ namespace egret {
                         break;
                     case sys.PathType.GradientFill:
                         let g = <sys.GradientFillPath>path;
-
-
                         // context.fillStyle = forHitTest ? BLACK_COLOR : getGradient(context, g.gradientType, g.colors, g.alphas, g.ratios, g.matrix);
-
-
                         context.save();
                         let m = g.matrix;
-                        this._renderPath(path, context);
+                        context.drawStyle = 0;
+                        this._renderPath(path, context, node.height);
                         context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
                         context.fill();
                         context.restore();
@@ -102,8 +101,8 @@ namespace egret {
                         let stroke_red: number = parseInt(stroke_str.substring(0, 2), 16) / 255;
                         let stroke_green: number = parseInt(stroke_str.substring(2, 4), 16) / 255;
                         let stroke_blue: number = parseInt(stroke_str.substring(4, 6), 16) / 255;
-                        context.fillColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: strokeFill.lineAlpha };
-
+                        context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: strokeFill.lineAlpha };
+                        context.drawStyle = 1;
 
 
                         context.lineCap = CAPS_STYLES[strokeFill.caps];
@@ -117,7 +116,7 @@ namespace egret {
                         if (isSpecialCaseWidth) {
                             context.translate(0.5, 0.5);
                         }
-                        this._renderPath(path, context);
+                        this._renderPath(path, context, node.height);
                         context.stroke();
                         if (isSpecialCaseWidth) {
                             context.translate(-0.5, -0.5);
@@ -129,26 +128,57 @@ namespace egret {
         }
 
 
-        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D): void {
+        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D, height: number): void {
             context.beginPath();
             let data = path.$data;
             let commands = path.$commands;
             let commandCount = commands.length;
             let pos = 0;
+
+
+
+
             for (let commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 let command = commands[commandIndex];
+                let x1;
+                let y1;
+                let x2 = data[pos++];
+                let y2 = data[pos++];
+                let x3;
+                let y3;
                 switch (command) {
                     case sys.PathCommand.CubicCurveTo:
-                        context.bezierCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        x2 = data[pos++];
+                        y2 = data[pos++];
+                        height = Math.max(height, y2);
+                        x3 = data[pos++];
+                        y3 = data[pos++];
+                        height = Math.max(y3, height);
+                        context.bezierCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY, x3 + context.$offsetX, height - y3 - context.$offsetY);
                         break;
                     case sys.PathCommand.CurveTo:
-                        context.quadraticCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        x2 = data[pos++];
+                        y2 = data[pos++];
+                        height = Math.max(height, y2);
+                        context.quadraticCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY);
                         break;
                     case sys.PathCommand.LineTo:
-                        context.lineTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        context.lineTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
                         break;
                     case sys.PathCommand.MoveTo:
-                        context.moveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
+                        x1 = data[pos++];
+                        y1 = data[pos++];
+                        height = Math.max(height, y1);
+                        context.moveTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
                         break;
                 }
             }

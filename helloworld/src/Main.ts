@@ -107,10 +107,34 @@ class Main extends egret.DisplayObjectContainer {
         topMask.y = 220;
         this.addChild(topMask);
 
-        topMask.touchEnabled = true;
-        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
-            console.log("触摸mask")
-        }, this);
+        // topMask.touchEnabled = true;
+        // topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
+        //     console.log("触摸mask")
+        // }, this);
+
+        let l = new egret.Shape();
+        l.graphics.lineStyle(2, 0xffffff);
+        l.graphics.moveTo(0, 0);
+        l.graphics.lineTo(0, 117);
+        l.graphics.endFill();
+        l.x = 172;
+        l.y = 61;
+        this.addChild(l);
+
+
+        let line = new egret.Shape();
+        line.graphics.lineStyle(2, 0x00ff00);
+        line.graphics.moveTo(100, 100);
+        line.graphics.lineTo(500, 500);
+        line.graphics.endFill();
+        this.addChild(line);
+
+        let bline = new egret.Shape();
+        bline.graphics.lineStyle(2, 0x00ff00);
+        bline.graphics.moveTo(100, 100);
+        bline.graphics.curveTo(200, 200, 400, 50);
+        bline.graphics.endFill();
+        this.addChild(bline);
 
         // let icon1 = this.createBitmapByName("bg_jpg");
         // this.addChild(icon1);
@@ -123,28 +147,56 @@ class Main extends egret.DisplayObjectContainer {
         // icon2.x = 400;
         // icon2.y = 220;
 
-        let colorLabel = new egret.TextField();
-        colorLabel.width = stageW - 172;
-        colorLabel.textAlign = "center";
-        colorLabel.text = "Hello Egret撒打算打算打算打算打算打算的直线擦拭名字，行，nmnvjahsdksjadlzxicuoiqwexzkljclvjz";
-        colorLabel.textColor = 0x000000;
-        colorLabel.size = 24;
-        colorLabel.width = 300;
-        colorLabel.height = 500;
-        colorLabel.x = 172;
-        colorLabel.y = 80;
-        this.addChild(colorLabel);
+        let colorLabel1 = new egret.TextField();
+        colorLabel1.width = stageW - 172;
+        colorLabel1.textAlign = "center";
+        colorLabel1.text = "Hello Egret撒打算打算打算打算打算打算的直线擦拭名字，行，nmnvjahsdksjadlzxicuoiqwexzkljclvjz";
+        colorLabel1.textColor = 0x000000;
+        colorLabel1.size = 24;
+        colorLabel1.width = 300;
+        colorLabel1.height = 500;
+        colorLabel1.x = 172;
+        colorLabel1.y = 80;
+        this.addChild(colorLabel1);
 
-        // let textfield = new egret.TextField();
-        // this.addChild(textfield);
-        // textfield.alpha = 0;
-        // textfield.width = stageW - 172;
-        // textfield.textAlign = egret.HorizontalAlign.CENTER;
-        // textfield.size = 24;
-        // textfield.textColor = 0xffffff;
-        // textfield.x = 172;
-        // textfield.y = 135;
-        // this.textfield = textfield;
+
+        let colorLabel2 = new egret.TextField();
+        colorLabel2.width = stageW - 172;
+        colorLabel2.textAlign = "center";
+        colorLabel2.text = "1456723127947127937987897198247979173712973917928379";
+        colorLabel2.textColor = 0x000000;
+        colorLabel2.size = 24;
+        colorLabel2.width = 300;
+        colorLabel2.height = 500;
+        colorLabel2.x = 172;
+        colorLabel2.y = 200;
+        this.addChild(colorLabel2);
+
+
+
+        let colorLabel3 = new egret.TextField();
+        colorLabel3.width = stageW - 172;
+        colorLabel3.textAlign = "center";
+        colorLabel3.text = "萨拉赫丁了解了卡家里的家乐福哈里斯就对啦就是老大和跨世纪的辣椒素的灵魂";
+        colorLabel3.textColor = 0x000000;
+        colorLabel3.size = 24;
+        colorLabel3.width = 300;
+        colorLabel3.height = 500;
+        colorLabel3.x = 172;
+        colorLabel3.y = 400;
+        this.addChild(colorLabel3);
+
+
+        let textfield = new egret.TextField();
+        this.addChild(textfield);
+        textfield.alpha = 0;
+        textfield.width = stageW - 172;
+        textfield.textAlign = egret.HorizontalAlign.CENTER;
+        textfield.size = 24;
+        textfield.textColor = 0xffffff;
+        textfield.x = 172;
+        textfield.y = 135;
+        this.textfield = textfield;
 
 
 
