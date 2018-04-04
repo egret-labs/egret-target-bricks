@@ -9316,6 +9316,11 @@ var egret;
                 this.height = image.height;
                 this.BK_format = image.format;
             }
+            else {
+                this.source = source;
+                this.width = source.width;
+                this.height = source.height;
+            }
         }
         WebGLBitmapData.create = function (type, data, callback) {
             var base64 = "";
