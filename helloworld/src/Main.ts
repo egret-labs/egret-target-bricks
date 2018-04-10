@@ -100,41 +100,41 @@ class Main extends egret.DisplayObjectContainer {
         sky.width = stageW;
         sky.height = stageH;
 
-        let topMask = new egret.Shape();
-        topMask.graphics.beginFill(0x000000, 0.5);
-        topMask.graphics.drawRect(0, 0, stageW, 172);
-        topMask.graphics.endFill();
-        topMask.y = 220;
-        this.addChild(topMask);
+        // let topMask = new egret.Shape();
+        // topMask.graphics.beginFill(0x000000, 0.5);
+        // topMask.graphics.drawRect(0, 0, stageW, 172);
+        // topMask.graphics.endFill();
+        // topMask.y = 220;
+        // this.addChild(topMask);
 
         // topMask.touchEnabled = true;
         // topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, () => {
         //     console.log("触摸mask")
         // }, this);
 
-        let l = new egret.Shape();
-        l.graphics.lineStyle(2, 0xffffff);
-        l.graphics.moveTo(0, 0);
-        l.graphics.lineTo(0, 117);
-        l.graphics.endFill();
-        l.x = 172;
-        l.y = 61;
-        this.addChild(l);
+        // let l = new egret.Shape();
+        // l.graphics.lineStyle(2, 0xffffff);
+        // l.graphics.moveTo(0, 0);
+        // l.graphics.lineTo(0, 117);
+        // l.graphics.endFill();
+        // l.x = 172;
+        // l.y = 61;
+        // this.addChild(l);
 
 
-        let line = new egret.Shape();
-        line.graphics.lineStyle(2, 0x00ff00);
-        line.graphics.moveTo(100, 100);
-        line.graphics.lineTo(500, 500);
-        line.graphics.endFill();
-        this.addChild(line);
+        // let line = new egret.Shape();
+        // line.graphics.lineStyle(2, 0x00ff00);
+        // line.graphics.moveTo(100, 100);
+        // line.graphics.lineTo(500, 500);
+        // line.graphics.endFill();
+        // this.addChild(line);
 
-        let bline = new egret.Shape();
-        bline.graphics.lineStyle(2, 0x00ff00);
-        bline.graphics.moveTo(100, 100);
-        bline.graphics.curveTo(200, 200, 400, 50);
-        bline.graphics.endFill();
-        this.addChild(bline);
+        // let bline = new egret.Shape();
+        // bline.graphics.lineStyle(2, 0x00ff00);
+        // bline.graphics.moveTo(100, 100);
+        // bline.graphics.curveTo(200, 200, 400, 50);
+        // bline.graphics.endFill();
+        // this.addChild(bline);
 
         // let icon1 = this.createBitmapByName("bg_jpg");
         // this.addChild(icon1);

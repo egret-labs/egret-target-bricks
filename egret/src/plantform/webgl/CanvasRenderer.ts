@@ -41,11 +41,11 @@ namespace egret {
                 // context.strokeStyle = toColorString(strokeColor);
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    // context.strokeText(text, x + context.$offsetX, y + context.$offsetY);
+                    // context.strokeText(text, x + offsetX, y + offsetY);
                 }
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
-                // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
+                // context.fillText(text, x + offsetX, y + offsetY);
                 context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
             }
         }
@@ -128,57 +128,55 @@ namespace egret {
         }
 
 
-        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D, height: number): void {
+        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D, h: number): void {
             context.beginPath();
-            let data = path.$data;
+            let data: number[] = path.$data as any;
             let commands = path.$commands;
             let commandCount = commands.length;
             let pos = 0;
-
-
-
-
+            var height = h;
+            let offsetX = context.$offsetX;
+            let offsetY = context.$offsetY;
             for (let commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 let command = commands[commandIndex];
                 let x1;
                 let y1;
-                let x2 = data[pos++];
-                let y2 = data[pos++];
+                let x2;
+                let y2;
                 let x3;
                 let y3;
                 switch (command) {
                     case sys.PathCommand.CubicCurveTo:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
+
                         x2 = data[pos++];
                         y2 = data[pos++];
-                        height = Math.max(height, y2);
+
                         x3 = data[pos++];
                         y3 = data[pos++];
-                        height = Math.max(y3, height);
-                        context.bezierCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY, x3 + context.$offsetX, height - y3 - context.$offsetY);
+
+                        context.bezierCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY, x3 + offsetX, height - y3 + offsetY);
                         break;
                     case sys.PathCommand.CurveTo:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
                         x2 = data[pos++];
                         y2 = data[pos++];
-                        height = Math.max(height, y2);
-                        context.quadraticCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY);
+
+                        context.quadraticCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY);
                         break;
                     case sys.PathCommand.LineTo:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
-                        context.lineTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
+
+                        context.lineTo(x1 + offsetX, height - y1 + offsetY);
                         break;
                     case sys.PathCommand.MoveTo:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        height = Math.max(height, y1);
-                        context.moveTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
+                        offsetX = data[pos++];
+                        offsetY = data[pos++];
+
+                        context.moveTo(0 + offsetX, height - 0 + offsetY);
                         break;
                 }
             }

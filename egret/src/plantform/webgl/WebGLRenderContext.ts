@@ -356,13 +356,24 @@ namespace egret.web {
          * 创建一个来自canvas的text_Texture
          * 传入的是BK.Canvas
          */
-        public createTextureByCanvas(canvas: any): { texture: any, canvas: any } {
+        public createTextureByCanvas(canvas: any): any {
             // debugger
             let gl: any = this.context;
-            let textureID = canvas.getTexture().renderTarget
-            gl.bindTexture(gl.TEXTURE_2D, textureID);
+            let texture = gl.createTexture();
+
+            texture.glContext = gl;
+
+            // let textureID = canvas.getTexture().renderTarget
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-            return { texture: textureID, canvas: canvas };;
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            return texture;
         }
 
         private createTextureFromCompressedData(data, width, height, levels, internalFormat): WebGLTexture {
@@ -860,11 +871,11 @@ namespace egret.web {
          **/
         private drawTextureElements(data: any, offset: number): number {
             let gl: any = this.context;
-            if (data.texture.texture) {
-                gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
-            } else {
-                gl.bindTexture(gl.TEXTURE_2D, data.texture);
-            }
+            // if (data.texture.texture) {
+            //     gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+            // } else {
+            gl.bindTexture(gl.TEXTURE_2D, data.texture);
+            // }
             let size = data.count * 3;
             gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
             return size;

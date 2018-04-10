@@ -8585,11 +8585,11 @@ var egret;
                 // context.strokeStyle = toColorString(strokeColor);
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    // context.strokeText(text, x + context.$offsetX, y + context.$offsetY);
+                    // context.strokeText(text, x + offsetX, y + offsetY);
                 }
                 //BK error
                 //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
-                // context.fillText(text, x + context.$offsetX, y + context.$offsetY);
+                // context.fillText(text, x + offsetX, y + offsetY);
                 context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
             }
         };
@@ -8662,53 +8662,49 @@ var egret;
             }
             return length == 0 ? 0 : 1;
         };
-        BKCanvasRenderer.prototype._renderPath = function (path, context, height) {
+        BKCanvasRenderer.prototype._renderPath = function (path, context, h) {
             context.beginPath();
             var data = path.$data;
             var commands = path.$commands;
             var commandCount = commands.length;
             var pos = 0;
+            var height = h;
+            var offsetX = context.$offsetX;
+            var offsetY = context.$offsetY;
             for (var commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 var command = commands[commandIndex];
                 var x1 = void 0;
                 var y1 = void 0;
-                var x2 = data[pos++];
-                var y2 = data[pos++];
+                var x2 = void 0;
+                var y2 = void 0;
                 var x3 = void 0;
                 var y3 = void 0;
                 switch (command) {
                     case 4 /* CubicCurveTo */:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
                         x2 = data[pos++];
                         y2 = data[pos++];
-                        height = Math.max(height, y2);
                         x3 = data[pos++];
                         y3 = data[pos++];
-                        height = Math.max(y3, height);
-                        context.bezierCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY, x3 + context.$offsetX, height - y3 - context.$offsetY);
+                        context.bezierCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY, x3 + offsetX, height - y3 + offsetY);
                         break;
                     case 3 /* CurveTo */:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
                         x2 = data[pos++];
                         y2 = data[pos++];
-                        height = Math.max(height, y2);
-                        context.quadraticCurveTo(x1 + context.$offsetX, height - y1 - context.$offsetY, x2 + context.$offsetX, height - y2 - context.$offsetY);
+                        context.quadraticCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY);
                         break;
                     case 2 /* LineTo */:
                         x1 = data[pos++];
                         y1 = data[pos++];
-                        height = Math.max(height, y1);
-                        context.lineTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
+                        context.lineTo(x1 + offsetX, height - y1 + offsetY);
                         break;
                     case 1 /* MoveTo */:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        height = Math.max(height, y1);
-                        context.moveTo(x1 + context.$offsetX, height - y1 - context.$offsetY);
+                        offsetX = data[pos++];
+                        offsetY = data[pos++];
+                        context.moveTo(0 + offsetX, height - 0 + offsetY);
                         break;
                 }
             }
@@ -10436,11 +10432,17 @@ var egret;
             WebGLRenderContext.prototype.createTextureByCanvas = function (canvas) {
                 // debugger
                 var gl = this.context;
-                var textureID = canvas.getTexture().renderTarget;
-                gl.bindTexture(gl.TEXTURE_2D, textureID);
+                var texture = gl.createTexture();
+                texture.glContext = gl;
+                // let textureID = canvas.getTexture().renderTarget
+                gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
-                return { texture: textureID, canvas: canvas };
-                ;
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                return texture;
             };
             WebGLRenderContext.prototype.createTextureFromCompressedData = function (data, width, height, levels, internalFormat) {
                 return null;
@@ -10875,12 +10877,11 @@ var egret;
              **/
             WebGLRenderContext.prototype.drawTextureElements = function (data, offset) {
                 var gl = this.context;
-                if (data.texture.texture) {
-                    gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
-                }
-                else {
-                    gl.bindTexture(gl.TEXTURE_2D, data.texture);
-                }
+                // if (data.texture.texture) {
+                //     gl.bindTexture(gl.TEXTURE_2D, data.texture.texture);
+                // } else {
+                gl.bindTexture(gl.TEXTURE_2D, data.texture);
+                // }
                 var size = data.count * 3;
                 gl.drawElements(gl.TRIANGLES, size, gl.UNSIGNED_SHORT, offset * 2);
                 return size;
