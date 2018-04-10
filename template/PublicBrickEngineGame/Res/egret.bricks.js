@@ -4491,8 +4491,8 @@ var egret;
             var screenPixelSize = BK.Director.screenPixelSize;
             var screenWidth = screenPixelSize.width;
             var screenHeight = screenPixelSize.height;
-            egret.Capabilities.$boundingClientWidth = screenWidth;
-            egret.Capabilities.$boundingClientHeight = screenHeight;
+            egret.Capabilities['$boundingClientWidth'] = screenWidth;
+            egret.Capabilities['$boundingClientHeight'] = screenHeight;
             var stageSize = egret.sys.screenAdapter.calculateStageSize(this.stage.$scaleMode, screenWidth, screenHeight, this._options.contentWidth, this._options.contentHeight);
             var stageWidth = stageSize.stageWidth;
             var stageHeight = stageSize.stageHeight;
@@ -8516,6 +8516,7 @@ var egret;
             CanvasRenderBuffer.prototype.getPixels = function (x, y, width, height) {
                 if (width === void 0) { width = 1; }
                 if (height === void 0) { height = 1; }
+                return undefined;
                 // return <number[]><any>this.context.getImageData(x, y, width, height).data;
             };
             /**
@@ -10454,6 +10455,7 @@ var egret;
             WebGLRenderContext.prototype.updateTexture = function (texture, canvas) {
                 var gl = this.context;
                 gl.bindTexture(gl.TEXTURE_2D, texture);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, canvas);
             };
             /**
              * 获取一个WebGLTexture
@@ -11865,10 +11867,10 @@ var egret;
                 // else if (node.dirtyRender) {
                 //     this.canvasRenderBuffer.resize(width, height);
                 // }
-                // if (node.dirtyRender) {
-                var canvasRenderBuffer = new web.CanvasRenderBuffer(width, height);
-                node['canvasRenderBuffer'] = canvasRenderBuffer;
-                // }
+                if (node.dirtyRender) {
+                    var canvasRenderBuffer_1 = new web.CanvasRenderBuffer(width, height);
+                    node['canvasRenderBuffer'] = canvasRenderBuffer_1;
+                }
                 // if (!this.canvasRenderBuffer.context) {
                 //     return;
                 // }
@@ -11893,26 +11895,26 @@ var egret;
                 // else if (canvasScaleX != 1 || canvasScaleY != 1) {
                 //     // this.canvasRenderBuffer.context_setTransform(canvasScaleX, 0, 0, canvasScaleY, 0, 0);
                 // }
-                // let canvasRenderBuffer = node['canvasRenderBuffer'];
+                var canvasRenderBuffer = node['canvasRenderBuffer'];
                 if (canvasRenderBuffer)
                     canvasRenderBuffer.context_setTransform(scaleX, 0, 0, scaleY, tx, ty);
-                // if (node.dirtyRender) {
-                var surface = canvasRenderBuffer.surface;
-                var context = canvasRenderBuffer.context;
-                this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
-                // 拷贝canvas到texture
-                var texture = node.$texture;
-                // if (!texture) {
-                texture = buffer.context.createTextureByCanvas(context);
-                node.$texture = texture;
-                // } else {
-                //     // 重新拷贝新的图像
-                //     buffer.context.updateTexture(texture, context);
-                // }
-                // 保存材质尺寸
-                node.$textureWidth = surface.width;
-                node.$textureHeight = surface.height;
-                // }
+                if (node.dirtyRender) {
+                    var surface = canvasRenderBuffer.surface;
+                    var context = canvasRenderBuffer.context;
+                    this.canvasRenderer.renderText(node, canvasRenderBuffer.context);
+                    // 拷贝canvas到texture
+                    var texture = node.$texture;
+                    // if (!texture) {
+                    texture = buffer.context.createTextureByCanvas(context);
+                    node.$texture = texture;
+                    // } else {
+                    //     // 重新拷贝新的图像
+                    //     buffer.context.updateTexture(texture, context);
+                    // }
+                    // 保存材质尺寸
+                    node.$textureWidth = surface.width;
+                    node.$textureHeight = surface.height;
+                }
                 var textureWidth = node.$textureWidth;
                 var textureHeight = node.$textureHeight;
                 buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
@@ -11958,8 +11960,8 @@ var egret;
                     this.canvasRenderer = new egret.CanvasRenderer();
                 }
                 if (node.dirtyRender || forHitTest) {
-                    var canvasRenderBuffer_1 = new web.CanvasRenderBuffer(width, height);
-                    node['canvasRenderBuffer'] = canvasRenderBuffer_1;
+                    var canvasRenderBuffer_2 = new web.CanvasRenderBuffer(width, height);
+                    node['canvasRenderBuffer'] = canvasRenderBuffer_2;
                 }
                 var canvasRenderBuffer = node['canvasRenderBuffer'];
                 if (canvasScaleX != 1 || canvasScaleY != 1) {

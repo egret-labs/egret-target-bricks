@@ -121,8 +121,8 @@ namespace egret.web {
          * BK brick不支持像素颜色信息提取，
          * 这里做一个简单处理，只要坐标在canvas内，就返回true；
          */
-        public getPixels(x: number, y: number, width: number = 1, height: number = 1): number[] {
-
+        public getPixels(x: number, y: number, width: number = 1, height: number = 1): any {
+            return undefined;
             // return <number[]><any>this.context.getImageData(x, y, width, height).data;
         }
 

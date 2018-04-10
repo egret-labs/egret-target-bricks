@@ -145,8 +145,8 @@ namespace egret {
             const screenPixelSize = BK.Director.screenPixelSize;
             let screenWidth: number = screenPixelSize.width;
             let screenHeight: number = screenPixelSize.height;
-            Capabilities.$boundingClientWidth = screenWidth;
-            Capabilities.$boundingClientHeight = screenHeight;
+            Capabilities['$boundingClientWidth'] = screenWidth;
+            Capabilities['$boundingClientHeight'] = screenHeight;
             let stageSize: sys.StageDisplaySize = egret.sys.screenAdapter.calculateStageSize(
                 this.stage.$scaleMode,
                 screenWidth, screenHeight,
