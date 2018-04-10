@@ -105,14 +105,45 @@ namespace egret.web {
                 if (surface.height != height) {
                     surface.height = height;
                 }
+
+                // if (surface.width != width || surface.height != height) {
+                //     this.context.dispose();
+                //     this.surface = { width: width, height: height }
+                //     this.context = new BK.Canvas(width, height)
+                //     if (this.context) {
+                //         this.context.$offsetX = 0;
+                //         this.context.$offsetY = 0;
+                //     }
+                //     Matrix.release(this.inversMatrix);
+                // }
             }
             this.clear();
         }
+        private inversMatrix: egret.Matrix;
+
+
         /**
          * BK新增
          * 操作context进行矩阵变化
          */
         public context_setTransform(a: number, b: number, c: number, d: number, tx: number, ty: number) {
+            // //查看有没有逆矩阵
+            // //先乘以逆矩阵
+            // let inversMatrix = this.inversMatrix;
+            // let targetMatrix = Matrix.create().setTo(a, b, c, d, tx, ty);
+            // let resultMatrix = Matrix.create().setTo(1, 0, 0, 1, 0, 0);
+            // if (inversMatrix) {
+            //     resultMatrix.concat(inversMatrix);
+            // }
+
+            // inversMatrix = Matrix.create().setTo(a, b, c, d, tx, ty);
+            // inversMatrix.invert();
+            // this.inversMatrix = inversMatrix;
+            // resultMatrix.concat(targetMatrix);
+            // this.context.transforms(resultMatrix.a, resultMatrix.b, resultMatrix.c, resultMatrix.d, resultMatrix.tx, resultMatrix.ty);
+            // Matrix.release(targetMatrix);
+            // Matrix.release(resultMatrix);
+
             this.context.transforms(a, b, c, d, tx, ty);
         }
 

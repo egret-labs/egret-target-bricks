@@ -14,7 +14,6 @@
   'use strict';
 
   function objectOrFunction(x) {
-    //BK.Script.log(1, 0, "入objectOrFunction(value)" + (typeof x));
     return typeof x === 'function' || typeof x === 'object' && x !== null;
   }
 
@@ -41,12 +40,10 @@
     queue[len] = callback;
     queue[len + 1] = arg;
     len += 2;
-    //BK.Script.log(1, 0, "asap中的len" + len);
     if (len === 2) {
       // If len is 2, that means that we need to schedule an async flush.
       // If additional callbacks are queued before the queue is flushed, they
       // will be processed by this flush that we are scheduling.
-      //BK.Script.log(1, 0, "asap中的customSchedulerFn" + customSchedulerFn);
       if (customSchedulerFn) {
         customSchedulerFn(flush);
       } else {
@@ -114,7 +111,6 @@
   function useSetTimeout() {
     // Store setTimeout reference so es6-promise will be unaffected by
     // other code modifying setTimeout (like sinon.useFakeTimers())
-    // debugger
     var globalSetTimeout = function(callback, time){
       BK.Director.ticker.setTimeout(callback, time)
     }
@@ -165,7 +161,6 @@
   }
 
   function then(onFulfillment, onRejection) {
-    //BK.Script.log(1, 0, "开始执行then");
     var _arguments = arguments;
 
     var parent = this;
@@ -186,7 +181,6 @@
         });
       })();
     } else {
-      //BK.Script.log(1, 0, "执行subscribe");
       subscribe(parent, child, onFulfillment, onRejection);
     }
 
@@ -332,14 +326,11 @@
   }
 
   function _resolve(promise, value) {
-    //BK.Script.log(1, 0, "进入_resolve");
     if (promise === value) {
-      //BK.Script.log(1, 0, "入promise === value");
       _reject(promise, selfFulfillment());
     } else if (objectOrFunction(value)) {
       handleMaybeThenable(promise, value, getThen(value));
     } else {
-      //BK.Script.log(1, 0, "入fulfill");
       fulfill(promise, value);
     }
   }
@@ -348,19 +339,16 @@
     if (promise._onerror) {
       promise._onerror(promise._result);
     }
-    //BK.Script.log(1, 0, "进入publishRejection");
     publish(promise);
   }
 
   function fulfill(promise, value) {
-    //BK.Script.log(1, 0, "进入fulfill ， promise._state" + promise._state);
     if (promise._state !== PENDING) {
       return;
     }
 
     promise._result = value;
     promise._state = FULFILLED;
-    //BK.Script.log(1, 0, "promise._subscribers.length 长度" + promise._subscribers.length);
     if (promise._subscribers.length !== 0) {
       asap(publish, promise);
     }
@@ -381,25 +369,20 @@
     var length = _subscribers.length;
 
     parent._onerror = null;
-    //BK.Script.log(1, 0, "注册到_subscribers当中 length: " + length + "FULFILLED" + FULFILLED);
     _subscribers[length] = child;
     _subscribers[length + FULFILLED] = onFulfillment;
     _subscribers[length + REJECTED] = onRejection;
 
     if (length === 0 && parent._state) {
-      //BK.Script.log(1, 0, "执行asap注册");
       asap(publish, parent);
     }
   }
 
   function publish(promise) {
-    debugger
-    //BK.Script.log(1, 0, "进入publish");
     var subscribers = promise._subscribers;
     var settled = promise._state;
 
     if (subscribers.length === 0) {
-      //BK.Script.log(1, 0, "subscribers.length" + subscribers.length);
       return;
     }
 
@@ -410,7 +393,6 @@
     for (var i = 0; i < subscribers.length; i += 3) {
       child = subscribers[i];
       callback = subscribers[i + settled];
-      //BK.Script.log(1, 0, "运行，当前i为： " + i + "当前child为： " + child);
       if (child) {
         invokeCallback(settled, child, callback, detail);
       } else {
@@ -1177,7 +1159,6 @@
   return Promise;
 
 })));
-debugger;
 var Global_Egret = {}
 ES6Promise.polyfill();
 var Promise = Global_Egret.EPromise;

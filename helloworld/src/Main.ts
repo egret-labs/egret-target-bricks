@@ -199,6 +199,31 @@ class Main extends egret.DisplayObjectContainer {
         this.textfield = textfield;
 
 
+        this.touchEnabled = true;
+        //增加了缩小按钮
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
+            console.log("点击了缩小按钮");
+            BK.QQ.notifyHideGame();
+        }, this);
+
+
+        (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
+            if ("" != imgUrl) {
+                let bitmapData = new egret.BitmapData(imgUrl);
+                let texture = new egret.Texture();
+                texture.bitmapData = bitmapData;
+                let bitmap = new egret.Bitmap(texture);
+                this.addChild(bitmap);
+            }
+        });
+
+
+
+
+        //同时测试websokcet
+        this.socketTest();
+
+
 
         //加载网络资源
         // //bricks 原声
@@ -268,6 +293,88 @@ class Main extends egret.DisplayObjectContainer {
 
 
     }
+
+
+    socket: egret.WebSocket;
+
+
+    socketTest() {
+        this.socket = new egret.WebSocket();
+        //设置数据格式为二进制，默认为字符串
+        this.socket.type = egret.WebSocket.TYPE_BINARY;
+        //添加收到数据侦听，收到数据会调用此方法
+        this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
+        //添加链接打开侦听，连接成功会调用此方法
+        this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
+        //添加链接关闭侦听，手动关闭或者服务器关闭连接会调用此方法
+        this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+        //添加异常侦听，出现异常会调用此方法
+        this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
+        //连接服务器
+        this.socket.connect("10.0.11.142", 8081);
+    };
+    /**
+     * 接受信息
+     */
+    onReceiveMessage(e) {
+        //接收字符串
+        // let msg = this.socket.readUTF();
+        // let data = JSON.parse(msg);
+        // console.log("收到信息", data);
+        //接收二进制
+        debugger;
+        let byte = new egret.ByteArray();
+        this.socket.readBytes(byte);
+        let str = byte.readUTF();
+        // let str1 = this.socket.readUTF();
+        debugger;
+        // let boo: boolean = byte.readBoolean();
+        // let num: number = byte.readInt();
+        // let msg = this.socket.readUTF();
+        // let data = JSON.parse(msg);
+        // console.log(`收到信息,str:  ${str}  ,bool: ${boo}   ,num: ${num}`);
+    };
+    /**
+     * 连接成功
+     */
+    onSocketOpen() {
+        console.log("socket连接成功");
+        debugger;
+        let date = {
+            name: "ajknjnzkjxn",
+            age: 12131328,
+            url: "http://10.0.11.9:8081"
+        };
+        let str = JSON.stringify(date);
+        // this.socket.writeUTF(str);
+        let byte = new egret.ByteArray();
+        byte.writeUTF(str);
+        this.socket.writeBytes(byte);
+        //准备写信息
+    };
+    /**
+     * 服务器关闭
+     */
+    onSocketClose() {
+        debugger;
+        console.log("服务器关闭");
+    };
+    /**
+     * 出现异常
+     */
+    onSocketError() {
+        debugger;
+        console.log("服务器异常");
+    };
+
+
+
+
+
+
+
+
+
 
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
