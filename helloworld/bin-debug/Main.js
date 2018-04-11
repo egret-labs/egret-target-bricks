@@ -228,23 +228,23 @@ var Main = (function (_super) {
         colorLabel3.x = 172;
         colorLabel3.y = 400;
         this.addChild(colorLabel3);
-        var textfield = new egret.TextField();
-        this.addChild(textfield);
-        textfield.alpha = 0;
-        textfield.width = stageW - 172;
-        textfield.textAlign = egret.HorizontalAlign.CENTER;
-        textfield.size = 24;
-        textfield.textColor = 0xffffff;
-        textfield.x = 172;
-        textfield.y = 135;
-        this.textfield = textfield;
+        // let textfield = new egret.TextField();
+        // this.addChild(textfield);
+        // textfield.alpha = 0;
+        // textfield.width = stageW - 172;
+        // textfield.textAlign = egret.HorizontalAlign.CENTER;
+        // textfield.size = 24;
+        // textfield.textColor = 0xffffff;
+        // textfield.x = 172;
+        // textfield.y = 135;
+        // this.textfield = textfield;
         this.touchEnabled = true;
         //增加了缩小按钮
-        var audio = RES.getRes("race_background_mp3");
+        // let audio: egret.Sound = RES.getRes("race_background_mp3");
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
             // console.log("点击了缩小按钮");
-            // BK.QQ.notifyHideGame();
-            audio.play(0, 1);
+            BK.QQ.notifyHideGame();
+            // audio.play(0, 1);
         }, this);
         // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
         //     if ("" != imgUrl) {
@@ -311,79 +311,75 @@ var Main = (function (_super) {
         // let audio = RES.getRes('race_background_mp3');
         // (audio as egret.Sound).play(0,1) 
     };
-    Main.prototype.socketTest = function () {
-        this.socket = new egret.WebSocket();
-        //设置数据格式为二进制，默认为字符串
-        this.socket.type = egret.WebSocket.TYPE_BINARY;
-        //添加收到数据侦听，收到数据会调用此方法
-        this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
-        //添加链接打开侦听，连接成功会调用此方法
-        this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
-        //添加链接关闭侦听，手动关闭或者服务器关闭连接会调用此方法
-        this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
-        //添加异常侦听，出现异常会调用此方法
-        this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
-        //连接服务器
-        this.socket.connect("10.0.11.142", 8081);
-    };
-    ;
-    /**
-     * 接受信息
-     */
-    Main.prototype.onReceiveMessage = function (e) {
-        //接收字符串
-        // let msg = this.socket.readUTF();
-        // let data = JSON.parse(msg);
-        // console.log("收到信息", data);
-        //接收二进制
-        debugger;
-        var byte = new egret.ByteArray();
-        this.socket.readBytes(byte);
-        var str = byte.readUTF();
-        // let str1 = this.socket.readUTF();
-        debugger;
-        // let boo: boolean = byte.readBoolean();
-        // let num: number = byte.readInt();
-        // let msg = this.socket.readUTF();
-        // let data = JSON.parse(msg);
-        // console.log(`收到信息,str:  ${str}  ,bool: ${boo}   ,num: ${num}`);
-    };
-    ;
-    /**
-     * 连接成功
-     */
-    Main.prototype.onSocketOpen = function () {
-        console.log("socket连接成功");
-        debugger;
-        var date = {
-            name: "ajknjnzkjxn",
-            age: 12131328,
-            url: "http://10.0.11.9:8081"
-        };
-        var str = JSON.stringify(date);
-        // this.socket.writeUTF(str);
-        var byte = new egret.ByteArray();
-        byte.writeUTF(str);
-        this.socket.writeBytes(byte);
-        //准备写信息
-    };
-    ;
-    /**
-     * 服务器关闭
-     */
-    Main.prototype.onSocketClose = function () {
-        debugger;
-        console.log("服务器关闭");
-    };
-    ;
-    /**
-     * 出现异常
-     */
-    Main.prototype.onSocketError = function () {
-        debugger;
-        console.log("服务器异常");
-    };
-    ;
+    // socket: egret.WebSocket;
+    // socketTest() {
+    //     this.socket = new egret.WebSocket();
+    //     //设置数据格式为二进制，默认为字符串
+    //     this.socket.type = egret.WebSocket.TYPE_BINARY;
+    //     //添加收到数据侦听，收到数据会调用此方法
+    //     this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
+    //     //添加链接打开侦听，连接成功会调用此方法
+    //     this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
+    //     //添加链接关闭侦听，手动关闭或者服务器关闭连接会调用此方法
+    //     this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
+    //     //添加异常侦听，出现异常会调用此方法
+    //     this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
+    //     //连接服务器
+    //     this.socket.connect("10.0.11.142", 8081);
+    // };
+    // /**
+    //  * 接受信息
+    //  */
+    // onReceiveMessage(e) {
+    //     //接收字符串
+    //     // let msg = this.socket.readUTF();
+    //     // let data = JSON.parse(msg);
+    //     // console.log("收到信息", data);
+    //     //接收二进制
+    //     debugger;
+    //     let byte = new egret.ByteArray();
+    //     this.socket.readBytes(byte);
+    //     let str = byte.readUTF();
+    //     // let str1 = this.socket.readUTF();
+    //     debugger;
+    //     // let boo: boolean = byte.readBoolean();
+    //     // let num: number = byte.readInt();
+    //     // let msg = this.socket.readUTF();
+    //     // let data = JSON.parse(msg);
+    //     // console.log(`收到信息,str:  ${str}  ,bool: ${boo}   ,num: ${num}`);
+    // };
+    // /**
+    //  * 连接成功
+    //  */
+    // onSocketOpen() {
+    //     console.log("socket连接成功");
+    //     debugger;
+    //     let date = {
+    //         name: "ajknjnzkjxn",
+    //         age: 12131328,
+    //         url: "http://10.0.11.9:8081"
+    //     };
+    //     let str = JSON.stringify(date);
+    //     // this.socket.writeUTF(str);
+    //     let byte = new egret.ByteArray();
+    //     byte.writeUTF(str);
+    //     this.socket.writeBytes(byte);
+    //     //准备写信息
+    // };
+    // /**
+    //  * 服务器关闭
+    //  */
+    // onSocketClose() {
+    //     debugger;
+    //     console.log("服务器关闭");
+    // };
+    // /**
+    //  * 出现异常
+    //  */
+    // onSocketError() {
+    //     debugger;
+    //     console.log("服务器异常");
+    // };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
@@ -399,29 +395,27 @@ var Main = (function (_super) {
      * Description file loading is successful, start to play the animation
      */
     Main.prototype.startAnimation = function (result) {
-        var _this = this;
-        var parser = new egret.HtmlTextParser();
-        var textflowArr = result.map(function (text) { return parser.parse(text); });
-        var textfield = this.textfield;
-        var count = -1;
-        var change = function () {
-            count++;
-            if (count >= textflowArr.length) {
-                count = 0;
-            }
-            var textFlow = textflowArr[count];
-            // 切换描述内容
-            // Switch to described content
-            textfield.textFlow = textFlow;
-            var tw = egret.Tween.get(textfield);
-            tw.to({ "alpha": 1 }, 200);
-            tw.wait(2000);
-            tw.to({ "alpha": 0 }, 200);
-            tw.call(change, _this);
-        };
-        change();
+        // let parser = new egret.HtmlTextParser();
+        // let textflowArr = result.map(text => parser.parse(text));
+        // let textfield = this.textfield;
+        // let count = -1;
+        // let change = () => {
+        //     count++;
+        //     if (count >= textflowArr.length) {
+        //         count = 0;
+        //     }
+        //     let textFlow = textflowArr[count];
+        //     // 切换描述内容
+        //     // Switch to described content
+        //     textfield.textFlow = textFlow;
+        //     let tw = egret.Tween.get(textfield);
+        //     tw.to({ "alpha": 1 }, 200);
+        //     tw.wait(2000);
+        //     tw.to({ "alpha": 0 }, 200);
+        //     tw.call(change, this);
+        // };
+        // change();
     };
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
-//# sourceMappingURL=Main.js.map

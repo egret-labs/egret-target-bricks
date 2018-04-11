@@ -16,7 +16,7 @@ var __extends = function (t, e) {
  * 渲染模式
  * 现支持原生模式‘bricks’和WebGL模式‘webgl’
  */
-window.renderMode = 'bricks';
+window.renderMode = 'webgl';
 BK.Director.logToConsole = 1;
 
 
