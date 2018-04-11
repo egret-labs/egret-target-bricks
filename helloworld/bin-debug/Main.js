@@ -150,7 +150,6 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
@@ -241,21 +240,23 @@ var Main = (function (_super) {
         this.textfield = textfield;
         this.touchEnabled = true;
         //增加了缩小按钮
+        var audio = RES.getRes("race_background_mp3");
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, function () {
-            console.log("点击了缩小按钮");
-            BK.QQ.notifyHideGame();
+            // console.log("点击了缩小按钮");
+            // BK.QQ.notifyHideGame();
+            audio.play(0, 1);
         }, this);
-        BK.MQQ.Account.getHeadEx(GameStatusInfo.openId, function (openId, imgUrl) {
-            if ("" != imgUrl) {
-                var bitmapData = new egret.BitmapData(imgUrl);
-                var texture = new egret.Texture();
-                texture.bitmapData = bitmapData;
-                var bitmap = new egret.Bitmap(texture);
-                _this.addChild(bitmap);
-            }
-        });
+        // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
+        //     if ("" != imgUrl) {
+        //         let bitmapData = new egret.BitmapData(imgUrl);
+        //         let texture = new egret.Texture();
+        //         texture.bitmapData = bitmapData;
+        //         let bitmap = new egret.Bitmap(texture);
+        //         this.addChild(bitmap);
+        //     }
+        // });
         //同时测试websokcet
-        this.socketTest();
+        // this.socketTest();
         //加载网络资源
         // //bricks 原声
         // let buffer;
@@ -323,7 +324,7 @@ var Main = (function (_super) {
         //添加异常侦听，出现异常会调用此方法
         this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
         //连接服务器
-        this.socket.connect("10.0.11.44", 8081);
+        this.socket.connect("10.0.11.142", 8081);
     };
     ;
     /**
@@ -423,3 +424,4 @@ var Main = (function (_super) {
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
+//# sourceMappingURL=Main.js.map

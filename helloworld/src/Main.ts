@@ -201,27 +201,30 @@ class Main extends egret.DisplayObjectContainer {
 
         this.touchEnabled = true;
         //增加了缩小按钮
+
+        let audio: egret.Sound = RES.getRes("race_background_mp3");
+
         this.addEventListener(egret.TouchEvent.TOUCH_TAP, () => {
-            console.log("点击了缩小按钮");
-            BK.QQ.notifyHideGame();
+            // console.log("点击了缩小按钮");
+            // BK.QQ.notifyHideGame();
+            audio.play(0, 1);
         }, this);
 
 
-        (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
-            if ("" != imgUrl) {
-                let bitmapData = new egret.BitmapData(imgUrl);
-                let texture = new egret.Texture();
-                texture.bitmapData = bitmapData;
-                let bitmap = new egret.Bitmap(texture);
-                this.addChild(bitmap);
-            }
-        });
-
+        // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
+        //     if ("" != imgUrl) {
+        //         let bitmapData = new egret.BitmapData(imgUrl);
+        //         let texture = new egret.Texture();
+        //         texture.bitmapData = bitmapData;
+        //         let bitmap = new egret.Bitmap(texture);
+        //         this.addChild(bitmap);
+        //     }
+        // });
 
 
 
         //同时测试websokcet
-        this.socketTest();
+        // this.socketTest();
 
 
 
