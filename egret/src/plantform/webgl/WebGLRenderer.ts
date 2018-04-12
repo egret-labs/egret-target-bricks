@@ -982,7 +982,7 @@ namespace egret.web {
                 this.canvasRenderer.renderGraphics(node, this.canvasRenderBuffer.context, true);
                 WebGLUtils.deleteWebGLTexture(surface);
                 let texture = buffer.context.getWebGLTexture(<BitmapData><any>surface);
-                buffer.context.drawTexture(texture, 0, 0, width, height, 0, 0, width, height, surface.width, surface.height);
+                buffer.context.drawTexture(texture, 0, 0, width, height, 0, 0, width, height, surface.width, surface.height, undefined, undefined, undefined, undefined, undefined, undefined, true);
             } else {
                 if (node.dirtyRender) {
                     this.canvasRenderer.renderGraphics(node, this.canvasRenderBuffer.context);
@@ -1003,7 +1003,7 @@ namespace egret.web {
                 }
                 let textureWidth = node.$textureWidth;
                 let textureHeight = node.$textureHeight;
-                buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+                buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight, undefined, undefined, undefined, undefined, undefined, undefined, true);
             }
 
             if (node.x || node.y) {

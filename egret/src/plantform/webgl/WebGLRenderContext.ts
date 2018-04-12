@@ -548,10 +548,20 @@ namespace egret.web {
         public drawTexture(texture: WebGLTexture,
             sourceX: number, sourceY: number, sourceWidth: number, sourceHeight: number,
             destX: number, destY: number, destWidth: number, destHeight: number, textureWidth: number, textureHeight: number,
-            meshUVs?: number[], meshVertices?: number[], meshIndices?: number[], bounds?: Rectangle, rotated?: boolean, smoothing?: boolean): void {
+            meshUVs?: number[], meshVertices?: number[], meshIndices?: number[], bounds?: Rectangle, rotated?: boolean, smoothing?: boolean, needFlip?: boolean ): void {
             let buffer = this.currentBuffer;
             if (this.contextLost || !texture || !buffer) {
                 return;
+            }
+
+            let offsetX;
+            let offsetY;
+            if (needFlip) {
+                buffer.saveTransform();
+                offsetX = buffer.$offsetX;
+                offsetY = buffer.$offsetY;
+                buffer.useOffset();
+                buffer.transform(1, 0, 0, -1, 0, destHeight + destY * 2);// 翻转
             }
 
             if (meshVertices && meshIndices) {
@@ -579,6 +589,12 @@ namespace egret.web {
             this.vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight,
                 destX, destY, destWidth, destHeight, textureWidth, textureHeight,
                 meshUVs, meshVertices, meshIndices, rotated);
+
+            if (needFlip) {
+                buffer.$offsetX = offsetX;
+                buffer.$offsetY = offsetY;
+                buffer.restoreTransform();
+            }
         }
 
         /**

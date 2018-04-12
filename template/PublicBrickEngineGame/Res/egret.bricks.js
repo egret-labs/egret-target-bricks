@@ -8637,7 +8637,7 @@ var egret;
                         //BK通过drawStyle确定是fill还是stroke，0为fill，1为stroke
                         context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: fillPath.fillAlpha };
                         context.drawStyle = 0;
-                        this._renderPath(path, context, node.height);
+                        this._renderPath(path, context);
                         if (this._renderingMask) {
                             context.clip();
                         }
@@ -8651,7 +8651,7 @@ var egret;
                         context.save();
                         var m = g.matrix;
                         context.drawStyle = 0;
-                        this._renderPath(path, context, node.height);
+                        this._renderPath(path, context);
                         context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
                         context.fill();
                         context.restore();
@@ -8678,7 +8678,8 @@ var egret;
                         if (isSpecialCaseWidth) {
                             context.translate(0.5, 0.5);
                         }
-                        this._renderPath(path, context, node.height);
+                        context.drawStyle = 1;
+                        this._renderPath(path, context);
                         context.stroke();
                         if (isSpecialCaseWidth) {
                             context.translate(-0.5, -0.5);
@@ -8688,49 +8689,26 @@ var egret;
             }
             return length == 0 ? 0 : 1;
         };
-        BKCanvasRenderer.prototype._renderPath = function (path, context, h) {
+        BKCanvasRenderer.prototype._renderPath = function (path, context) {
             context.beginPath();
             var data = path.$data;
             var commands = path.$commands;
             var commandCount = commands.length;
             var pos = 0;
-            var height = h;
-            var offsetX = context.$offsetX;
-            var offsetY = context.$offsetY;
             for (var commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 var command = commands[commandIndex];
-                var x1 = void 0;
-                var y1 = void 0;
-                var x2 = void 0;
-                var y2 = void 0;
-                var x3 = void 0;
-                var y3 = void 0;
                 switch (command) {
                     case 4 /* CubicCurveTo */:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        x2 = data[pos++];
-                        y2 = data[pos++];
-                        x3 = data[pos++];
-                        y3 = data[pos++];
-                        context.bezierCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY, x3 + offsetX, height - y3 + offsetY);
+                        context.bezierCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case 3 /* CurveTo */:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        x2 = data[pos++];
-                        y2 = data[pos++];
-                        context.quadraticCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY);
+                        context.quadraticCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case 2 /* LineTo */:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        context.lineTo(x1 + offsetX, height - y1 + offsetY);
+                        context.lineTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case 1 /* MoveTo */:
-                        offsetX = data[pos++];
-                        offsetY = data[pos++];
-                        context.moveTo(0 + offsetX, height - 0 + offsetY);
+                        context.moveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                 }
             }
@@ -10616,10 +10594,19 @@ var egret;
             /**
              * 绘制材质
              */
-            WebGLRenderContext.prototype.drawTexture = function (texture, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight, textureWidth, textureHeight, meshUVs, meshVertices, meshIndices, bounds, rotated, smoothing) {
+            WebGLRenderContext.prototype.drawTexture = function (texture, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight, textureWidth, textureHeight, meshUVs, meshVertices, meshIndices, bounds, rotated, smoothing, needFlip) {
                 var buffer = this.currentBuffer;
                 if (this.contextLost || !texture || !buffer) {
                     return;
+                }
+                var offsetX;
+                var offsetY;
+                if (needFlip) {
+                    buffer.saveTransform();
+                    offsetX = buffer.$offsetX;
+                    offsetY = buffer.$offsetY;
+                    buffer.useOffset();
+                    buffer.transform(1, 0, 0, -1, 0, destHeight + destY * 2); // 翻转
                 }
                 if (meshVertices && meshIndices) {
                     if (this.vao.reachMaxSize(meshVertices.length / 2, meshIndices.length)) {
@@ -10641,6 +10628,11 @@ var egret;
                 // 应用$filter，因为只可能是colorMatrixFilter，最后两个参数可不传
                 this.drawCmdManager.pushDrawTexture(texture, count, this.$filter, textureWidth, textureHeight);
                 this.vao.cacheArrays(buffer, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight, textureWidth, textureHeight, meshUVs, meshVertices, meshIndices, rotated);
+                if (needFlip) {
+                    buffer.$offsetX = offsetX;
+                    buffer.$offsetY = offsetY;
+                    buffer.restoreTransform();
+                }
             };
             /**
              * 绘制矩形（仅用于遮罩擦除等）
@@ -11995,7 +11987,7 @@ var egret;
                     this.canvasRenderer.renderGraphics(node, this.canvasRenderBuffer.context, true);
                     egret.WebGLUtils.deleteWebGLTexture(surface);
                     var texture = buffer.context.getWebGLTexture(surface);
-                    buffer.context.drawTexture(texture, 0, 0, width, height, 0, 0, width, height, surface.width, surface.height);
+                    buffer.context.drawTexture(texture, 0, 0, width, height, 0, 0, width, height, surface.width, surface.height, undefined, undefined, undefined, undefined, undefined, undefined, true);
                 }
                 else {
                     if (node.dirtyRender) {
@@ -12016,7 +12008,7 @@ var egret;
                     }
                     var textureWidth = node.$textureWidth;
                     var textureHeight = node.$textureHeight;
-                    buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight);
+                    buffer.context.drawTexture(node.$texture, 0, 0, textureWidth, textureHeight, 0, 0, textureWidth / canvasScaleX, textureHeight / canvasScaleY, textureWidth, textureHeight, undefined, undefined, undefined, undefined, undefined, undefined, true);
                 }
                 if (node.x || node.y) {
                     if (node.dirtyRender || forHitTest) {

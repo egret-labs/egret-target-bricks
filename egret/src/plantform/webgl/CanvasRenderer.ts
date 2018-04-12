@@ -70,8 +70,9 @@ namespace egret {
                         //MD
                         //BK通过drawStyle确定是fill还是stroke，0为fill，1为stroke
                         context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: fillPath.fillAlpha };
+
                         context.drawStyle = 0;
-                        this._renderPath(path, context, node.height);
+                        this._renderPath(path, context);
                         if (this._renderingMask) {
                             context.clip();
                         }
@@ -85,7 +86,7 @@ namespace egret {
                         context.save();
                         let m = g.matrix;
                         context.drawStyle = 0;
-                        this._renderPath(path, context, node.height);
+                        this._renderPath(path, context);
                         context.transform(m.a, m.b, m.c, m.d, m.tx, m.ty);
                         context.fill();
                         context.restore();
@@ -94,8 +95,6 @@ namespace egret {
                         let strokeFill = <sys.StrokePath>path;
                         let lineWidth = strokeFill.lineWidth;
                         context.lineWidth = lineWidth;
-
-
                         // context.strokeStyle = forHitTest ? BLACK_COLOR : getRGBAString(strokeFill.lineColor, strokeFill.lineAlpha);
                         let stroke_str = refitColorString(strokeFill.lineColor, 6);
                         let stroke_red: number = parseInt(stroke_str.substring(0, 2), 16) / 255;
@@ -103,8 +102,6 @@ namespace egret {
                         let stroke_blue: number = parseInt(stroke_str.substring(4, 6), 16) / 255;
                         context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: strokeFill.lineAlpha };
                         context.drawStyle = 1;
-
-
                         context.lineCap = CAPS_STYLES[strokeFill.caps];
                         context.lineJoin = strokeFill.joints;
                         context.miterLimit = strokeFill.miterLimit;
@@ -116,7 +113,8 @@ namespace egret {
                         if (isSpecialCaseWidth) {
                             context.translate(0.5, 0.5);
                         }
-                        this._renderPath(path, context, node.height);
+                        context.drawStyle = 1;
+                        this._renderPath(path, context);
                         context.stroke();
                         if (isSpecialCaseWidth) {
                             context.translate(-0.5, -0.5);
@@ -128,55 +126,26 @@ namespace egret {
         }
 
 
-        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D, h: number): void {
+        private _renderPath(path: sys.Path2D, context: CanvasRenderingContext2D): void {
             context.beginPath();
-            let data: number[] = path.$data as any;
+            let data = path.$data;
             let commands = path.$commands;
             let commandCount = commands.length;
             let pos = 0;
-            var height = h;
-            let offsetX = context.$offsetX;
-            let offsetY = context.$offsetY;
             for (let commandIndex = 0; commandIndex < commandCount; commandIndex++) {
                 let command = commands[commandIndex];
-                let x1;
-                let y1;
-                let x2;
-                let y2;
-                let x3;
-                let y3;
                 switch (command) {
                     case sys.PathCommand.CubicCurveTo:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-
-                        x2 = data[pos++];
-                        y2 = data[pos++];
-
-                        x3 = data[pos++];
-                        y3 = data[pos++];
-
-                        context.bezierCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY, x3 + offsetX, height - y3 + offsetY);
+                        context.bezierCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case sys.PathCommand.CurveTo:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-                        x2 = data[pos++];
-                        y2 = data[pos++];
-
-                        context.quadraticCurveTo(x1 + offsetX, height - y1 + offsetY, x2 + offsetX, height - y2 + offsetY);
+                        context.quadraticCurveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY, data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case sys.PathCommand.LineTo:
-                        x1 = data[pos++];
-                        y1 = data[pos++];
-
-                        context.lineTo(x1 + offsetX, height - y1 + offsetY);
+                        context.lineTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                     case sys.PathCommand.MoveTo:
-                        offsetX = data[pos++];
-                        offsetY = data[pos++];
-
-                        context.moveTo(0 + offsetX, height - 0 + offsetY);
+                        context.moveTo(data[pos++] + context.$offsetX, data[pos++] + context.$offsetY);
                         break;
                 }
             }
