@@ -8045,18 +8045,19 @@ var egret;
                 //动态加载
                 debugger;
                 //根据url存储缓存的图片到沙盒中
-                var sha1_1 = this._sha1FromUrl(url);
-                var buff = BK.FileUtil.readFile("GameSandBox://webcache/image" + sha1_1);
+                var sha1 = this._sha1FromUrl(url);
+                var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
+                var buff = BK.FileUtil.readFile(imgUrl_1);
                 if (buff && buff.length > 0) {
-                    this._loadFromBuffer.call(this, buff);
+                    this._loadFromBuffer.call(this, imgUrl_1);
                 }
                 else {
                     var httpGet = new BK.HttpUtil(url);
                     httpGet.setHttpMethod("get");
                     httpGet.requestAsync(function (res, code) {
                         if (code == 200) {
-                            BK.FileUtil.writeBufferToFile("GameSandBox://webcache/image" + sha1_1, res);
-                            this._loadFromBuffer.call(this, res);
+                            BK.FileUtil.writeBufferToFile(imgUrl_1, res);
+                            this._loadFromBuffer.call(this, imgUrl_1);
                         }
                         else {
                             console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
@@ -8091,9 +8092,10 @@ var egret;
         /**
          * 通过buffer读取texture
          */
-        BKImageLoader.prototype._loadFromBuffer = function (buffer) {
-            var texture = BK.Texture.createTextureWithBuffer(buffer);
-            this.data = new egret.BitmapData(texture);
+        BKImageLoader.prototype._loadFromBuffer = function (imgUrl) {
+            // let texture = (BK.Texture as any).createTextureWithBuffer(buffer);
+            var bitmapData = new egret.BitmapData(imgUrl);
+            this.data = bitmapData;
             egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
             // var circle = new BK.Sprite(375, 375, circleTex, 0, 1, 1, 1);
             // BK.Director.root.addChild(circle);
