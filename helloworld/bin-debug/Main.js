@@ -150,6 +150,7 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
+        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
@@ -249,15 +250,18 @@ var Main = (function (_super) {
         // textfield.x = 172;
         // textfield.y = 135;
         // this.textfield = textfield;
-        // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
-        //     if ("" != imgUrl) {
-        //         let bitmapData = new egret.BitmapData(imgUrl);
-        //         let texture = new egret.Texture();
-        //         texture.bitmapData = bitmapData;
-        //         let bitmap = new egret.Bitmap(texture);
-        //         this.addChild(bitmap);
-        //     }
-        // });
+        var imageLoader = new egret.ImageLoader();
+        imageLoader.addEventListener(egret.Event.COMPLETE, function (data) {
+            var texture = new egret.Texture();
+            texture.bitmapData = data;
+            var image = new egret.Bitmap(texture);
+            _this.addChild(image);
+        }, this);
+        BK.MQQ.Account.getHeadEx(GameStatusInfo.openId, function (openId, imgUrl) {
+            if ("" != imgUrl) {
+                imageLoader.load(imgUrl);
+            }
+        });
         //同时测试websokcet
         // this.socketTest();
         //加载网络资源
@@ -422,4 +426,3 @@ var Main = (function (_super) {
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
-//# sourceMappingURL=Main.js.map

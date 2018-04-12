@@ -37,15 +37,12 @@ namespace egret {
                 let stroke_blue: number = parseInt(strokeColorstr.substring(4, 6), 16) / 255;
                 context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: 1 };
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
-                // context.fillStyle = toColorString(textColor);
-                // context.strokeStyle = toColorString(strokeColor);
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    // context.strokeText(text, x + offsetX, y + offsetY);
+                } else {
+                    context.lineWidth = 0;
                 }
                 //BK error
-                //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
-                // context.fillText(text, x + offsetX, y + offsetY);
                 context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
             }
         }
