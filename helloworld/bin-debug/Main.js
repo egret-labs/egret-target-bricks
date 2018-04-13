@@ -150,7 +150,6 @@ var Main = (function (_super) {
      * Create a game scene
      */
     Main.prototype.createGameScene = function () {
-        var _this = this;
         var sky = this.createBitmapByName("bg_jpg");
         this.addChild(sky);
         var stageW = this.stage.stageWidth;
@@ -163,160 +162,56 @@ var Main = (function (_super) {
         topMask.graphics.endFill();
         topMask.y = 220;
         this.addChild(topMask);
-        topMask.touchEnabled = true;
-        topMask.addEventListener(egret.TouchEvent.TOUCH_BEGIN, function () {
-            console.log("触摸mask");
-        }, this);
-        var l = new egret.Shape();
-        l.graphics.lineStyle(2, 0xffffff);
-        l.graphics.moveTo(0, 0);
-        l.graphics.lineTo(0, 117);
-        l.graphics.endFill();
-        l.x = 172;
-        l.y = 61;
-        this.addChild(l);
-        var line = new egret.Shape();
-        line.graphics.lineStyle(2, 0x00ff00);
-        line.graphics.moveTo(100, 100);
-        line.graphics.lineTo(500, 500);
-        line.graphics.endFill();
-        this.addChild(line);
-        var bline = new egret.Shape();
-        bline.graphics.lineStyle(2, 0x00ff00);
-        bline.graphics.moveTo(100, 100);
-        bline.graphics.curveTo(200, 200, 400, 50);
-        bline.graphics.endFill();
-        this.addChild(bline);
-        var star = new egret.Shape();
-        star.graphics.beginFill(0x71CBFF);
-        star.graphics.moveTo(100, 100);
-        star.graphics.lineTo(300, 200);
-        star.graphics.lineTo(200, 250);
-        star.graphics.lineTo(50, 260);
-        star.graphics.lineTo(-150, 190);
-        star.graphics.lineTo(100, 100);
-        star.graphics.endFill();
-        this.addChild(star);
-        star.x = star.y = 200;
-        // let icon1 = this.createBitmapByName("bg_jpg");
-        // this.addChild(icon1);
-        // icon1.x = 400;
-        // icon1.y = 220;
-        // let icon2 = this.createBitmapByName("bg_jpg");
-        // icon2.width = icon2.height = 180;
-        // this.addChild(icon2);
-        // icon2.x = 400;
-        // icon2.y = 220;
-        // let colorLabel1 = new egret.TextField();
-        // colorLabel1.width = stageW - 172;
-        // colorLabel1.textAlign = "center";
-        // colorLabel1.text = "Hello Egret撒打算打算打算打算打算打算的直线擦拭名字，行，nmnvjahsdksjadlzxicuoiqwexzkljclvjz";
-        // colorLabel1.textColor = 0x000000;
-        // colorLabel1.size = 24;
-        // colorLabel1.width = 300;
-        // colorLabel1.height = 500;
-        // colorLabel1.x = 172;
-        // colorLabel1.y = 80;
-        // this.addChild(colorLabel1);
-        // let colorLabel2 = new egret.TextField();
-        // colorLabel2.width = stageW - 172;
-        // colorLabel2.textAlign = "center";
-        // colorLabel2.text = "1456723127947127937987897198247979173712973917928379";
-        // colorLabel2.textColor = 0x000000;
-        // colorLabel2.size = 24;
-        // colorLabel2.width = 300;
-        // colorLabel2.height = 500;
-        // colorLabel2.x = 172;
-        // colorLabel2.y = 200;
-        // this.addChild(colorLabel2);
-        // let colorLabel3 = new egret.TextField();
-        // colorLabel3.width = stageW - 172;
-        // colorLabel3.textAlign = "center";
-        // colorLabel3.text = "萨拉赫丁了解了卡家里的家乐福哈里斯就对啦就是老大和跨世纪的辣椒素的灵魂";
-        // colorLabel3.textColor = 0x000000;
-        // colorLabel3.size = 24;
-        // colorLabel3.width = 300;
-        // colorLabel3.height = 500;
-        // colorLabel3.x = 172;
-        // colorLabel3.y = 400;
-        // this.addChild(colorLabel3);
-        // let textfield = new egret.TextField();
-        // this.addChild(textfield);
-        // textfield.alpha = 0;
-        // textfield.width = stageW - 172;
-        // textfield.textAlign = egret.HorizontalAlign.CENTER;
-        // textfield.size = 24;
-        // textfield.textColor = 0xffffff;
-        // textfield.x = 172;
-        // textfield.y = 135;
-        // this.textfield = textfield;
-        var imageLoader = new egret.ImageLoader();
-        imageLoader.addEventListener(egret.Event.COMPLETE, function (data) {
-            var texture = new egret.Texture();
-            texture.bitmapData = data;
-            var image = new egret.Bitmap(texture);
-            _this.addChild(image);
-        }, this);
-        BK.MQQ.Account.getHeadEx(GameStatusInfo.openId, function (openId, imgUrl) {
-            if ("" != imgUrl) {
-                imageLoader.load(imgUrl);
-            }
-        });
+        var shp1 = new egret.Shape();
+        shp1.graphics.beginFill(0xff0000);
+        shp1.graphics.moveTo(100, 100);
+        shp1.graphics.lineTo(300, 200);
+        shp1.graphics.lineTo(200, 500);
+        shp1.graphics.lineTo(0, 550);
+        shp1.graphics.lineTo(-100, 220);
+        shp1.graphics.lineTo(100, 100);
+        shp1.graphics.endFill();
+        shp1.x = 200;
+        shp1.y = 0;
+        this.addChild(shp1);
+        var shp2 = new egret.Shape();
+        shp2.graphics.beginFill(0x00ff00);
+        shp2.graphics.moveTo(100, 100);
+        shp2.graphics.lineTo(300, 200);
+        shp2.graphics.lineTo(200, 500);
+        shp2.graphics.lineTo(-100, 220);
+        shp2.graphics.lineTo(0, 550);
+        shp2.graphics.lineTo(100, 100);
+        shp2.graphics.endFill();
+        this.addChild(shp2);
+        shp2.x = 200;
+        shp2.y = 300;
+        var shp3 = new egret.Shape();
+        shp3.graphics.beginFill(0x0000ff);
+        shp3.graphics.moveTo(100, 100);
+        shp3.graphics.lineTo(-100, 220);
+        shp3.graphics.lineTo(0, 550);
+        shp3.graphics.lineTo(200, 500);
+        shp3.graphics.lineTo(300, 200);
+        shp3.graphics.lineTo(100, 100);
+        shp3.graphics.endFill();
+        this.addChild(shp3);
+        shp3.x = 200;
+        shp3.y = 600;
+        // let imageLoader = new egret.ImageLoader();
+        // imageLoader.addEventListener(egret.Event.COMPLETE, (data) => {
+        //     let texture = new egret.Texture();
+        //     texture.bitmapData = data;
+        //     let image = new egret.Bitmap(texture);
+        //     this.addChild(image);
+        // }, this);
+        // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
+        //     if ("" != imgUrl) {
+        //         imageLoader.load(imgUrl);
+        //     }
+        // });
         //同时测试websokcet
         // this.socketTest();
-        //加载网络资源
-        // //bricks 原声
-        // let buffer;
-        // let BKtexture = new BK.Texture(buffer, width, height);
-        // let bitmapData = new egret.BitmapData(BKtexture);
-        // let egretTexture = new egret.Texture();
-        // egretTexture.bitmapData = bitmapData;
-        // let bitmap = new egret.Bitmap();
-        // bitmap.texture = egretTexture;
-        // this.addChild(bitmap);
-        // //webgl
-        // let buffer;
-        // (BK.FileUtil as any).writeBufferToFile("GameSandBox://image1", buffer);
-        // let bitmapData = new egret.BitmapData("GameSandBox://image1.png");
-        // let egretTexture = new egret.Texture();
-        // egretTexture.bitmapData = bitmapData;
-        // let bitmap = new egret.Bitmap();
-        // bitmap.texture = egretTexture;
-        // this.addChild(bitmap);
-        // egret.setTimeout(()=>{
-        //     sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
-        // },this,3000);
-        // sky.scrollRect = new egret.Rectangle(0, 0, 100, 100);
-        // let t = new egret.Timer(50);
-        // t.addEventListener(egret.TimerEvent.TIMER, () => {
-        //     let rect = sky.scrollRect;
-        //     if (rect.x + rect.width >= sky.width) {
-        //         rect.width = 100;
-        //         rect.y += 20;
-        //         sky.y += 20;
-        //     }
-        //     if (rect.y + rect.height >= sky.height) {
-        //         rect.y = 0;
-        //         sky.y = 0;
-        //     }
-        //     rect.width += 20;
-        //     sky.scrollRect = rect;
-        // }, this);
-        // t.start();
-        // egret.setTimeout(()=>{
-        //     t.stop();
-        //     sky.scrollRect = null;
-        // },this,10000)
-        // let mask = this.createBitmapByName("egret_icon_png");
-        // let sprite = this.createBitmapByName("bg_jpg");
-        // mask.x = mask.y = 500;
-        // this.addChild(sprite);
-        //   egret.setTimeout(()=>{
-        //       debugger
-        //     sprite.mask = mask;
-        // },this,3000)
-        // let audio = RES.getRes('race_background_mp3');
-        // (audio as egret.Sound).play(0,1) 
     };
     // socket: egret.WebSocket;
     // socketTest() {

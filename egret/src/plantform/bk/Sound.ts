@@ -44,13 +44,43 @@ namespace egret {
         public static EFFECT: string = "effect";
 
         load(url: string): void {
-            this.url = url;
-            if (BK.FileUtil.isFileExist(this.url)) {
-                $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+            if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
+                //动态加载
+                //根据url存储缓存的声音到沙盒中
+                let sha1 = _sha1FromUrl(url);
+                let soundUrl = "GameSandBox://webcache/sound" + sha1
+                let buff = BK.FileUtil.readFile(soundUrl);
+                if (buff && buff.length > 0) {
+                    this._loadFromBuffer.call(this, soundUrl);
+                } else {
+                    var httpGet = new BK.HttpUtil(url);
+                    httpGet.setHttpMethod("get")
+                    httpGet.requestAsync(function (res, code) {
+                        if (code == 200) {
+                            (BK.FileUtil as any).writeBufferToFile(soundUrl, res);
+                            this._loadFromBuffer.call(this, soundUrl);
+                        } else {
+                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                            $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                        }
+                    }.bind(this));
+                }
+
+            } else {
+                this.url = url;
+                if (BK.FileUtil.isFileExist(this.url)) {
+                    $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+                }
+                else {
+                    $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                }
             }
-            else {
-                $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
-            }
+        }
+
+
+        private _loadFromBuffer(soundUrl: string) {
+            this.url = soundUrl;
+            $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
         }
 
         play(startTime: number = 0, loops: number = 0): egret.SoundChannel {
@@ -62,7 +92,7 @@ namespace egret {
             channel.$play();
             return channel;
         }
-        
+
         close(): void {
 
         }

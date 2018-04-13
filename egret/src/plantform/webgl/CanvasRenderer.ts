@@ -43,7 +43,7 @@ namespace egret {
                     context.lineWidth = 0;
                 }
                 //BK error
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 4);
             }
         }
 

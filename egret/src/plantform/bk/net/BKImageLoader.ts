@@ -23,7 +23,7 @@ namespace egret {
                 //动态加载
                 debugger;
                 //根据url存储缓存的图片到沙盒中
-                let sha1 = this._sha1FromUrl(url);
+                let sha1 = _sha1FromUrl(url);
                 let imgUrl = "GameSandBox://webcache/image" + sha1
                 let buff = BK.FileUtil.readFile(imgUrl);
                 if (buff && buff.length > 0) {
@@ -54,29 +54,12 @@ namespace egret {
         }
 
         /**
-         * 将url通过sha1算法解析
-         * 返回sha1之后的url
-         */
-        private _sha1FromUrl(url) {
-            var bufSha = BK.Misc.sha1(url);
-            var sha1 = "";
-            for (var i = 0; i < bufSha.length; i++) {
-                var charCode = bufSha.readUint8Buffer();
-                sha1 += charCode.toString(16);
-            }
-            return sha1;
-        }
-
-        /**
          * 通过buffer读取texture
          */
         private _loadFromBuffer(imgUrl:string) {
-            // let texture = (BK.Texture as any).createTextureWithBuffer(buffer);
             let bitmapData = new egret.BitmapData(imgUrl);
             this.data = bitmapData;
             $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
-            // var circle = new BK.Sprite(375, 375, circleTex, 0, 1, 1, 1);
-            // BK.Director.root.addChild(circle);
         }
     }
 

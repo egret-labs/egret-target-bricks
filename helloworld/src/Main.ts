@@ -107,6 +107,49 @@ class Main extends egret.DisplayObjectContainer {
         topMask.y = 220;
         this.addChild(topMask);
 
+
+
+        let shp1 = new egret.Shape();
+        shp1.graphics.beginFill(0xff0000);
+        shp1.graphics.moveTo(100, 100);
+        shp1.graphics.lineTo(300, 200);
+        shp1.graphics.lineTo(200, 500);
+        shp1.graphics.lineTo(0, 550);
+        shp1.graphics.lineTo(-100, 220);
+        shp1.graphics.lineTo(100, 100);
+        shp1.graphics.endFill();
+        shp1.x = 200;
+        shp1.y = 0;
+        this.addChild(shp1);
+
+        let shp2 = new egret.Shape();
+        shp2.graphics.beginFill(0x00ff00);
+        shp2.graphics.moveTo(100, 100);
+        shp2.graphics.lineTo(300, 200);
+        shp2.graphics.lineTo(200, 500);
+        shp2.graphics.lineTo(-100, 220);
+        shp2.graphics.lineTo(0, 550);
+
+        shp2.graphics.lineTo(100, 100);
+        shp2.graphics.endFill();
+        this.addChild(shp2);
+        shp2.x = 200;
+        shp2.y = 300;
+
+        let shp3 = new egret.Shape();
+        shp3.graphics.beginFill(0x0000ff);
+        shp3.graphics.moveTo(100, 100);
+        shp3.graphics.lineTo(-100, 220);
+        shp3.graphics.lineTo(0, 550);
+        shp3.graphics.lineTo(200, 500);
+        shp3.graphics.lineTo(300, 200);
+        shp3.graphics.lineTo(100, 100);
+        shp3.graphics.endFill();
+        this.addChild(shp3);
+        shp3.x = 200;
+        shp3.y = 600;
+
+
         // let imageLoader = new egret.ImageLoader();
         // imageLoader.addEventListener(egret.Event.COMPLETE, (data) => {
         //     let texture = new egret.Texture();

@@ -4942,13 +4942,43 @@ var egret;
             return _this;
         }
         BKSound.prototype.load = function (url) {
-            this.url = url;
-            if (BK.FileUtil.isFileExist(this.url)) {
-                egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+            if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
+                //动态加载
+                //根据url存储缓存的声音到沙盒中
+                var sha1 = egret._sha1FromUrl(url);
+                var soundUrl_1 = "GameSandBox://webcache/sound" + sha1;
+                var buff = BK.FileUtil.readFile(soundUrl_1);
+                if (buff && buff.length > 0) {
+                    this._loadFromBuffer.call(this, soundUrl_1);
+                }
+                else {
+                    var httpGet = new BK.HttpUtil(url);
+                    httpGet.setHttpMethod("get");
+                    httpGet.requestAsync(function (res, code) {
+                        if (code == 200) {
+                            BK.FileUtil.writeBufferToFile(soundUrl_1, res);
+                            this._loadFromBuffer.call(this, soundUrl_1);
+                        }
+                        else {
+                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                            egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                        }
+                    }.bind(this));
+                }
             }
             else {
-                egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                this.url = url;
+                if (BK.FileUtil.isFileExist(this.url)) {
+                    egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+                }
+                else {
+                    egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                }
             }
+        };
+        BKSound.prototype._loadFromBuffer = function (soundUrl) {
+            this.url = soundUrl;
+            egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
         };
         BKSound.prototype.play = function (startTime, loops) {
             if (startTime === void 0) { startTime = 0; }
@@ -5017,8 +5047,13 @@ var egret;
                     break;
             }
             var loops = this.$loops === 0 ? -1 : this.$loops;
-            var musicPath = this.$url.indexOf("GameRes://") >= 0 ? this.$url : "GameRes://" + this.$url;
-            // BK.Audio.switch = true;
+            var musicPath;
+            if ((this.$url.indexOf("GameRes://") >= 0) || (this.$url.indexOf("GameSandBox://") >= 0)) {
+                musicPath = this.$url;
+            }
+            else {
+                musicPath = "GameRes://" + this.$url;
+            }
             this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             this._bkAudio.startMusic();
         };
@@ -7825,6 +7860,20 @@ var egret;
         return bricksBuffer;
     }
     egret.arrayBufferToBricksBuffer = arrayBufferToBricksBuffer;
+    /**
+     * 将url通过sha1算法解析
+     * 返回sha1之后的url
+     */
+    function _sha1FromUrl(url) {
+        var bufSha = BK.Misc.sha1(url);
+        var sha1 = "";
+        for (var i = 0; i < bufSha.length; i++) {
+            var charCode = bufSha.readUint8Buffer();
+            sha1 += charCode.toString(16);
+        }
+        return sha1;
+    }
+    egret._sha1FromUrl = _sha1FromUrl;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
@@ -8045,7 +8094,7 @@ var egret;
                 //动态加载
                 debugger;
                 //根据url存储缓存的图片到沙盒中
-                var sha1 = this._sha1FromUrl(url);
+                var sha1 = egret._sha1FromUrl(url);
                 var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
                 var buff = BK.FileUtil.readFile(imgUrl_1);
                 if (buff && buff.length > 0) {
@@ -8077,28 +8126,12 @@ var egret;
             }
         };
         /**
-         * 将url通过sha1算法解析
-         * 返回sha1之后的url
-         */
-        BKImageLoader.prototype._sha1FromUrl = function (url) {
-            var bufSha = BK.Misc.sha1(url);
-            var sha1 = "";
-            for (var i = 0; i < bufSha.length; i++) {
-                var charCode = bufSha.readUint8Buffer();
-                sha1 += charCode.toString(16);
-            }
-            return sha1;
-        };
-        /**
          * 通过buffer读取texture
          */
         BKImageLoader.prototype._loadFromBuffer = function (imgUrl) {
-            // let texture = (BK.Texture as any).createTextureWithBuffer(buffer);
             var bitmapData = new egret.BitmapData(imgUrl);
             this.data = bitmapData;
             egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
-            // var circle = new BK.Sprite(375, 375, circleTex, 0, 1, 1, 1);
-            // BK.Director.root.addChild(circle);
         };
         BKImageLoader.crossOrigin = null;
         return BKImageLoader;
@@ -8609,16 +8642,14 @@ var egret;
                 var stroke_blue = parseInt(strokeColorstr.substring(4, 6), 16) / 255;
                 context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: 1 };
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
-                // context.fillStyle = toColorString(textColor);
-                // context.strokeStyle = toColorString(strokeColor);
                 if (stroke) {
                     context.lineWidth = stroke * 2;
-                    // context.strokeText(text, x + offsetX, y + offsetY);
+                }
+                else {
+                    context.lineWidth = 0;
                 }
                 //BK error
-                //在这里y的偏移量会导致文本位置在textfield外，这里写为0。
-                // context.fillText(text, x + offsetX, y + offsetY);
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 2);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 4);
             }
         };
         BKCanvasRenderer.prototype.renderGraphics = function (node, context, forHitTest) {

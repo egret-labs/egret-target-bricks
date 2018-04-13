@@ -39,4 +39,19 @@ namespace egret {
 
         return bricksBuffer;
     }
+
+
+    /**
+     * 将url通过sha1算法解析
+     * 返回sha1之后的url
+     */
+    export function _sha1FromUrl(url) {
+        var bufSha = BK.Misc.sha1(url);
+        var sha1 = "";
+        for (var i = 0; i < bufSha.length; i++) {
+            var charCode = bufSha.readUint8Buffer();
+            sha1 += charCode.toString(16);
+        }
+        return sha1;
+    }
 }
