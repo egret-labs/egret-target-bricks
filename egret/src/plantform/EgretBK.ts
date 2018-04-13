@@ -69,11 +69,12 @@ namespace egret {
         BK.Director.ticker.removeTimeout(object);
     }
 
-    
+
     let isRunning: boolean = false;
     let player: BKPlayer;
 
     let webPlayer: egret.web.BKWebPlayer;
+    let system_options: BKRunEgretOptions;
     /**
      * @private
      * 网页加载完成，实例化页面中定义的Egret标签
@@ -87,6 +88,7 @@ namespace egret {
         if (!options) {
             options = {} as any;
         }
+        system_options = options;
 
         modifyBricks();
 
@@ -230,7 +232,11 @@ namespace egret {
      * 启动心跳计时器。
      */
     function startTicker(ticker: egret.sys.SystemTicker): void {
-        BK.Director.ticker.interval = 1;
+        if (system_options.frameRate && system_options.frameRate > 0) {
+            BK.Director.ticker.interval = 60 / system_options.frameRate;
+        } else {
+            BK.Director.ticker.interval = 1;
+        }
         BK.Director.ticker.add((ts, duration) => {
             ticker.update();
         });

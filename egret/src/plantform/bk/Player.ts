@@ -56,7 +56,9 @@ namespace egret {
             this.stage.frameRate = this._options.frameRate;
             this.stage.orientation = this._options.orientation;
             this.stage.scaleMode = this._options.scaleMode;
-
+            if (this._options.frameRate > 0) {
+                this._mainTicker.interval = 60 / this._options.frameRate;
+            }
             this._mainTicker.add(() => {
                 this._touchHandler();
                 ticker.update();

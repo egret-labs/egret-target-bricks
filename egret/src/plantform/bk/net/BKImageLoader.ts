@@ -21,7 +21,6 @@ namespace egret {
         public load(url: string): void {
             if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
                 //动态加载
-                debugger;
                 //根据url存储缓存的图片到沙盒中
                 let sha1 = _sha1FromUrl(url);
                 let imgUrl = "GameSandBox://webcache/image" + sha1

@@ -928,7 +928,6 @@ namespace egret.web {
          * @private
          */
         private renderGraphics(node: sys.GraphicsNode, buffer: WebGLRenderBuffer, forHitTest?: boolean): void {
-            // debugger
             let width = node.width;
             let height = node.height;
             if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {

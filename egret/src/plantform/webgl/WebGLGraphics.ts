@@ -13,7 +13,6 @@ namespace egret {
          * stageX，stageY为在egret逻辑大小中实际点击的屏幕位置
          */
         $hitTest(stageX: number, stageY: number): DisplayObject {
-            // debugger
             //获取对象相对于自身的边界矩形
             let target = this.$targetDisplay;
             let rect = Rectangle.create();

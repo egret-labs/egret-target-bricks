@@ -357,7 +357,6 @@ namespace egret.web {
          * 传入的是BK.Canvas
          */
         public createTextureByCanvas(canvas: any): any {
-            // debugger
             let gl: any = this.context;
             let texture = gl.createTexture();
 

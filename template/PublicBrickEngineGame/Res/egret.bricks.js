@@ -1601,6 +1601,7 @@ var egret;
     var isRunning = false;
     var player;
     var webPlayer;
+    var system_options;
     /**
      * @private
      * 网页加载完成，实例化页面中定义的Egret标签
@@ -1613,6 +1614,7 @@ var egret;
         if (!options) {
             options = {};
         }
+        system_options = options;
         modifyBricks();
         var renderMode = options.renderMode;
         if (renderMode == "webgl") {
@@ -1738,7 +1740,12 @@ var egret;
      * 启动心跳计时器。
      */
     function startTicker(ticker) {
-        BK.Director.ticker.interval = 1;
+        if (system_options.frameRate && system_options.frameRate > 0) {
+            BK.Director.ticker.interval = 60 / system_options.frameRate;
+        }
+        else {
+            BK.Director.ticker.interval = 1;
+        }
         BK.Director.ticker.add(function (ts, duration) {
             ticker.update();
         });
@@ -4406,6 +4413,9 @@ var egret;
             _this.stage.frameRate = _this._options.frameRate;
             _this.stage.orientation = _this._options.orientation;
             _this.stage.scaleMode = _this._options.scaleMode;
+            if (_this._options.frameRate > 0) {
+                _this._mainTicker.interval = 60 / _this._options.frameRate;
+            }
             _this._mainTicker.add(function () {
                 _this._touchHandler();
                 egret.ticker.update();
