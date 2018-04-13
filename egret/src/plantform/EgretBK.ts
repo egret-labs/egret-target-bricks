@@ -232,11 +232,11 @@ namespace egret {
      * 启动心跳计时器。
      */
     function startTicker(ticker: egret.sys.SystemTicker): void {
-        if (system_options.frameRate && system_options.frameRate > 0) {
-            BK.Director.ticker.interval = 60 / system_options.frameRate;
-        } else {
-            BK.Director.ticker.interval = 1;
-        }
+        // if (system_options.frameRate && system_options.frameRate > 0) {
+        //     BK.Director.ticker.interval = 60 / system_options.frameRate;
+        // } else {
+        BK.Director.ticker.interval = 1;
+
         BK.Director.ticker.add((ts, duration) => {
             ticker.update();
         });

@@ -1740,12 +1740,10 @@ var egret;
      * 启动心跳计时器。
      */
     function startTicker(ticker) {
-        if (system_options.frameRate && system_options.frameRate > 0) {
-            BK.Director.ticker.interval = 60 / system_options.frameRate;
-        }
-        else {
-            BK.Director.ticker.interval = 1;
-        }
+        // if (system_options.frameRate && system_options.frameRate > 0) {
+        //     BK.Director.ticker.interval = 60 / system_options.frameRate;
+        // } else {
+        BK.Director.ticker.interval = 1;
         BK.Director.ticker.add(function (ts, duration) {
             ticker.update();
         });
@@ -4413,9 +4411,10 @@ var egret;
             _this.stage.frameRate = _this._options.frameRate;
             _this.stage.orientation = _this._options.orientation;
             _this.stage.scaleMode = _this._options.scaleMode;
-            if (_this._options.frameRate > 0) {
-                _this._mainTicker.interval = 60 / _this._options.frameRate;
-            }
+            // if (this._options.frameRate > 0) {
+            //     this._mainTicker.interval = 60 / this._options.frameRate;
+            // }
+            _this._mainTicker.interval = 1;
             _this._mainTicker.add(function () {
                 _this._touchHandler();
                 egret.ticker.update();
@@ -8102,7 +8101,6 @@ var egret;
         BKImageLoader.prototype.load = function (url) {
             if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
                 //动态加载
-                debugger;
                 //根据url存储缓存的图片到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
@@ -9808,7 +9806,6 @@ var egret;
          * stageX，stageY为在egret逻辑大小中实际点击的屏幕位置
          */
         WebGlGraphics.prototype.$hitTest = function (stageX, stageY) {
-            // debugger
             //获取对象相对于自身的边界矩形
             var target = this.$targetDisplay;
             var rect = egret.Rectangle.create();
@@ -10477,7 +10474,6 @@ var egret;
              * 传入的是BK.Canvas
              */
             WebGLRenderContext.prototype.createTextureByCanvas = function (canvas) {
-                // debugger
                 var gl = this.context;
                 var texture = gl.createTexture();
                 texture.glContext = gl;
@@ -11980,7 +11976,6 @@ var egret;
              * @private
              */
             WebGLRenderer.prototype.renderGraphics = function (node, buffer, forHitTest) {
-                // debugger
                 var width = node.width;
                 var height = node.height;
                 if (width <= 0 || height <= 0 || !width || !height || node.drawData.length == 0) {

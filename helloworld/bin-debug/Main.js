@@ -198,6 +198,15 @@ var Main = (function (_super) {
         this.addChild(shp3);
         shp3.x = 200;
         shp3.y = 600;
+        var textfield = new egret.TextField();
+        this.addChild(textfield);
+        textfield.text = "123";
+        var t = new egret.Timer(1000);
+        t.addEventListener(egret.TimerEvent.TIMER, function () {
+            console.log(BK.Director.fps);
+            textfield.text = Math.floor(BK.Director.fps) + "";
+        }, this);
+        t.start();
         // let imageLoader = new egret.ImageLoader();
         // imageLoader.addEventListener(egret.Event.COMPLETE, (data) => {
         //     let texture = new egret.Texture();
@@ -238,12 +247,10 @@ var Main = (function (_super) {
     //     // let data = JSON.parse(msg);
     //     // console.log("收到信息", data);
     //     //接收二进制
-    //     debugger;
     //     let byte = new egret.ByteArray();
     //     this.socket.readBytes(byte);
     //     let str = byte.readUTF();
     //     // let str1 = this.socket.readUTF();
-    //     debugger;
     //     // let boo: boolean = byte.readBoolean();
     //     // let num: number = byte.readInt();
     //     // let msg = this.socket.readUTF();
@@ -255,7 +262,6 @@ var Main = (function (_super) {
     //  */
     // onSocketOpen() {
     //     console.log("socket连接成功");
-    //     debugger;
     //     let date = {
     //         name: "ajknjnzkjxn",
     //         age: 12131328,
@@ -272,14 +278,12 @@ var Main = (function (_super) {
     //  * 服务器关闭
     //  */
     // onSocketClose() {
-    //     debugger;
     //     console.log("服务器关闭");
     // };
     // /**
     //  * 出现异常
     //  */
     // onSocketError() {
-    //     debugger;
     //     console.log("服务器异常");
     // };
     /**
