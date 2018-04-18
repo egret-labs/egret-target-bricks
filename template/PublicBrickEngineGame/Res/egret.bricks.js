@@ -4992,15 +4992,21 @@ var egret;
         BKSound.prototype.play = function (startTime, loops) {
             if (startTime === void 0) { startTime = 0; }
             if (loops === void 0) { loops = 0; }
-            var channel = new egret.BKSoundChannel();
-            channel.$loops = loops;
-            channel.$startTime = startTime;
-            channel.$type = this.type;
-            channel.$url = this.url;
-            channel.$play();
-            return channel;
+            if (!this._bKSoundChannel) {
+                var channel = new egret.BKSoundChannel();
+                channel.$loops = loops;
+                channel.$startTime = startTime;
+                channel.$type = this.type;
+                channel.$url = this.url;
+                this._bKSoundChannel = channel;
+            }
+            this._bKSoundChannel.$play();
+            return this._bKSoundChannel;
         };
         BKSound.prototype.close = function () {
+            if (this._bKSoundChannel) {
+                this._bKSoundChannel.stop();
+            }
         };
         /**
          * Background music
@@ -7943,11 +7949,11 @@ var egret;
                 var encodeURL = this.encodeURL(originalUrl);
                 this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
                 var method = void 0;
-                if (this._method === egret.HttpMethod.GET) {
-                    method = "get";
-                }
-                else if (this._method === egret.HttpMethod.POST) {
+                if (this._method === egret.HttpMethod.POST) {
                     method = "post";
+                }
+                else {
+                    method = "get";
                 }
                 this._bkHttpRequest.setHttpMethod(method);
                 if (this._method === egret.HttpMethod.POST) {

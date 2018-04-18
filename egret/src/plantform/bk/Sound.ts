@@ -7,6 +7,8 @@ namespace egret {
 
         private url: string;
 
+        private _bKSoundChannel: BKSoundChannel;
+
         constructor() {
             super();
             this.type = egret.Sound.EFFECT;
@@ -84,17 +86,22 @@ namespace egret {
         }
 
         play(startTime: number = 0, loops: number = 0): egret.SoundChannel {
-            let channel = new BKSoundChannel();
-            channel.$loops = loops;
-            channel.$startTime = startTime;
-            channel.$type = this.type;
-            channel.$url = this.url;
-            channel.$play();
-            return channel;
+            if (!this._bKSoundChannel) {
+                let channel = new BKSoundChannel();
+                channel.$loops = loops;
+                channel.$startTime = startTime;
+                channel.$type = this.type;
+                channel.$url = this.url;
+                this._bKSoundChannel = channel;
+            }
+            this._bKSoundChannel.$play();
+            return this._bKSoundChannel;
         }
 
         close(): void {
-
+            if (this._bKSoundChannel) {
+                this._bKSoundChannel.stop();
+            }
         }
     }
     egret.Sound = BKSound as any;

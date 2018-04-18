@@ -47,10 +47,10 @@ namespace egret {
                 let encodeURL = this.encodeURL(originalUrl);
                 this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
                 let method: string;
-                if (this._method === egret.HttpMethod.GET) {
-                    method = "get";
-                } else if (this._method === egret.HttpMethod.POST) {
+                if (this._method === egret.HttpMethod.POST) {
                     method = "post";
+                } else {
+                    method = "get";
                 }
                 this._bkHttpRequest.setHttpMethod(method);
                 if (this._method === egret.HttpMethod.POST) {
