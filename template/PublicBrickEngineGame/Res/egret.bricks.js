@@ -5052,27 +5052,32 @@ var egret;
             return _super.call(this) || this;
         }
         BKSoundChannel.prototype.$play = function () {
-            var _type;
-            switch (this.$type) {
-                case egret.Sound.MUSIC:
-                    _type = 0;
-                    break;
-                case egret.Sound.EFFECT:
-                    _type = 1;
-                    break;
+            if (!this._bkAudio) {
+                var _type = void 0;
+                switch (this.$type) {
+                    case egret.Sound.MUSIC:
+                        _type = 0;
+                        break;
+                    case egret.Sound.EFFECT:
+                        _type = 1;
+                        break;
+                }
+                var loops = this.$loops === 0 ? -1 : this.$loops;
+                var musicPath = void 0;
+                if ((this.$url.indexOf("GameRes://") >= 0) || (this.$url.indexOf("GameSandBox://") >= 0)) {
+                    musicPath = this.$url;
+                }
+                else {
+                    musicPath = "GameRes://" + this.$url;
+                }
+                this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             }
-            var loops = this.$loops === 0 ? -1 : this.$loops;
-            var musicPath;
-            if ((this.$url.indexOf("GameRes://") >= 0) || (this.$url.indexOf("GameSandBox://") >= 0)) {
-                musicPath = this.$url;
-            }
-            else {
-                musicPath = "GameRes://" + this.$url;
-            }
-            this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             this._bkAudio.startMusic();
         };
         BKSoundChannel.prototype.stop = function () {
+            if (!this._bkAudio) {
+                return;
+            }
             this._bkAudio.stopMusic();
         };
         return BKSoundChannel;
