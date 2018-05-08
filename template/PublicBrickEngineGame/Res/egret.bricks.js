@@ -1483,273 +1483,6 @@ var egret;
     egret.BKSprite9 = BKSprite9;
     __reflect(BKSprite9.prototype, "egret.BKSprite9");
 })(egret || (egret = {}));
-var egret;
-(function (egret) {
-    var BKBitmapData = (function (_super) {
-        __extends(BKBitmapData, _super);
-        function BKBitmapData(source, isFlip) {
-            if (isFlip === void 0) { isFlip = false; }
-            var _this = _super.call(this) || this;
-            _this.width = 0;
-            _this.height = 0;
-            _this.source = ""; // url 或 render node
-            _this.bkTexture = null;
-            _this.source = source;
-            _this.isFlip = isFlip;
-            if (typeof _this.source === "string") {
-                _this.bkTexture = new BK.Texture(_this.source);
-            }
-            else {
-                _this.bkTexture = _this.source;
-            }
-            _this.width = _this.bkTexture.size.width;
-            _this.height = _this.bkTexture.size.height;
-            return _this;
-        }
-        BKBitmapData.$invalidate = function () {
-        };
-        BKBitmapData.prototype.$dispose = function () {
-        };
-        return BKBitmapData;
-    }(egret.HashObject));
-    egret.BKBitmapData = BKBitmapData;
-    __reflect(BKBitmapData.prototype, "egret.BKBitmapData");
-    if (window['renderMode'] != 'webgl') {
-        egret.BitmapData = egret.BKBitmapData;
-    }
-})(egret || (egret = {}));
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
-//
-console = console || {};
-console.warn = console.log = function () {
-    var others = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        others[_i] = arguments[_i];
-    }
-    var str = "";
-    if (others) {
-        for (var _a = 0, others_1 = others; _a < others_1.length; _a++) {
-            var other = others_1[_a];
-            str += " " + other;
-        }
-    }
-    /**
-     * BK.Script.log
-     * 第一个参数为测试级别，0为debug级别，发布版本不输出。1为关键级别，可在发布版本输出（手Q环境）
-     */
-    BK.Script.log(1, 0, str);
-};
-console.assert = function (c) {
-    var others = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        others[_i - 1] = arguments[_i];
-    }
-    if (!c) {
-        console.log.apply(null, others);
-    }
-};
-var egret;
-(function (egret) {
-    egret.getTimer = function getTimer() {
-        return Math.round(BK.Time.timestamp * 1000);
-    };
-    //BK的setTimeout与egret的setTimeout处理方法不同，
-    //egret通过key值索引找到listener然后将其清除，
-    //BK则是直接清除对象Object绑定的所有listener
-    //暂时完全按照BK的方法执行
-    /**
-     * @private
-     */
-    function setTimeout(listener, thisObject, delay) {
-        BK.Director.ticker.setTimeout(listener, delay, thisObject);
-    }
-    egret.setTimeout = setTimeout;
-    /**
-     * @private
-     */
-    function clearTimeout(object) {
-        BK.Director.ticker.removeTimeout(object);
-    }
-    egret.clearTimeout = clearTimeout;
-    var isRunning = false;
-    var player;
-    var webPlayer;
-    var system_options;
-    /**
-     * @private
-     * 网页加载完成，实例化页面中定义的Egret标签
-     */
-    function runEgret(options) {
-        if (isRunning) {
-            return;
-        }
-        isRunning = true;
-        if (!options) {
-            options = {};
-        }
-        system_options = options;
-        modifyBricks();
-        var renderMode = options.renderMode;
-        if (renderMode == "webgl") {
-            modifyEgretToBKWebgl(options);
-        }
-        else {
-            modifyEgretToBricks(options);
-        }
-    }
-    function modifyBricks() {
-    }
-    /**
-     * 将当前渲染模式变为BK原生
-     */
-    function modifyEgretToBricks(options) {
-        /**
-         * 为贴合BK原生方法，对eui部分方法进行修改
-         */
-        if (typeof eui !== "undefined") {
-            Object.defineProperty(eui.Image.prototype, "scale9Grid", {
-                set: function (value) {
-                    this.$setScale9Grid(value);
-                    this.invalidateDisplayList();
-                },
-                enumerable: true,
-                configurable: true
-            });
-            /**
-             * eui.Image 方法修改
-             */
-            eui.Image.prototype.$updateRenderNode = function () {
-                var image = this.$bitmapData;
-                if (!image) {
-                    return null;
-                }
-                var uiValues = this.$UIComponent;
-                var width = uiValues[10 /* width */];
-                var height = uiValues[11 /* height */];
-                if (width === 0 || height === 0) {
-                    return null;
-                }
-                this._size.width = this.$getWidth();
-                this._size.height = this.$getHeight();
-                this._bkSprite.size = this._size;
-            };
-        }
-        /**
-         * 读取websocket
-         */
-        if (typeof egret.WebSocket !== undefined) {
-            egret.ISocket = egret.BKSocket;
-        }
-        if (options.screenAdapter) {
-            egret.sys.screenAdapter = options.screenAdapter;
-        }
-        else if (!egret.sys.screenAdapter) {
-            egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
-        }
-        egret.sys.systemRenderer = new egret.BKSystemRenderer();
-        egret.sys.canvasRenderer = new egret.BKSystemRenderer();
-        player = new egret.BKPlayer(options);
-    }
-    /**
-     * 将当前渲染模式变为BK-Webgl模式
-     */
-    function modifyEgretToBKWebgl(options) {
-        // WebGL上下文参数自定义
-        if (options.renderMode == "webgl") {
-            // WebGL抗锯齿默认关闭，提升PC及某些平台性能
-            var antialias = options.antialias;
-            egret.web.WebGLRenderContext.antialias = !!antialias;
-        }
-        /**
-         * 没有canvasbuffer
-         */
-        egret.sys.CanvasRenderBuffer = egret.web.CanvasRenderBuffer;
-        setRenderMode(options.renderMode);
-        var canvasScaleFactor;
-        if (options.canvasScaleFactor) {
-            canvasScaleFactor = options.canvasScaleFactor;
-        }
-        else if (options.calculateCanvasScaleFactor) {
-            canvasScaleFactor = options.calculateCanvasScaleFactor(egret.sys.canvasHitTestBuffer.context);
-        }
-        else {
-            //based on : https://github.com/jondavidjohn/hidpi-canvas-polyfill
-            var context = egret.sys.canvasHitTestBuffer.context;
-            var backingStore = context.backingStorePixelRatio ||
-                context.webkitBackingStorePixelRatio ||
-                context.mozBackingStorePixelRatio ||
-                context.msBackingStorePixelRatio ||
-                context.oBackingStorePixelRatio ||
-                context.backingStorePixelRatio || 1;
-            canvasScaleFactor = (window.devicePixelRatio || 1) / backingStore;
-        }
-        egret.sys.DisplayList.$canvasScaleFactor = canvasScaleFactor;
-        var ticker = egret.ticker;
-        startTicker(ticker);
-        if (options.screenAdapter) {
-            egret.sys.screenAdapter = options.screenAdapter;
-        }
-        else if (!egret.sys.screenAdapter) {
-            egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
-        }
-        webPlayer = new egret.web.BKWebPlayer(options);
-    }
-    /**
-     * 设置渲染模式。"auto","webgl","canvas"
-     * @param renderMode
-     */
-    function setRenderMode(renderMode) {
-        if (renderMode == "webgl") {
-            egret.sys.RenderBuffer = egret.web.WebGLRenderBuffer;
-            egret.sys.systemRenderer = new egret.web.WebGLRenderer();
-            egret.sys.canvasRenderer = new egret.CanvasRenderer();
-            egret.sys.customHitTestBuffer = new egret.web.WebGLRenderBuffer(3, 3);
-            egret.sys.canvasHitTestBuffer = new egret.web.CanvasRenderBuffer(3, 3);
-            egret.Capabilities["renderMode" + ""] = "webgl";
-        }
-    }
-    /**
-     * @private
-     * 启动心跳计时器。
-     */
-    function startTicker(ticker) {
-        // if (system_options.frameRate && system_options.frameRate > 0) {
-        //     BK.Director.ticker.interval = 60 / system_options.frameRate;
-        // } else {
-        BK.Director.ticker.interval = 1;
-        BK.Director.ticker.add(function (ts, duration) {
-            ticker.update();
-        });
-    }
-    egret.runEgret = runEgret;
-})(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -2489,6 +2222,287 @@ var egret;
     if (window['renderMode'] != 'webgl') {
         egret.BitmapText = egret.BKBitmapText;
     }
+})(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKBitmapData = (function (_super) {
+        __extends(BKBitmapData, _super);
+        function BKBitmapData(source, isFlip) {
+            if (isFlip === void 0) { isFlip = false; }
+            var _this = _super.call(this) || this;
+            _this.width = 0;
+            _this.height = 0;
+            _this.source = ""; // url 或 render node
+            _this.bkTexture = null;
+            _this.source = source;
+            _this.isFlip = isFlip;
+            if (typeof _this.source === "string") {
+                _this.bkTexture = new BK.Texture(_this.source);
+            }
+            else {
+                _this.bkTexture = _this.source;
+            }
+            _this.width = _this.bkTexture.size.width;
+            _this.height = _this.bkTexture.size.height;
+            return _this;
+        }
+        BKBitmapData.$invalidate = function () {
+        };
+        BKBitmapData.prototype.$dispose = function () {
+        };
+        return BKBitmapData;
+    }(egret.HashObject));
+    egret.BKBitmapData = BKBitmapData;
+    __reflect(BKBitmapData.prototype, "egret.BKBitmapData");
+    if (window['renderMode'] != 'webgl') {
+        egret.BitmapData = egret.BKBitmapData;
+    }
+})(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+//
+console = console || {};
+console.warn = console.log = function () {
+    var others = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        others[_i] = arguments[_i];
+    }
+    var str = "";
+    if (others) {
+        for (var _a = 0, others_1 = others; _a < others_1.length; _a++) {
+            var other = others_1[_a];
+            str += " " + other;
+        }
+    }
+    /**
+     * BK.Script.log
+     * 第一个参数为测试级别，0为debug级别，发布版本不输出。1为关键级别，可在发布版本输出（手Q环境）
+     */
+    BK.Script.log(1, 0, str);
+};
+console.assert = function (c) {
+    var others = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        others[_i - 1] = arguments[_i];
+    }
+    if (!c) {
+        console.log.apply(null, others);
+    }
+};
+var egret;
+(function (egret) {
+    egret.getTimer = function getTimer() {
+        return Math.round(BK.Time.timestamp * 1000);
+    };
+    //BK的setTimeout与egret的setTimeout处理方法不同，
+    //egret通过key值索引找到listener然后将其清除，
+    //BK则是直接清除对象Object绑定的所有listener
+    //暂时完全按照BK的方法执行
+    /**
+     * @private
+     */
+    function setTimeout(listener, thisObject, delay) {
+        BK.Director.ticker.setTimeout(listener, delay, thisObject);
+    }
+    egret.setTimeout = setTimeout;
+    /**
+     * @private
+     */
+    function clearTimeout(object) {
+        BK.Director.ticker.removeTimeout(object);
+    }
+    egret.clearTimeout = clearTimeout;
+    var isRunning = false;
+    var player;
+    var webPlayer;
+    var system_options;
+    /**
+     * @private
+     * 网页加载完成，实例化页面中定义的Egret标签
+     */
+    function runEgret(options) {
+        if (isRunning) {
+            return;
+        }
+        isRunning = true;
+        if (!options) {
+            options = {};
+        }
+        system_options = options;
+        modifyBricks();
+        var renderMode = options.renderMode;
+        if (renderMode == "webgl") {
+            modifyEgretToBKWebgl(options);
+        }
+        else {
+            modifyEgretToBricks(options);
+        }
+    }
+    function modifyBricks() {
+    }
+    /**
+     * 将当前渲染模式变为BK原生
+     */
+    function modifyEgretToBricks(options) {
+        /**
+         * 为贴合BK原生方法，对eui部分方法进行修改
+         */
+        if (typeof eui !== "undefined") {
+            Object.defineProperty(eui.Image.prototype, "scale9Grid", {
+                set: function (value) {
+                    this.$setScale9Grid(value);
+                    this.invalidateDisplayList();
+                },
+                enumerable: true,
+                configurable: true
+            });
+            /**
+             * eui.Image 方法修改
+             */
+            eui.Image.prototype.$updateRenderNode = function () {
+                var image = this['$bitmapData'];
+                if (!image) {
+                    return null;
+                }
+                var uiValues = this['$UIComponent'];
+                var width = uiValues[10 /* width */];
+                var height = uiValues[11 /* height */];
+                if (width === 0 || height === 0) {
+                    return null;
+                }
+                this._size.width = this.$getWidth();
+                this._size.height = this.$getHeight();
+                this._bkSprite.size = this._size;
+            };
+        }
+        /**
+         * 读取websocket
+         */
+        if (typeof egret.WebSocket !== undefined) {
+            egret.ISocket = egret.BKSocket;
+        }
+        if (options.screenAdapter) {
+            egret.sys.screenAdapter = options.screenAdapter;
+        }
+        else if (!egret.sys.screenAdapter) {
+            egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
+        }
+        egret.sys.systemRenderer = new egret.BKSystemRenderer();
+        egret.sys.canvasRenderer = new egret.BKSystemRenderer();
+        player = new egret.BKPlayer(options);
+    }
+    /**
+     * 将当前渲染模式变为BK-Webgl模式
+     */
+    function modifyEgretToBKWebgl(options) {
+        //为贴合玩一玩平台webgl，修改egret库中deleteWebGLTexture方法
+        egret.WebGLUtils.deleteWebGLTexture = function (bitmapData) {
+            // debugger
+            if (bitmapData) {
+                var gl = bitmapData.glContext;
+                if (gl) {
+                    gl.deleteTexture(bitmapData);
+                }
+                else {
+                    gl = bkWebGLGetInstance();
+                    gl.deleteTexture(bitmapData);
+                }
+            }
+        };
+        // WebGL上下文参数自定义
+        if (options.renderMode == "webgl") {
+            // WebGL抗锯齿默认关闭，提升PC及某些平台性能
+            var antialias = options.antialias;
+            egret.web.WebGLRenderContext.antialias = !!antialias;
+        }
+        /**
+         * 没有canvasbuffer
+         */
+        egret.sys.CanvasRenderBuffer = egret.web.CanvasRenderBuffer;
+        setRenderMode(options.renderMode);
+        var canvasScaleFactor;
+        if (options.canvasScaleFactor) {
+            canvasScaleFactor = options.canvasScaleFactor;
+        }
+        else if (options.calculateCanvasScaleFactor) {
+            canvasScaleFactor = options.calculateCanvasScaleFactor(egret.sys.canvasHitTestBuffer.context);
+        }
+        else {
+            //based on : https://github.com/jondavidjohn/hidpi-canvas-polyfill
+            var context = egret.sys.canvasHitTestBuffer.context;
+            var backingStore = context.backingStorePixelRatio ||
+                context.webkitBackingStorePixelRatio ||
+                context.mozBackingStorePixelRatio ||
+                context.msBackingStorePixelRatio ||
+                context.oBackingStorePixelRatio ||
+                context.backingStorePixelRatio || 1;
+            canvasScaleFactor = (window.devicePixelRatio || 1) / backingStore;
+        }
+        egret.sys.DisplayList.$canvasScaleFactor = canvasScaleFactor;
+        var ticker = egret.ticker;
+        startTicker(ticker);
+        if (options.screenAdapter) {
+            egret.sys.screenAdapter = options.screenAdapter;
+        }
+        else if (!egret.sys.screenAdapter) {
+            egret.sys.screenAdapter = new egret.sys.DefaultScreenAdapter();
+        }
+        webPlayer = new egret.web.BKWebPlayer(options);
+    }
+    /**
+     * 设置渲染模式。"auto","webgl","canvas"
+     * @param renderMode
+     */
+    function setRenderMode(renderMode) {
+        if (renderMode == "webgl") {
+            egret.sys.RenderBuffer = egret.web.WebGLRenderBuffer;
+            egret.sys.systemRenderer = new egret.web.WebGLRenderer();
+            egret.sys.canvasRenderer = new egret.CanvasRenderer();
+            egret.sys.customHitTestBuffer = new egret.web.WebGLRenderBuffer(3, 3);
+            egret.sys.canvasHitTestBuffer = new egret.web.CanvasRenderBuffer(3, 3);
+            egret.Capabilities["renderMode" + ""] = "webgl";
+        }
+    }
+    /**
+     * @private
+     * 启动心跳计时器。
+     */
+    function startTicker(ticker) {
+        // if (system_options.frameRate && system_options.frameRate > 0) {
+        //     BK.Director.ticker.interval = 60 / system_options.frameRate;
+        // } else {
+        BK.Director.ticker.interval = 1;
+        BK.Director.ticker.add(function (ts, duration) {
+            ticker.update();
+        });
+    }
+    egret.runEgret = runEgret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
@@ -7654,6 +7668,7 @@ var egret;
         egret.TextField = egret.BKTextField;
     }
 })(egret || (egret = {}));
+/// <reference path="./DisplayObject.ts"/>
 var egret;
 (function (egret) {
     var BKBitmap = (function (_super) {
@@ -12773,8 +12788,8 @@ var egret;
                 var screenPixelSize = BK.Director.screenPixelSize;
                 var screenWidth = screenPixelSize.width;
                 var screenHeight = screenPixelSize.height;
-                egret.Capabilities.$boundingClientWidth = screenWidth;
-                egret.Capabilities.$boundingClientHeight = screenHeight;
+                egret.Capabilities['$boundingClientWidth'] = screenWidth;
+                egret.Capabilities['$boundingClientHeight'] = screenHeight;
                 var stageSize = egret.sys.screenAdapter.calculateStageSize(this.stage.$scaleMode, screenWidth, screenHeight, this.playerOption.contentWidth, this.playerOption.contentHeight);
                 var stageWidth = stageSize.stageWidth;
                 var stageHeight = stageSize.stageHeight;

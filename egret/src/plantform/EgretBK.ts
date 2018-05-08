@@ -118,7 +118,7 @@ namespace egret {
             Object.defineProperty(eui.Image.prototype, "scale9Grid", {
                 set: function (this: BKImage, value: egret.Rectangle | null): void {
                     (this as any).$setScale9Grid(value);
-                    this.invalidateDisplayList();
+                    (this as any).invalidateDisplayList();
                 },
                 enumerable: true,
                 configurable: true
@@ -127,20 +127,20 @@ namespace egret {
              * eui.Image 方法修改
              */
             eui.Image.prototype.$updateRenderNode = function (this: BKImage): void {
-                let image = this.$bitmapData;
+                let image = this['$bitmapData'];
                 if (!image) {
                     return null;
                 }
 
-                let uiValues = this.$UIComponent;
+                let uiValues = this['$UIComponent'];
                 let width = uiValues[eui.sys.UIKeys.width];
                 let height = uiValues[eui.sys.UIKeys.height];
                 if (width === 0 || height === 0) {
                     return null;
                 }
 
-                (this as any)._size.width = this.$getWidth();
-                (this as any)._size.height = this.$getHeight();
+                (this as any)._size.width = (this as any).$getWidth();
+                (this as any)._size.height = (this as any).$getHeight();
                 (this as any)._bkSprite.size = (this as any)._size;
             };
 
@@ -168,6 +168,21 @@ namespace egret {
      * 将当前渲染模式变为BK-Webgl模式
      */
     function modifyEgretToBKWebgl(options: BKRunEgretOptions): void {
+        //为贴合玩一玩平台webgl，修改egret库中deleteWebGLTexture方法
+        egret.WebGLUtils.deleteWebGLTexture = function (bitmapData) {
+            // debugger
+            if (bitmapData) {
+                var gl = bitmapData.glContext;
+                if (gl) {
+                    gl.deleteTexture(bitmapData);
+                } else {
+                    gl = bkWebGLGetInstance();
+                    gl.deleteTexture(bitmapData);
+                }
+            }
+        };
+
+
         // WebGL上下文参数自定义
         if (options.renderMode == "webgl") {
             // WebGL抗锯齿默认关闭，提升PC及某些平台性能

@@ -390,4 +390,8 @@ declare namespace BK {
         static loadImage(path: string, format?: number)
     }
 
+    export interface Sprite{
+        contentSize;
+    }
+
 }
