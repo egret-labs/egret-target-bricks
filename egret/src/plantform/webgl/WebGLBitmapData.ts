@@ -51,7 +51,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export class WebGLBitmapData {
+    export class WebGLBitmapData extends HashObject{
         /**
          * The width of the bitmap image in pixels.
          * @readOnly
@@ -168,16 +168,17 @@ namespace egret {
          * @language zh_CN
          */
         constructor(source) {
+            super();
             if (typeof source == "string") {
                 let image = BK.Image.loadImage(source, 6);
                 this.source = image;
                 this.width = image.width;
                 this.height = image.height;
                 this.BK_format = image.format;
-            }else{
+            } else {
                 this.source = source;
                 this.width = source.width;
-                this.height = source.height;   
+                this.height = source.height;
             }
         }
 
@@ -216,10 +217,10 @@ namespace egret {
         }
 
         public $dispose(): void {
-            // if (Capabilities.renderMode == "webgl" && this.webGLTexture) {
-            //     egret.WebGLUtils.deleteWebGLTexture(this.webGLTexture);
-            //     this.webGLTexture = null;
-            // }
+            if (this.webGLTexture) {
+                egret.WebGLUtils.deleteWebGLTexture(this.webGLTexture);
+                this.webGLTexture = null;
+            }
             //native or WebGLRenderTarget
             if (this.source && this.source.dispose) {
                 this.source.dispose();

@@ -9374,7 +9374,8 @@ var egret;
      * @platform Web,Native
      * @language zh_CN
      */
-    var WebGLBitmapData = (function () {
+    var WebGLBitmapData = (function (_super) {
+        __extends(WebGLBitmapData, _super);
         /**
          * Initializes a BitmapData object to refer to the specified source object.
          * @param source The source object being referenced.
@@ -9390,6 +9391,7 @@ var egret;
          * @language zh_CN
          */
         function WebGLBitmapData(source) {
+            var _this = _super.call(this) || this;
             /**
              * Texture format.
              * @version Egret 2.4
@@ -9402,24 +9404,25 @@ var egret;
              * @platform Web,Native
              * @language zh_CN
              */
-            this.format = "image";
+            _this.format = "image";
             /**
              * @private
              * webgl纹理生成后，是否删掉原始图像数据
              */
-            this.$deleteSource = true;
+            _this.$deleteSource = true;
             if (typeof source == "string") {
                 var image = BK.Image.loadImage(source, 6);
-                this.source = image;
-                this.width = image.width;
-                this.height = image.height;
-                this.BK_format = image.format;
+                _this.source = image;
+                _this.width = image.width;
+                _this.height = image.height;
+                _this.BK_format = image.format;
             }
             else {
-                this.source = source;
-                this.width = source.width;
-                this.height = source.height;
+                _this.source = source;
+                _this.width = source.width;
+                _this.height = source.height;
             }
+            return _this;
         }
         WebGLBitmapData.create = function (type, data, callback) {
             var base64 = "";
@@ -9455,10 +9458,10 @@ var egret;
             return bitmapData;
         };
         WebGLBitmapData.prototype.$dispose = function () {
-            // if (Capabilities.renderMode == "webgl" && this.webGLTexture) {
-            //     egret.WebGLUtils.deleteWebGLTexture(this.webGLTexture);
-            //     this.webGLTexture = null;
-            // }
+            if (this.webGLTexture) {
+                egret.WebGLUtils.deleteWebGLTexture(this.webGLTexture);
+                this.webGLTexture = null;
+            }
             //native or WebGLRenderTarget
             if (this.source && this.source.dispose) {
                 this.source.dispose();
@@ -9563,7 +9566,7 @@ var egret;
         };
         WebGLBitmapData._displayList = egret.createMap();
         return WebGLBitmapData;
-    }());
+    }(egret.HashObject));
     egret.WebGLBitmapData = WebGLBitmapData;
     __reflect(WebGLBitmapData.prototype, "egret.WebGLBitmapData");
     if (window['renderMode'] == 'webgl') {
@@ -12362,6 +12365,10 @@ var egret;
             if (bitmapData) {
                 var gl = bitmapData.glContext;
                 if (gl) {
+                    gl.deleteTexture(bitmapData);
+                }
+                else {
+                    gl = bkWebGLGetInstance();
                     gl.deleteTexture(bitmapData);
                 }
             }
