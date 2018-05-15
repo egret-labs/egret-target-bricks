@@ -66,15 +66,16 @@ namespace egret.web {
             webglBuffer.transform(matrix.a, matrix.b, matrix.c, matrix.d, 0, 0);
             this.drawDisplayObject(displayObject, webglBuffer, matrix.tx, matrix.ty, true);
             webglBufferContext.$drawWebGL();
+            if (displayObject instanceof egret.Stage) {
+                //for bricks
+                let gl = webglBufferContext.context;
+                /**
+                 * bk 提交gl.
+                 * 必须要在所有渲染逻辑处理完成后提交
+                 */
+                (gl as any).glCommit();
+            }
 
-            //for bricks
-            let gl = webglBufferContext.context;
-            /**
-             * bk 提交gl.
-             * 必须要在所有渲染逻辑处理完成后提交
-             */
-            (gl as any).glCommit();
-            
             let drawCall = webglBuffer.$drawCalls;
             webglBuffer.onRenderFinish();
 

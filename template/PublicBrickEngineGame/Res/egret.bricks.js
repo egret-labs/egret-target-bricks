@@ -11197,13 +11197,15 @@ var egret;
                 webglBuffer.transform(matrix.a, matrix.b, matrix.c, matrix.d, 0, 0);
                 this.drawDisplayObject(displayObject, webglBuffer, matrix.tx, matrix.ty, true);
                 webglBufferContext.$drawWebGL();
-                //for bricks
-                var gl = webglBufferContext.context;
-                /**
-                 * bk 提交gl.
-                 * 必须要在所有渲染逻辑处理完成后提交
-                 */
-                gl.glCommit();
+                if (displayObject instanceof egret.Stage) {
+                    //for bricks
+                    var gl = webglBufferContext.context;
+                    /**
+                     * bk 提交gl.
+                     * 必须要在所有渲染逻辑处理完成后提交
+                     */
+                    gl.glCommit();
+                }
                 var drawCall = webglBuffer.$drawCalls;
                 webglBuffer.onRenderFinish();
                 webglBufferContext.popBuffer();
