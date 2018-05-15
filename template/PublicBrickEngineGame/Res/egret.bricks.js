@@ -10799,11 +10799,6 @@ var egret;
                 // 清空数据
                 this.drawCmdManager.clear();
                 this.vao.clear();
-                var gl = this.context;
-                /**
-                 * bk 提交gl
-                 */
-                gl.glCommit();
             };
             /**
              * 执行绘制命令
@@ -11202,6 +11197,13 @@ var egret;
                 webglBuffer.transform(matrix.a, matrix.b, matrix.c, matrix.d, 0, 0);
                 this.drawDisplayObject(displayObject, webglBuffer, matrix.tx, matrix.ty, true);
                 webglBufferContext.$drawWebGL();
+                //for bricks
+                var gl = webglBufferContext.context;
+                /**
+                 * bk 提交gl.
+                 * 必须要在所有渲染逻辑处理完成后提交
+                 */
+                gl.glCommit();
                 var drawCall = webglBuffer.$drawCalls;
                 webglBuffer.onRenderFinish();
                 webglBufferContext.popBuffer();

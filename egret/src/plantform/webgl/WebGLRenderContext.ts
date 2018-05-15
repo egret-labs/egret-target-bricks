@@ -714,11 +714,6 @@ namespace egret.web {
             // 清空数据
             this.drawCmdManager.clear();
             this.vao.clear();
-            let gl = this.context;
-            /**
-             * bk 提交gl
-             */
-            (gl as any).glCommit();
         }
 
         /**
