@@ -51,7 +51,7 @@ namespace egret {
      * @platform Web,Native
      * @language zh_CN
      */
-    export class WebGLBitmapData extends HashObject{
+    export class WebGLBitmapData extends HashObject {
         /**
          * The width of the bitmap image in pixels.
          * @readOnly
@@ -264,7 +264,7 @@ namespace egret {
             let tempList: Array<DisplayObject> = this._displayList[hashCode];
             let index: number = tempList.indexOf(displayObject);
             if (index >= 0) {
-                tempList.splice(index);
+                tempList.splice(index, 1);
             }
         }
 

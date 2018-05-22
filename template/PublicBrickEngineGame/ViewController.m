@@ -9,9 +9,46 @@
 #import "ViewController.h"
 #import "DemoGLView.h"
 
+/////////横竖屏//////////
+typedef NS_ENUM(NSInteger, CmGameOrientation) {
+    CmGameOrientationPortrait           = 1,
+    CmGameOrientationLandscapeLeft,
+    CmGameOrientationLandscapeRight,
+};
+@interface SpriteGameConfigModel : NSObject
+
+@property (nonatomic,copy) NSString *enterUrl;
+@property (nonatomic,assign) CmGameOrientation viewMode;    // 横竖屏模式：1.竖屏 2.横屏（home键在左边）3.横屏（home键在右边）
+- (instancetype)initWithDicionary:(NSDictionary *)dic;
+- (BOOL)isCmWebGame;
+@end
+@implementation SpriteGameConfigModel
+- (instancetype)initWithDicionary:(NSDictionary *)dic
+{
+    if (self = [super init]) {
+        if([dic objectForKey:@"enterUrl"]){
+            _enterUrl = [[dic objectForKey:@"enterUrl"] copy];
+        }
+        if ([dic objectForKey:@"viewMode"]) {
+            _viewMode = (CmGameOrientation) [[dic objectForKey:@"viewMode"] intValue];
+        }
+    }
+    return self;
+}
+- (BOOL)isCmWebGame
+{
+    if (_enterUrl.length > 0) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+@end
+
 @interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 {
     DemoGLView * _glview;
+    SpriteGameConfigModel * gameConfig;
     UIInterfaceOrientation _deviceOritation;
 }
 @end
@@ -30,6 +67,11 @@
     // Do any additional setup after loading the view, typically from a nib.
     [self addGLView];
     [self loadInitJSScript];
+    
+    gameConfig = [self parseGameConfigJson:[[NSBundle mainBundle] pathForResource:@"Res/gameConfig" ofType:@"json"]];
+    if (gameConfig) {
+        [self refreshScreenOrientation:@(gameConfig.viewMode)];
+    }
     
     NSString *demoPath = [[NSBundle mainBundle] pathForResource:@"Res/main" ofType:@"js"];
     if(demoPath){
@@ -128,6 +170,32 @@
     if (_glview) {
         [_glview changeScreenWithMode:screenMode];
     }
+}
+
+
+-(SpriteGameConfigModel *)parseGameConfigJson:(NSString *) configPath
+{
+    SpriteGameConfigModel *configModel = nil;
+    BOOL isDir = NO;
+    BOOL isExist = [[NSFileManager defaultManager] fileExistsAtPath:configPath isDirectory:&isDir];
+    if (isExist)
+    {
+        NSData *configData = [NSData dataWithContentsOfFile:configPath];
+        if (configData && configData.length > 0) {
+            NSError * err;
+            NSDictionary *configDic = [NSJSONSerialization JSONObjectWithData:configData options:NSJSONReadingMutableContainers error:&err];
+            if (configDic && configDic.count > 0)
+            {
+                configModel = [[SpriteGameConfigModel alloc] initWithDicionary:configDic];
+            }else{
+                NSLog(@"gameConfig.json parse failed. error:%@",err.description);
+            }
+        }
+    }
+    if (!configModel) {
+        NSLog(@"gameConfig.json parse failed.");
+    }
+    return configModel;
 }
 
 @end

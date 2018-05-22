@@ -8676,6 +8676,10 @@ var egret;
                 var stroke_blue = parseInt(strokeColorstr.substring(4, 6), 16) / 255;
                 context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: 1 };
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
+                //ttf字体加载。默认传入为相对根目录的地址
+                var fontFamily = node.fontFamily;
+                var path = "GameRes://" + fontFamily;
+                context.fontPath = path;
                 if (stroke) {
                     context.lineWidth = stroke * 2;
                 }
@@ -9500,7 +9504,7 @@ var egret;
             var tempList = this._displayList[hashCode];
             var index = tempList.indexOf(displayObject);
             if (index >= 0) {
-                tempList.splice(index);
+                tempList.splice(index, 1);
             }
         };
         WebGLBitmapData.$invalidate = function (bitmapData) {
