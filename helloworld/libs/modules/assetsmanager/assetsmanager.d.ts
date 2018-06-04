@@ -10,21 +10,17 @@ declare module RES {
     var resourceNameSelector: ResourceNameSelector;
     var resourceMergerSelector: ResourceMergerSelector | null;
     function getResourceInfo(path: string): File | null;
-    function setConfigURL(url: string): void;
-    var resourceRoot: string;
+    function setConfigURL(url: string, root: string): void;
     interface ResourceInfo {
         url: string;
         type: string;
+        root: string;
         crc32?: string;
         size?: number;
         name: string;
         soundType?: string;
         scale9grid?: string;
         groupNames?: string[];
-        /**
-         * 是否被资源管理器进行管理，默认值为 false
-         */
-        extra?: boolean;
         promise?: Promise<any>;
     }
     interface Data {
@@ -46,7 +42,6 @@ declare module RES {
      */
     class ResourceConfig {
         config: Data;
-        resourceRoot: string;
         constructor();
         init(): Promise<void>;
         __temp__get__type__via__url(url_or_alias: string): string;
@@ -61,13 +56,6 @@ declare module RES {
          * @returns {boolean}
          */
         createGroup(name: string, keys: Array<string>, override?: boolean): boolean;
-        /**
-         * 解析一个配置文件
-         * @method RES.ResourceConfig#parseConfig
-         * @param data {any} 配置文件数据
-         * @param folder {string} 加载项的路径前缀。
-         */
-        parseConfig(data: Data): void;
         /**
          * 添加一个二级键名到配置列表。
          * @method RES.ResourceConfig#addSubkey
@@ -87,6 +75,7 @@ declare module RES {
             name: string;
             type?: string;
             url: string;
+            root?: string;
         }): void;
         destory(): void;
     }
@@ -211,35 +200,6 @@ declare module RES {
         function setUpgradeGuideLevel(level: "warning" | "silent"): void;
     }
 }
-declare module RES {
-    interface File {
-        url: string;
-        type: string;
-        name: string;
-    }
-    interface Dictionary {
-        [file: string]: File | Dictionary;
-    }
-    interface FileSystem {
-        addFile(filename: string, type?: string): any;
-        getFile(filename: string): File | null;
-        profile(): void;
-    }
-    class NewFileSystem {
-        private data;
-        constructor(data: Dictionary);
-        profile(): void;
-        addFile(filename: string, type?: string): void;
-        getFile(filename: string): File | null;
-        private basename(filename);
-        private normalize(filename);
-        private dirname(path);
-        private reslove(dirpath);
-        private mkdir(dirpath);
-        private exists(dirpath);
-    }
-    var fileSystem: FileSystem;
-}
 declare module RES.processor {
     interface Processor {
         onLoadStart(host: ProcessHost, resource: ResourceInfo): Promise<any>;
@@ -266,6 +226,33 @@ declare module RES.processor {
     const _map: {
         [index: string]: Processor;
     };
+}
+declare module RES {
+    interface File {
+        url: string;
+        type: string;
+        name: string;
+        root: string;
+    }
+    interface Dictionary {
+        [file: string]: File | Dictionary;
+    }
+    interface FileSystem {
+        addFile(filename: string, type?: string, root?: string): any;
+        getFile(filename: string): File | null;
+        profile(): void;
+    }
+    class NewFileSystem {
+        private data;
+        constructor(data: Dictionary);
+        profile(): void;
+        addFile(filename: string, type?: string): void;
+        getFile(filename: string): File | null;
+        private reslove(dirpath);
+        private mkdir(dirpath);
+        private exists(dirpath);
+    }
+    var fileSystem: FileSystem;
 }
 declare module RES {
     /**
@@ -610,6 +597,13 @@ declare module RES {
         crc32?: string;
         size?: number;
         soundType?: string;
+    }
+}
+declare namespace RES {
+    namespace path {
+        const normalize: (filename: string) => string;
+        const basename: (filename: string) => string;
+        const dirname: (path: string) => string;
     }
 }
 declare namespace RES {

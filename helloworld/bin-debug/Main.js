@@ -74,15 +74,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
-        var _this = _super.call(this) || this;
-        _this.addEventListener(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
-        return _this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    Main.prototype.onAddToStage = function (event) {
+    Main.prototype.createChildren = function () {
+        _super.prototype.createChildren.call(this);
         egret.lifecycle.addLifecycleListener(function (context) {
             // custom lifecycle plugin
-            context.onUpdate = function () {
-            };
         });
         egret.lifecycle.onPause = function () {
             egret.ticker.pause();
@@ -90,6 +87,11 @@ var Main = (function (_super) {
         egret.lifecycle.onResume = function () {
             egret.ticker.resume();
         };
+        //inject the custom material parser
+        //注入自定义的素材解析器
+        var assetAdapter = new AssetAdapter();
+        egret.registerImplementation("eui.IAssetAdapter", assetAdapter);
+        egret.registerImplementation("eui.IThemeAdapter", new ThemeAdapter());
         this.runGame().catch(function (e) {
             console.log(e);
         });
@@ -125,29 +127,43 @@ var Main = (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 4, , 5]);
                         loadingView = new LoadingUI();
                         this.stage.addChild(loadingView);
                         return [4 /*yield*/, RES.loadConfig("resource/default.res.json", "resource/")];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, RES.loadGroup("preload", 0, loadingView)];
+                        return [4 /*yield*/, this.loadTheme()];
                     case 2:
                         _a.sent();
-                        this.stage.removeChild(loadingView);
-                        return [3 /*break*/, 4];
+                        return [4 /*yield*/, RES.loadGroup("preload", 0, loadingView)];
                     case 3:
+                        _a.sent();
+                        this.stage.removeChild(loadingView);
+                        return [3 /*break*/, 5];
+                    case 4:
                         e_1 = _a.sent();
                         console.error(e_1);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
     };
+    Main.prototype.loadTheme = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            // load skin theme configuration file, you can manually modify the file. And replace the default skin.
+            //加载皮肤主题配置文件,可以手动修改这个文件。替换默认皮肤。
+            var theme = new eui.Theme("resource/default.thm.json", _this.stage);
+            theme.addEventListener(eui.UIEvent.COMPLETE, function () {
+                resolve();
+            }, _this);
+        });
+    };
     /**
-     * 创建游戏场景
-     * Create a game scene
+     * 创建场景界面
+     * Create scene interface
      */
     Main.prototype.createGameScene = function () {
         var sky = this.createBitmapByName("bg_jpg");
@@ -160,132 +176,46 @@ var Main = (function (_super) {
         topMask.graphics.beginFill(0x000000, 0.5);
         topMask.graphics.drawRect(0, 0, stageW, 172);
         topMask.graphics.endFill();
-        topMask.y = 220;
+        topMask.y = 33;
         this.addChild(topMask);
-        var shp1 = new egret.Shape();
-        shp1.graphics.beginFill(0xff0000);
-        shp1.graphics.moveTo(100, 100);
-        shp1.graphics.lineTo(300, 200);
-        shp1.graphics.lineTo(200, 500);
-        shp1.graphics.lineTo(0, 550);
-        shp1.graphics.lineTo(-100, 220);
-        shp1.graphics.lineTo(100, 100);
-        shp1.graphics.endFill();
-        shp1.x = 200;
-        shp1.y = 0;
-        this.addChild(shp1);
-        var shp2 = new egret.Shape();
-        shp2.graphics.beginFill(0x00ff00);
-        shp2.graphics.moveTo(100, 100);
-        shp2.graphics.lineTo(300, 200);
-        shp2.graphics.lineTo(200, 500);
-        shp2.graphics.lineTo(-100, 220);
-        shp2.graphics.lineTo(0, 550);
-        shp2.graphics.lineTo(100, 100);
-        shp2.graphics.endFill();
-        this.addChild(shp2);
-        shp2.x = 200;
-        shp2.y = 300;
-        var shp3 = new egret.Shape();
-        shp3.graphics.beginFill(0x0000ff);
-        shp3.graphics.moveTo(100, 100);
-        shp3.graphics.lineTo(-100, 220);
-        shp3.graphics.lineTo(0, 550);
-        shp3.graphics.lineTo(200, 500);
-        shp3.graphics.lineTo(300, 200);
-        shp3.graphics.lineTo(100, 100);
-        shp3.graphics.endFill();
-        this.addChild(shp3);
-        shp3.x = 200;
-        shp3.y = 600;
+        var icon = this.createBitmapByName("egret_icon_png");
+        this.addChild(icon);
+        icon.x = 26;
+        icon.y = 33;
+        var line = new egret.Shape();
+        line.graphics.lineStyle(2, 0xffffff);
+        line.graphics.moveTo(0, 0);
+        line.graphics.lineTo(0, 117);
+        line.graphics.endFill();
+        line.x = 172;
+        line.y = 61;
+        this.addChild(line);
+        var colorLabel = new egret.TextField();
+        colorLabel.textColor = 0xffffff;
+        colorLabel.width = stageW - 172;
+        colorLabel.textAlign = "center";
+        colorLabel.text = "Hello Egret";
+        colorLabel.size = 24;
+        colorLabel.x = 172;
+        colorLabel.y = 80;
+        this.addChild(colorLabel);
         var textfield = new egret.TextField();
         this.addChild(textfield);
-        textfield.text = "123";
-        var t = new egret.Timer(1000);
-        t.addEventListener(egret.TimerEvent.TIMER, function () {
-            console.log(BK.Director.fps);
-            textfield.text = Math.floor(BK.Director.fps) + "";
-        }, this);
-        t.start();
-        // let imageLoader = new egret.ImageLoader();
-        // imageLoader.addEventListener(egret.Event.COMPLETE, (data) => {
-        //     let texture = new egret.Texture();
-        //     texture.bitmapData = data;
-        //     let image = new egret.Bitmap(texture);
-        //     this.addChild(image);
-        // }, this);
-        // (BK.MQQ.Account as any).getHeadEx(GameStatusInfo.openId, (openId, imgUrl) => {
-        //     if ("" != imgUrl) {
-        //         imageLoader.load(imgUrl);
-        //     }
-        // });
-        //同时测试websokcet
-        // this.socketTest();
+        textfield.alpha = 0;
+        textfield.width = stageW - 172;
+        textfield.textAlign = egret.HorizontalAlign.CENTER;
+        textfield.size = 24;
+        textfield.textColor = 0xffffff;
+        textfield.x = 172;
+        textfield.y = 135;
+        this.textfield = textfield;
+        var button = new eui.Button();
+        button.label = "Click!";
+        button.horizontalCenter = 0;
+        button.verticalCenter = 0;
+        this.addChild(button);
+        button.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onButtonClick, this);
     };
-    // socket: egret.WebSocket;
-    // socketTest() {
-    //     this.socket = new egret.WebSocket();
-    //     //设置数据格式为二进制，默认为字符串
-    //     this.socket.type = egret.WebSocket.TYPE_BINARY;
-    //     //添加收到数据侦听，收到数据会调用此方法
-    //     this.socket.addEventListener(egret.ProgressEvent.SOCKET_DATA, this.onReceiveMessage, this);
-    //     //添加链接打开侦听，连接成功会调用此方法
-    //     this.socket.addEventListener(egret.Event.CONNECT, this.onSocketOpen, this);
-    //     //添加链接关闭侦听，手动关闭或者服务器关闭连接会调用此方法
-    //     this.socket.addEventListener(egret.Event.CLOSE, this.onSocketClose, this);
-    //     //添加异常侦听，出现异常会调用此方法
-    //     this.socket.addEventListener(egret.IOErrorEvent.IO_ERROR, this.onSocketError, this);
-    //     //连接服务器
-    //     this.socket.connect("10.0.11.142", 8081);
-    // };
-    // /**
-    //  * 接受信息
-    //  */
-    // onReceiveMessage(e) {
-    //     //接收字符串
-    //     // let msg = this.socket.readUTF();
-    //     // let data = JSON.parse(msg);
-    //     // console.log("收到信息", data);
-    //     //接收二进制
-    //     let byte = new egret.ByteArray();
-    //     this.socket.readBytes(byte);
-    //     let str = byte.readUTF();
-    //     // let str1 = this.socket.readUTF();
-    //     // let boo: boolean = byte.readBoolean();
-    //     // let num: number = byte.readInt();
-    //     // let msg = this.socket.readUTF();
-    //     // let data = JSON.parse(msg);
-    //     // console.log(`收到信息,str:  ${str}  ,bool: ${boo}   ,num: ${num}`);
-    // };
-    // /**
-    //  * 连接成功
-    //  */
-    // onSocketOpen() {
-    //     console.log("socket连接成功");
-    //     let date = {
-    //         name: "ajknjnzkjxn",
-    //         age: 12131328,
-    //         url: "http://10.0.11.9:8081"
-    //     };
-    //     let str = JSON.stringify(date);
-    //     // this.socket.writeUTF(str);
-    //     let byte = new egret.ByteArray();
-    //     byte.writeUTF(str);
-    //     this.socket.writeBytes(byte);
-    //     //准备写信息
-    // };
-    // /**
-    //  * 服务器关闭
-    //  */
-    // onSocketClose() {
-    //     console.log("服务器关闭");
-    // };
-    // /**
-    //  * 出现异常
-    //  */
-    // onSocketError() {
-    //     console.log("服务器异常");
-    // };
     /**
      * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
      * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
@@ -301,27 +231,39 @@ var Main = (function (_super) {
      * Description file loading is successful, start to play the animation
      */
     Main.prototype.startAnimation = function (result) {
-        // let parser = new egret.HtmlTextParser();
-        // let textflowArr = result.map(text => parser.parse(text));
-        // let textfield = this.textfield;
-        // let count = -1;
-        // let change = () => {
-        //     count++;
-        //     if (count >= textflowArr.length) {
-        //         count = 0;
-        //     }
-        //     let textFlow = textflowArr[count];
-        //     // 切换描述内容
-        //     // Switch to described content
-        //     textfield.textFlow = textFlow;
-        //     let tw = egret.Tween.get(textfield);
-        //     tw.to({ "alpha": 1 }, 200);
-        //     tw.wait(2000);
-        //     tw.to({ "alpha": 0 }, 200);
-        //     tw.call(change, this);
-        // };
-        // change();
+        var _this = this;
+        var parser = new egret.HtmlTextParser();
+        var textflowArr = result.map(function (text) { return parser.parse(text); });
+        var textfield = this.textfield;
+        var count = -1;
+        var change = function () {
+            count++;
+            if (count >= textflowArr.length) {
+                count = 0;
+            }
+            var textFlow = textflowArr[count];
+            // 切换描述内容
+            // Switch to described content
+            textfield.textFlow = textFlow;
+            var tw = egret.Tween.get(textfield);
+            tw.to({ "alpha": 1 }, 200);
+            tw.wait(2000);
+            tw.to({ "alpha": 0 }, 200);
+            tw.call(change, _this);
+        };
+        change();
+    };
+    /**
+     * 点击按钮
+     * Click the button
+     */
+    Main.prototype.onButtonClick = function (e) {
+        var panel = new eui.Panel();
+        panel.title = "Title";
+        panel.horizontalCenter = 0;
+        panel.verticalCenter = 0;
+        this.addChild(panel);
     };
     return Main;
-}(egret.DisplayObjectContainer));
+}(eui.UILayer));
 __reflect(Main.prototype, "Main");

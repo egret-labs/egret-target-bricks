@@ -62,7 +62,7 @@ var RES;
     }
     RES.getResourceInfo = getResourceInfo;
     var configItem;
-    function setConfigURL(url) {
+    function setConfigURL(url, root) {
         var type;
         if (url.indexOf(".json") >= 0) {
             type = "legacyResourceConfig";
@@ -70,10 +70,9 @@ var RES;
         else {
             type = "resourceConfig";
         }
-        configItem = { type: type, resourceRoot: RES.resourceRoot, url: url, name: url, extra: true };
+        configItem = { type: type, root: root, url: url, name: url };
     }
     RES.setConfigURL = setConfigURL;
-    RES.resourceRoot = "";
     /**
      * @class RES.ResourceConfig
      * @classdesc
@@ -86,7 +85,7 @@ var RES;
             var _this = this;
             if (!this.config) {
                 this.config = {
-                    alias: {}, groups: {}, resourceRoot: this.resourceRoot,
+                    alias: {}, groups: {}, resourceRoot: configItem.root,
                     typeSelector: function () { return 'unknown'; }, mergeSelector: null,
                     fileSystem: null
                 };
@@ -258,12 +257,12 @@ var RES;
         };
         /**
          * 解析一个配置文件
+         * @internal
          * @method RES.ResourceConfig#parseConfig
          * @param data {any} 配置文件数据
          * @param folder {string} 加载项的路径前缀。
          */
         ResourceConfig.prototype.parseConfig = function (data) {
-            RES.resourceRoot = data.resourceRoot;
             this.config = data;
             RES.fileSystem = data.fileSystem;
             // if (!data)
@@ -326,7 +325,7 @@ var RES;
             if (!data.type) {
                 data.type = this.__temp__get__type__via__url(data.url);
             }
-            RES.fileSystem.addFile(data.url, data.type);
+            RES.fileSystem.addFile(data.url, data.type, data.root);
             if (data.name) {
                 this.config.alias[data.name] = data.url;
             }
@@ -418,6 +417,9 @@ var RES;
             this.queueIndex = 0;
         }
         ResourceLoader.prototype.load = function (list, groupName, priority, reporter) {
+            if (this.itemListDic[groupName]) {
+                return Promise.resolve();
+            }
             var total = list.length;
             for (var i = 0; i < total; i++) {
                 var resInfo = list[i];
@@ -488,8 +490,11 @@ var RES;
                     }
                     _this.next();
                 }).catch(function (error) {
+                    if (!error.__resource_manager_error__) {
+                        throw error;
+                    }
                     _this.loadingCount--;
-                    delete RES.host.state[r.name];
+                    delete RES.host.state[r.root + r.name];
                     var times = _this.retryTimesDic[r.name] || 1;
                     if (times > _this.maxRetryTimes) {
                         delete _this.retryTimesDic[r.name];
@@ -600,7 +605,7 @@ var RES;
         ResourceLoader.prototype.loadResource = function (r, p) {
             if (!p) {
                 if (RES.FEATURE_FLAG.FIX_DUPLICATE_LOAD == 1) {
-                    var s = RES.host.state[r.name];
+                    var s = RES.host.state[r.root + r.name];
                     if (s == 2) {
                         return Promise.resolve(RES.host.get(r));
                     }
@@ -613,7 +618,7 @@ var RES;
             if (!p) {
                 throw new RES.ResourceManagerError(2001, r.name, r.type);
             }
-            RES.host.state[r.name] = 1;
+            RES.host.state[r.root + r.name] = 1;
             var promise = p.onLoadStart(RES.host, r);
             r.promise = promise;
             return promise;
@@ -626,7 +631,7 @@ var RES;
             }
             var p = RES.processor.isSupport(r);
             if (p) {
-                RES.host.state[r.name] = 3;
+                RES.host.state[r.root + r.name] = 3;
                 var promise = p.onRemoveStart(RES.host, r);
                 RES.host.remove(r);
                 return promise;
@@ -691,7 +696,7 @@ var RES;
         },
         unload: function (r) { return RES.queue.unloadResource(r); },
         save: function (resource, data) {
-            RES.host.state[resource.name] = 2;
+            RES.host.state[resource.root + resource.name] = 2;
             resource.promise = undefined;
             __tempCache[resource.url] = data;
         },
@@ -699,7 +704,7 @@ var RES;
             return __tempCache[resource.url];
         },
         remove: function (resource) {
-            RES.host.state[resource.name] = 0;
+            RES.host.state[resource.root + resource.name] = 0;
             delete __tempCache[resource.url];
         }
     };
@@ -770,93 +775,6 @@ var RES;
 })(RES || (RES = {}));
 var RES;
 (function (RES) {
-    var NewFileSystem = (function () {
-        function NewFileSystem(data) {
-            this.data = data;
-        }
-        NewFileSystem.prototype.profile = function () {
-            console.log(this.data);
-        };
-        NewFileSystem.prototype.addFile = function (filename, type) {
-            if (!type)
-                type = "";
-            filename = this.normalize(filename);
-            var basefilename = this.basename(filename);
-            var folder = this.dirname(filename);
-            if (!this.exists(folder)) {
-                this.mkdir(folder);
-            }
-            var d = this.reslove(folder);
-            d[basefilename] = { url: filename, type: type };
-        };
-        NewFileSystem.prototype.getFile = function (filename) {
-            var result = this.reslove(filename);
-            if (result) {
-                result.name = filename;
-            }
-            return result;
-        };
-        NewFileSystem.prototype.basename = function (filename) {
-            return filename.substr(filename.lastIndexOf("/") + 1);
-        };
-        NewFileSystem.prototype.normalize = function (filename) {
-            return filename.split("/").filter(function (d) { return !!d; }).join("/");
-        };
-        NewFileSystem.prototype.dirname = function (path) {
-            return path.substr(0, path.lastIndexOf("/"));
-        };
-        NewFileSystem.prototype.reslove = function (dirpath) {
-            if (dirpath == "") {
-                return this.data;
-            }
-            dirpath = this.normalize(dirpath);
-            var list = dirpath.split("/");
-            var current = this.data;
-            for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
-                var f = list_1[_i];
-                if (current) {
-                    current = current[f];
-                }
-                else {
-                    return current;
-                }
-            }
-            return current;
-        };
-        NewFileSystem.prototype.mkdir = function (dirpath) {
-            dirpath = this.normalize(dirpath);
-            var list = dirpath.split("/");
-            var current = this.data;
-            for (var _i = 0, list_2 = list; _i < list_2.length; _i++) {
-                var f = list_2[_i];
-                if (!current[f]) {
-                    current[f] = {};
-                }
-                current = current[f];
-            }
-        };
-        NewFileSystem.prototype.exists = function (dirpath) {
-            if (dirpath == "")
-                return true;
-            dirpath = this.normalize(dirpath);
-            var list = dirpath.split("/");
-            var current = this.data;
-            for (var _i = 0, list_3 = list; _i < list_3.length; _i++) {
-                var f = list_3[_i];
-                if (!current[f]) {
-                    return false;
-                }
-                current = current[f];
-            }
-            return true;
-        };
-        return NewFileSystem;
-    }());
-    RES.NewFileSystem = NewFileSystem;
-    __reflect(NewFileSystem.prototype, "RES.NewFileSystem");
-})(RES || (RES = {}));
-var RES;
-(function (RES) {
     var processor;
     (function (processor_1) {
         function isSupport(resource) {
@@ -890,7 +808,7 @@ var RES;
             if (resource.url.indexOf("://") != -1) {
                 return resource.url;
             }
-            var prefix = resource.extra ? "" : RES.resourceRoot;
+            var prefix = resource.root;
             var url = prefix + resource.url;
             if (RES['getRealURL']) {
                 return RES['getRealURL'](url);
@@ -1068,16 +986,16 @@ var RES;
         processor_1.SheetProcessor = {
             onLoadStart: function (host, resource) {
                 return __awaiter(this, void 0, void 0, function () {
-                    var data, imagePath, r, texture, frames, spriteSheet, subkey, config, texture;
+                    var data, imageName, r, texture, frames, spriteSheet, subkey, config, texture;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0: return [4 /*yield*/, host.load(resource, "json")];
                             case 1:
                                 data = _a.sent();
-                                imagePath = RES.config.resourceRoot + "/" + getRelativePath(resource.url, data.file);
+                                imageName = getRelativePath(resource.url, data.file);
                                 r = host.resourceConfig.getResource(data.file);
                                 if (!r) {
-                                    r = { name: imagePath, url: imagePath, extra: true, type: 'image' };
+                                    r = { name: imageName, url: imageName, type: 'image', root: resource.root };
                                 }
                                 return [4 /*yield*/, host.load(r)];
                             case 2:
@@ -1160,12 +1078,12 @@ var RES;
                                 r = host.resourceConfig.getResource(imageFileName);
                                 if (!r) {
                                     if (typeof config === 'string') {
-                                        imageFileName = RES.config.resourceRoot + "/" + fontGetTexturePath(resource.url, config);
+                                        imageFileName = fontGetTexturePath(resource.url, config);
                                     }
                                     else {
-                                        imageFileName = RES.config.resourceRoot + "/" + getRelativePath(resource.url, config.file);
+                                        imageFileName = getRelativePath(resource.url, config.file);
                                     }
-                                    r = { name: imageFileName, url: imageFileName, extra: true, type: 'image' };
+                                    r = { name: imageFileName, url: imageFileName, type: 'image', root: resource.root };
                                 }
                                 return [4 /*yield*/, host.load(r)];
                             case 2:
@@ -1301,6 +1219,7 @@ var RES;
             onLoadStart: function (host, resource) {
                 return host.load(resource, 'json').then(function (data) {
                     var resConfigData = RES.config.config;
+                    var root = resource.root;
                     var fileSystem = resConfigData.fileSystem;
                     if (!fileSystem) {
                         fileSystem = {
@@ -1308,10 +1227,13 @@ var RES;
                             getFile: function (filename) {
                                 return fsData[filename];
                             },
-                            addFile: function (filename, type) {
+                            addFile: function (filename, type, root) {
                                 if (!type)
                                     type = "";
-                                fsData[filename] = { name: filename, type: type, url: filename };
+                                if (root == undefined) {
+                                    root = "";
+                                }
+                                fsData[filename] = { name: filename, type: type, url: filename, root: root };
                             },
                             profile: function () {
                                 console.log(fsData);
@@ -1328,6 +1250,7 @@ var RES;
                     var fsData = fileSystem['fsData'];
                     var _loop_2 = function (resource_1) {
                         fsData[resource_1.name] = resource_1;
+                        fsData[resource_1.name].root = root;
                         if (resource_1.subkeys) {
                             resource_1.subkeys.split(",").forEach(function (subkey) {
                                 alias[subkey] = resource_1.name + "#" + subkey;
@@ -1564,6 +1487,84 @@ var RES;
             "legacyResourceConfig": processor_1.LegacyResourceConfigProcessor,
         };
     })(processor = RES.processor || (RES.processor = {}));
+})(RES || (RES = {}));
+var RES;
+(function (RES) {
+    var NewFileSystem = (function () {
+        function NewFileSystem(data) {
+            this.data = data;
+        }
+        NewFileSystem.prototype.profile = function () {
+            console.log(this.data);
+        };
+        NewFileSystem.prototype.addFile = function (filename, type) {
+            if (!type)
+                type = "";
+            filename = RES.path.normalize(filename);
+            var basefilename = RES.path.basename(filename);
+            var folder = RES.path.dirname(filename);
+            if (!this.exists(folder)) {
+                this.mkdir(folder);
+            }
+            var d = this.reslove(folder);
+            d[basefilename] = { url: filename, type: type };
+        };
+        NewFileSystem.prototype.getFile = function (filename) {
+            var result = this.reslove(filename);
+            if (result) {
+                result.name = filename;
+            }
+            return result;
+        };
+        NewFileSystem.prototype.reslove = function (dirpath) {
+            if (dirpath == "") {
+                return this.data;
+            }
+            dirpath = RES.path.normalize(dirpath);
+            var list = dirpath.split("/");
+            var current = this.data;
+            for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
+                var f = list_1[_i];
+                if (current) {
+                    current = current[f];
+                }
+                else {
+                    return current;
+                }
+            }
+            return current;
+        };
+        NewFileSystem.prototype.mkdir = function (dirpath) {
+            dirpath = RES.path.normalize(dirpath);
+            var list = dirpath.split("/");
+            var current = this.data;
+            for (var _i = 0, list_2 = list; _i < list_2.length; _i++) {
+                var f = list_2[_i];
+                if (!current[f]) {
+                    current[f] = {};
+                }
+                current = current[f];
+            }
+        };
+        NewFileSystem.prototype.exists = function (dirpath) {
+            if (dirpath == "")
+                return true;
+            dirpath = RES.path.normalize(dirpath);
+            var list = dirpath.split("/");
+            var current = this.data;
+            for (var _i = 0, list_3 = list; _i < list_3.length; _i++) {
+                var f = list_3[_i];
+                if (!current[f]) {
+                    return false;
+                }
+                current = current[f];
+            }
+            return true;
+        };
+        return NewFileSystem;
+    }());
+    RES.NewFileSystem = NewFileSystem;
+    __reflect(NewFileSystem.prototype, "RES.NewFileSystem");
 })(RES || (RES = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1949,12 +1950,29 @@ var RES;
                 name: name,
                 url: r.url,
                 type: r.type,
-                data: r
+                data: r,
+                root: r.root
             };
             return result;
         }
         ResourceItem.convertToResItem = convertToResItem;
     })(ResourceItem = RES.ResourceItem || (RES.ResourceItem = {}));
+})(RES || (RES = {}));
+var RES;
+(function (RES) {
+    var path;
+    (function (path_1) {
+        path_1.normalize = function (filename) {
+            var arr = filename.split("/");
+            return arr.filter(function (value, index) { return !!value || index == arr.length - 1; }).join("/");
+        };
+        path_1.basename = function (filename) {
+            return filename.substr(filename.lastIndexOf("/") + 1);
+        };
+        path_1.dirname = function (path) {
+            return path.substr(0, path.lastIndexOf("/"));
+        };
+    })(path = RES.path || (RES.path = {}));
 })(RES || (RES = {}));
 var RES;
 (function (RES) {
@@ -2063,12 +2081,17 @@ var RES;
      * @language zh_CN
      */
     function loadConfig(url, resourceRoot) {
-        if (url) {
-            RES.setConfigURL(url);
+        if (resourceRoot.indexOf('://') >= 0) {
+            var temp = resourceRoot.split('://');
+            resourceRoot = temp[0] + '://' + RES.path.normalize(temp[1] + '/');
         }
+        else {
+            resourceRoot = RES.path.normalize(resourceRoot + "/");
+            url = url.replace(resourceRoot, '');
+        }
+        RES.setConfigURL(url, resourceRoot);
         if (!instance)
             instance = new Resource();
-        RES.config.resourceRoot = resourceRoot;
         return instance.loadConfig();
     }
     RES.loadConfig = loadConfig;
@@ -2578,13 +2601,10 @@ var RES;
                     type = RES.config.__temp__get__type__via__url(url);
                 }
                 // manager.config.addResourceData({ name: url, url: url });
-                r = { name: url, url: url, type: type, extra: true };
+                r = { name: url, url: url, type: type, root: '' };
                 RES.config.addResourceData(r);
                 r = RES.config.getResource(url);
-                if (r) {
-                    r.extra = true;
-                }
-                else {
+                if (!r) {
                     throw 'never';
                 }
             }
