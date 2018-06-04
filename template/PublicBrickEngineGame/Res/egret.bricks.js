@@ -8687,8 +8687,10 @@ var egret;
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
                 //ttf字体加载。默认传入为相对根目录的地址
                 var fontFamily = node.fontFamily;
-                var path = "GameRes://" + fontFamily;
-                context.fontPath = path;
+                if (fontFamily && fontFamily !== 'Arial') {
+                    var path = "GameRes://" + fontFamily;
+                    context.fontPath = path;
+                }
                 if (stroke) {
                     context.lineWidth = stroke * 2;
                 }

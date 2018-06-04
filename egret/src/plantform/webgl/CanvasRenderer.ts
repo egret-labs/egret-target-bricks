@@ -39,8 +39,10 @@ namespace egret {
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
                 //ttf字体加载。默认传入为相对根目录的地址
                 let fontFamily = node.fontFamily;
-                let path = "GameRes://" + fontFamily;
-                context.fontPath = path;
+                if (fontFamily&&fontFamily!=='Arial') {
+                    let path = "GameRes://" + fontFamily;
+                    context.fontPath = path;
+                }
                 if (stroke) {
                     context.lineWidth = stroke * 2;
                 } else {
