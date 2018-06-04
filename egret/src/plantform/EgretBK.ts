@@ -48,6 +48,13 @@ console.assert = function (c: boolean, ...others: any[]): void {
     }
 };
 
+namespace egret.bricks{
+    /**
+     * 玩一玩平台支持库版本号
+     */
+    export let version = "1.0.19";
+}
+
 namespace egret {
     egret.getTimer = function getTimer(): number {
         return Math.round(BK.Time.timestamp * 1000);

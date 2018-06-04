@@ -2317,6 +2317,15 @@ console.assert = function (c) {
 };
 var egret;
 (function (egret) {
+    var bricks;
+    (function (bricks) {
+        /**
+         * 玩一玩平台支持库版本号
+         */
+        bricks.version = "1.0.19";
+    })(bricks = egret.bricks || (egret.bricks = {}));
+})(egret || (egret = {}));
+(function (egret) {
     egret.getTimer = function getTimer() {
         return Math.round(BK.Time.timestamp * 1000);
     };
