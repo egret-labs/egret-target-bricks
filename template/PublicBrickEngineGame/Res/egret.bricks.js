@@ -8670,7 +8670,8 @@ var egret;
                 var y = drawData[pos++];
                 var text = drawData[pos++];
                 var format = drawData[pos++];
-                context.setTextSize(node.size);
+                var size = format.size == null ? node.size : format.size;
+                context.setTextSize(size);
                 // context.font = getFontString(node, format);
                 var textColor = format.textColor == null ? node.textColor : format.textColor;
                 var strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
@@ -8686,7 +8687,7 @@ var egret;
                 context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: 1 };
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
                 //ttf字体加载。默认传入为相对根目录的地址
-                var fontFamily = node.fontFamily;
+                var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
                     var path = "GameRes://" + fontFamily;
                     context.fontPath = path;
@@ -8697,8 +8698,13 @@ var egret;
                 else {
                     context.lineWidth = 0;
                 }
+                //斜体与加粗
+                var bold = format.bold == null ? node.bold : format.bold;
+                var italic = format.italic = null ? node.italic : format.italic;
+                context.setTextBold(bold);
+                context.setTextItalic(italic);
                 //BK error
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 4);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - size / 2 - 4);
             }
         };
         BKCanvasRenderer.prototype.renderGraphics = function (node, context, forHitTest) {

@@ -18,28 +18,29 @@ namespace egret {
             let length = drawData.length;
             let pos = 0;
             while (pos < length) {
-                let x = drawData[pos++];
-                let y = drawData[pos++];
-                let text = drawData[pos++];
-                let format: sys.TextFormat = drawData[pos++];
-                context.setTextSize(node.size);
+                const x = drawData[pos++];
+                const y = drawData[pos++];
+                const text = drawData[pos++];
+                const format: sys.TextFormat = drawData[pos++];
+                const size = format.size == null ? node.size : format.size;
+                context.setTextSize(size);
                 // context.font = getFontString(node, format);
-                let textColor = format.textColor == null ? node.textColor : format.textColor;
-                let strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
-                let stroke = format.stroke == null ? node.stroke : format.stroke;
-                let textColorstr = refitColorString(textColor, 6);//六位rgb格式
-                let fill_red: number = parseInt(textColorstr.substring(0, 2), 16) / 255;
-                let fill_green: number = parseInt(textColorstr.substring(2, 4), 16) / 255;
-                let fill_blue: number = parseInt(textColorstr.substring(4, 6), 16) / 255;
-                let strokeColorstr = refitColorString(strokeColor, 6);//六位rgb格式
-                let stroke_red: number = parseInt(strokeColorstr.substring(0, 2), 16) / 255;
-                let stroke_green: number = parseInt(strokeColorstr.substring(2, 4), 16) / 255;
-                let stroke_blue: number = parseInt(strokeColorstr.substring(4, 6), 16) / 255;
+                const textColor = format.textColor == null ? node.textColor : format.textColor;
+                const strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
+                const stroke = format.stroke == null ? node.stroke : format.stroke;
+                const textColorstr = refitColorString(textColor, 6);//六位rgb格式
+                const fill_red: number = parseInt(textColorstr.substring(0, 2), 16) / 255;
+                const fill_green: number = parseInt(textColorstr.substring(2, 4), 16) / 255;
+                const fill_blue: number = parseInt(textColorstr.substring(4, 6), 16) / 255;
+                const strokeColorstr = refitColorString(strokeColor, 6);//六位rgb格式
+                const stroke_red: number = parseInt(strokeColorstr.substring(0, 2), 16) / 255;
+                const stroke_green: number = parseInt(strokeColorstr.substring(2, 4), 16) / 255;
+                const stroke_blue: number = parseInt(strokeColorstr.substring(4, 6), 16) / 255;
                 context.fillColor = { r: fill_red, g: fill_green, b: fill_blue, a: 1 };
                 context.strokeColor = { r: stroke_red, g: stroke_green, b: stroke_blue, a: 1 };
                 //ttf字体加载。默认传入为相对根目录的地址
-                let fontFamily = node.fontFamily;
-                if (fontFamily&&fontFamily!=='Arial') {
+                let fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
+                if (fontFamily && fontFamily !== 'Arial') {
                     let path = "GameRes://" + fontFamily;
                     context.fontPath = path;
                 }
@@ -48,8 +49,13 @@ namespace egret {
                 } else {
                     context.lineWidth = 0;
                 }
+                //斜体与加粗
+                const bold = format.bold == null ? node.bold : format.bold;
+                const italic = format.italic = null ? node.italic : format.italic;
+                context.setTextBold(bold);
+                context.setTextItalic(italic);
                 //BK error
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - node.size / 2 - 4);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - size / 2 - 4);
             }
         }
 
