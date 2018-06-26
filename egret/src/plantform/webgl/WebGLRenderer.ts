@@ -540,7 +540,7 @@ namespace egret.web {
                     minY = (y0 < y2 ? y0 : y2);
                     maxY = (y1 > y3 ? y1 : y3);
                 }
-                context.enableScissor(minX, -maxY + buffer.height, maxX - minX, maxY - minY);
+                context.enableScissor(minX, -maxY + buffer.height + (egret.web as any).BKWebPlayer._viewRect.y, maxX - minX, maxY - minY);
                 scissor = true;
             }
             drawCalls += this.drawDisplayObject(displayObject, buffer, offsetX, offsetY);
