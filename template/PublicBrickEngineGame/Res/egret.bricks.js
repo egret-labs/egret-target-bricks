@@ -8690,7 +8690,13 @@ var egret;
                 var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
                     var path = "GameRes://" + fontFamily;
-                    context.fontPath = path;
+                    if (BK.FileUtil.isFileExist(path)) {
+                        context.fontPath = path;
+                    }
+                    else {
+                        context.fontPath = null;
+                        console.log('字体' + path + "不存在，请确保fontFamily传入字体地址正确");
+                    }
                 }
                 if (stroke) {
                     context.lineWidth = stroke * 2;
