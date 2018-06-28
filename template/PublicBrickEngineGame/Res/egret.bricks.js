@@ -8444,6 +8444,7 @@ var egret;
                 this.offsetY = -bounds.y;
                 this.offsetMatrix.setTo(this.offsetMatrix.a, 0, 0, this.offsetMatrix.d, this.offsetX, this.offsetY);
                 var buffer = this.renderBuffer;
+                buffer['cacheAsBitmap'] = true;
                 //在chrome里，小等于256*256的canvas会不启用GPU加速。
                 var width = Math.max(257, bounds.width * scaleX);
                 var height = Math.max(257, bounds.height * scaleY);
@@ -8694,7 +8695,7 @@ var egret;
                         context.fontPath = path;
                     }
                     else {
-                        context.fontPath = null;
+                        ;
                         console.log('字体' + path + "不存在，请确保fontFamily传入字体地址正确");
                     }
                 }
@@ -10367,7 +10368,7 @@ var egret;
                 }
                 buffer.restoreStencil();
                 buffer.restoreScissor();
-                this.onResize(buffer.width, buffer.height);
+                this.onResize(buffer.width, buffer.height, buffer['cacheAsBitmap']);
             };
             /**
              * 上传顶点数据
@@ -10392,15 +10393,21 @@ var egret;
             WebGLRenderContext.prototype.destroy = function () {
                 this.surface.width = this.surface.height = 0;
             };
-            WebGLRenderContext.prototype.onResize = function (width, height) {
+            WebGLRenderContext.prototype.onResize = function (width, height, needSetViewPort) {
+                if (needSetViewPort === void 0) { needSetViewPort = false; }
                 width = width || this.surface.width;
                 height = height || this.surface.height;
                 this.projectionX = width / 2;
                 this.projectionY = -height / 2;
                 if (this.context) {
-                    var left = web.BKWebPlayer._viewRect.x;
-                    var top_1 = web.BKWebPlayer._viewRect.y;
-                    this.context.viewport(left, top_1, width, height);
+                    if (!needSetViewPort) {
+                        var left = web.BKWebPlayer._viewRect.x;
+                        var top_1 = web.BKWebPlayer._viewRect.y;
+                        this.context.viewport(left, top_1, width, height);
+                    }
+                    else {
+                        this.context.viewport(0, 0, width, height);
+                    }
                 }
             };
             /**
@@ -10888,7 +10895,7 @@ var egret;
                         break;
                     case 5 /* RESIZE_TARGET */:
                         data.buffer.rootRenderTarget.resize(data.width, data.height);
-                        this.onResize(data.width, data.height);
+                        this.onResize(data.width, data.height, data.buffer.cacheAsBitmap);
                         break;
                     case 6 /* CLEAR_COLOR */:
                         if (this.activatedBuffer) {
