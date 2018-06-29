@@ -7986,7 +7986,14 @@ var egret;
                 }
                 this._bkHttpRequest.setHttpMethod(method);
                 if (this._method === egret.HttpMethod.POST) {
-                    this._bkHttpRequest.setHttpPostData(data);
+                    //根据现在的发送信息类型以及实际传入数据类型进行data的数据转换
+                    if (typeof data == "string") {
+                        this._bkHttpRequest.setHttpPostData(data);
+                    }
+                    else {
+                        var bkBuffer = egret.arrayBufferToBricksBuffer(data);
+                        this._bkHttpRequest.setHttpRawBody(bkBuffer);
+                    }
                 }
                 this._bkHttpRequest.setHttpCookie(data); // 如何传 head
                 this._bkHttpRequest.requestAsync(function (res, code) {
