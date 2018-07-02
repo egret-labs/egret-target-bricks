@@ -7668,10 +7668,6 @@ var egret;
             context = new BK.Canvas(1, 1);
         }
         if (context.measureText) {
-            //通过canvas进行文本测量
-            context.textBaseLine = 'bottom';
-            context.textAlign = "left";
-            context.setTextSize(size);
             //设置字体
             if (fontFamily) {
                 var path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
@@ -7683,6 +7679,12 @@ var egret;
                     context.size = { width: 1, height: 1 };
                 }
             }
+            //基线
+            context.textBaseline = 'middle';
+            //位置
+            context.textAlign = 'left';
+            //大小
+            context.setTextSize(size);
             //设置加粗
             context.setTextBold(bold);
             //设置斜体
@@ -8701,7 +8703,7 @@ var egret;
         }
         BKCanvasRenderer.prototype.renderText = function (node, context) {
             context.textAlign = "left";
-            context.textBaseLine = "middle";
+            context.textBaseline = "middle";
             context.lineJoin = "round"; //确保描边样式是圆角
             var drawData = node.drawData;
             var length = drawData.length;
@@ -8750,7 +8752,7 @@ var egret;
                 context.setTextBold(bold);
                 context.setTextItalic(italic);
                 //BK error
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - size / 2 - 4);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height);
             }
         };
         BKCanvasRenderer.prototype.renderGraphics = function (node, context, forHitTest) {

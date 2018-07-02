@@ -12,7 +12,7 @@ namespace egret {
 
         public renderText(node: sys.TextNode, context: any): void {
             context.textAlign = "left";
-            context.textBaseLine = "middle";
+            context.textBaseline = "middle";
             context.lineJoin = "round";//确保描边样式是圆角
             let drawData = node.drawData;
             let length = drawData.length;
@@ -59,7 +59,7 @@ namespace egret {
                 context.setTextBold(bold);
                 context.setTextItalic(italic);
                 //BK error
-                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height - size / 2 - 4);
+                context.fillText(text, x + context.$offsetX, -y + context.$offsetY + node.height);
             }
         }
 

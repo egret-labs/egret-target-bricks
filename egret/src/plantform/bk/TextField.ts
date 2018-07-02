@@ -2118,10 +2118,6 @@ namespace egret {
         }
 
         if (context.measureText) {
-            //通过canvas进行文本测量
-            context.textBaseLine = 'bottom';
-            context.textAlign = "left";
-            context.setTextSize(size);
             //设置字体
             if (fontFamily) {
                 let path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
@@ -2132,6 +2128,12 @@ namespace egret {
                     context.size = { width: 1, height: 1 }
                 }
             }
+            //基线
+            context.textBaseline = 'middle';
+            //位置
+            context.textAlign = 'left';
+            //大小
+            context.setTextSize(size);
             //设置加粗
             context.setTextBold(bold);
             //设置斜体
