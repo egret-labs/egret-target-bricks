@@ -24,7 +24,6 @@ namespace egret {
                 const format: sys.TextFormat = drawData[pos++];
                 const size = format.size == null ? node.size : format.size;
                 context.setTextSize(size);
-                // context.font = getFontString(node, format);
                 const textColor = format.textColor == null ? node.textColor : format.textColor;
                 const strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
                 const stroke = format.stroke == null ? node.stroke : format.stroke;
@@ -41,11 +40,12 @@ namespace egret {
                 //ttf字体加载。默认传入为相对根目录的地址
                 let fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
-                    let path = "GameRes://" + fontFamily;
+                    let path = fontFamily.indexOf("GameRes://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
                     if (BK.FileUtil.isFileExist(path)) {
                         context.fontPath = path;
-                    }else{;
-                        console.log('字体'+path+"不存在，请确保fontFamily传入字体地址正确");
+                    } else {
+                        ;
+                        console.log('字体' + path + "不存在，请确保fontFamily传入字体地址正确");
                     }
                 }
                 if (stroke) {
@@ -55,7 +55,7 @@ namespace egret {
                 }
                 //斜体与加粗
                 const bold = format.bold == null ? node.bold : format.bold;
-                const italic = format.italic = null ? node.italic : format.italic;
+                const italic = format.italic == null ? node.italic : format.italic;
                 context.setTextBold(bold);
                 context.setTextItalic(italic);
                 //BK error

@@ -7650,7 +7650,10 @@ var egret;
         shadowColor: 0xFF000000
     };
     var bkTextNodes = []; // BK.TextNode[]
+    //BK.error
+    //之前为Bricks原生渲染而加入的文本宽度测试，为向下兼容控制而未被删除
     var defaultText; // BK.TextNode
+    var context;
     function createTextNode(text, style) {
         if (bkTextNodes.length > 0) {
             var textNode_1 = bkTextNodes.pop();
@@ -7661,16 +7664,45 @@ var egret;
         return textNode;
     }
     function bkMeasureText(text, fontFamily, size, bold, italic) {
-        if (!defaultText) {
-            defaultText = new BK.TextNode(defaultStyle, "");
+        if (!context) {
+            context = new BK.Canvas(1, 1);
         }
-        defaultStyle.fontSize = size;
-        defaultStyle.bold = bold ? 1 : 0;
-        defaultStyle.italic = italic ? 1 : 0;
-        var textSize = defaultText.measureTextSize(defaultStyle, text);
-        //bk特殊处理
-        //新的库宽度小1，这里进行特殊处理
-        return textSize.contentWidth + 1;
+        if (context.measureText) {
+            //通过canvas进行文本测量
+            context.textBaseLine = 'bottom';
+            context.textAlign = "left";
+            context.setTextSize(size);
+            //设置字体
+            if (fontFamily) {
+                var path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
+                if (BK.FileUtil.isFileExist(path)) {
+                    context.fontPath = path;
+                }
+                else {
+                    // context.fontPath = undefined;
+                    context.size = { width: 1, height: 1 };
+                }
+            }
+            //设置加粗
+            context.setTextBold(bold);
+            //设置斜体
+            context.setTextItalic(italic);
+            var textSize = context.measureText(text, 1024, 1024);
+            return textSize.width;
+        }
+        else {
+            //通过原生TextNode进行文本测量
+            if (!defaultText) {
+                defaultText = new BK.TextNode(defaultStyle, "");
+            }
+            defaultStyle.fontSize = size;
+            defaultStyle.bold = bold ? 1 : 0;
+            defaultStyle.italic = italic ? 1 : 0;
+            var textSize = defaultText.measureTextSize(defaultStyle, text);
+            //bk特殊处理
+            //新的库宽度小1，这里进行特殊处理
+            return textSize.contentWidth + 1;
+        }
     }
     egret.sys.measureText = bkMeasureText;
     if (window['renderMode'] != 'webgl') {
@@ -8166,8 +8198,9 @@ var egret;
                 }
             }
             else {
-                if (BK.FileUtil.isFileExist(url)) {
-                    this.data = new egret.BitmapData(url);
+                var path = url.indexOf("GameRes://") >= 0 ? url : "GameRes://" + url;
+                if (BK.FileUtil.isFileExist(path)) {
+                    this.data = new egret.BitmapData(path);
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
                 }
                 else {
@@ -8680,7 +8713,6 @@ var egret;
                 var format = drawData[pos++];
                 var size = format.size == null ? node.size : format.size;
                 context.setTextSize(size);
-                // context.font = getFontString(node, format);
                 var textColor = format.textColor == null ? node.textColor : format.textColor;
                 var strokeColor = format.strokeColor == null ? node.strokeColor : format.strokeColor;
                 var stroke = format.stroke == null ? node.stroke : format.stroke;
@@ -8697,7 +8729,7 @@ var egret;
                 //ttf字体加载。默认传入为相对根目录的地址
                 var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
-                    var path = "GameRes://" + fontFamily;
+                    var path = fontFamily.indexOf("GameRes://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
                     if (BK.FileUtil.isFileExist(path)) {
                         context.fontPath = path;
                     }
@@ -8714,7 +8746,7 @@ var egret;
                 }
                 //斜体与加粗
                 var bold = format.bold == null ? node.bold : format.bold;
-                var italic = format.italic = null ? node.italic : format.italic;
+                var italic = format.italic == null ? node.italic : format.italic;
                 context.setTextBold(bold);
                 context.setTextItalic(italic);
                 //BK error

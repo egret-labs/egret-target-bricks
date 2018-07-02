@@ -42,8 +42,9 @@ namespace egret {
                 }
 
             } else {
-                if (BK.FileUtil.isFileExist(url)) {
-                    this.data = new egret.BitmapData(url);
+                let path = url.indexOf("GameRes://") >= 0 ? url : "GameRes://" + url;
+                if (BK.FileUtil.isFileExist(path)) {
+                    this.data = new egret.BitmapData(path);
                     $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
                 }
                 else {
@@ -55,7 +56,7 @@ namespace egret {
         /**
          * 通过buffer读取texture
          */
-        private _loadFromBuffer(imgUrl:string) {
+        private _loadFromBuffer(imgUrl: string) {
             let bitmapData = new egret.BitmapData(imgUrl);
             this.data = bitmapData;
             $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);

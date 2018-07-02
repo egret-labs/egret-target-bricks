@@ -379,6 +379,33 @@ declare namespace BK {
          * 清除绘制区域
          */
         clearRect(x: number, y: number, width: number, height: number);
+
+        //测量文本范围
+        measureText(text: string, maxX: number, maxY: number): { width: number, height: number };
+
+        //文本基线
+        textBaseLine: string;
+
+        //文本对齐方式
+        textAlign: string;
+
+        //字体地址
+        fontPath: string;
+
+        //设置文本对齐方式
+        setTextAlign(type: number);
+
+        //设置文本字号
+        setTextSize(size: number)
+
+        //设置加粗
+        setTextBold(bold: boolean);
+
+        //设置斜体
+        setTextItalic(italic: boolean);
+
+        //宽高属性
+        size: { width: number, height: number };
     }
 
     export class Image {
@@ -390,7 +417,7 @@ declare namespace BK {
         static loadImage(path: string, format?: number)
     }
 
-    export interface Sprite{
+    export interface Sprite {
         contentSize;
     }
 

@@ -2092,7 +2092,12 @@ namespace egret {
         shadowColor: 0xFF000000
     };
     const bkTextNodes: any[] = []; // BK.TextNode[]
+
+    //BK.error
+    //之前为Bricks原生渲染而加入的文本宽度测试，为向下兼容控制而未被删除
     let defaultText: any; // BK.TextNode
+
+    let context: BK.Canvas;
 
     function createTextNode(text: string, style: any): any {
         if (bkTextNodes.length > 0) {
@@ -2108,17 +2113,45 @@ namespace egret {
     }
 
     function bkMeasureText(text: string, fontFamily: string, size: number, bold: boolean, italic: boolean): number {
-        if (!defaultText) {
-            defaultText = new (BK as any).TextNode(defaultStyle, "");
+        if (!context) {
+            context = new BK.Canvas(1, 1);
         }
 
-        defaultStyle.fontSize = size;
-        defaultStyle.bold = bold ? 1 : 0;
-        defaultStyle.italic = italic ? 1 : 0;
-        let textSize: { height: number, width: number, contentHeight: number, contentWidth: number } = defaultText.measureTextSize(defaultStyle, text);
-        //bk特殊处理
-        //新的库宽度小1，这里进行特殊处理
-        return textSize.contentWidth + 1;
+        if (context.measureText) {
+            //通过canvas进行文本测量
+            context.textBaseLine = 'bottom';
+            context.textAlign = "left";
+            context.setTextSize(size);
+            //设置字体
+            if (fontFamily) {
+                let path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
+                if (BK.FileUtil.isFileExist(path)) {
+                    context.fontPath = path;
+                } else {
+                    // context.fontPath = undefined;
+                    context.size = { width: 1, height: 1 }
+                }
+            }
+            //设置加粗
+            context.setTextBold(bold);
+            //设置斜体
+            context.setTextItalic(italic);
+            let textSize = context.measureText(text, 1024, 1024);
+            return textSize.width;
+        } else {
+            //通过原生TextNode进行文本测量
+            if (!defaultText) {
+                defaultText = new (BK as any).TextNode(defaultStyle, "");
+            }
+            defaultStyle.fontSize = size;
+            defaultStyle.bold = bold ? 1 : 0;
+            defaultStyle.italic = italic ? 1 : 0;
+            let textSize: { height: number, width: number, contentHeight: number, contentWidth: number } = defaultText.measureTextSize(defaultStyle, text);
+            //bk特殊处理
+            //新的库宽度小1，这里进行特殊处理
+            return textSize.contentWidth + 1;
+        }
+
     }
 
     sys.measureText = bkMeasureText as any;
