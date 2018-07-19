@@ -2119,8 +2119,8 @@ namespace egret {
 
         if (context.measureText) {
             //设置字体
-            if (fontFamily) {
-                let path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
+            if (fontFamily && fontFamily !== 'Arial') {
+                let path = fontFamily.indexOf('GameRes://') > 0 || fontFamily.indexOf('GameSandBox://') > 0 ? fontFamily : "GameRes://" + fontFamily;
                 if (BK.FileUtil.isFileExist(path)) {
                     context.fontPath = path;
                 } else {

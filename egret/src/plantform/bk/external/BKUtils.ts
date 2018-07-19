@@ -1,5 +1,5 @@
 namespace egret {
-    export const emptyTexture = BK.Texture.createTexture(1, 1);
+    // export const emptyTexture = BK.Texture.createTexture(1, 1);
 
     export function defineProxyProperties(target: any, proxy: any): void {
         const names = Object.getOwnPropertyNames(target);

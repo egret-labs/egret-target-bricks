@@ -40,7 +40,7 @@ namespace egret {
                 //ttf字体加载。默认传入为相对根目录的地址
                 let fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
-                    let path = fontFamily.indexOf("GameRes://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
+                    let path = fontFamily.indexOf("GameRes://") >= 0 ||fontFamily.indexOf("GameSandBox://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
                     if (BK.FileUtil.isFileExist(path)) {
                         context.fontPath = path;
                     } else {
