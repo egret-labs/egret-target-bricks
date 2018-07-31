@@ -12872,6 +12872,16 @@ var egret;
              * 更新播放器视口尺寸
              */
             BKWebPlayer.prototype.updateScreenSize = function () {
+                var orientation = this.stage.$orientation;
+                if (orientation == egret.OrientationMode.AUTO || orientation == egret.OrientationMode.PORTRAIT) {
+                    BK.Director.screenMode = 1 /* OrientationPortrait */;
+                }
+                else if (orientation == egret.OrientationMode.LANDSCAPE) {
+                    BK.Director.screenMode = 2 /* OrientationLandscapeLeft */;
+                }
+                else if (orientation == egret.OrientationMode.LANDSCAPE_FLIPPED) {
+                    BK.Director.screenMode = 3 /* OrientationLandscapeRight */;
+                }
                 var screenPixelSize = BK.Director.screenPixelSize;
                 var screenWidth = screenPixelSize.width;
                 var screenHeight = screenPixelSize.height;

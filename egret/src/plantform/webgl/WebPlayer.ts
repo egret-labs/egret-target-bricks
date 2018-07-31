@@ -132,6 +132,16 @@ namespace egret.web {
          * 更新播放器视口尺寸
          */
         public updateScreenSize(): void {
+
+            let orientation = this.stage.$orientation;
+            if (orientation == egret.OrientationMode.AUTO || orientation == egret.OrientationMode.PORTRAIT) {
+                BK.Director.screenMode = BK_SCREEN_MODE.OrientationPortrait
+            } else if (orientation == egret.OrientationMode.LANDSCAPE) {
+                BK.Director.screenMode = BK_SCREEN_MODE.OrientationLandscapeLeft;
+            } else if (orientation == egret.OrientationMode.LANDSCAPE_FLIPPED) {
+                BK.Director.screenMode = BK_SCREEN_MODE.OrientationLandscapeRight;
+            }
+
             const screenPixelSize = BK.Director.screenPixelSize;
             let screenWidth: number = screenPixelSize.width;
             let screenHeight: number = screenPixelSize.height;
