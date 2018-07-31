@@ -235,9 +235,19 @@ namespace egret {
       * 为16进制数字补0，输出字符串
       */
     export function refitColorString(num: number, length: number): string {
-        let str = num.toString(16);
-        let zero = "00000000";
-        return zero.substr(0, length - str.length) + str;
+
+        if (num < 0)
+            num = 0;
+        if (num > 16777215)
+            num = 16777215;
+        var color = num.toString(16).toUpperCase();
+        while (color.length > 6) {
+            color = color.slice(1, color.length);
+        }
+        while (color.length < 6) {
+            color = "0" + color;
+        }
+        return color;
     }
 
     if (window['renderMode'] == 'webgl') {

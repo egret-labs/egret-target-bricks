@@ -209,6 +209,7 @@ declare interface GAMESTATUSINFO {
  * 全局变量
  */
 declare var GameStatusInfo: GAMESTATUSINFO;
+declare function bkWebGLGetInstance();
 
 /**
  * environment

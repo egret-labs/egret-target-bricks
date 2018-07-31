@@ -2322,7 +2322,7 @@ var egret;
         /**
          * 玩一玩平台支持库版本号
          */
-        bricks.version = "1.0.19";
+        bricks.version = "1.0.20";
     })(bricks = egret.bricks || (egret.bricks = {}));
 })(egret || (egret = {}));
 (function (egret) {
@@ -8909,9 +8909,18 @@ var egret;
       * 为16进制数字补0，输出字符串
       */
     function refitColorString(num, length) {
-        var str = num.toString(16);
-        var zero = "00000000";
-        return zero.substr(0, length - str.length) + str;
+        if (num < 0)
+            num = 0;
+        if (num > 16777215)
+            num = 16777215;
+        var color = num.toString(16).toUpperCase();
+        while (color.length > 6) {
+            color = color.slice(1, color.length);
+        }
+        while (color.length < 6) {
+            color = "0" + color;
+        }
+        return color;
     }
     egret.refitColorString = refitColorString;
     if (window['renderMode'] == 'webgl') {
