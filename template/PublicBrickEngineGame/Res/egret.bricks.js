@@ -3434,13 +3434,7 @@ var egret;
     var BKMesh = (function (_super) {
         __extends(BKMesh, _super);
         function BKMesh() {
-            var _this = _super.call(this, new BK.Mesh(egret.emptyTexture, [
-                { x: 0.0, y: 0.0, z: 0.0, r: 1.0, g: 1.0, b: 1.0, a: 1.0, u: 0.0, v: 1.0 },
-                { x: 0.0, y: 0.0, z: 0.0, r: 1.0, g: 1.0, b: 1.0, a: 1.0, u: 1.0, v: 1.0 },
-                { x: 0.0, y: -0.0, z: 0.0, r: 1.0, g: 1.0, b: 1.0, a: 1.0, u: 0.0, v: 0.0 }
-            ], [
-                0, 1, 2
-            ])) || this;
+            var _this = _super.call(this) || this;
             _this._textureDirty = true;
             _this._boundsDirty = true;
             _this._bounds = new egret.Rectangle();
@@ -7669,8 +7663,8 @@ var egret;
         }
         if (context.measureText) {
             //设置字体
-            if (fontFamily) {
-                var path = fontFamily.indexOf('GameRes://') > 0 ? fontFamily : "GameRes://" + fontFamily;
+            if (fontFamily && fontFamily !== 'Arial') {
+                var path = fontFamily.indexOf('GameRes://') > 0 || fontFamily.indexOf('GameSandBox://') > 0 ? fontFamily : "GameRes://" + fontFamily;
                 if (BK.FileUtil.isFileExist(path)) {
                     context.fontPath = path;
                 }
@@ -7898,7 +7892,7 @@ var egret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
-    egret.emptyTexture = BK.Texture.createTexture(1, 1);
+    // export const emptyTexture = BK.Texture.createTexture(1, 1);
     function defineProxyProperties(target, proxy) {
         var names = Object.getOwnPropertyNames(target);
         var _loop_1 = function (key) {
@@ -8200,7 +8194,8 @@ var egret;
                 }
             }
             else {
-                var path = url.indexOf("GameRes://") >= 0 ? url : "GameRes://" + url;
+                //图片加载还要包括头像
+                var path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
                 if (BK.FileUtil.isFileExist(path)) {
                     this.data = new egret.BitmapData(path);
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
@@ -8731,7 +8726,7 @@ var egret;
                 //ttf字体加载。默认传入为相对根目录的地址
                 var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
-                    var path = fontFamily.indexOf("GameRes://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
+                    var path = fontFamily.indexOf("GameRes://") >= 0 || fontFamily.indexOf("GameSandBox://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
                     if (BK.FileUtil.isFileExist(path)) {
                         context.fontPath = path;
                     }
@@ -12781,7 +12776,6 @@ var egret;
                 _this._mainTicker = BK.Director.ticker;
                 _this.init(options);
                 return _this;
-                // this.initOrientation();
             }
             BKWebPlayer.prototype.init = function (options) {
                 var _this = this;
@@ -12803,23 +12797,19 @@ var egret;
                     _this._touchHandler();
                 });
                 this._entryClassName = option.entryClassName;
+                this.showFPS = option.showFPS;
+                this.totalTick = 0;
+                this.totalTime = 0;
+                this.lastTime = 0;
+                this.drawCalls = 0;
+                this.costRender = 0;
+                this.costTicker = 0;
+                if (egret.FPSDisplay) {
+                    fpsDisplay = new egret.FPSDisplay(stage, this.showFPS, false, null, null);
+                }
                 this.screenDisplayList = this.createDisplayList(stage, buffer);
                 this.updateScreenSize();
                 this.updateMaxTouches();
-                // this.screenDisplayList.offsetX = this._viewRect.x;
-                // this.screenDisplayList.offsetY = -this._viewRect.y;
-                // //加入背景
-                // let tex = new BK.Texture('GameRes://resource/pixel.png');
-                // let background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1)
-                // let rgb_str = options.background.toString(16);
-                // let red = parseInt(rgb_str.substring(0, 2), 16) / 255;
-                // var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
-                // var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
-                // background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
-                // background_node.size = { width: this.stage.stageWidth, height: this.stage.stageHeight };
-                // background_node.position = { x: 0, y: -this.stage.stageHeight }
-                // BK.Director.root.addChild(background_node);
-                // background_node.zOrder = 1;
                 this.start();
             };
             /**
@@ -12865,6 +12855,7 @@ var egret;
                 option.orientation = options.orientation || egret.OrientationMode.AUTO;
                 option.maxTouches = 10;
                 option.textureScaleFactor = 1;
+                option.showFPS = options['showFPS'];
                 return option;
             };
             /**
@@ -12874,7 +12865,6 @@ var egret;
                 var displayList = new egret.sys.BKDisplayList(stage);
                 displayList.renderBuffer = buffer;
                 stage.$displayList = displayList;
-                //displayList.setClipRect(stage.$stageWidth, stage.$stageHeight);
                 return displayList;
             };
             /**
@@ -12962,14 +12952,38 @@ var egret;
              */
             BKWebPlayer.prototype.$render = function (triggerByFrame, costTicker) {
                 var stage = this.stage;
+                var t1 = egret.getTimer();
                 var drawCalls = stage.$displayList.drawToSurface();
+                var t2 = egret.getTimer();
+                if (triggerByFrame && this.showFPS && fpsDisplay) {
+                    var costRender = t2 - t1;
+                    var current = egret.getTimer();
+                    this.totalTime += current - this.lastTime;
+                    this.lastTime = current;
+                    this.totalTick++;
+                    this.drawCalls += drawCalls;
+                    this.costRender += costRender;
+                    this.costTicker += costTicker;
+                    if (this.totalTime >= 1000) {
+                        var lastFPS = Math.min(Math.ceil(this.totalTick * 1000 / this.totalTime), egret.ticker.$frameRate);
+                        var lastDrawCalls = Math.round(this.drawCalls / this.totalTick);
+                        var lastCostRedner = Math.round(this.costRender / this.totalTick);
+                        var lastCostTicker = Math.round(this.costTicker / this.totalTick);
+                        fpsDisplay.update({ fps: lastFPS, draw: lastDrawCalls, costTicker: lastCostTicker, costRender: lastCostRedner });
+                        this.totalTick = 0;
+                        this.totalTime = this.totalTime % 1000;
+                        this.drawCalls = 0;
+                        this.costRender = 0;
+                        this.costTicker = 0;
+                    }
+                }
             };
-            // public _viewRect: Rectangle = new egret.Rectangle();
             BKWebPlayer._viewRect = new egret.Rectangle();
             return BKWebPlayer;
         }(egret.HashObject));
         web.BKWebPlayer = BKWebPlayer;
         __reflect(BKWebPlayer.prototype, "egret.web.BKWebPlayer", ["egret.sys.Screen"]);
+        var fpsDisplay;
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
 var egret;

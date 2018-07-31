@@ -6,14 +6,11 @@ namespace egret.web {
      * @private
      */
     export class BKWebPlayer extends egret.HashObject implements egret.sys.Screen {
-
-        // public _viewRect: Rectangle = new egret.Rectangle();
         public static _viewRect: Rectangle = new egret.Rectangle();
 
         public constructor(options: BKRunEgretOptions) {
             super();
             this.init(options);
-            // this.initOrientation();
         }
 
         private init(options: BKRunEgretOptions): void {
@@ -36,27 +33,23 @@ namespace egret.web {
             BK.Director.ticker.add((ts, duration) => {
                 this._touchHandler();
             });
-
             this._entryClassName = option.entryClassName;
+            this.showFPS = option.showFPS;
+            this.totalTick = 0;
+            this.totalTime = 0;
+            this.lastTime = 0;
+            this.drawCalls = 0;
+            this.costRender = 0;
+            this.costTicker = 0;
+
+
+            if (egret.FPSDisplay) {
+                fpsDisplay = new egret.FPSDisplay(stage, this.showFPS, false, null, null);
+            }
+
             this.screenDisplayList = this.createDisplayList(stage, buffer)
             this.updateScreenSize();
             this.updateMaxTouches();
-
-            // this.screenDisplayList.offsetX = this._viewRect.x;
-            // this.screenDisplayList.offsetY = -this._viewRect.y;
-
-            // //加入背景
-            // let tex = new BK.Texture('GameRes://resource/pixel.png');
-            // let background_node = new BK.Sprite(0, 0, tex, 0, 1, 1, 1)
-            // let rgb_str = options.background.toString(16);
-            // let red = parseInt(rgb_str.substring(0, 2), 16) / 255;
-            // var green = parseInt(rgb_str.substring(2, 4), 16) / 255;
-            // var blue = parseInt(rgb_str.substring(4, 6), 16) / 255;
-            // background_node.vertexColor = { r: red, g: green, b: blue, a: 1 };
-            // background_node.size = { width: this.stage.stageWidth, height: this.stage.stageHeight };
-            // background_node.position = { x: 0, y: -this.stage.stageHeight }
-            // BK.Director.root.addChild(background_node);
-            // background_node.zOrder = 1;
             this.start();
         }
 
@@ -106,6 +99,7 @@ namespace egret.web {
             option.orientation = options.orientation || egret.OrientationMode.AUTO;
             option.maxTouches = 10;
             option.textureScaleFactor = 1;
+            option.showFPS = options['showFPS'];
             return option;
         }
 
@@ -117,7 +111,6 @@ namespace egret.web {
             let displayList: any = new egret.sys.BKDisplayList(stage);
             displayList.renderBuffer = buffer;
             stage.$displayList = displayList;
-            //displayList.setClipRect(stage.$stageWidth, stage.$stageHeight);
             return displayList;
         }
 
@@ -229,15 +222,51 @@ namespace egret.web {
         }
 
 
+        private showFPS: boolean;
+
+        private totalTick: number;
+        private lastTime: number;
+        private totalTime: number;
+        private drawCalls: number;
+        private costRender: number;
+        private costTicker: number;
+
         /**
          * @private
          * 渲染屏幕
          */
         $render(triggerByFrame: boolean, costTicker: number): void {
             let stage = this.stage;
+            let t1 = egret.getTimer();
             let drawCalls = stage.$displayList.drawToSurface();
+            let t2 = egret.getTimer();
+
+            if (triggerByFrame && this.showFPS && fpsDisplay) {
+                let costRender = t2 - t1;
+                let current = egret.getTimer();
+                this.totalTime += current - this.lastTime;
+                this.lastTime = current;
+                this.totalTick++;
+                this.drawCalls += drawCalls;
+                this.costRender += costRender;
+                this.costTicker += costTicker;
+                if (this.totalTime >= 1000) {
+                    let lastFPS = Math.min(Math.ceil(this.totalTick * 1000 / this.totalTime), ticker.$frameRate);
+                    let lastDrawCalls = Math.round(this.drawCalls / this.totalTick);
+                    let lastCostRedner = Math.round(this.costRender / this.totalTick);
+                    let lastCostTicker = Math.round(this.costTicker / this.totalTick);
+
+                    fpsDisplay.update({ fps: lastFPS, draw: lastDrawCalls, costTicker: lastCostTicker, costRender: lastCostRedner });
+                    this.totalTick = 0;
+                    this.totalTime = this.totalTime % 1000;
+                    this.drawCalls = 0;
+                    this.costRender = 0;
+                    this.costTicker = 0;
+                }
+            }
         }
     }
 
+    let fpsDisplay: egret.FPSDisplay;
 
 }

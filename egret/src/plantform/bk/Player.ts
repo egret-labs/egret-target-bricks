@@ -199,5 +199,6 @@ namespace egret {
         contentHeight?: number;
         orientation?: string;
         background: number;
+        showFps?: boolean;
     }
 }
