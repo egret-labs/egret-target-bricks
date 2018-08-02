@@ -137,9 +137,10 @@ namespace egret.web {
             if (orientation == egret.OrientationMode.AUTO || orientation == egret.OrientationMode.PORTRAIT) {
                 BK.Director.screenMode = BK_SCREEN_MODE.OrientationPortrait
             } else if (orientation == egret.OrientationMode.LANDSCAPE) {
-                BK.Director.screenMode = BK_SCREEN_MODE.OrientationLandscapeLeft;
-            } else if (orientation == egret.OrientationMode.LANDSCAPE_FLIPPED) {
                 BK.Director.screenMode = BK_SCREEN_MODE.OrientationLandscapeRight;
+            } else if (orientation == egret.OrientationMode.LANDSCAPE_FLIPPED) {
+                BK.Director.screenMode = BK_SCREEN_MODE.OrientationLandscapeLeft;
+
             }
 
             const screenPixelSize = BK.Director.screenPixelSize;

@@ -12877,10 +12877,10 @@ var egret;
                     BK.Director.screenMode = 1 /* OrientationPortrait */;
                 }
                 else if (orientation == egret.OrientationMode.LANDSCAPE) {
-                    BK.Director.screenMode = 2 /* OrientationLandscapeLeft */;
+                    BK.Director.screenMode = 3 /* OrientationLandscapeRight */;
                 }
                 else if (orientation == egret.OrientationMode.LANDSCAPE_FLIPPED) {
-                    BK.Director.screenMode = 3 /* OrientationLandscapeRight */;
+                    BK.Director.screenMode = 2 /* OrientationLandscapeLeft */;
                 }
                 var screenPixelSize = BK.Director.screenPixelSize;
                 var screenWidth = screenPixelSize.width;
