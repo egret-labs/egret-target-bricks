@@ -40,14 +40,34 @@ namespace egret {
                 }
                 this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             }
-            this._bkAudio.startMusic();
+            this._bkAudio.startMusic(() => {
+                this.onPlayEnd();
+            });
         }
 
         stop(): void {
-            if(!this._bkAudio){
+            if (!this._bkAudio) {
                 return;
             }
             this._bkAudio.stopMusic();
+        }
+
+        pause(): void {
+            if (!this._bkAudio) {
+                return;
+            }
+            this._bkAudio.pauseMusic();
+        }
+
+        resume(): void {
+            if (!this._bkAudio) {
+                return;
+            }
+            this._bkAudio.resumeMusic();
+        }
+
+        onPlayEnd() {
+            this.dispatchEventWith(egret.Event.SOUND_COMPLETE);
         }
     }
 }

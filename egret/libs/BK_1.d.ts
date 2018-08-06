@@ -194,7 +194,7 @@ declare namespace BK {
         /**
          * 开始播放
          */
-        startMusic();
+        startMusic(callback?: () => void);
 
         /**
          * 暂停
@@ -384,10 +384,10 @@ declare namespace BK {
         measureText(text: string, maxX: number, maxY: number): { width: number, height: number };
 
         //文本基线
-        textBaseline: number|string;
+        textBaseline: number | string;
 
         //文本对齐方式
-        textAlign: number|string;
+        textAlign: number | string;
 
         //字体地址
         fontPath: string;

@@ -5069,6 +5069,7 @@ var egret;
             return _super.call(this) || this;
         }
         BKSoundChannel.prototype.$play = function () {
+            var _this = this;
             if (!this._bkAudio) {
                 var _type = void 0;
                 switch (this.$type) {
@@ -5089,13 +5090,30 @@ var egret;
                 }
                 this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
             }
-            this._bkAudio.startMusic();
+            this._bkAudio.startMusic(function () {
+                _this.onPlayEnd();
+            });
         };
         BKSoundChannel.prototype.stop = function () {
             if (!this._bkAudio) {
                 return;
             }
             this._bkAudio.stopMusic();
+        };
+        BKSoundChannel.prototype.pause = function () {
+            if (!this._bkAudio) {
+                return;
+            }
+            this._bkAudio.pauseMusic();
+        };
+        BKSoundChannel.prototype.resume = function () {
+            if (!this._bkAudio) {
+                return;
+            }
+            this._bkAudio.resumeMusic();
+        };
+        BKSoundChannel.prototype.onPlayEnd = function () {
+            this.dispatchEventWith(egret.Event.SOUND_COMPLETE);
         };
         return BKSoundChannel;
     }(egret.EventDispatcher));
