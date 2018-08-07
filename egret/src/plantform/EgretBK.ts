@@ -175,20 +175,6 @@ namespace egret {
      * 将当前渲染模式变为BK-Webgl模式
      */
     function modifyEgretToBKWebgl(options: BKRunEgretOptions): void {
-        //为贴合玩一玩平台webgl，修改egret库中deleteWebGLTexture方法
-        egret.WebGLUtils.deleteWebGLTexture = function (bitmapData) {
-            // debugger
-            if (bitmapData) {
-                var gl = bitmapData.glContext;
-                if (gl) {
-                    gl.deleteTexture(bitmapData);
-                } else {
-                    gl = bkWebGLGetInstance();
-                    gl.deleteTexture(bitmapData);
-                }
-            }
-        };
-
 
         // WebGL上下文参数自定义
         if (options.renderMode == "webgl") {
