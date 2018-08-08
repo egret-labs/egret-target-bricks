@@ -9738,7 +9738,8 @@ var egret;
                 }
             };
             WebGLDrawCmdManager.prototype.pushChangeSmoothing = function (texture, smoothing) {
-                texture["smoothing"] = smoothing;
+                // texture["smoothing"] = smoothing;
+                egret.web.WebGLRenderContext.getInstance().setTextureSmoothing(texture, smoothing);
                 var data = this.drawData[this.drawDataLen] || {};
                 data.type = 10 /* SMOOTHING */;
                 data.texture = texture;
@@ -10020,7 +10021,7 @@ var egret;
                 _this.$offsetX = 0;
                 _this.$offsetY = 0;
                 // 获取webglRenderContext
-                _this.context = web.WebGLRenderContext.getInstance(width, height);
+                _this.context = web.WebGLRenderContext.getInstance();
                 // buffer 对应的 render target
                 _this.rootRenderTarget = new web.WebGLRenderTarget(_this.context.context, 3, 3);
                 if (width && height) {
@@ -10332,32 +10333,21 @@ var egret;
 (function (egret) {
     var web;
     (function (web) {
-        // /**
-        //  * 创建一个canvas。
-        //  */
-        // function createCanvas(width?: number, height?: number): HTMLCanvasElement {
-        //     let canvas: HTMLCanvasElement = document.createElement("canvas");
-        //     if (!isNaN(width) && !isNaN(height)) {
-        //         canvas.width = width;
-        //         canvas.height = height;
-        //     }
-        //     return canvas;
-        // }
         /**
          * @private
          * WebGL上下文对象，提供简单的绘图接口
          * 抽象出此类，以实现共用一个context
          */
         var WebGLRenderContext = (function () {
-            function WebGLRenderContext(width, height) {
+            function WebGLRenderContext() {
                 this.glID = null;
                 this.projectionX = NaN;
                 this.projectionY = NaN;
                 this.contextLost = false;
                 this.$scissorState = false;
                 this.vertSize = 5;
-                // this.surface; //= createCanvas(width, height);
-                this.surface = { width: width, height: height };
+                this.textureSmoothingMap = {};
+                this.surface = { width: 0, height: 0 };
                 this.initWebGL();
                 this.$bufferStack = [];
                 var gl = this.context;
@@ -10369,11 +10359,11 @@ var egret;
                 this.vao = new web.WebGLVertexArrayObject();
                 this.setGlobalCompositeOperation("source-over");
             }
-            WebGLRenderContext.getInstance = function (width, height) {
+            WebGLRenderContext.getInstance = function () {
                 if (this.instance) {
                     return this.instance;
                 }
-                this.instance = new WebGLRenderContext(width, height);
+                this.instance = new WebGLRenderContext();
                 return this.instance;
             };
             /**
@@ -10402,7 +10392,6 @@ var egret;
                 var lastBuffer = this.$bufferStack[this.$bufferStack.length - 1];
                 // 重新绑定
                 if (buffer != lastBuffer) {
-                    // this.$drawWebGL();
                     this.drawCmdManager.pushActivateBuffer(lastBuffer);
                 }
                 this.currentBuffer = lastBuffer;
@@ -10425,8 +10414,6 @@ var egret;
             WebGLRenderContext.prototype.uploadVerticesArray = function (array) {
                 var gl = this.context;
                 gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
-                // gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
-                // gl.bufferSubData(gl.ARRAY_BUFFER, 0, array);
             };
             /**
              * 上传索引数据
@@ -10629,7 +10616,8 @@ var egret;
                         bitmapData.source = null;
                     }
                     //todo 默认值
-                    bitmapData.webGLTexture["smoothing"] = true;
+                    // bitmapData.webGLTexture["smoothing"] = true;
+                    this.setTextureSmoothing(bitmapData.webGLTexture, true);
                 }
                 return bitmapData.webGLTexture;
             };
@@ -10771,7 +10759,7 @@ var egret;
                         this.$drawWebGL();
                     }
                 }
-                if (smoothing != undefined && texture["smoothing"] != smoothing) {
+                if (smoothing != undefined && this.getTextureSmoothing(texture) != smoothing) {
                     this.drawCmdManager.pushChangeSmoothing(texture, smoothing);
                 }
                 if (meshUVs) {
@@ -11208,6 +11196,17 @@ var egret;
                 WebGLRenderContext.blendModesForGL["lighter-in"] = [770, 771];
                 WebGLRenderContext.blendModesForGL["destination-out"] = [0, 771];
                 WebGLRenderContext.blendModesForGL["destination-in"] = [0, 770];
+            };
+            WebGLRenderContext.prototype.getTextureSmoothing = function (textureID) {
+                return this.textureSmoothingMap[textureID];
+            };
+            WebGLRenderContext.prototype.setTextureSmoothing = function (textureId, value) {
+                this.textureSmoothingMap[textureId] = value;
+            };
+            WebGLRenderContext.prototype.deleteTextureSmoothing = function (textureID) {
+                if (this.textureSmoothingMap[textureID]) {
+                    delete this.textureSmoothingMap[textureID];
+                }
             };
             WebGLRenderContext.glContextId = 0;
             WebGLRenderContext.blendModesForGL = null;
@@ -12464,6 +12463,7 @@ var egret;
                     gl = bkWebGLGetInstance();
                     gl.deleteTexture(bitmapData);
                 }
+                egret.web.WebGLRenderContext.getInstance().deleteTextureSmoothing(bitmapData);
             }
         };
         return BKWebGLUtils;

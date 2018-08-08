@@ -81,6 +81,7 @@ namespace egret {
                     gl = bkWebGLGetInstance();
                     gl.deleteTexture(bitmapData);
                 }
+                egret.web.WebGLRenderContext.getInstance().deleteTextureSmoothing(bitmapData);
             }
         }
     }

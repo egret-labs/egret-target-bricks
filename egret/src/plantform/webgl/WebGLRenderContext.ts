@@ -6,18 +6,6 @@
  */
 namespace egret.web {
 
-    // /**
-    //  * 创建一个canvas。
-    //  */
-    // function createCanvas(width?: number, height?: number): HTMLCanvasElement {
-    //     let canvas: HTMLCanvasElement = document.createElement("canvas");
-    //     if (!isNaN(width) && !isNaN(height)) {
-    //         canvas.width = width;
-    //         canvas.height = height;
-    //     }
-    //     return canvas;
-    // }
-
     /**
      * @private
      * WebGL上下文对象，提供简单的绘图接口
@@ -42,11 +30,11 @@ namespace egret.web {
          * WebGLRenderContext单例
          */
         private static instance: WebGLRenderContext;
-        public static getInstance(width: number, height: number): WebGLRenderContext {
+        public static getInstance(): WebGLRenderContext {
             if (this.instance) {
                 return this.instance;
             }
-            this.instance = new WebGLRenderContext(width, height);
+            this.instance = new WebGLRenderContext();
             return this.instance;
         }
 
@@ -108,8 +96,6 @@ namespace egret.web {
 
             // 重新绑定
             if (buffer != lastBuffer) {
-                // this.$drawWebGL();
-
                 this.drawCmdManager.pushActivateBuffer(lastBuffer);
             }
 
@@ -141,8 +127,6 @@ namespace egret.web {
         private uploadVerticesArray(array: any): void {
             let gl: any = this.context;
             gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
-            // gl.bufferData(gl.ARRAY_BUFFER, array, gl.STREAM_DRAW);
-            // gl.bufferSubData(gl.ARRAY_BUFFER, 0, array);
         }
 
         /**
@@ -157,11 +141,8 @@ namespace egret.web {
         private vertexBuffer;
         private indexBuffer;
 
-        public constructor(width?: number, height?: number) {
-
-            // this.surface; //= createCanvas(width, height);
-            this.surface = { width: width, height: height }
-
+        public constructor() {
+            this.surface = { width: 0, height: 0 }
             this.initWebGL();
 
             this.$bufferStack = [];
@@ -411,7 +392,8 @@ namespace egret.web {
                     bitmapData.source = null;
                 }
                 //todo 默认值
-                bitmapData.webGLTexture["smoothing"] = true;
+                // bitmapData.webGLTexture["smoothing"] = true;
+                this.setTextureSmoothing(bitmapData.webGLTexture, true);
             }
             return bitmapData.webGLTexture;
         }
@@ -579,7 +561,7 @@ namespace egret.web {
                 }
             }
 
-            if (smoothing != undefined && texture["smoothing"] != smoothing) {
+            if (smoothing != undefined && this.getTextureSmoothing(texture) != smoothing) {
                 this.drawCmdManager.pushChangeSmoothing(texture, smoothing);
             }
 
@@ -1098,6 +1080,25 @@ namespace egret.web {
             WebGLRenderContext.blendModesForGL["destination-out"] = [0, 771];
             WebGLRenderContext.blendModesForGL["destination-in"] = [0, 770];
         }
+
+        private textureSmoothingMap = {};
+
+
+
+        public getTextureSmoothing(textureID: any): boolean {
+            return this.textureSmoothingMap[textureID];
+        }
+
+        public setTextureSmoothing(textureId: any, value: boolean) {
+            this.textureSmoothingMap[textureId] = value;
+        }
+
+        public deleteTextureSmoothing(textureID: any) {
+            if (this.textureSmoothingMap[textureID]) {
+                delete this.textureSmoothingMap[textureID];
+            }
+        }
+
     }
 
     WebGLRenderContext.initBlendMode();

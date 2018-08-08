@@ -109,7 +109,8 @@ namespace egret.web {
         }
 
         public pushChangeSmoothing(texture:WebGLTexture, smoothing:boolean):void {
-            texture["smoothing"] = smoothing;
+            // texture["smoothing"] = smoothing;
+            egret.web.WebGLRenderContext.getInstance().setTextureSmoothing(texture,smoothing);
             let data = this.drawData[this.drawDataLen] || {};
             data.type = DRAWABLE_TYPE.SMOOTHING;
             data.texture = texture;
