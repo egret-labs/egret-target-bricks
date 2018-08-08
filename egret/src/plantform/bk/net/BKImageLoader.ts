@@ -24,26 +24,28 @@ namespace egret {
                 //根据url存储缓存的图片到沙盒中
                 let sha1 = _sha1FromUrl(url);
                 let imgUrl = "GameSandBox://webcache/image" + sha1
-                let buff = BK.FileUtil.readFile(imgUrl);
-                if (buff && buff.length > 0) {
-                    this._loadFromBuffer.call(this, imgUrl);
-                } else {
-                    var httpGet = new BK.HttpUtil(url);
-                    httpGet.setHttpMethod("get")
-                    httpGet.requestAsync(function (res, code) {
-                        if (code == 200) {
-                            (BK.FileUtil as any).writeBufferToFile(imgUrl, res);
-                            this._loadFromBuffer.call(this, imgUrl);
-                        } else {
-                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
-                            $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
-                        }
-                    }.bind(this));
+                if (BK.FileUtil.isFileExist(imgUrl)) {
+                    let buff = BK.FileUtil.readFile(imgUrl);
+                    if (buff.length > 0) {
+                        this._loadFromBuffer.call(this, imgUrl);
+                        return;
+                    }
                 }
+                var httpGet = new BK.HttpUtil(url);
+                httpGet.setHttpMethod("get")
+                httpGet.requestAsync(function (res, code) {
+                    if (code == 200) {
+                        (BK.FileUtil as any).writeBufferToFile(imgUrl, res);
+                        this._loadFromBuffer.call(this, imgUrl);
+                    } else {
+                        console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                        $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                    }
+                }.bind(this));
 
             } else {
                 //图片加载还要包括头像
-                let path = url.indexOf("GameRes://") >= 0||url.indexOf("GameSandBox://") >= 0  ? url : "GameRes://" + url;
+                let path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
                 if (BK.FileUtil.isFileExist(path)) {
                     this.data = new egret.BitmapData(path);
                     $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);

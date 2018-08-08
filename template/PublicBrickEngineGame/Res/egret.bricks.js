@@ -4959,24 +4959,25 @@ var egret;
                 //根据url存储缓存的声音到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var soundUrl_1 = "GameSandBox://webcache/sound" + sha1;
-                var buff = BK.FileUtil.readFile(soundUrl_1);
-                if (buff && buff.length > 0) {
-                    this._loadFromBuffer.call(this, soundUrl_1);
+                if (BK.FileUtil.isFileExist(soundUrl_1)) {
+                    var buff = BK.FileUtil.readFile(soundUrl_1);
+                    if (buff.length > 0) {
+                        this._loadFromBuffer.call(this, soundUrl_1);
+                        return;
+                    }
                 }
-                else {
-                    var httpGet = new BK.HttpUtil(url);
-                    httpGet.setHttpMethod("get");
-                    httpGet.requestAsync(function (res, code) {
-                        if (code == 200) {
-                            BK.FileUtil.writeBufferToFile(soundUrl_1, res);
-                            this._loadFromBuffer.call(this, soundUrl_1);
-                        }
-                        else {
-                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
-                            egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
-                        }
-                    }.bind(this));
-                }
+                var httpGet = new BK.HttpUtil(url);
+                httpGet.setHttpMethod("get");
+                httpGet.requestAsync(function (res, code) {
+                    if (code == 200) {
+                        BK.FileUtil.writeBufferToFile(soundUrl_1, res);
+                        this._loadFromBuffer.call(this, soundUrl_1);
+                    }
+                    else {
+                        console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                    }
+                }.bind(this));
             }
             else {
                 this.url = url;
@@ -8178,24 +8179,25 @@ var egret;
                 //根据url存储缓存的图片到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
-                var buff = BK.FileUtil.readFile(imgUrl_1);
-                if (buff && buff.length > 0) {
-                    this._loadFromBuffer.call(this, imgUrl_1);
+                if (BK.FileUtil.isFileExist(imgUrl_1)) {
+                    var buff = BK.FileUtil.readFile(imgUrl_1);
+                    if (buff.length > 0) {
+                        this._loadFromBuffer.call(this, imgUrl_1);
+                        return;
+                    }
                 }
-                else {
-                    var httpGet = new BK.HttpUtil(url);
-                    httpGet.setHttpMethod("get");
-                    httpGet.requestAsync(function (res, code) {
-                        if (code == 200) {
-                            BK.FileUtil.writeBufferToFile(imgUrl_1, res);
-                            this._loadFromBuffer.call(this, imgUrl_1);
-                        }
-                        else {
-                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
-                            egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
-                        }
-                    }.bind(this));
-                }
+                var httpGet = new BK.HttpUtil(url);
+                httpGet.setHttpMethod("get");
+                httpGet.requestAsync(function (res, code) {
+                    if (code == 200) {
+                        BK.FileUtil.writeBufferToFile(imgUrl_1, res);
+                        this._loadFromBuffer.call(this, imgUrl_1);
+                    }
+                    else {
+                        console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                    }
+                }.bind(this));
             }
             else {
                 //图片加载还要包括头像

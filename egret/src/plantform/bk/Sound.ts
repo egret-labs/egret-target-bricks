@@ -51,22 +51,25 @@ namespace egret {
                 //根据url存储缓存的声音到沙盒中
                 let sha1 = _sha1FromUrl(url);
                 let soundUrl = "GameSandBox://webcache/sound" + sha1
-                let buff = BK.FileUtil.readFile(soundUrl);
-                if (buff && buff.length > 0) {
-                    this._loadFromBuffer.call(this, soundUrl);
-                } else {
-                    var httpGet = new BK.HttpUtil(url);
-                    httpGet.setHttpMethod("get")
-                    httpGet.requestAsync(function (res, code) {
-                        if (code == 200) {
-                            (BK.FileUtil as any).writeBufferToFile(soundUrl, res);
-                            this._loadFromBuffer.call(this, soundUrl);
-                        } else {
-                            console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
-                            $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
-                        }
-                    }.bind(this));
+                if (BK.FileUtil.isFileExist(soundUrl)) {
+                    let buff = BK.FileUtil.readFile(soundUrl);
+                    if (buff.length > 0) {
+                        this._loadFromBuffer.call(this, soundUrl);
+                        return;
+                    }
                 }
+                var httpGet = new BK.HttpUtil(url);
+                httpGet.setHttpMethod("get")
+                httpGet.requestAsync(function (res, code) {
+                    if (code == 200) {
+                        (BK.FileUtil as any).writeBufferToFile(soundUrl, res);
+                        this._loadFromBuffer.call(this, soundUrl);
+                    } else {
+                        console.log("BK http加载外部资源失败, url = " + url + ", code = " + code);
+                        $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                    }
+                }.bind(this));
+
 
             } else {
                 this.url = url;
