@@ -421,4 +421,7 @@ declare namespace BK {
         contentSize;
     }
 
+    export class Game {
+        constructor(event: any)
+    }
 }

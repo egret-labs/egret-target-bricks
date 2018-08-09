@@ -25,6 +25,7 @@ namespace egret.web {
 
             let buffer = new sys.RenderBuffer(undefined, undefined, true);
             lifecycle.stage = stage;
+            lifecycle.addLifecycleListener(WebLifeCycleHandler);
             this.playerOption = option;
             this.stage = stage;
             sys.$TempStage = this.stage;

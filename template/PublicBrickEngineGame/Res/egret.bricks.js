@@ -1319,169 +1319,60 @@ var egret;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
-    var BKSprite9 = (function () {
-        function BKSprite9() {
-            /**
-             * 贴图实际宽度
-             */
-            this._contentWidth = 0;
-            /**
-             * 贴图实际高度
-             */
-            this._contentHeight = 0;
-            /**
-             * 逻辑大小
-             */
-            this._size = { width: 0.0, height: 0.0 };
-            this._rawGrid = new egret.Rectangle();
-            /**
-             * x y 描述左上角size，width height 描述右下角size
-             */
-            this._grid = new egret.Rectangle();
-            this._leftTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._centerTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._rightTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._leftCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._centerCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._rightCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._leftBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._centerBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this._rightBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
-            this.__nativeObj = new BK.Node();
-            //
-            egret.defineProxyProperties(this.__nativeObj, this);
-            this.__nativeObj.addChild(this._leftTop);
-            this.__nativeObj.addChild(this._centerTop);
-            this.__nativeObj.addChild(this._rightTop);
-            this.__nativeObj.addChild(this._leftCenter);
-            this.__nativeObj.addChild(this._centerCenter);
-            this.__nativeObj.addChild(this._rightCenter);
-            this.__nativeObj.addChild(this._leftBottom);
-            this.__nativeObj.addChild(this._centerBottom);
-            this.__nativeObj.addChild(this._rightBottom);
+    // export const emptyTexture = BK.Texture.createTexture(1, 1);
+    function defineProxyProperties(target, proxy) {
+        var names = Object.getOwnPropertyNames(target);
+        var _loop_1 = function (key) {
+            Object.defineProperty(proxy, key, {
+                get: function () {
+                    return target[key];
+                },
+                set: function (obj) {
+                    target[key] = obj;
+                }
+            });
+        };
+        for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
+            var key = names_1[_i];
+            _loop_1(key);
         }
-        /**
-         * 根据传入的Rectangle的大小得到9点位置数据
-         */
-        BKSprite9.prototype._updateGrid = function () {
-            /**
-             * _rawGrid为逻辑大小，用逻辑大小进行运算
-             */
-            this._grid.x = this._rawGrid.x;
-            this._grid.y = this._rawGrid.y;
-            this._grid.width = this._contentWidth - this._rawGrid.x - this._rawGrid.width;
-            this._grid.height = this._contentHeight - this._rawGrid.y - this._rawGrid.height;
-        };
-        BKSprite9.prototype.dispose = function () {
-            this.__nativeObj.dispose();
-        };
-        BKSprite9.prototype.setTexture = function (value) {
-            this._leftTop.setTexture(value);
-            this._centerTop.setTexture(value);
-            this._rightTop.setTexture(value);
-            this._leftCenter.setTexture(value);
-            this._centerCenter.setTexture(value);
-            this._rightCenter.setTexture(value);
-            this._leftBottom.setTexture(value);
-            this._centerBottom.setTexture(value);
-            this._rightBottom.setTexture(value);
-        };
-        BKSprite9.prototype.setScale9Grid = function (value) {
-            this._rawGrid.setTo(value.x, value.y, value.width, value.height);
-            this._updateGrid();
-        };
-        BKSprite9.prototype.adjustTexturePosition = function (offsetX, offsetY, _textureWidth, _textureHeight, rotated) {
-            this._contentWidth = _textureWidth;
-            this._contentHeight = _textureHeight;
-            this.offsetX = offsetX;
-            this.offsetY = offsetY;
-            this.rotated = rotated;
-            this._updateGrid();
-            /**
-             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示贴图九宫大小
-             * 下面是相对于贴图的大小的9点size
-             */
-            var ltW = this._grid.x;
-            var ltH = this._grid.y;
-            var rbW = this._grid.width;
-            var rbH = this._grid.height;
-            var centerWidth = this._contentWidth - ltW - rbW;
-            var centerHeight = this._contentHeight - ltH - rbH;
-            if (rotated === true) {
-                // TODO
-            }
-            else {
-                /**
-                 * offset是相对于贴图的，ltw等数据需要相对于宽高作出变化
-                 */
-                var x1 = offsetX;
-                var x2 = offsetX + ltW;
-                var x3 = offsetX + (_textureWidth - rbW);
-                var y1 = offsetY;
-                var y2 = offsetY + rbH;
-                var y3 = offsetY + (_textureHeight - ltH);
-                this._leftTop.adjustTexturePosition(x1, y3, ltW, ltH);
-                this._centerTop.adjustTexturePosition(x2, y3, centerWidth, ltH);
-                this._rightTop.adjustTexturePosition(x3, y3, rbW, ltH);
-                this._leftCenter.adjustTexturePosition(x1, y2, ltW, centerHeight);
-                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth, centerHeight);
-                this._rightCenter.adjustTexturePosition(x3, y2, rbW, centerHeight);
-                this._leftBottom.adjustTexturePosition(x1, y1, ltW, rbH);
-                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth, rbH);
-                this._rightBottom.adjustTexturePosition(x3, y1, rbW, rbH);
-            }
-        };
-        Object.defineProperty(BKSprite9.prototype, "size", {
-            get: function () {
-                return this._size;
-            },
-            set: function (value) {
-                this._size.width = value.width;
-                this._size.height = value.height;
-                this._updateGrid();
-                var ltW = this._grid.x;
-                var ltH = this._grid.y;
-                var rbW = this._grid.width;
-                var rbH = this._grid.height;
-                if (this._size.width < ltW + rbW && this._size.width !== 0) {
-                    ltW = this._size.width * ltW / (this._contentWidth);
-                    rbW = this._size.width * rbW / (this._contentWidth);
-                }
-                if (this._size.height < ltH + rbH && this._size.height !== 0) {
-                    ltH = this._size.height * ltH / (this._contentHeight);
-                    rbH = this._size.height * rbH / (this._contentHeight);
-                }
-                var offsetX = 1;
-                var offsetY = 1;
-                var centerWidth = this._size.width - ltW - rbW;
-                var centerHeight = this._size.height - ltH - rbH;
-                this._leftTop.position = { x: 0.0, y: rbH + centerHeight };
-                this._centerTop.position = { x: ltW, y: rbH + centerHeight };
-                this._rightTop.position = { x: ltW + centerWidth, y: rbH + centerHeight };
-                this._leftCenter.position = { x: 0.0, y: rbH };
-                this._centerCenter.position = { x: ltW, y: rbH };
-                this._rightCenter.position = { x: ltW + centerWidth, y: rbH };
-                this._leftBottom.position = { x: 0.0, y: 0.0 };
-                this._centerBottom.position = { x: ltW, y: 0.0 };
-                this._rightBottom.position = { x: ltW + centerWidth, y: 0.0 };
-                this._leftTop.size = { width: ltW + offsetX, height: ltH };
-                this._centerTop.size = { width: centerWidth + offsetX, height: ltH };
-                this._rightTop.size = { width: rbW, height: ltH };
-                this._leftCenter.size = { width: ltW + offsetX, height: centerHeight + offsetY };
-                this._centerCenter.size = { width: centerWidth + offsetX, height: centerHeight + offsetY };
-                this._rightCenter.size = { width: rbW, height: centerHeight + offsetY };
-                this._leftBottom.size = { width: ltW + offsetX, height: rbH + offsetY };
-                this._centerBottom.size = { width: centerWidth + offsetX, height: rbH + offsetY };
-                this._rightBottom.size = { width: rbW, height: rbH + offsetY };
-                // this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        return BKSprite9;
-    }());
-    egret.BKSprite9 = BKSprite9;
-    __reflect(BKSprite9.prototype, "egret.BKSprite9");
+    }
+    egret.defineProxyProperties = defineProxyProperties;
+    function bricksBufferToArrayBuffer(bricksBuffer) {
+        var arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var pointer = 0;
+        while (pointer < bricksBuffer.bufferLength()) {
+            uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
+        }
+        // bricksBuffer.releaseBuffer();
+        return arrayBuffer;
+    }
+    egret.bricksBufferToArrayBuffer = bricksBufferToArrayBuffer;
+    function arrayBufferToBricksBuffer(arrayBuffer) {
+        var bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
+        var uint8Array = new Uint8Array(arrayBuffer);
+        var pointer = 0;
+        while (pointer < arrayBuffer.byteLength) {
+            bricksBuffer.writeUint8Buffer(uint8Array[pointer++]);
+        }
+        return bricksBuffer;
+    }
+    egret.arrayBufferToBricksBuffer = arrayBufferToBricksBuffer;
+    /**
+     * 将url通过sha1算法解析
+     * 返回sha1之后的url
+     */
+    function _sha1FromUrl(url) {
+        var bufSha = BK.Misc.sha1(url);
+        var sha1 = "";
+        for (var i = 0; i < bufSha.length; i++) {
+            var charCode = bufSha.readUint8Buffer();
+            sha1 += charCode.toString(16);
+        }
+        return sha1;
+    }
+    egret._sha1FromUrl = _sha1FromUrl;
 })(egret || (egret = {}));
 //////////////////////////////////////////////////////////////////////////////////////
 //
@@ -7709,6 +7600,172 @@ var egret;
         egret.TextField = egret.BKTextField;
     }
 })(egret || (egret = {}));
+var egret;
+(function (egret) {
+    var BKSprite9 = (function () {
+        function BKSprite9() {
+            /**
+             * 贴图实际宽度
+             */
+            this._contentWidth = 0;
+            /**
+             * 贴图实际高度
+             */
+            this._contentHeight = 0;
+            /**
+             * 逻辑大小
+             */
+            this._size = { width: 0.0, height: 0.0 };
+            this._rawGrid = new egret.Rectangle();
+            /**
+             * x y 描述左上角size，width height 描述右下角size
+             */
+            this._grid = new egret.Rectangle();
+            this._leftTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._centerTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._rightTop = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._leftCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._centerCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._rightCenter = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._leftBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._centerBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this._rightBottom = new BK.Sprite(0, 0, {}, 0, 1, 1, 1);
+            this.__nativeObj = new BK.Node();
+            //
+            egret.defineProxyProperties(this.__nativeObj, this);
+            this.__nativeObj.addChild(this._leftTop);
+            this.__nativeObj.addChild(this._centerTop);
+            this.__nativeObj.addChild(this._rightTop);
+            this.__nativeObj.addChild(this._leftCenter);
+            this.__nativeObj.addChild(this._centerCenter);
+            this.__nativeObj.addChild(this._rightCenter);
+            this.__nativeObj.addChild(this._leftBottom);
+            this.__nativeObj.addChild(this._centerBottom);
+            this.__nativeObj.addChild(this._rightBottom);
+        }
+        /**
+         * 根据传入的Rectangle的大小得到9点位置数据
+         */
+        BKSprite9.prototype._updateGrid = function () {
+            /**
+             * _rawGrid为逻辑大小，用逻辑大小进行运算
+             */
+            this._grid.x = this._rawGrid.x;
+            this._grid.y = this._rawGrid.y;
+            this._grid.width = this._contentWidth - this._rawGrid.x - this._rawGrid.width;
+            this._grid.height = this._contentHeight - this._rawGrid.y - this._rawGrid.height;
+        };
+        BKSprite9.prototype.dispose = function () {
+            this.__nativeObj.dispose();
+        };
+        BKSprite9.prototype.setTexture = function (value) {
+            this._leftTop.setTexture(value);
+            this._centerTop.setTexture(value);
+            this._rightTop.setTexture(value);
+            this._leftCenter.setTexture(value);
+            this._centerCenter.setTexture(value);
+            this._rightCenter.setTexture(value);
+            this._leftBottom.setTexture(value);
+            this._centerBottom.setTexture(value);
+            this._rightBottom.setTexture(value);
+        };
+        BKSprite9.prototype.setScale9Grid = function (value) {
+            this._rawGrid.setTo(value.x, value.y, value.width, value.height);
+            this._updateGrid();
+        };
+        BKSprite9.prototype.adjustTexturePosition = function (offsetX, offsetY, _textureWidth, _textureHeight, rotated) {
+            this._contentWidth = _textureWidth;
+            this._contentHeight = _textureHeight;
+            this.offsetX = offsetX;
+            this.offsetY = offsetY;
+            this.rotated = rotated;
+            this._updateGrid();
+            /**
+             * 此时_grid xy表示左上小方块宽高，width和height表示右下角宽高，content表示贴图九宫大小
+             * 下面是相对于贴图的大小的9点size
+             */
+            var ltW = this._grid.x;
+            var ltH = this._grid.y;
+            var rbW = this._grid.width;
+            var rbH = this._grid.height;
+            var centerWidth = this._contentWidth - ltW - rbW;
+            var centerHeight = this._contentHeight - ltH - rbH;
+            if (rotated === true) {
+                // TODO
+            }
+            else {
+                /**
+                 * offset是相对于贴图的，ltw等数据需要相对于宽高作出变化
+                 */
+                var x1 = offsetX;
+                var x2 = offsetX + ltW;
+                var x3 = offsetX + (_textureWidth - rbW);
+                var y1 = offsetY;
+                var y2 = offsetY + rbH;
+                var y3 = offsetY + (_textureHeight - ltH);
+                this._leftTop.adjustTexturePosition(x1, y3, ltW, ltH);
+                this._centerTop.adjustTexturePosition(x2, y3, centerWidth, ltH);
+                this._rightTop.adjustTexturePosition(x3, y3, rbW, ltH);
+                this._leftCenter.adjustTexturePosition(x1, y2, ltW, centerHeight);
+                this._centerCenter.adjustTexturePosition(x2, y2, centerWidth, centerHeight);
+                this._rightCenter.adjustTexturePosition(x3, y2, rbW, centerHeight);
+                this._leftBottom.adjustTexturePosition(x1, y1, ltW, rbH);
+                this._centerBottom.adjustTexturePosition(x2, y1, centerWidth, rbH);
+                this._rightBottom.adjustTexturePosition(x3, y1, rbW, rbH);
+            }
+        };
+        Object.defineProperty(BKSprite9.prototype, "size", {
+            get: function () {
+                return this._size;
+            },
+            set: function (value) {
+                this._size.width = value.width;
+                this._size.height = value.height;
+                this._updateGrid();
+                var ltW = this._grid.x;
+                var ltH = this._grid.y;
+                var rbW = this._grid.width;
+                var rbH = this._grid.height;
+                if (this._size.width < ltW + rbW && this._size.width !== 0) {
+                    ltW = this._size.width * ltW / (this._contentWidth);
+                    rbW = this._size.width * rbW / (this._contentWidth);
+                }
+                if (this._size.height < ltH + rbH && this._size.height !== 0) {
+                    ltH = this._size.height * ltH / (this._contentHeight);
+                    rbH = this._size.height * rbH / (this._contentHeight);
+                }
+                var offsetX = 1;
+                var offsetY = 1;
+                var centerWidth = this._size.width - ltW - rbW;
+                var centerHeight = this._size.height - ltH - rbH;
+                this._leftTop.position = { x: 0.0, y: rbH + centerHeight };
+                this._centerTop.position = { x: ltW, y: rbH + centerHeight };
+                this._rightTop.position = { x: ltW + centerWidth, y: rbH + centerHeight };
+                this._leftCenter.position = { x: 0.0, y: rbH };
+                this._centerCenter.position = { x: ltW, y: rbH };
+                this._rightCenter.position = { x: ltW + centerWidth, y: rbH };
+                this._leftBottom.position = { x: 0.0, y: 0.0 };
+                this._centerBottom.position = { x: ltW, y: 0.0 };
+                this._rightBottom.position = { x: ltW + centerWidth, y: 0.0 };
+                this._leftTop.size = { width: ltW + offsetX, height: ltH };
+                this._centerTop.size = { width: centerWidth + offsetX, height: ltH };
+                this._rightTop.size = { width: rbW, height: ltH };
+                this._leftCenter.size = { width: ltW + offsetX, height: centerHeight + offsetY };
+                this._centerCenter.size = { width: centerWidth + offsetX, height: centerHeight + offsetY };
+                this._rightCenter.size = { width: rbW, height: centerHeight + offsetY };
+                this._leftBottom.size = { width: ltW + offsetX, height: rbH + offsetY };
+                this._centerBottom.size = { width: centerWidth + offsetX, height: rbH + offsetY };
+                this._rightBottom.size = { width: rbW, height: rbH + offsetY };
+                // this.adjustTexturePosition(this.offsetX, this.offsetY, this._contentWidth, this._contentHeight, this.rotated);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return BKSprite9;
+    }());
+    egret.BKSprite9 = BKSprite9;
+    __reflect(BKSprite9.prototype, "egret.BKSprite9");
+})(egret || (egret = {}));
 /// <reference path="./DisplayObject.ts"/>
 var egret;
 (function (egret) {
@@ -7893,63 +7950,6 @@ var egret;
     if (window['renderMode'] != 'webgl') {
         egret.Bitmap = egret.BKBitmap;
     }
-})(egret || (egret = {}));
-var egret;
-(function (egret) {
-    // export const emptyTexture = BK.Texture.createTexture(1, 1);
-    function defineProxyProperties(target, proxy) {
-        var names = Object.getOwnPropertyNames(target);
-        var _loop_1 = function (key) {
-            Object.defineProperty(proxy, key, {
-                get: function () {
-                    return target[key];
-                },
-                set: function (obj) {
-                    target[key] = obj;
-                }
-            });
-        };
-        for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
-            var key = names_1[_i];
-            _loop_1(key);
-        }
-    }
-    egret.defineProxyProperties = defineProxyProperties;
-    function bricksBufferToArrayBuffer(bricksBuffer) {
-        var arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
-        var uint8Array = new Uint8Array(arrayBuffer);
-        var pointer = 0;
-        while (pointer < bricksBuffer.bufferLength()) {
-            uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
-        }
-        // bricksBuffer.releaseBuffer();
-        return arrayBuffer;
-    }
-    egret.bricksBufferToArrayBuffer = bricksBufferToArrayBuffer;
-    function arrayBufferToBricksBuffer(arrayBuffer) {
-        var bricksBuffer = new BK.Buffer(arrayBuffer.byteLength);
-        var uint8Array = new Uint8Array(arrayBuffer);
-        var pointer = 0;
-        while (pointer < arrayBuffer.byteLength) {
-            bricksBuffer.writeUint8Buffer(uint8Array[pointer++]);
-        }
-        return bricksBuffer;
-    }
-    egret.arrayBufferToBricksBuffer = arrayBufferToBricksBuffer;
-    /**
-     * 将url通过sha1算法解析
-     * 返回sha1之后的url
-     */
-    function _sha1FromUrl(url) {
-        var bufSha = BK.Misc.sha1(url);
-        var sha1 = "";
-        for (var i = 0; i < bufSha.length; i++) {
-            var charCode = bufSha.readUint8Buffer();
-            sha1 += charCode.toString(16);
-        }
-        return sha1;
-    }
-    egret._sha1FromUrl = _sha1FromUrl;
 })(egret || (egret = {}));
 var egret;
 (function (egret) {
@@ -12767,6 +12767,53 @@ var egret;
         __reflect(WebGLVertexArrayObject.prototype, "egret.web.WebGLVertexArrayObject");
     })(web = egret.web || (egret.web = {}));
 })(egret || (egret = {}));
+//////////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (c) 2014-present, Egret Technology.
+//  All rights reserved.
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//     * Redistributions of source code must retain the above copyright
+//       notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above copyright
+//       notice, this list of conditions and the following disclaimer in the
+//       documentation and/or other materials provided with the distribution.
+//     * Neither the name of the Egret nor the
+//       names of its contributors may be used to endorse or promote products
+//       derived from this software without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
+//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
+//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//////////////////////////////////////////////////////////////////////////////////////
+var egret;
+(function (egret) {
+    var web;
+    (function (web) {
+        /**
+         * @private
+         */
+        web.WebLifeCycleHandler = function (context) {
+            new BK.Game({
+                onEnterBackground: function (app) {
+                    context.pause();
+                },
+                onEnterForeground: function (app) {
+                    context.resume();
+                },
+            });
+        };
+    })(web = egret.web || (egret.web = {}));
+})(egret || (egret = {}));
 /**
  * 将原player与Webplayer和为一体
  */
@@ -12797,6 +12844,7 @@ var egret;
                 stage.textureScaleFactor = option.textureScaleFactor;
                 var buffer = new egret.sys.RenderBuffer(undefined, undefined, true);
                 egret.lifecycle.stage = stage;
+                egret.lifecycle.addLifecycleListener(web.WebLifeCycleHandler);
                 this.playerOption = option;
                 this.stage = stage;
                 egret.sys.$TempStage = this.stage;
