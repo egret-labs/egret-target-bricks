@@ -45,7 +45,7 @@ namespace egret {
             if (self.isNetUrl(self._url)) {
                 let originalUrl = self._url;
                 let encodeURL = this.encodeURL(originalUrl);
-                this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
+                this._bkHttpRequest = new BK.HttpUtil(encodeURL);
                 let method: string;
                 if (this._method === egret.HttpMethod.POST) {
                     method = "post";
@@ -62,8 +62,13 @@ namespace egret {
                         (this._bkHttpRequest as any).setHttpRawBody(bkBuffer);
                     }
                 }
-                this._bkHttpRequest.setHttpCookie(data); // 如何传 head
-                this._bkHttpRequest.requestAsync((res, code) => { // 不知道 code 给的什么
+                if (this.headerObj) {
+                    for (let key in this.headerObj) {
+                        this._bkHttpRequest.setHttpHeader(key, this.headerObj[key]);
+                    }
+                }
+
+                this._bkHttpRequest.requestAsync((res, code) => {
                     if (Number(code) === 200) {
                         if (self._responseType === HttpResponseType.ARRAY_BUFFER) {
                             self._response = bricksBufferToArrayBuffer(res);
@@ -71,7 +76,6 @@ namespace egret {
                         else {
                             const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
                             self._response = egretBytes.readUTFBytes(egretBytes.length);
-                            // self._response = res.readAsString() || "";
                         }
 
                         $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
@@ -83,14 +87,6 @@ namespace egret {
                 })
             }
             else if (!BK.FileUtil.isFileExist(self._url)) {
-                // let promise = PromiseObject.create(); // TODO
-                // promise.onSuccessFunc = readFileAsync;
-                // promise.onErrorFunc = function () {
-                //     Event.dispatchEvent(self, IOErrorEvent.IO_ERROR);
-                // };
-                // promise.onResponseHeaderFunc = this.onResponseHeader;
-                // promise.onResponseHeaderThisObject = this;
-                // egret_native.download(self._url, self._url, promise);
                 $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
             }
             else {
@@ -119,8 +115,6 @@ namespace egret {
             for (let i = 0; i < searchArr.length; i++) {
                 let str = searchArr[i];//"data=xxx";
                 let strArr = str.split('=');
-                //strArr[0] = "data"
-                //strArr[1] = "xxx"|undefine;
                 let name = strArr[0];
                 let value = strArr[1] ? strArr[1] : "";
                 new_search += name + "=" + encodeURIComponent(value);

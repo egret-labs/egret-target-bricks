@@ -179,7 +179,8 @@ declare namespace BK {
         setHttpMethod(mothod: string): void;
         setHttpCookie(data: any): void;
         requestAsync(callback: Function): void;
-        setHttpPostData(data: string);
+        setHttpPostData(data: string): void;
+        setHttpHeader(key: string, data: string): void;
     }
 
     export class Audio {

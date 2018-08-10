@@ -8008,7 +8008,7 @@ var egret;
             if (self.isNetUrl(self._url)) {
                 var originalUrl = self._url;
                 var encodeURL = this.encodeURL(originalUrl);
-                this._bkHttpRequest = new BK.HttpUtil(encodeURL); // 没文档，只能新建实例
+                this._bkHttpRequest = new BK.HttpUtil(encodeURL);
                 var method = void 0;
                 if (this._method === egret.HttpMethod.POST) {
                     method = "post";
@@ -8027,7 +8027,11 @@ var egret;
                         this._bkHttpRequest.setHttpRawBody(bkBuffer);
                     }
                 }
-                this._bkHttpRequest.setHttpCookie(data); // 如何传 head
+                if (this.headerObj) {
+                    for (var key in this.headerObj) {
+                        this._bkHttpRequest.setHttpHeader(key, this.headerObj[key]);
+                    }
+                }
                 this._bkHttpRequest.requestAsync(function (res, code) {
                     if (Number(code) === 200) {
                         if (self._responseType === egret.HttpResponseType.ARRAY_BUFFER) {
@@ -8036,7 +8040,6 @@ var egret;
                         else {
                             var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(res));
                             self._response = egretBytes.readUTFBytes(egretBytes.length);
-                            // self._response = res.readAsString() || "";
                         }
                         egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                     }
@@ -8047,14 +8050,6 @@ var egret;
                 });
             }
             else if (!BK.FileUtil.isFileExist(self._url)) {
-                // let promise = PromiseObject.create(); // TODO
-                // promise.onSuccessFunc = readFileAsync;
-                // promise.onErrorFunc = function () {
-                //     Event.dispatchEvent(self, IOErrorEvent.IO_ERROR);
-                // };
-                // promise.onResponseHeaderFunc = this.onResponseHeader;
-                // promise.onResponseHeaderThisObject = this;
-                // egret_native.download(self._url, self._url, promise);
                 egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
             }
             else {
@@ -8081,8 +8076,6 @@ var egret;
             for (var i = 0; i < searchArr.length; i++) {
                 var str = searchArr[i]; //"data=xxx";
                 var strArr = str.split('=');
-                //strArr[0] = "data"
-                //strArr[1] = "xxx"|undefine;
                 var name_1 = strArr[0];
                 var value = strArr[1] ? strArr[1] : "";
                 new_search += name_1 + "=" + encodeURIComponent(value);
