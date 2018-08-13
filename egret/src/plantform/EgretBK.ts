@@ -52,7 +52,7 @@ namespace egret.bricks{
     /**
      * 玩一玩平台支持库版本号
      */
-    export let version = "1.0.21";
+    export let version = "1.0.22";
 }
 
 namespace egret {
