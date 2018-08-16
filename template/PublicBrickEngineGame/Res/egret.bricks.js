@@ -8741,7 +8741,7 @@ var egret;
                 var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
                     var path = fontFamily.indexOf("GameRes://") >= 0 || fontFamily.indexOf("GameSandBox://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
-                    if (BK.FileUtil.readFile(path)) {
+                    if (BK.FileUtil.readFile(path).length > 0) {
                         context.fontPath = path;
                     }
                 }
@@ -8893,23 +8893,6 @@ var egret;
     }(egret.CanvasRenderer));
     egret.BKCanvasRenderer = BKCanvasRenderer;
     __reflect(BKCanvasRenderer.prototype, "egret.BKCanvasRenderer");
-    //     /**
-    //  * @private
-    //  * 获取字体字符串
-    //  */
-    //     export function getFontString(node: sys.TextNode, format: sys.TextFormat): string {
-    //         let italic: boolean = format.italic == null ? node.italic : format.italic;
-    //         let bold: boolean = format.bold == null ? node.bold : format.bold;
-    //         let size: number = format.size == null ? node.size : format.size;
-    //         let fontFamily: string = format.fontFamily || node.fontFamily;
-    //         let font: string = italic ? "italic " : "normal ";
-    //         font += bold ? "bold " : "normal ";
-    //         font += size + "px " + fontFamily;
-    //         return font;
-    //     }
-    // export function getAlign(align_str:string){
-    //     if(align)
-    // }
     /**
       * 为16进制数字补0，输出字符串
       */
