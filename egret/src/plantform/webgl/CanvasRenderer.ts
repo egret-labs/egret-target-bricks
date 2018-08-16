@@ -41,11 +41,8 @@ namespace egret {
                 let fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
                     let path = fontFamily.indexOf("GameRes://") >= 0 ||fontFamily.indexOf("GameSandBox://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
-                    if (BK.FileUtil.isFileExist(path)) {
+                    if (BK.FileUtil.readFile(path)) {
                         context.fontPath = path;
-                    } else {
-                        ;
-                        console.log('字体' + path + "不存在，请确保fontFamily传入字体地址正确");
                     }
                 }
                 if (stroke) {

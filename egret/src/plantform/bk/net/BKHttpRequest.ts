@@ -86,7 +86,7 @@ namespace egret {
                     }
                 })
             }
-            else if (!BK.FileUtil.isFileExist(self._url)) {
+            else if (BK.FileUtil.readFile(self._url).length <= 0) {
                 $callAsync(Event.dispatchEvent, IOErrorEvent, self, IOErrorEvent.IO_ERROR);
             }
             else {

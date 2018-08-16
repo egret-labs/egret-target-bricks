@@ -48,7 +48,7 @@ console.assert = function (c: boolean, ...others: any[]): void {
     }
 };
 
-namespace egret.bricks{
+namespace egret.bricks {
     /**
      * 玩一玩平台支持库版本号
      */
@@ -59,21 +59,49 @@ namespace egret {
     egret.getTimer = function getTimer(): number {
         return Math.round(BK.Time.timestamp * 1000);
     };
+
+    let timeEventMap: {
+        [key: number]: {
+            listener: () => void,
+            thisObject: any,
+            delay: number
+        }
+    } = {};
+    let timeEventId = 0;
+
+
     //BK的setTimeout与egret的setTimeout处理方法不同，
     //egret通过key值索引找到listener然后将其清除，
     //BK则是直接清除对象Object绑定的所有listener
-    //暂时完全按照BK的方法执行
     /**
      * @private
      */
-    export function setTimeout(listener: () => void, thisObject: any, delay: number): void {
-        BK.Director.ticker.setTimeout(listener, delay, thisObject);
+    export function setTimeout(listener: () => void, thisObject: any, delay: number): number {
+        let id = timeEventId;
+
+        timeEventMap[id] = {
+            listener: listener,
+            thisObject: thisObject,
+            delay: delay
+        }
+        timeEventId++;
+        BK.Director.ticker.setTimeout(() => {
+            let eventData = timeEventMap[id]
+            if (eventData) {
+                eventData.listener.call(thisObject)
+            }
+        }, delay, thisObject);
+
+        return id;
     }
     /**
      * @private
      */
-    export function clearTimeout(object: any): void {
-        BK.Director.ticker.removeTimeout(object);
+    export function clearTimeout(id: any): void {
+        // BK.Director.ticker.removeTimeout(object);
+        if (timeEventMap[id]) {
+            delete timeEventMap[id];
+        }
     }
 
 

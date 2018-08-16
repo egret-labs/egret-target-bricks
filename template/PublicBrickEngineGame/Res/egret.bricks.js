@@ -2213,29 +2213,46 @@ var egret;
         /**
          * 玩一玩平台支持库版本号
          */
-        bricks.version = "1.0.21";
+        bricks.version = "1.0.22";
     })(bricks = egret.bricks || (egret.bricks = {}));
 })(egret || (egret = {}));
 (function (egret) {
     egret.getTimer = function getTimer() {
         return Math.round(BK.Time.timestamp * 1000);
     };
+    var timeEventMap = {};
+    var timeEventId = 0;
     //BK的setTimeout与egret的setTimeout处理方法不同，
     //egret通过key值索引找到listener然后将其清除，
     //BK则是直接清除对象Object绑定的所有listener
-    //暂时完全按照BK的方法执行
     /**
      * @private
      */
     function setTimeout(listener, thisObject, delay) {
-        BK.Director.ticker.setTimeout(listener, delay, thisObject);
+        var id = timeEventId;
+        timeEventMap[id] = {
+            listener: listener,
+            thisObject: thisObject,
+            delay: delay
+        };
+        timeEventId++;
+        BK.Director.ticker.setTimeout(function () {
+            var eventData = timeEventMap[id];
+            if (eventData) {
+                eventData.listener.call(thisObject);
+            }
+        }, delay, thisObject);
+        return id;
     }
     egret.setTimeout = setTimeout;
     /**
      * @private
      */
-    function clearTimeout(object) {
-        BK.Director.ticker.removeTimeout(object);
+    function clearTimeout(id) {
+        // BK.Director.ticker.removeTimeout(object);
+        if (timeEventMap[id]) {
+            delete timeEventMap[id];
+        }
     }
     egret.clearTimeout = clearTimeout;
     var isRunning = false;
@@ -4871,7 +4888,7 @@ var egret;
             }
             else {
                 this.url = url;
-                if (BK.FileUtil.isFileExist(this.url)) {
+                if (BK.FileUtil.readFile(this.url).length > 0) {
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
                 }
                 else {
@@ -7560,7 +7577,7 @@ var egret;
             //设置字体
             if (fontFamily && fontFamily !== 'Arial') {
                 var path = fontFamily.indexOf('GameRes://') > 0 || fontFamily.indexOf('GameSandBox://') > 0 ? fontFamily : "GameRes://" + fontFamily;
-                if (BK.FileUtil.isFileExist(path)) {
+                if (BK.FileUtil.readFile(path).length > 0) {
                     context.fontPath = path;
                 }
                 else {
@@ -8049,7 +8066,7 @@ var egret;
                     }
                 });
             }
-            else if (!BK.FileUtil.isFileExist(self._url)) {
+            else if (BK.FileUtil.readFile(self._url).length <= 0) {
                 egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
             }
             else {
@@ -8193,7 +8210,7 @@ var egret;
             else {
                 //图片加载还要包括头像
                 var path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
-                if (BK.FileUtil.isFileExist(path)) {
+                if (BK.FileUtil.readFile(path).length > 0) {
                     this.data = new egret.BitmapData(path);
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
                 }
@@ -8724,12 +8741,8 @@ var egret;
                 var fontFamily = format.fontFamily == null ? node.fontFamily : format.fontFamily;
                 if (fontFamily && fontFamily !== 'Arial') {
                     var path = fontFamily.indexOf("GameRes://") >= 0 || fontFamily.indexOf("GameSandBox://") >= 0 ? fontFamily : "GameRes://" + fontFamily;
-                    if (BK.FileUtil.isFileExist(path)) {
+                    if (BK.FileUtil.readFile(path)) {
                         context.fontPath = path;
-                    }
-                    else {
-                        ;
-                        console.log('字体' + path + "不存在，请确保fontFamily传入字体地址正确");
                     }
                 }
                 if (stroke) {

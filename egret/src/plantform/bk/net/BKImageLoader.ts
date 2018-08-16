@@ -44,7 +44,7 @@ namespace egret {
             } else {
                 //图片加载还要包括头像
                 let path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
-                if (BK.FileUtil.isFileExist(path)) {
+                if (BK.FileUtil.readFile(path).length > 0) {
                     this.data = new egret.BitmapData(path);
                     $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
                 }
