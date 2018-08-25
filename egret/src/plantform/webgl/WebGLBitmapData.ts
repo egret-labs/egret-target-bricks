@@ -99,7 +99,7 @@ namespace egret {
          * @private
          * @language zh_CN
          */
-        source: any;
+        _source: any;
 
         /**
          * WebGL texture.
@@ -171,15 +171,19 @@ namespace egret {
             super();
             if (typeof source == "string") {
                 let image = BK.Image.loadImage(source, 6);
-                this.source = image;
+                this._source = image;
                 this.width = image.width;
                 this.height = image.height;
                 this.BK_format = image.format;
             } else {
-                this.source = source;
+                this._source = source;
                 this.width = source.width;
                 this.height = source.height;
             }
+        }
+
+        public get source(){
+            return this._source;
         }
 
         public static create(type: "arraybuffer", data: ArrayBuffer, callback?: (bitmapData: BitmapData) => void): BitmapData;
@@ -222,10 +226,10 @@ namespace egret {
                 this.webGLTexture = null;
             }
             //native or WebGLRenderTarget
-            if (this.source && this.source.dispose) {
-                this.source.dispose();
+            if (this._source && this._source.dispose) {
+                this._source.dispose();
             }
-            this.source = null;
+            this._source = null;
             BitmapData.$dispose(this as any);
         }
 

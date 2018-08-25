@@ -17,7 +17,7 @@ var __extends = function (t, e) {
  * 现支持原生模式‘bricks’和WebGL模式‘webgl’
  */
 window.renderMode = 'webgl';
-BK.Director.logToConsole = 1;
+BK.Script.logToConsole = 1;
 
 
 // Egret

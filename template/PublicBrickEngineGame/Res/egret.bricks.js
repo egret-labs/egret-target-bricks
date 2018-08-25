@@ -4867,8 +4867,8 @@ var egret;
                 //根据url存储缓存的声音到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var soundUrl_1 = "GameSandBox://webcache/sound" + sha1;
-                var buff = BK.FileUtil.readFile(soundUrl_1);
-                if (buff && buff.length > 0) {
+                var isFileExist = BK.FileUtil.isFileExist(soundUrl_1);
+                if (isFileExist) {
                     this._loadFromBuffer.call(this, soundUrl_1);
                 }
                 else {
@@ -4888,7 +4888,7 @@ var egret;
             }
             else {
                 this.url = url;
-                if (BK.FileUtil.readFile(this.url).length > 0) {
+                if (BK.FileUtil.isFileExist(this.url)) {
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
                 }
                 else {
@@ -8066,7 +8066,7 @@ var egret;
                     }
                 });
             }
-            else if (BK.FileUtil.readFile(self._url).length <= 0) {
+            else if (!BK.FileUtil.isFileExist(self._url)) {
                 egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, self, egret.IOErrorEvent.IO_ERROR);
             }
             else {
@@ -8188,8 +8188,8 @@ var egret;
                 //根据url存储缓存的图片到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
-                var buff = BK.FileUtil.readFile(imgUrl_1);
-                if (buff && buff.length > 0) {
+                var isFileExist = BK.FileUtil.isFileExist(imgUrl_1);
+                if (isFileExist) {
                     this._loadFromBuffer.call(this, imgUrl_1);
                 }
                 else {
@@ -8210,7 +8210,7 @@ var egret;
             else {
                 //图片加载还要包括头像
                 var path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
-                if (BK.FileUtil.readFile(path).length > 0) {
+                if (BK.FileUtil.isFileExist(path)) {
                     this.data = new egret.BitmapData(path);
                     egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
                 }
@@ -9478,18 +9478,25 @@ var egret;
             _this.$deleteSource = true;
             if (typeof source == "string") {
                 var image = BK.Image.loadImage(source, 6);
-                _this.source = image;
+                _this._source = image;
                 _this.width = image.width;
                 _this.height = image.height;
                 _this.BK_format = image.format;
             }
             else {
-                _this.source = source;
+                _this._source = source;
                 _this.width = source.width;
                 _this.height = source.height;
             }
             return _this;
         }
+        Object.defineProperty(WebGLBitmapData.prototype, "source", {
+            get: function () {
+                return this._source;
+            },
+            enumerable: true,
+            configurable: true
+        });
         WebGLBitmapData.create = function (type, data, callback) {
             var base64 = "";
             if (type === "arraybuffer") {
@@ -9529,10 +9536,10 @@ var egret;
                 this.webGLTexture = null;
             }
             //native or WebGLRenderTarget
-            if (this.source && this.source.dispose) {
-                this.source.dispose();
+            if (this._source && this._source.dispose) {
+                this._source.dispose();
             }
-            this.source = null;
+            this._source = null;
             egret.BitmapData.$dispose(this);
         };
         WebGLBitmapData.$addDisplayObject = function (displayObject, bitmapData) {

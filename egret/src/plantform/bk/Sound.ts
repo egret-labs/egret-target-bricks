@@ -51,8 +51,8 @@ namespace egret {
                 //根据url存储缓存的声音到沙盒中
                 let sha1 = _sha1FromUrl(url);
                 let soundUrl = "GameSandBox://webcache/sound" + sha1
-                let buff = BK.FileUtil.readFile(soundUrl);
-                if (buff && buff.length > 0) {
+                let isFileExist = BK.FileUtil.isFileExist(soundUrl);
+                if (isFileExist) {
                     this._loadFromBuffer.call(this, soundUrl);
                 } else {
                     var httpGet = new BK.HttpUtil(url);
@@ -70,7 +70,7 @@ namespace egret {
 
             } else {
                 this.url = url;
-                if (BK.FileUtil.readFile(this.url).length > 0) {
+                if (BK.FileUtil.isFileExist(this.url)) {
                     $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
                 }
                 else {
