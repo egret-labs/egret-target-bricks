@@ -70,9 +70,9 @@ namespace egret {
                     let result: any;
                     let bkbuffer: BK.Buffer = data.data;
                     if (!data.isBinary) {
-                        // result = data.data.readAsString();
-                        const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkbuffer));
-                        result = egretBytes.readUTFBytes(egretBytes.length);
+                        result = bkbuffer.readAsString(true);
+                        // const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkbuffer));
+                        // result = egretBytes.readUTFBytes(egretBytes.length);
                     } else {
                         result = bricksBufferToArrayBuffer(bkbuffer);
                     }

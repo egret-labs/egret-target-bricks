@@ -74,8 +74,9 @@ namespace egret {
                             self._response = bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
-                            self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            // const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
+                            // self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            self._response = res.readAsString(true);//this.decodeUTFFromBKBuffer(res);
                         }
 
                         $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
@@ -95,12 +96,29 @@ namespace egret {
                     self._response = bricksBufferToArrayBuffer(bkBuffer);
                 }
                 else {
-                    self._response = bkBuffer.readAsString() || "";
+                    self._response = bkBuffer.readAsString(true) || "";
                 }
 
                 $callAsync(Event.dispatchEvent, Event, self, Event.COMPLETE);
             }
         }
+
+        // private decodeUTFFromBKBuffer(bkBuffer: BK.Buffer) {
+        //     const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkBuffer));
+        //     //分批加载
+        //     let result = '';
+        //     let pos = 0;
+        //     let length = egretBytes.length;
+        //     let strLength = 20000;
+        //     let offset = 0;
+        //     while (pos < egretBytes.length) {
+        //         offset = length - pos;
+        //         strLength = offset > 20000 ? 20000 : offset;
+        //         result += egretBytes.readUTFBytes(strLength);
+        //         pos += strLength;
+        //     }
+        //     return result;
+        // }
 
         private encodeURL(originalUrl: string) {
             if (!originalUrl || originalUrl === '')

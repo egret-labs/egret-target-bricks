@@ -4,7 +4,7 @@ namespace egret.localStorage.BKlocalStorage {
     function getItem(key: string) {
         if (!BK.FileUtil.isFileExist(localStoragePath))
             return undefined;
-        let str = BK.FileUtil.readFile(localStoragePath).readAsString();
+        let str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
         if (!str) {
             return undefined;
         }
@@ -17,7 +17,7 @@ namespace egret.localStorage.BKlocalStorage {
     }
 
     function setItem(key: string, value: string) {
-        let str = BK.FileUtil.readFile(localStoragePath).readAsString();
+        let str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
         let data: any = {};
         if (str) {
             let parseData = JSON.parse(str);
@@ -32,7 +32,7 @@ namespace egret.localStorage.BKlocalStorage {
     }
 
     function removeItem(key: string): void {
-        let str = BK.FileUtil.readFile(localStoragePath).readAsString();
+        let str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
         if (!str)
             return;
         let data = JSON.parse(str);

@@ -3273,7 +3273,7 @@ var egret;
             function getItem(key) {
                 if (!BK.FileUtil.isFileExist(localStoragePath))
                     return undefined;
-                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
                 if (!str) {
                     return undefined;
                 }
@@ -3285,7 +3285,7 @@ var egret;
                 // return "";
             }
             function setItem(key, value) {
-                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
                 var data = {};
                 if (str) {
                     var parseData = JSON.parse(str);
@@ -3299,7 +3299,7 @@ var egret;
                 return true;
             }
             function removeItem(key) {
-                var str = BK.FileUtil.readFile(localStoragePath).readAsString();
+                var str = BK.FileUtil.readFile(localStoragePath).readAsString(true);
                 if (!str)
                     return;
                 var data = JSON.parse(str);
@@ -8055,8 +8055,9 @@ var egret;
                             self._response = egret.bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(res));
-                            self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            // const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
+                            // self._response = egretBytes.readUTFBytes(egretBytes.length);
+                            self._response = res.readAsString(true); //this.decodeUTFFromBKBuffer(res);
                         }
                         egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                     }
@@ -8075,11 +8076,27 @@ var egret;
                     self._response = egret.bricksBufferToArrayBuffer(bkBuffer);
                 }
                 else {
-                    self._response = bkBuffer.readAsString() || "";
+                    self._response = bkBuffer.readAsString(true) || "";
                 }
                 egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
             }
         };
+        // private decodeUTFFromBKBuffer(bkBuffer: BK.Buffer) {
+        //     const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkBuffer));
+        //     //分批加载
+        //     let result = '';
+        //     let pos = 0;
+        //     let length = egretBytes.length;
+        //     let strLength = 20000;
+        //     let offset = 0;
+        //     while (pos < egretBytes.length) {
+        //         offset = length - pos;
+        //         strLength = offset > 20000 ? 20000 : offset;
+        //         result += egretBytes.readUTFBytes(strLength);
+        //         pos += strLength;
+        //     }
+        //     return result;
+        // }
         BKHttpRequest.prototype.encodeURL = function (originalUrl) {
             if (!originalUrl || originalUrl === '')
                 return '';
@@ -8289,9 +8306,9 @@ var egret;
                     var result = void 0;
                     var bkbuffer = data.data;
                     if (!data.isBinary) {
-                        // result = data.data.readAsString();
-                        var egretBytes = new egret.ByteArray(egret.bricksBufferToArrayBuffer(bkbuffer));
-                        result = egretBytes.readUTFBytes(egretBytes.length);
+                        result = bkbuffer.readAsString(true);
+                        // const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkbuffer));
+                        // result = egretBytes.readUTFBytes(egretBytes.length);
                     }
                     else {
                         result = egret.bricksBufferToArrayBuffer(bkbuffer);
