@@ -415,7 +415,9 @@ declare namespace BK {
          * 第二个参数为format
          * COLOR_RGBA8888 = 6
          */
-        static loadImage(path: string, format?: number)
+        static loadImage(path: string, format?: number);
+
+        static loadImageWithBase64(data: string);
     }
 
     export interface Sprite {

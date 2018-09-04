@@ -170,7 +170,13 @@ namespace egret {
         constructor(source) {
             super();
             if (typeof source == "string") {
-                let image = BK.Image.loadImage(source, 6);
+                let image;
+                let index = source.indexOf(';base64,');
+                if (index >= 0) {
+                    image = BK.Image.loadImageWithBase64(source.slice(index + 8));
+                } else {
+                    image = BK.Image.loadImage(source, 6);
+                }
                 this._source = image;
                 this.width = image.width;
                 this.height = image.height;
@@ -182,7 +188,7 @@ namespace egret {
             }
         }
 
-        public get source(){
+        public get source() {
             return this._source;
         }
 
@@ -204,18 +210,9 @@ namespace egret {
             } else if (base64.charAt(0) === 'i') {
                 imageType = "image/png";
             }
-            let img: HTMLImageElement = new Image();
-            img.src = "data:" + imageType + ";base64," + base64;
-            img.crossOrigin = '*';
-            let bitmapData = new BitmapData(img);
-            img.onload = function () {
-                img.onload = undefined;
-                bitmapData.source = img;
-                bitmapData.height = img.height;
-                bitmapData.width = img.width;
-                if (callback) {
-                    callback(bitmapData);
-                }
+            let bitmapData = new BitmapData("data:" + imageType + ";base64," + base64);
+            if (callback) {
+                callback(bitmapData);
             }
             return bitmapData;
         }

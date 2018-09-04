@@ -9476,7 +9476,14 @@ var egret;
              */
             _this.$deleteSource = true;
             if (typeof source == "string") {
-                var image = BK.Image.loadImage(source, 6);
+                var image = void 0;
+                var index = source.indexOf(';base64,');
+                if (index >= 0) {
+                    image = BK.Image.loadImageWithBase64(source.slice(index + 8));
+                }
+                else {
+                    image = BK.Image.loadImage(source, 6);
+                }
                 _this._source = image;
                 _this.width = image.width;
                 _this.height = image.height;
@@ -9514,19 +9521,10 @@ var egret;
             else if (base64.charAt(0) === 'i') {
                 imageType = "image/png";
             }
-            var img = new Image();
-            img.src = "data:" + imageType + ";base64," + base64;
-            img.crossOrigin = '*';
-            var bitmapData = new egret.BitmapData(img);
-            img.onload = function () {
-                img.onload = undefined;
-                bitmapData.source = img;
-                bitmapData.height = img.height;
-                bitmapData.width = img.width;
-                if (callback) {
-                    callback(bitmapData);
-                }
-            };
+            var bitmapData = new egret.BitmapData("data:" + imageType + ";base64," + base64);
+            if (callback) {
+                callback(bitmapData);
+            }
             return bitmapData;
         };
         WebGLBitmapData.prototype.$dispose = function () {
