@@ -8055,9 +8055,7 @@ var egret;
                             self._response = egret.bricksBufferToArrayBuffer(res);
                         }
                         else {
-                            // const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(res));
-                            // self._response = egretBytes.readUTFBytes(egretBytes.length);
-                            self._response = res.readAsString(true); //this.decodeUTFFromBKBuffer(res);
+                            self._response = res.readAsString(true);
                         }
                         egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
                     }
@@ -8081,22 +8079,6 @@ var egret;
                 egret.$callAsync(egret.Event.dispatchEvent, egret.Event, self, egret.Event.COMPLETE);
             }
         };
-        // private decodeUTFFromBKBuffer(bkBuffer: BK.Buffer) {
-        //     const egretBytes = new egret.ByteArray(bricksBufferToArrayBuffer(bkBuffer));
-        //     //分批加载
-        //     let result = '';
-        //     let pos = 0;
-        //     let length = egretBytes.length;
-        //     let strLength = 20000;
-        //     let offset = 0;
-        //     while (pos < egretBytes.length) {
-        //         offset = length - pos;
-        //         strLength = offset > 20000 ? 20000 : offset;
-        //         result += egretBytes.readUTFBytes(strLength);
-        //         pos += strLength;
-        //     }
-        //     return result;
-        // }
         BKHttpRequest.prototype.encodeURL = function (originalUrl) {
             if (!originalUrl || originalUrl === '')
                 return '';
