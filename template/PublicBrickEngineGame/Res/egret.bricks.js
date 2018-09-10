@@ -2217,8 +2217,9 @@ var egret;
     })(bricks = egret.bricks || (egret.bricks = {}));
 })(egret || (egret = {}));
 (function (egret) {
+    var $START_TIME = 0;
     egret.getTimer = function getTimer() {
-        return Math.round(BK.Time.timestamp * 1000);
+        return Math.round((BK.Time.timestamp - $START_TIME) * 1000);
     };
     var timeEventMap = {};
     var timeEventId = 0;
@@ -2282,6 +2283,7 @@ var egret;
         }
     }
     function modifyBricks() {
+        $START_TIME = BK.Time.timestamp;
     }
     /**
      * 将当前渲染模式变为BK原生

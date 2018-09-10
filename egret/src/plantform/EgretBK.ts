@@ -52,12 +52,14 @@ namespace egret.bricks {
     /**
      * 玩一玩平台支持库版本号
      */
-    export let version = "1.0.22";
+    export let version = "1.0.23";
 }
 
 namespace egret {
+    let $START_TIME: number = 0;
+
     egret.getTimer = function getTimer(): number {
-        return Math.round(BK.Time.timestamp * 1000);
+        return Math.round((BK.Time.timestamp - $START_TIME) * 1000);
     };
 
     let timeEventMap: {
@@ -137,6 +139,7 @@ namespace egret {
     }
 
     function modifyBricks(): void {
+        $START_TIME = BK.Time.timestamp;
     }
     /**
      * 将当前渲染模式变为BK原生
