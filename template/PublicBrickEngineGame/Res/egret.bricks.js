@@ -2213,7 +2213,7 @@ var egret;
         /**
          * 玩一玩平台支持库版本号
          */
-        bricks.version = "1.0.22";
+        bricks.version = "1.0.23";
     })(bricks = egret.bricks || (egret.bricks = {}));
 })(egret || (egret = {}));
 (function (egret) {
