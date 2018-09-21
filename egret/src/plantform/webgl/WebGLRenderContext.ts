@@ -118,7 +118,7 @@ namespace egret.web {
 
             buffer.restoreScissor();
 
-            this.onResize(buffer.width, buffer.height, buffer['cacheAsBitmap']);
+            this.onResize(buffer.width, buffer.height, buffer.root);
         }
 
         /**
@@ -167,13 +167,13 @@ namespace egret.web {
             this.surface.width = this.surface.height = 0;
         }
 
-        private onResize(width?: number, height?: number, needSetViewPort = false): void {
+        private onResize(width?: number, height?: number, isRoot?: boolean): void {
             width = width || this.surface.width;
             height = height || this.surface.height;
             this.projectionX = width / 2;
             this.projectionY = -height / 2;
             if (this.context) {
-                if (!needSetViewPort) {
+                if (isRoot) {
                     let left = BKWebPlayer._viewRect.x;
                     let top = BKWebPlayer._viewRect.y;
                     this.context.viewport(left, top, width, height);
@@ -770,7 +770,7 @@ namespace egret.web {
                     break;
                 case DRAWABLE_TYPE.RESIZE_TARGET:
                     data.buffer.rootRenderTarget.resize(data.width, data.height);
-                    this.onResize(data.width, data.height, data.buffer.cacheAsBitmap);
+                    this.onResize(data.width, data.height,data.buffer.root);
                     break;
                 case DRAWABLE_TYPE.CLEAR_COLOR:
                     if (this.activatedBuffer) {

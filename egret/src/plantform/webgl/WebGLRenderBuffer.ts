@@ -57,7 +57,7 @@ namespace egret.web {
         /**
          * 是否为舞台buffer
          */
-        private root: boolean;
+        public root: boolean;
 
 
         public constructor(width?: number, height?: number, root?: boolean) {

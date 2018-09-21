@@ -174,7 +174,6 @@ namespace egret.sys {
             this.offsetY = -bounds.y;
             this.offsetMatrix.setTo(this.offsetMatrix.a, 0, 0, this.offsetMatrix.d, this.offsetX, this.offsetY);
             let buffer = this.renderBuffer;
-            buffer['cacheAsBitmap'] = true;
             //在chrome里，小等于256*256的canvas会不启用GPU加速。
             let width = Math.max(257, bounds.width * scaleX);
             let height = Math.max(257, bounds.height * scaleY);
