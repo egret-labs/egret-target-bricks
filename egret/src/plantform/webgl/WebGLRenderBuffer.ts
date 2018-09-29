@@ -317,6 +317,7 @@ namespace egret.web {
          */
         public clear(): void {
             this.context.pushBuffer(this);
+            this.setTransform(1,0,0,1,0,0);
             this.context.clear();
             this.context.popBuffer();
         }

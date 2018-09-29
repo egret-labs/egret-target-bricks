@@ -20,7 +20,7 @@ namespace egret {
 
         public load(url: string): void {
             if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
-                //动态加载
+                //网络加载
                 //根据url存储缓存的图片到沙盒中
                 let sha1 = _sha1FromUrl(url);
                 let imgUrl = "GameSandBox://webcache/image" + sha1
@@ -42,14 +42,27 @@ namespace egret {
                 }
 
             } else {
-                //图片加载还要包括头像
-                let path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
-                if (BK.FileUtil.isFileExist(path)) {
-                    this.data = new egret.BitmapData(path);
-                    $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
-                }
-                else {
-                    $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                let base64Index = url.indexOf(';base64,');
+                if (base64Index < 0) {
+                    //本地加载
+                    //图片加载还要包括头像
+                    let path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
+                    if (BK.FileUtil.isFileExist(path)) {
+                        this.data = new egret.BitmapData(path);
+                        $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+                    }
+                    else {
+                        $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                    }
+                } else {
+                    //base64加载
+                    let data = new egret.BitmapData(url);
+                    if (data.source != undefined) {
+                        this.data = data;
+                        $callAsync(Event.dispatchEvent, Event, this, Event.COMPLETE);
+                    } else {
+                        $callAsync(Event.dispatchEvent, IOErrorEvent, this, IOErrorEvent.IO_ERROR);
+                    }
                 }
             }
         }

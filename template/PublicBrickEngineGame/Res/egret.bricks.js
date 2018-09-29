@@ -2409,6 +2409,7 @@ var egret;
     }
     egret.runEgret = runEgret;
 })(egret || (egret = {}));
+window.setTimeout = BK.Director.ticker.setTimeout;
 var egret;
 (function (egret) {
     var BKGraphics = (function () {
@@ -8185,7 +8186,7 @@ var egret;
         });
         BKImageLoader.prototype.load = function (url) {
             if (url.indexOf('http://') >= 0 || url.indexOf('https://') >= 0) {
-                //动态加载
+                //网络加载
                 //根据url存储缓存的图片到沙盒中
                 var sha1 = egret._sha1FromUrl(url);
                 var imgUrl_1 = "GameSandBox://webcache/image" + sha1;
@@ -8209,14 +8210,29 @@ var egret;
                 }
             }
             else {
-                //图片加载还要包括头像
-                var path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
-                if (BK.FileUtil.isFileExist(path)) {
-                    this.data = new egret.BitmapData(path);
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+                var base64Index = url.indexOf(';base64,');
+                if (base64Index < 0) {
+                    //本地加载
+                    //图片加载还要包括头像
+                    var path = url.indexOf("GameRes://") >= 0 || url.indexOf("GameSandBox://") >= 0 ? url : "GameRes://" + url;
+                    if (BK.FileUtil.isFileExist(path)) {
+                        this.data = new egret.BitmapData(path);
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+                    }
+                    else {
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                    }
                 }
                 else {
-                    egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                    //base64加载
+                    var data = new egret.BitmapData(url);
+                    if (data.source != undefined) {
+                        this.data = data;
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.Event, this, egret.Event.COMPLETE);
+                    }
+                    else {
+                        egret.$callAsync(egret.Event.dispatchEvent, egret.IOErrorEvent, this, egret.IOErrorEvent.IO_ERROR);
+                    }
                 }
             }
         };
@@ -10223,6 +10239,7 @@ var egret;
              */
             WebGLRenderBuffer.prototype.clear = function () {
                 this.context.pushBuffer(this);
+                this.setTransform(1, 0, 0, 1, 0, 0);
                 this.context.clear();
                 this.context.popBuffer();
             };
