@@ -2409,7 +2409,6 @@ var egret;
     }
     egret.runEgret = runEgret;
 })(egret || (egret = {}));
-window.setTimeout = BK.Director.ticker.setTimeout;
 var egret;
 (function (egret) {
     var BKGraphics = (function () {
@@ -4906,14 +4905,14 @@ var egret;
         BKSound.prototype.play = function (startTime, loops) {
             if (startTime === void 0) { startTime = 0; }
             if (loops === void 0) { loops = 0; }
-            if (!this._bKSoundChannel) {
-                var channel = new egret.BKSoundChannel();
-                channel.$loops = loops;
-                channel.$startTime = startTime;
-                channel.$type = this.type;
-                channel.$url = this.url;
-                this._bKSoundChannel = channel;
-            }
+            // if (!this._bKSoundChannel) {
+            var channel = new egret.BKSoundChannel();
+            channel.$loops = loops;
+            channel.$startTime = startTime;
+            channel.$type = this.type;
+            channel.$url = this.url;
+            this._bKSoundChannel = channel;
+            // }
             this._bKSoundChannel.$play();
             return this._bKSoundChannel;
         };
@@ -4986,6 +4985,9 @@ var egret;
                     musicPath = "GameRes://" + this.$url;
                 }
                 this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
+            }
+            else {
+                this._bkAudio.stopMusic();
             }
             this._bkAudio.startMusic(function () {
                 _this.onPlayEnd();
@@ -8354,6 +8356,88 @@ var egret;
     __reflect(BKSocket.prototype, "egret.BKSocket", ["egret.ISocket"]);
     egret.ISocket = BKSocket;
 })(egret || (egret = {}));
+var BricksWebSocket = (function () {
+    /**
+     * 传入socket地址
+     */
+    function BricksWebSocket(path) {
+        this._path = path;
+        this.bkWebSocket = new BK.WebSocket(this._path);
+        this.bkWebSocket.connect();
+        this._bindEvent();
+    }
+    BricksWebSocket.prototype._bindEvent = function () {
+        var ws = this.bkWebSocket;
+        var _this = this;
+        ws.onOpen = function (ws) {
+            if (_this.onopen) {
+                _this.onopen.call(_this, {
+                    type: 'OPEN'
+                });
+            }
+        };
+        ws.onClose = function (ws) {
+            if (_this.onclose) {
+                _this.onclose.call(_this, {
+                    type: 'CLOSE'
+                });
+            }
+        };
+        ws.onError = function (ws) {
+            if (_this.onerror) {
+                _this.onerror.call(_this, {
+                    type: 'ERROR'
+                });
+            }
+        };
+        ws.onMessage = function (ws, data) {
+            if (_this.onmessage) {
+                var result = void 0;
+                var bkbuffer = data.data;
+                if (_this._binaryType == 'arraybuffer') {
+                    result = bricksBufferToArrayBuffer(bkbuffer);
+                    _this.onmessage.call(_this, {
+                        data: result
+                    });
+                }
+                else {
+                    console.log('暂不支持binaryType值为:' + _this._binaryType);
+                }
+            }
+        };
+    };
+    Object.defineProperty(BricksWebSocket.prototype, "binaryType", {
+        get: function () {
+            return this._binaryType;
+        },
+        set: function (value) {
+            this._binaryType = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    BricksWebSocket.prototype.close = function (code, reason) {
+        this.bkWebSocket.close();
+    };
+    BricksWebSocket.prototype.send = function (data) {
+        var result = data;
+        //todo需要处理数据
+        this.bkWebSocket.send(result);
+    };
+    return BricksWebSocket;
+}());
+__reflect(BricksWebSocket.prototype, "BricksWebSocket");
+window['WebSocket'] = BricksWebSocket;
+function bricksBufferToArrayBuffer(bricksBuffer) {
+    var arrayBuffer = new ArrayBuffer(bricksBuffer.bufferLength());
+    var uint8Array = new Uint8Array(arrayBuffer);
+    var pointer = 0;
+    while (pointer < bricksBuffer.bufferLength()) {
+        uint8Array[pointer++] = bricksBuffer.readUint8Buffer();
+    }
+    // bricksBuffer.releaseBuffer();
+    return arrayBuffer;
+}
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -8684,8 +8768,8 @@ var egret;
             CanvasRenderBuffer.prototype.getPixels = function (x, y, width, height) {
                 if (width === void 0) { width = 1; }
                 if (height === void 0) { height = 1; }
-                return undefined;
-                // return <number[]><any>this.context.getImageData(x, y, width, height).data;
+                // return undefined;
+                return this.context.getImageData(x, y, width, height).data;
             };
             /**
              * 转换成base64字符串，如果图片（或者包含的图片）跨域，则返回null

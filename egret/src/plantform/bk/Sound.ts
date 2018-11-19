@@ -86,14 +86,14 @@ namespace egret {
         }
 
         play(startTime: number = 0, loops: number = 0): egret.SoundChannel {
-            if (!this._bKSoundChannel) {
-                let channel = new BKSoundChannel();
-                channel.$loops = loops;
-                channel.$startTime = startTime;
-                channel.$type = this.type;
-                channel.$url = this.url;
-                this._bKSoundChannel = channel;
-            }
+            // if (!this._bKSoundChannel) {
+            let channel = new BKSoundChannel();
+            channel.$loops = loops;
+            channel.$startTime = startTime;
+            channel.$type = this.type;
+            channel.$url = this.url;
+            this._bKSoundChannel = channel;
+            // }
             this._bKSoundChannel.$play();
             return this._bKSoundChannel;
         }

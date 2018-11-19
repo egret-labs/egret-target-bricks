@@ -39,6 +39,8 @@ namespace egret {
                     musicPath = "GameRes://" + this.$url;
                 }
                 this._bkAudio = new BK.Audio(_type, musicPath, loops, 0);
+            } else {
+                this._bkAudio.stopMusic();
             }
             this._bkAudio.startMusic(() => {
                 this.onPlayEnd();

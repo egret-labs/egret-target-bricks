@@ -147,8 +147,8 @@ namespace egret.web {
          * 这里做一个简单处理，只要坐标在canvas内，就返回true；
          */
         public getPixels(x: number, y: number, width: number = 1, height: number = 1): any {
-            return undefined;
-            // return <number[]><any>this.context.getImageData(x, y, width, height).data;
+            // return undefined;
+            return <number[]><any>this.context.getImageData(x, y, width, height).data;
         }
 
         /**
